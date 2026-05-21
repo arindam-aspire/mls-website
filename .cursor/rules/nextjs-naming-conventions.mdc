@@ -1,0 +1,67 @@
+---
+description: Enforce React / Next.js naming conventions (components, views, hooks, utils, types)
+globs:
+  - "**/*"
+alwaysApply: true
+---
+
+# Next.js naming convention rules
+
+You are an expert **Next.js (App Router) + React** engineer.  
+Follow these naming conventions when **creating or modifying** project files.  
+(Aligned with common React Native / Expo style; adapted for this Next repo.)
+
+## Next.js framework files (do not rename)
+
+The App Router expects fixed filenames such as `page.tsx`, `layout.tsx`, `loading.tsx`, `error.tsx`, `not-found.tsx`, `route.ts`, `default.tsx`, etc. **Keep those names** where the framework requires them. The rules below apply to **your** components, hooks, utilities, and type modules.
+
+## 1. Components
+
+- Use **`PascalCase`** for all component file names.
+- File names must **match the exported component name** exactly.
+
+Examples:
+
+- `UserCard.tsx`
+- `PrimaryButton.tsx`
+- Not allowed: `userCard.tsx`
+- Not allowed: `user_card.tsx`
+
+## 2. Screens (full-page views)
+
+- Use **`PascalCase`** with a **`Screen` suffix** for components that represent a full page or route-level view (when extracted from `page.tsx`).
+
+Examples:
+
+- `LoginScreen.tsx`
+- `HomeScreen.tsx`
+
+## 3. Hooks
+
+- Use **`camelCase`** starting with **`use`**.
+
+Examples:
+
+- `useAuth.ts`
+- `useFetch.ts`
+- Not allowed: `UseAuth.ts`
+- Not allowed: `authHook.ts`
+
+## 4. Utilities / helpers
+
+- Use **`camelCase`**.
+
+Examples:
+
+- `formatDate.ts`
+- `apiClient.ts`
+
+## 5. Types / interfaces
+
+- Use **`PascalCase`** for type and interface **names in code**.
+- Use **`*.types.ts`** for dedicated type-only modules.
+
+Examples:
+
+- `user.types.ts`
+- `auth.types.ts`

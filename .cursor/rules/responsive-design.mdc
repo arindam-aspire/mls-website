@@ -1,0 +1,36 @@
+---
+description: Require responsive layouts and UI across breakpoints when designing or building interfaces
+globs:
+  - "**/*"
+alwaysApply: true
+---
+
+# Responsive design
+
+When **designing or implementing** any UI (pages, layouts, components, screens), **always make it responsive**. Do not ship desktop-only layouts unless the user explicitly asks for a fixed breakpoint.
+
+## Defaults
+
+- Design **mobile-first**, then enhance for larger viewports (`sm:`, `md:`, `lg:`, `xl:`).
+- Use fluid widths (`w-full`, `max-w-*`, `%`, `min-w-0`) instead of fixed pixel widths for main content.
+- Avoid horizontal overflow: use `min-w-0`, `truncate`, `flex-wrap`, or scroll containers where needed.
+
+## Layout
+
+- Prefer **flex** and **grid** with responsive column/row changes (e.g. `grid-cols-1 md:grid-cols-2 lg:grid-cols-3`).
+- Stack vertically on small screens; switch to side-by-side only from `md` or `lg` when appropriate.
+- Use responsive padding and gaps (`px-4 sm:px-6`, `gap-4 md:gap-6`).
+
+## Typography and touch
+
+- Scale text for readability on small screens (`text-sm sm:text-base`, headings with `sm:` / `lg:` steps).
+- Keep tap targets at least **44×44px** on touch devices (buttons, links, toggles).
+
+## Media and navigation
+
+- Images: `width`/`height` + responsive classes; avoid layouts that break when images load.
+- Hide or collapse non-essential chrome on small screens (`hidden sm:block`, drawers/menus) when the design calls for it.
+
+## Verification
+
+Before finishing UI work, mentally check **320px**, **768px**, and **1280px** (or test in devtools). Fix breakpoint jumps, clipped text, and unusable controls.

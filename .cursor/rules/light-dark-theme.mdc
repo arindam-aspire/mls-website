@@ -1,0 +1,39 @@
+---
+description: Require light and dark theme support when designing or building UI
+globs:
+  - "**/*"
+alwaysApply: true
+---
+
+# Light and dark theme
+
+When **designing or implementing** any UI, **always support both light and dark themes**. Do not use hard-coded colors that only work in one mode unless the user explicitly asks for a single theme.
+
+## Use semantic tokens
+
+This project defines theme colors in `app/globals.css` (CSS variables + Tailwind `@theme`). Prefer semantic utilities, not raw hex or one-off `dark:` pairs for brand colors:
+
+- Surfaces: `bg-page`, `bg-surface`
+- Text: `text-text`, `text-muted`
+- Brand: `bg-primary`, `text-primary-dark`, `bg-primary-light`, `bg-secondary`, etc.
+- Status: `bg-success`, `bg-danger`, `bg-info`
+- Fixed: `text-white`, `text-black`, `bg-white`, `bg-black`
+- Inherit tone: `bg-inherit-color` (not `bg-inherit` — reserved CSS keyword)
+
+`html` gets `.light` / `.dark` (or system preference) via `ThemeProvider`. Root layout sets `lang`, `dir`, and font per locale.
+
+## Rules
+
+- **Never** assume a white background or dark text only; pair foreground and background from the same token family.
+- On `bg-primary`, use **`text-white`** for label text (project convention).
+- Borders and dividers: use token-based opacity (e.g. `border-secondary/15`), not fixed gray hex.
+- Images, icons, and shadows: check contrast in **both** themes; invert or swap assets only when necessary.
+- Avoid `zinc-*`, `gray-*`, or `#fff` / `#000` for themed surfaces when a semantic token exists.
+
+## Verification
+
+Before finishing UI work, toggle light and dark (system or `ThemeProvider`) and confirm:
+
+- Readable text and visible borders
+- No invisible or low-contrast controls
+- Surfaces hierarchy still clear (page vs surface vs elevated blocks)

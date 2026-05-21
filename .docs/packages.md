@@ -1,0 +1,48 @@
+# Packages & Scopes
+
+> Direct packages from the root `package.json` only (`dependencies` and `devDependencies`). Update this file after npm add/remove/update changes `package.json` or `package-lock.json`. Do not list transitive `node_modules` packages.
+
+## Core
+
+| Package | Version | Purpose |
+| --- | --- | --- |
+| axios | ^1.16.1 | Promise-based HTTP client for browser and Node.js |
+| next | 16.2.6 | React framework with App Router and server components |
+| react | 19.2.4 | UI library |
+| react-dom | 19.2.4 | React DOM renderer |
+
+## Internationalization
+
+| Package | Version | Purpose |
+| --- | --- | --- |
+| next-intl | ^4.12.0 | Internationalization (i18n) for Next.js App Router |
+
+## UI (accessible primitives & icons)
+
+| Package | Version | Purpose |
+| --- | --- | --- |
+| @headlessui/react | ^2.2.10 | Unstyled, accessible UI primitives for React |
+| lucide-react | ^1.16.0 | Lucide icon components for React |
+
+## Styling
+
+| Package | Version | Purpose |
+| --- | --- | --- |
+| tailwindcss | ^4 | Utility-first CSS framework |
+| @tailwindcss/postcss | ^4 | PostCSS plugin for Tailwind CSS v4 |
+
+## TypeScript & types
+
+| Package | Version | Purpose |
+| --- | --- | --- |
+| typescript | ^5 | TypeScript compiler |
+| @types/node | ^20 | TypeScript types for Node.js |
+| @types/react | ^19 | TypeScript types for React |
+| @types/react-dom | ^19 | TypeScript types for React DOM |
+
+## Linting
+
+| Package | Version | Purpose |
+| --- | --- | --- |
+| eslint | ^9 | JavaScript and TypeScript linter |
+| eslint-config-next | 16.2.6 | ESLint config preset for Next.js |

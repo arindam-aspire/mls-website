@@ -1,0 +1,44 @@
+---
+description: Border radius — rounded-xl for modal, popover, card; rounded-lg for other UI controls
+globs:
+  - "**/*"
+alwaysApply: true
+---
+
+# UI border radius
+
+Use **two consistent radii** when designing or implementing UI. Do not mix other sizes (`rounded-md`, `rounded-2xl`, arbitrary `rounded-[…]`) unless the user asks for an exception.
+
+## `rounded-xl` — containers and overlays
+
+- **Cards** — content cards, list items styled as cards, empty-state panels
+- **Modals** — dialog panels, drawers styled as modal surfaces
+- **Popovers** — dropdown menus, floating panels, tooltips with a boxed surface
+
+Nested content flush with the card edge may use `rounded-none`; the **outer** shell still uses `rounded-xl`.
+
+## `rounded-lg` — everything else
+
+- **Buttons** — all variants (primary, secondary, outline, ghost); icon-only pills may use `rounded-full`
+- **Inputs** — text, email, password, search, textarea
+- **Selects** — native `<select>`, custom select triggers (menus/popover panels use `rounded-xl`)
+- **Other controls** — chips, alerts, toggle groups, filter pills, combobox triggers
+
+## Examples
+
+```tsx
+// ✅ GOOD
+<button className="rounded-lg bg-primary px-4 py-2 text-white">Save</button>
+<input className="rounded-lg border border-secondary/30 bg-surface px-3 py-2" />
+<article className="rounded-xl border border-secondary/15 bg-surface p-4">…</article>
+<div className="rounded-xl bg-surface p-6 shadow-lg" role="dialog">…</div>
+<div className="rounded-xl border bg-surface py-1 shadow-md">…popover…</div>
+
+// ❌ BAD
+<button className="rounded-xl …">  {/* buttons use rounded-lg */}
+<article className="rounded-lg …">  {/* cards use rounded-xl */}
+```
+
+## Shared UI folder
+
+Encode radii in `src/components/ui/` base styles: **`rounded-lg`** in button, select trigger, input; **`rounded-xl`** in card (and modal/popover when added).

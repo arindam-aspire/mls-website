@@ -1,0 +1,31 @@
+---
+description: Keep .docs/packages.md in sync when adding or changing npm packages
+globs:
+  - "**/package.json"
+  - ".docs/packages.md"
+alwaysApply: true
+---
+
+# Package installs and `.docs/packages.md`
+
+Whenever you **add, remove, upgrade, or downgrade** npm dependencies—including `npm install`, `npm i`, `yarn add`, `pnpm add`, **`expo install`**, or direct edits to root **`package.json`** (`dependencies`, `devDependencies`, `overrides`)—you **must** in the **same session** update **`.docs/packages.md`** so it stays **in sync** with **`package.json`**.
+
+## Document shape (follow the template)
+
+Use the **`# Packages & Scopes`** doc with this fixed intro (adjust only if the policy changes):
+
+> Direct packages from the root `package.json` only (`dependencies` and `devDependencies`). Update this file after npm add/remove/update changes `package.json` or `package-lock.json`. Do not list transitive `node_modules` packages.
+
+- Group packages under scoped **`##` headings** (e.g. Core, Expo & routing, Dev dependencies). Pick headings that fit the stack; keep related packages together.
+- Every direct dependency and devDependency is a row in a markdown table: **`Package` | `Version` | `Purpose`**.
+- **Version** cells must match `package.json` exactly (including `^`, `~`, or exact pins).
+- **Purpose** is a short factual phrase (what the library does). If unknown, use a neutral line such as "Project dependency" rather than guessing product-specific reasons.
+- List **`overrides`** at the end in a dedicated section (table with a **Purpose** like "Pins transitive …").
+
+## Workflow
+
+1. Apply the install or `package.json` change.
+2. Re-read root `package.json`.
+3. Rewrite or adjust `.docs/packages.md` so every listed row reflects the current file—**do not** leave the doc outdated after a package change.
+
+If only `package-lock.json` changed and **`package.json`** dependency keys did not change, **no** `.docs/packages.md` update is required.

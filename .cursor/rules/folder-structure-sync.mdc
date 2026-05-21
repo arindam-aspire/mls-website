@@ -1,0 +1,31 @@
+---
+description: Keep .docs/folder-structure.md in sync when the repo file tree changes
+globs:
+  - "**/*"
+  - ".docs/folder-structure.md"
+alwaysApply: true
+---
+
+# Repository tree and `.docs/folder-structure.md`
+
+Whenever you **create, delete, rename, or move** a file or directory in this repository in a way that changes the **on-disk layout** reflected in **`.docs/folder-structure.md`**, you **must** in the **same session** update **`.docs/folder-structure.md`** so the fenced tree matches reality.
+
+## Paths that never appear in the tree
+
+Do **not** add branches for anything under these roots (they stay **out of the diagram**; only the doc’s **`Excluded`** line lists them):
+
+`.cursor/`, `.docs/`, `.expo/`, `.git/`, `.idea/`, `.next/`, `.turbo/`, `.vercel/`, `.vscode/`, `build/`, `coverage/`, `docs/`, `node_modules/`, `out/`, `scripts/`
+
+- If your change is **only** inside those excluded areas, **do not** edit **`folder-structure.md`** for that change.
+- If your change touches **`src/`**, the **repository root** files shown in the tree, or any other path that **should** appear in the diagram, **update the tree** (add/remove/rename lines; fix `├──` / `└──` / `│` continuity).
+
+## How to edit the doc
+
+- Preserve the existing **title**, intro, **`Excluded`** line (keep the excluded list exactly as policy above unless the team changes policy), and **UTF-8 box-drawing** tree style used in the fenced block.
+- Keep sibling ordering **consistent** with the rest of the file (typically **directories and files sorted** as in the current tree, unless the doc already uses a different convention—then match the doc).
+
+## Workflow
+
+1. Apply the file-system change (create/delete/move/rename).
+2. Open **`.docs/folder-structure.md`** and adjust the tree so every **non-excluded** path matches the repo.
+3. Do not leave **`folder-structure.md`** wrong after a structural change that affects listed paths.
