@@ -1,3 +1,16 @@
 {
-  "brand": "Multiple Listing Service"
+  "brand": "Multiple Listing Service",
+  "brandTagline": "MULTIPLE LISTING SERVICE",
+  "downloadOurApp": "Download Our App",
+  "termsAndConditions": "Terms and Conditions",
+  "privacyPolicy": "Privacy Policy",
+  "copyright": "© {year} MLS Platform All rights reserved.",
+  "signInSignUp": "Sign In / Sign Up",
+  "language": "Language",
+  "mainNav": "Main navigation",
+  "navBuy": "Buy",
+  "navRent": "Rent",
+  "navOffPlan": "Off-Plan",
+  "navSell": "Sell",
+  "navAboutUs": "About Us"
 }

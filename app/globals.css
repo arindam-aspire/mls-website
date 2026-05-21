@@ -109,6 +109,7 @@
   --color-tertiary-dark: var(--tertiary-dark);
   --color-tertiary-light: var(--tertiary-light);
   --color-page: var(--page);
+  --color-page-ghost: color-mix(in srgb, var(--page) 20%, var(--surface));
   --color-surface: var(--surface);
   --color-text: var(--text);
   --color-muted: var(--muted);
@@ -119,6 +120,8 @@
   --color-info: var(--info);
   /* "inherit-color" — bg-inherit/text-inherit are reserved CSS keywords */
   --color-inherit-color: var(--inherit);
+  /* Hero on photo — white text over background image */
+  --color-hero-on-image: var(--white);
   --color-background: var(--page);
   --color-foreground: var(--text);
   --font-sans: var(--font-geist-sans);

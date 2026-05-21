@@ -1,43 +1,43 @@
 import type { FocusEvent, ReactNode } from "react";
 
-export const SELECT_VARIANTS = ["outline", "ghost", "clear"] as const;
+export const SELECT_DROPDOWN_EMPTY_VALUE = "";
 
-export type SelectVariant = (typeof SELECT_VARIANTS)[number];
+export const SELECT_DROPDOWN_VARIANTS = ["outline", "ghost", "clear"] as const;
 
-export const SELECT_SIZES = ["sm", "md", "lg"] as const;
+export type SelectDropdownVariant = (typeof SELECT_DROPDOWN_VARIANTS)[number];
 
-export type SelectSize = (typeof SELECT_SIZES)[number];
+export const SELECT_DROPDOWN_SIZES = ["sm", "md", "lg"] as const;
 
-export type SelectOption = {
+export type SelectDropdownSize = (typeof SELECT_DROPDOWN_SIZES)[number];
+
+export type SelectDropdownOption = {
   value: string;
   label: string;
   disabled?: boolean;
 };
 
-export interface SelectProps {
-  options: SelectOption[];
-  variant?: SelectVariant;
+export interface SelectDropdownProps {
+  options: SelectDropdownOption[];
+  variant?: SelectDropdownVariant;
   /** Visual size (sm / md / lg). */
-  size?: SelectSize;
+  size?: SelectDropdownSize;
+  placeholder: string;
   label?: ReactNode;
   labelClassName?: string;
-  /** When set, marks the field invalid and shows the message below the select. */
   error?: string;
   hint?: string;
   isRequired?: boolean;
-  placeholder?: string;
   value?: string;
   defaultValue?: string;
   onChange?: (value: string) => void;
   onBlur?: (event: FocusEvent<HTMLButtonElement>) => void;
   fullWidth?: boolean;
   wrapperClassName?: string;
-  selectClassName?: string;
-  iconClassName?: string;
+  triggerClassName?: string;
+  panelClassName?: string;
   optionClassName?: string;
   className?: string;
   id?: string;
-  /** Form field name for native form submission. */
   name?: string;
   disabled?: boolean;
   autoFocus?: boolean;

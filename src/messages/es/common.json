@@ -1,3 +1,16 @@
 {
-  "brand": "Servicio de Listados Múltiples"
+  "brand": "Servicio de Listados Múltiples",
+  "brandTagline": "SERVICIO DE LISTADOS MÚLTIPLES",
+  "downloadOurApp": "Descarga nuestra app",
+  "termsAndConditions": "Términos y condiciones",
+  "privacyPolicy": "Política de privacidad",
+  "copyright": "© {year} MLS Platform. Todos los derechos reservados.",
+  "signInSignUp": "Iniciar sesión / Registrarse",
+  "language": "Idioma",
+  "mainNav": "Navegación principal",
+  "navBuy": "Comprar",
+  "navRent": "Alquilar",
+  "navOffPlan": "Sobre plano",
+  "navSell": "Vender",
+  "navAboutUs": "Sobre nosotros"
 }

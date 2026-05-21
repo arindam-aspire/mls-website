@@ -27,6 +27,8 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
+    <NextIntlClientProvider messages={messages}>
+      <div className="flex min-h-0 flex-1 flex-col">{children}</div>
+    </NextIntlClientProvider>
   );
 }

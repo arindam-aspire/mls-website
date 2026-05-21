@@ -42,9 +42,11 @@ export default async function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${tajawal.variable} h-full antialiased`}
     >
       <body
-        className={`min-h-full flex flex-col bg-page text-text ${fontClass}`}
+        className={`flex min-h-full flex-col bg-page text-text ${fontClass}`}
       >
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <div className="flex min-h-0 flex-1 flex-col">{children}</div>
+        </ThemeProvider>
       </body>
     </html>
   );

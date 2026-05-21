@@ -1,3 +1,16 @@
 {
-  "brand": "خدمة القوائم العقارية المتعددة"
+  "brand": "خدمة القوائم العقارية المتعددة",
+  "brandTagline": "خدمة القوائم العقارية المتعددة",
+  "downloadOurApp": "حمّل تطبيقنا",
+  "termsAndConditions": "الشروط والأحكام",
+  "privacyPolicy": "سياسة الخصوصية",
+  "copyright": "© {year} منصة MLS. جميع الحقوق محفوظة.",
+  "signInSignUp": "تسجيل الدخول / إنشاء حساب",
+  "language": "اللغة",
+  "mainNav": "التنقل الرئيسي",
+  "navBuy": "شراء",
+  "navRent": "إيجار",
+  "navOffPlan": "على المخطط",
+  "navSell": "بيع",
+  "navAboutUs": "من نحن"
 }

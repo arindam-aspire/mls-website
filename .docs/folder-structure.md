@@ -10,6 +10,9 @@ mls_website/
 ├── app/
 │   ├── [locale]/
 │   │   ├── layout.tsx
+│   │   ├── [...rest]/
+│   │   │   └── page.tsx
+│   │   ├── not-found.tsx
 │   │   ├── (auth)/
 │   │   ├── (main)/
 │   │   │   ├── layout.tsx
@@ -22,6 +25,8 @@ mls_website/
 │   ├── layout.tsx
 │   └── page.tsx
 ├── eslint.config.mjs
+├── lib/
+│   └── cn.ts
 ├── next-env.d.ts
 ├── next.config.ts
 ├── package-lock.json
@@ -38,17 +43,32 @@ mls_website/
 │   ├── assets/
 │   │   └── images/
 │   │       ├── favicon.png
-│   │       └── icon.svg
+│   │       ├── icon.svg
+│   │       ├── MLS_Dark_Logo.png
+│   │       ├── MLS_Home_Image.png
+│   │       └── MLS_Light_Logo.png
 │   ├── components/
 │   │   └── ui/
 │   │       ├── button/
 │   │       │   ├── index.tsx
 │   │       │   └── types.ts
+│   │       ├── button-group/
+│   │       │   ├── index.tsx
+│   │       │   └── types.ts
 │   │       ├── card/
 │   │       │   ├── index.tsx
 │   │       │   └── types.ts
+│   │       ├── input/
+│   │       │   ├── index.tsx
+│   │       │   └── types.ts
 │   │       ├── index.tsx
-│   │       └── select/
+│   │       ├── select/
+│   │       │   ├── index.tsx
+│   │       │   └── types.ts
+│   │       ├── select-dropdown/
+│   │       │   ├── index.tsx
+│   │       │   └── types.ts
+│   │       └── textarea/
 │   │           ├── index.tsx
 │   │           └── types.ts
 │   ├── configs/
@@ -65,9 +85,13 @@ mls_website/
 │   │   │   ├── screens/
 │   │   │   ├── store/
 │   │   │   └── types/
+│   │   ├── not-found/
+│   │   │   └── screens/
+│   │   │       └── NotFoundScreen.tsx
 │   │   ├── landing/
 │   │   │   ├── components/
 │   │   │   │   ├── DetailsSection.tsx
+│   │   │   │   ├── HeroSearchBar.tsx
 │   │   │   │   └── HeroSection.tsx
 │   │   │   ├── hooks/
 │   │   │   ├── screens/
@@ -84,6 +108,10 @@ mls_website/
 │   │       ├── store/
 │   │       └── types/
 │   ├── hooks/
+│   ├── i18n/
+│   │   ├── navigation.ts
+│   │   ├── request.ts
+│   │   └── routing.ts
 │   ├── layouts/
 │   │   ├── protected-layout/
 │   │   └── public-layout/
@@ -91,10 +119,6 @@ mls_website/
 │   │       ├── PublicFooter.tsx
 │   │       ├── PublicHeader.tsx
 │   │       └── PublicMain.tsx
-│   ├── i18n/
-│   │   ├── navigation.ts
-│   │   ├── request.ts
-│   │   └── routing.ts
 │   ├── messages/
 │   │   ├── ar/
 │   │   │   ├── auth.json

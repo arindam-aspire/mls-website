@@ -1,1 +1,24 @@
-{}
+{
+  "heroEyebrow": "منصة القوائم العقارية الأولى في الأردن",
+  "heroTitleLine1": "عقارات مميزة",
+  "heroTitleLine2": "في جميع أنحاء الأردن",
+  "heroTagline": "فاخرة · على المخطط · جاهزة للسكن",
+  "heroImageAlt": "عقار مميز في الأردن",
+  "heroPropertyTypeLabel": "نوع العقار",
+  "heroPropertyType_residential": "سكني",
+  "heroPropertyType_commercial": "تجاري",
+  "heroPropertyType_lands": "أراضٍ",
+  "heroSelectTypePlaceholder": "اختر النوع",
+  "heroPropertySubtype_apartments": "شقق",
+  "heroPropertySubtype_villas": "فلل",
+  "heroPropertySubtype_buildings": "مباني",
+  "heroPropertySubtype_farms": "مزارع",
+  "heroListingPlaceholder": "شراء / إيجار",
+  "heroListing_buy": "شراء",
+  "heroListing_rent": "إيجار",
+  "heroLocationPlaceholder": "المدينة",
+  "heroSearch": "بحث",
+  "whyMls": "لماذا MLS",
+  "trustedPlatformTitle": "منصة العقارات الموثوقة في الأردن",
+  "trustedPlatformDescription": "MLS هي خدمة القوائم العقارية الرائدة في الأردن، تربط المشترين والمستثمرين والمستأجرين بأبرز العقارات في البلاد. من الأبراج الحديثة في قلب عمان إلى الفلل الحصرية في عبدون ودابوق، نقدم قوائم موثقة ووكلاء معتمدين وتجربة سلسة مصممة لكل مرحلة من رحلتك العقارية. سواء كنت تبحث عن سكن فاخر أو مساحة تجارية استراتيجية أو فرصة استثمارية على المخطط — MLS يفتح لك الباب إلى حيث يعيش الأردن ويستثمر."
+}

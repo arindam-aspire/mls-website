@@ -1,1 +1,24 @@
-{}
+{
+  "heroEyebrow": "La plataforma líder de listados en Jordania",
+  "heroTitleLine1": "Propiedades premium",
+  "heroTitleLine2": "En todo Jordania",
+  "heroTagline": "Lujo · Sobre plano · Listas para mudarse",
+  "heroImageAlt": "Propiedad premium en Jordania",
+  "heroPropertyTypeLabel": "Tipo de propiedad",
+  "heroPropertyType_residential": "Residencial",
+  "heroPropertyType_commercial": "Comercial",
+  "heroPropertyType_lands": "Terrenos",
+  "heroSelectTypePlaceholder": "Seleccionar tipo",
+  "heroPropertySubtype_apartments": "Apartamentos",
+  "heroPropertySubtype_villas": "Villas",
+  "heroPropertySubtype_buildings": "Edificios",
+  "heroPropertySubtype_farms": "Granjas",
+  "heroListingPlaceholder": "Comprar / Alquilar",
+  "heroListing_buy": "Comprar",
+  "heroListing_rent": "Alquilar",
+  "heroLocationPlaceholder": "Ciudad",
+  "heroSearch": "Buscar",
+  "whyMls": "POR QUÉ MLS",
+  "trustedPlatformTitle": "La plataforma inmobiliaria de confianza en Jordania",
+  "trustedPlatformDescription": "MLS es el principal servicio de listados inmobiliarios en Jordania, que conecta a compradores, inversores e inquilinos con las propiedades más demandadas del país. Desde modernos rascacielos en el corazón de Amán hasta villas exclusivas en Abdoun y Dabouq, ofrecemos listados verificados, agentes certificados y una experiencia fluida adaptada a cada etapa de su recorrido inmobiliario. Ya sea que busque una residencia de lujo, un espacio comercial estratégico o una oportunidad en plano — MLS le abre la puerta a donde Jordania vive e invierte."
+}

@@ -1,1 +1,24 @@
-{}
+{
+  "heroEyebrow": "Jordan's Premier Listing Platform",
+  "heroTitleLine1": "Premium Properties",
+  "heroTitleLine2": "Across Jordan",
+  "heroTagline": "Luxury · Off-Plan · Ready to Move",
+  "heroImageAlt": "Premium property in Jordan",
+  "heroPropertyTypeLabel": "Property type",
+  "heroPropertyType_residential": "Residential",
+  "heroPropertyType_commercial": "Commercial",
+  "heroPropertyType_lands": "Lands",
+  "heroSelectTypePlaceholder": "Select type",
+  "heroPropertySubtype_apartments": "Apartments",
+  "heroPropertySubtype_villas": "Villas",
+  "heroPropertySubtype_buildings": "Buildings",
+  "heroPropertySubtype_farms": "Farms",
+  "heroListingPlaceholder": "Buy / Rent",
+  "heroListing_buy": "Buy",
+  "heroListing_rent": "Rent",
+  "heroLocationPlaceholder": "City",
+  "heroSearch": "Search",
+  "whyMls": "WHY MLS",
+  "trustedPlatformTitle": "Jordan's Trusted Property Platform",
+  "trustedPlatformDescription": "MLS is the premier real estate listing service in Jordan, connecting buyers, investors, and renters with the country's most sought-after properties. From modern high-rises in the heart of Amman to exclusive villas in Abdoun and Dabouq, we bring verified listings, certified agents, and a seamless experience tailored to every stage of your property journey. Whether you're seeking a luxury residence, a strategic commercial space, or a prime off-plan opportunity — MLS opens the door to where Jordan lives and invests."
+}
