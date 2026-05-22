@@ -1,4 +1,6 @@
 export { Button } from "./button";
+export { IconButton } from "./icon-button";
+export type { IconButtonProps } from "./icon-button";
 export { ButtonGroup } from "./button-group";
 export {
   Card,
@@ -8,6 +10,52 @@ export {
   CardHeader,
   CardTitle,
 } from "./card";
+export {
+  Modal,
+  ModalBackdrop,
+  ModalCloseButton,
+  ModalContainer,
+  ModalContent,
+  ModalDescription,
+  ModalFooter,
+  ModalHeader,
+  ModalPanel,
+  ModalTitle,
+} from "./modal";
+export type {
+  ModalBackdropProps,
+  ModalCloseButtonProps,
+  ModalContainerProps,
+  ModalContentProps,
+  ModalDescriptionProps,
+  ModalFooterProps,
+  ModalHeaderProps,
+  ModalPanelProps,
+  ModalProps,
+  ModalSize,
+  ModalTitleProps,
+} from "./modal";
+export { MODAL_SIZES } from "./modal";
+export {
+  Popover,
+  PopoverBackdrop,
+  PopoverButton,
+  PopoverContent,
+  PopoverGroup,
+  PopoverHeader,
+  PopoverPanel,
+  PopoverTitle,
+} from "./popover";
+export type {
+  PopoverBackdropWrapperProps,
+  PopoverContentProps,
+  PopoverGroupWrapperProps,
+  PopoverHeaderProps,
+  PopoverPanelWrapperProps,
+  PopoverRootProps,
+  PopoverTitleProps,
+  PopoverTriggerProps,
+} from "./popover";
 export { Input } from "./input";
 export { Select } from "./select";
 export { Textarea } from "./textarea";

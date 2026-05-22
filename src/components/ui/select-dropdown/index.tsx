@@ -64,7 +64,7 @@ const panelClasses = cn(
 );
 
 const optionBaseClasses = cn(
-  "cursor-pointer rounded-xl px-3 py-2 text-start text-sm leading-5 text-text transition-colors",
+  "cursor-pointer rounded-xl px-3 py-2 text-sm leading-5 text-text transition-colors",
   "data-focus:bg-page data-hover:bg-page",
   "data-selected:bg-page data-selected:font-medium data-selected:text-secondary-dark",
   "data-disabled:cursor-not-allowed data-disabled:opacity-50",
@@ -188,7 +188,7 @@ export function SelectDropdown({
               triggerBaseClasses,
               triggerSizeClasses[size],
               triggerVariantClasses[variant],
-              isRtl && "text-end",
+              isRtl ? "text-end" : "text-left",
               hasError &&
                 "border-danger hover:border-danger focus-visible:border-danger focus-visible:ring-danger/20",
               triggerClassName,
@@ -197,6 +197,7 @@ export function SelectDropdown({
             <span
               className={cn(
                 "min-w-0 flex-1 truncate",
+                isRtl ? "text-end" : "text-left",
                 hasSelection
                   ? "font-medium text-text"
                   : "font-normal text-muted",
@@ -221,7 +222,11 @@ export function SelectDropdown({
                   key={option.value === "" ? "__placeholder__" : option.value}
                   value={option.value}
                   disabled={option.disabled}
-                  className={cn(optionBaseClasses, optionClassName)}
+                  className={cn(
+                    optionBaseClasses,
+                    isRtl ? "text-end" : "text-left",
+                    optionClassName,
+                  )}
                 >
                   {option.label}
                 </ListboxOption>

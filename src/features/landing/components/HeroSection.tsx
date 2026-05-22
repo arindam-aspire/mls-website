@@ -16,7 +16,7 @@ export async function HeroSection() {
         aria-hidden
       />
 
-      <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center gap-2 px-6 text-center sm:gap-3">
+      <div className="relative z-10 mx-auto flex w-full max-w-4xl flex-col items-center gap-2 px-4 text-center sm:gap-3 sm:px-6">
         <p className="text-xs font-medium tracking-[0.28em] text-tertiary uppercase sm:text-sm">
           {t("heroEyebrow")}
         </p>
@@ -35,7 +35,9 @@ export async function HeroSection() {
           {t("heroTagline")}
         </p>
 
-        <HeroSearchBar />
+        <div className="w-full min-w-0">
+          <HeroSearchBar />
+        </div>
       </div>
     </section>
   );

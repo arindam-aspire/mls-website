@@ -12,8 +12,8 @@ const wrapperSizeClasses: Record<InputSize, string> = {
 };
 
 const iconSizeClasses: Record<InputSize, string> = {
-  sm: "size-4",
-  md: "size-[1.125rem]",
+  sm: "size-3.5",
+  md: "size-4",
   lg: "size-5",
 };
 
@@ -24,19 +24,19 @@ const variantClasses: Record<InputVariant, string> = {
     "focus-within:border-secondary-dark focus-within:ring-2 focus-within:ring-secondary-dark/12",
   ),
   ghost: cn(
-    "border-0 bg-page-ghost shadow-none",
-    "hover:bg-primary-light/50",
-    "focus-within:ring-2 focus-within:ring-secondary-dark/12",
+    "border border-transparent bg-transparent shadow-none",
+    "hover:border-secondary/30 hover:bg-page",
+    "focus-within:border-secondary focus-within:ring-2 focus-within:ring-secondary-dark/12",
   ),
   clear: cn(
     "border-0 bg-transparent shadow-none",
-    "hover:bg-page-ghost",
+    "hover:bg-page/80",
     "focus-within:ring-2 focus-within:ring-secondary-dark/12",
   ),
 };
 
 const controlWrapperClasses = cn(
-  "flex w-full items-center rounded-xl text-text transition-colors",
+  "flex w-full items-center rounded-xl text-text transition-colors outline-none",
   "has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-50",
 );
 
@@ -131,9 +131,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
           wrapperSizeClasses[size],
           variantClasses[variant],
           hasError &&
-            (variant === "ghost" || variant === "clear"
-              ? "bg-danger/5 ring-2 ring-danger/30 focus-within:ring-danger/40"
-              : "border-danger hover:border-danger focus-within:border-danger focus-within:ring-danger/20"),
+            "border-danger hover:border-danger focus-within:border-danger focus-within:ring-danger/20",
         )}
       >
         {iconStart != null && (

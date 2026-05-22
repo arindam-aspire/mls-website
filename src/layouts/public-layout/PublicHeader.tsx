@@ -1,12 +1,25 @@
 "use client";
 
+import { CloseButton, useClose } from "@headlessui/react";
 import Image from "next/image";
+import { Menu, Moon, Sun, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import { cn } from "@/lib/cn";
 import { Button } from "@/src/components/ui/button";
+import { IconButton } from "@/src/components/ui/icon-button";
+import {
+  Popover,
+  PopoverBackdrop,
+  PopoverButton,
+  PopoverContent,
+  PopoverPanel,
+} from "@/src/components/ui/popover";
 import { Select } from "@/src/components/ui/select";
 import { Link, usePathname, useRouter } from "@/src/i18n/navigation";
 import type { AppLocale } from "@/src/i18n/routing";
+import { AUTH_VIEW } from "@/src/features/auth/components/AuthModal";
+import { useTheme, type ThemeMode } from "@/src/providers/ThemeProvider";
 import mlsLogoDark from "@/src/assets/images/MLS_Dark_Logo.png";
 import mlsLogoLight from "@/src/assets/images/MLS_Light_Logo.png";
 
@@ -25,8 +38,113 @@ const NAV_ITEMS = [
   { path: "/about-us", labelKey: "navAboutUs" },
 ] as const;
 
-function cn(...classes: (string | false | undefined)[]) {
-  return classes.filter(Boolean).join(" ");
+const mobileNavLinkClass =
+  "w-full rounded-lg px-4 py-3.5 text-start text-base font-medium text-text transition-colors hover:bg-surface focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary/40";
+
+function getThemeToggleIcon(mode: ThemeMode) {
+  return mode === "light" ? <Moon aria-hidden /> : <Sun aria-hidden />;
+}
+
+function PublicHeaderThemeButton({
+  overHero,
+  className,
+}: {
+  overHero: boolean;
+  className?: string;
+}) {
+  const t = useTranslations("common");
+  const { theme, setTheme } = useTheme();
+
+  return (
+    <IconButton
+      type="button"
+      icon={getThemeToggleIcon(theme)}
+      aria-label={t(theme === "light" ? "themeSwitchToDark" : "themeSwitchToLight")}
+      color="secondary"
+      variant="ghost"
+      size="md"
+      onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+      className={cn(
+        overHero && "!bg-transparent !text-white hover:!bg-white/15",
+        className,
+      )}
+    />
+  );
+}
+
+interface PublicHeaderMobileMenuProps {
+  onNavigate: (path: string) => void;
+  onLocaleChange: (locale: string) => void;
+  locale: AppLocale;
+  navLabel: string;
+  languageLabel: string;
+  closeMenuLabel: string;
+}
+
+function PublicHeaderMobileMenu({
+  onNavigate,
+  onLocaleChange,
+  locale,
+  navLabel,
+  languageLabel,
+  closeMenuLabel,
+}: PublicHeaderMobileMenuProps) {
+  const t = useTranslations("common");
+  const close = useClose();
+
+  return (
+    <PopoverContent className="flex min-h-0 flex-1 flex-col p-0">
+      <div className="flex items-center justify-between border-b border-secondary/15 px-4 py-4 sm:px-6">
+        <span className="text-lg font-semibold text-text">{navLabel}</span>
+        <CloseButton
+          type="button"
+          aria-label={closeMenuLabel}
+          className="inline-flex size-11 items-center justify-center rounded-lg text-text transition-colors hover:bg-surface focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary/40"
+        >
+          <X className="size-6" aria-hidden />
+        </CloseButton>
+      </div>
+
+      <nav
+        aria-label={navLabel}
+        className="flex flex-1 flex-col gap-1 overflow-y-auto px-4 py-4 sm:px-6 sm:py-6"
+      >
+        {NAV_ITEMS.map(({ path, labelKey }) => (
+          <button
+            key={path}
+            type="button"
+            onClick={() => {
+              onNavigate(path);
+              close();
+            }}
+            className={mobileNavLinkClass}
+          >
+            {t(labelKey)}
+          </button>
+        ))}
+      </nav>
+
+      <div className="flex items-center justify-between border-t border-secondary/15 px-4 py-4 sm:px-6 sm:py-5">
+        <span className="text-sm font-medium text-text">{t("theme")}</span>
+        <PublicHeaderThemeButton overHero={false} />
+      </div>
+
+      <div className="border-t border-secondary/15 px-4 py-4 sm:px-6 sm:py-5">
+        <Select
+          aria-label={languageLabel}
+          options={LOCALE_OPTIONS}
+          value={locale}
+          onChange={(nextLocale) => {
+            onLocaleChange(nextLocale);
+            close();
+          }}
+          variant="outline"
+          size="md"
+          fullWidth
+        />
+      </div>
+    </PopoverContent>
+  );
 }
 
 export function PublicHeader() {
@@ -54,29 +172,45 @@ export function PublicHeader() {
     ? "text-white hover:text-white/90"
     : "text-text hover:text-secondary";
 
+  const openSignIn = () => {
+    router.push({ pathname: "/", query: { auth: AUTH_VIEW.signIn } });
+  };
+
+  const handleLocaleChange = (nextLocale: string) => {
+    router.replace(pathname, { locale: nextLocale as AppLocale });
+  };
+
+  const menuTriggerClass = cn(
+    "size-11 shrink-0 p-0 hover:bg-page",
+    overHero && "!bg-transparent !text-white hover:!bg-white/15",
+  );
+
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 grid h-16 w-full grid-cols-[1fr_auto_1fr] items-center overflow-visible px-6 transition-colors duration-300 sm:h-20",
+        "sticky top-0 z-50 grid h-16 w-full grid-cols-3 items-center gap-2 px-4 transition-colors duration-300 sm:h-20 md:grid-cols-[1fr_auto_1fr] md:gap-0 md:px-6",
         overHero
           ? "bg-page/20 backdrop-blur-[2px]"
           : "border-b border-secondary/10 bg-page/90 backdrop-blur-md",
       )}
     >
-      <Link href="/" className="inline-flex items-center justify-self-start">
+      <Link
+        href="/"
+        className="col-start-1 justify-self-start"
+      >
         <Image
           src={logoSrc}
           alt={t("brand")}
           width={220}
           height={90}
-          className="h-12 w-auto transition-opacity duration-300 sm:h-15"
+          className="h-10 w-auto transition-opacity duration-300 sm:h-12 md:h-15"
           priority
         />
       </Link>
 
       <nav
         aria-label={t("mainNav")}
-        className="hidden items-center justify-center gap-6 justify-self-center md:flex lg:gap-8"
+        className="col-start-2 row-start-1 hidden items-center justify-center gap-6 md:flex lg:gap-8"
       >
         {NAV_ITEMS.map(({ path, labelKey }) => (
           <button
@@ -93,14 +227,25 @@ export function PublicHeader() {
         ))}
       </nav>
 
-      <div className="flex items-center gap-3 justify-self-end">
+      <Button
+        type="button"
+        color="primary"
+        variant="solid"
+        size="sm"
+        className="col-start-2 max-w-[min(100%,11rem)] justify-self-center truncate md:hidden"
+        onClick={openSignIn}
+      >
+        {t("signInSignUp")}
+      </Button>
+
+      <div className="col-start-3 hidden items-center gap-3 justify-self-end md:flex">
+        <PublicHeaderThemeButton overHero={overHero} />
+
         <Select
           aria-label={t("language")}
           options={LOCALE_OPTIONS}
           value={locale}
-          onChange={(nextLocale) =>
-            router.replace(pathname, { locale: nextLocale as AppLocale })
-          }
+          onChange={handleLocaleChange}
           variant="outline"
           size="md"
           fullWidth={false}
@@ -114,11 +259,33 @@ export function PublicHeader() {
           variant="solid"
           size="md"
           className="shrink-0"
-          onClick={() => router.push("/sign-in")}
+          onClick={openSignIn}
         >
           {t("signInSignUp")}
         </Button>
       </div>
+
+      <Popover className="col-start-3 justify-self-end md:hidden">
+        <PopoverButton
+          aria-label={t("openMenu")}
+          className={menuTriggerClass}
+        >
+          <Menu className="size-6" aria-hidden />
+        </PopoverButton>
+
+        <PopoverBackdrop className="z-[90] bg-black/40" />
+
+        <PopoverPanel fullScreen className="p-0">
+          <PublicHeaderMobileMenu
+            onNavigate={(path) => router.push(path)}
+            onLocaleChange={handleLocaleChange}
+            locale={locale}
+            navLabel={t("mainNav")}
+            languageLabel={t("language")}
+            closeMenuLabel={t("closeMenu")}
+          />
+        </PopoverPanel>
+      </Popover>
     </header>
   );
 }
