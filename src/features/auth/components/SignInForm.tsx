@@ -7,7 +7,7 @@ import { Button, Input, Link } from "@/src/components/ui";
 import { useForm } from "@/src/hooks/useForm";
 import { cn } from "@/lib/cn";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
-import { AUTH_QUERY_KEY, AUTH_VIEW } from "./AuthModal";
+import { AUTH_VIEW, buildAuthModalUrl, type AuthView } from "../authViews";
 
 export type SignInFormValues = {
   emailOrPhone: string;
@@ -15,7 +15,13 @@ export type SignInFormValues = {
   rememberMe: boolean;
 };
 
-export function SignInForm() {
+type SignInFormProps = {
+  signInReturnView?: AuthView;
+};
+
+export function SignInForm({
+  signInReturnView = AUTH_VIEW.userSignIn,
+}: SignInFormProps) {
   const t = useTranslations("auth");
   const router = useRouter();
   const pathname = usePathname();
@@ -49,8 +55,11 @@ export function SignInForm() {
     },
   });
 
-  const openAuthView = (view: (typeof AUTH_VIEW)[keyof typeof AUTH_VIEW]) => {
-    router.replace(`${pathname}?${AUTH_QUERY_KEY}=${view}`);
+  const openAuthView = (
+    view: AuthView,
+    returnView?: AuthView,
+  ) => {
+    router.replace(buildAuthModalUrl(pathname, view, returnView));
   };
 
   return (
@@ -136,7 +145,9 @@ export function SignInForm() {
           color="primary"
           size="sm"
           className="shrink-0 font-medium"
-          onClick={() => openAuthView(AUTH_VIEW.forgotPassword)}
+          onClick={() =>
+            openAuthView(AUTH_VIEW.forgotPassword, signInReturnView)
+          }
         >
           {t("signInForgotPassword")}
         </Link>
@@ -163,7 +174,9 @@ export function SignInForm() {
           fullWidth
           className="font-semibold"
           iconStart={<Clock className="size-5" aria-hidden />}
-          onClick={() => openAuthView(AUTH_VIEW.signInOtp)}
+          onClick={() =>
+            openAuthView(AUTH_VIEW.signInOtp, signInReturnView)
+          }
         >
           {t("loginWithOneTimeCode")}
         </Button>

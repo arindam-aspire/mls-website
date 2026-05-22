@@ -11,24 +11,13 @@ import { useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
 import { AUTH_QUERY_KEY, AUTH_VIEW } from "@/src/features/auth/authViews";
 import { AuthModalHeader } from "../components/AuthModalHeader";
-import { SignUpForm } from "../components/SignUpForm";
-import type { SocialAccountType } from "../components/SocialAuthForm";
+import { SignInForm } from "../components/SignInForm";
 
-type UserRegistrationScreenProps = {
-  type: SocialAccountType;
-};
-
-export function UserRegistrationScreen({ type }: UserRegistrationScreenProps) {
+export function AgencyEmailSignInScreen() {
   const t = useTranslations("auth");
   const tCommon = useTranslations("common");
   const router = useRouter();
   const pathname = usePathname();
-
-  const socialSignUpView =
-    type === "user" ? AUTH_VIEW.userSocialSignUp : AUTH_VIEW.ownerSocialSignUp;
-
-  const signInView =
-    type === "user" ? AUTH_VIEW.userSocialSignIn : AUTH_VIEW.ownerSocialSignIn;
 
   const openAuthView = (view: (typeof AUTH_VIEW)[keyof typeof AUTH_VIEW]) => {
     router.replace(`${pathname}?${AUTH_QUERY_KEY}=${view}`);
@@ -39,28 +28,28 @@ export function UserRegistrationScreen({ type }: UserRegistrationScreenProps) {
       <AuthModalHeader
         showBack
         onBack={() =>
-          router.replace(`${pathname}?${AUTH_QUERY_KEY}=${socialSignUpView}`)
+          router.replace(`${pathname}?${AUTH_QUERY_KEY}=${AUTH_VIEW.agencySignIn}`)
         }
       />
       <ModalCloseButton />
       <ModalContent className="!py-0 sm:!py-0">
         <div className="px-4 pb-4 sm:px-6 sm:pb-6">
-          <SignUpForm />
+          <SignInForm signInReturnView={AUTH_VIEW.agencySignIn} />
         </div>
       </ModalContent>
       <ModalFooter className="!block rounded-b-xl border-t-0 bg-primary-light !px-4 !pt-4 !pb-4 dark:bg-page sm:!gap-3 sm:!px-6 sm:!pb-6">
         <div className="space-y-2">
           <p className="text-center text-sm text-muted sm:text-base">
-            {t("socialSignUpHasAccount")}
+            {t("agencySignInNoAccount")}
           </p>
           <div className="flex justify-center">
             <Link
               color="primary"
               size="lg"
               className="text-center font-semibold"
-              onClick={() => openAuthView(signInView)}
+              onClick={() => openAuthView(AUTH_VIEW.agencySignUp)}
             >
-              {t("socialSignUpLogIn")}
+              {t("agencyCreateAccount")}
             </Link>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 pt-1 text-xs text-muted sm:text-sm">

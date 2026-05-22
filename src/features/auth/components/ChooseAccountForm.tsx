@@ -12,10 +12,7 @@ import { ToggleButton } from "@/src/components/ui";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/cn";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
-import {
-  AUTH_QUERY_KEY,
-  resolveAccountTypeAuthView,
-} from "./AuthModal";
+import { AUTH_QUERY_KEY, resolveAccountTypeAuthView } from "../authViews";
 import { AccountTypeCard } from "./AccountTypeCard";
 
 export type ChooseAccountMode = "signin" | "signup";

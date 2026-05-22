@@ -12,7 +12,8 @@ import { usePathname, useRouter } from "@/src/i18n/navigation";
 import {
   AUTH_QUERY_KEY,
   AUTH_VIEW,
-} from "@/src/features/auth/components/AuthModal";
+  resolveEmailSignInView,
+} from "@/src/features/auth/authViews";
 import { AuthModalHeader } from "../components/AuthModalHeader";
 import { SignInForm } from "../components/SignInForm";
 import type { SocialAccountType } from "../components/SocialAuthForm";
@@ -48,7 +49,7 @@ export function SignInScreen({ type }: SignInScreenProps) {
       <ModalCloseButton />
       <ModalContent className="!py-0 sm:!py-0">
         <div className="px-4 pb-4 sm:px-6 sm:pb-6">
-          <SignInForm />
+          <SignInForm signInReturnView={resolveEmailSignInView(type)} />
         </div>
       </ModalContent>
       <ModalFooter className="!block rounded-b-xl border-t-0 bg-primary-light !px-4 !pt-4 !pb-4 dark:bg-page sm:!gap-3 sm:!px-6 sm:!pb-6">

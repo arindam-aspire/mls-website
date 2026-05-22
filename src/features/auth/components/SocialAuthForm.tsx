@@ -9,10 +9,11 @@ import { usePathname, useRouter } from "@/src/i18n/navigation";
 import {
   AUTH_QUERY_KEY,
   AUTH_VIEW,
+  buildAuthModalUrl,
   resolveAccountTypeAuthView,
   resolveEmailSignInView,
   resolveEmailSignUpView,
-} from "./AuthModal";
+} from "../authViews";
 
 type BrandIconProps = SVGProps<SVGSVGElement>;
 
@@ -199,7 +200,15 @@ export function SocialAuthForm({
             fullWidth
             className="font-semibold"
             iconStart={<Clock className="size-5" aria-hidden />}
-            onClick={() => openAuthView(AUTH_VIEW.signInOtp)}
+            onClick={() =>
+              router.replace(
+                buildAuthModalUrl(
+                  pathname,
+                  AUTH_VIEW.signInOtp,
+                  resolveEmailSignInView(accountType),
+                ),
+              )
+            }
           >
             {t("loginWithOneTimeCode")}
           </Button>

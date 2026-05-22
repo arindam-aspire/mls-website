@@ -7,7 +7,7 @@ import mlsLogoDark from "@/src/assets/images/MLS_Dark_Logo.png";
 import mlsLogoLight from "@/src/assets/images/MLS_Light_Logo.png";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
 import { useTheme } from "@/src/providers/ThemeProvider";
-import { AUTH_QUERY_KEY, AUTH_VIEW } from "./AuthModal";
+import { AUTH_QUERY_KEY, AUTH_VIEW } from "../authViews";
 
 type AuthModalHeaderProps = {
   showBack?: boolean;

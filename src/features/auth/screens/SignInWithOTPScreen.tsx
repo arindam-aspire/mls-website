@@ -11,20 +11,16 @@ import { useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
 import { useSearchParams } from "next/navigation";
 import {
-  AUTH_OTP_EMAIL_QUERY_KEY,
-  AUTH_OTP_FLOW_QUERY_KEY,
-  AUTH_OTP_PHONE_COUNTRY_QUERY_KEY,
-  AUTH_OTP_PHONE_QUERY_KEY,
   AUTH_QUERY_KEY,
   AUTH_RETURN_VIEW_QUERY_KEY,
   AUTH_VIEW,
-  buildAuthModalUrl,
+  isAgencyAuthView,
   isAuthView,
-  type AuthOtpFlow,
+  resolveAuthSignUpView,
   type AuthView,
 } from "@/src/features/auth/authViews";
 import { AuthModalHeader } from "../components/AuthModalHeader";
-import { ResetPasswordForm } from "../components/ResetPasswordForm";
+import { SignInWithOTPForm } from "../components/SignInWithOTPForm";
 
 function resolveReturnView(from: string | null): AuthView {
   if (isAuthView(from)) {
@@ -33,43 +29,24 @@ function resolveReturnView(from: string | null): AuthView {
   return AUTH_VIEW.userSignIn;
 }
 
-function resolveOtpFlow(value: string | null): AuthOtpFlow {
-  return value === "forgot" ? "forgot" : "signin";
-}
-
-export function ResetPasswordScreen() {
+export function SignInWithOTPScreen() {
   const t = useTranslations("auth");
   const tCommon = useTranslations("common");
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-
   const returnView = resolveReturnView(
     searchParams.get(AUTH_RETURN_VIEW_QUERY_KEY),
   );
-  const otpFlow = resolveOtpFlow(searchParams.get(AUTH_OTP_FLOW_QUERY_KEY));
-  const contactEmail = searchParams.get(AUTH_OTP_EMAIL_QUERY_KEY) ?? undefined;
-  const contactPhone = searchParams.get(AUTH_OTP_PHONE_QUERY_KEY) ?? undefined;
-  const contactPhoneCountry =
-    searchParams.get(AUTH_OTP_PHONE_COUNTRY_QUERY_KEY) ?? undefined;
+  const signUpView = resolveAuthSignUpView(returnView);
+  const isAgency = isAgencyAuthView(returnView);
+
+  const openAuthView = (view: AuthView) => {
+    router.replace(`${pathname}?${AUTH_QUERY_KEY}=${view}`);
+  };
 
   const handleBack = () => {
-    if (otpFlow === "forgot") {
-      router.replace(
-        buildAuthModalUrl(pathname, AUTH_VIEW.otpVerify, {
-          returnView,
-          otpFlow: "forgot",
-          contactEmail,
-          contactPhone,
-          contactPhoneCountry,
-        }),
-      );
-      return;
-    }
-
-    router.replace(
-      buildAuthModalUrl(pathname, AUTH_VIEW.signInOtp, returnView),
-    );
+    openAuthView(returnView);
   };
 
   return (
@@ -78,26 +55,24 @@ export function ResetPasswordScreen() {
       <ModalCloseButton />
       <ModalContent className="!py-0 sm:!py-0">
         <div className="px-4 pb-4 sm:px-6 sm:pb-6">
-          <ResetPasswordForm returnView={returnView} />
+          <SignInWithOTPForm signInReturnView={returnView} />
         </div>
       </ModalContent>
       <ModalFooter className="!block rounded-b-xl border-t-0 bg-primary-light !px-4 !pt-4 !pb-4 dark:bg-page sm:!gap-3 sm:!px-6 sm:!pb-6">
         <div className="space-y-2">
           <p className="text-center text-sm text-muted sm:text-base">
-            {t("socialSignUpHasAccount")}
+            {isAgency ? t("agencySignInNoAccount") : t("chooseAccountNoAccount")}
           </p>
           <div className="flex justify-center">
             <Link
               color="primary"
               size="lg"
               className="text-center font-semibold"
-              onClick={() =>
-                router.replace(
-                  buildAuthModalUrl(pathname, returnView),
-                )
-              }
+              onClick={() => openAuthView(signUpView)}
             >
-              {t("socialSignUpLogIn")}
+              {isAgency
+                ? t("agencyCreateAccount")
+                : t("chooseAccountCreateAccount")}
             </Link>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 pt-1 text-xs text-muted sm:text-sm">

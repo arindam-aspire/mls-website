@@ -1,76 +1,42 @@
 "use client";
 
-import mlsLogoDark from "@/src/assets/images/MLS_Dark_Logo.png";
-import mlsLogoLight from "@/src/assets/images/MLS_Light_Logo.png";
 import {
   Modal,
   ModalBackdrop,
-  ModalContainer
+  ModalContainer,
 } from "@/src/components/ui";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
-import { useTheme } from "@/src/providers/ThemeProvider";
 import { useSearchParams } from "next/navigation";
+import {
+  AUTH_QUERY_KEY,
+  AUTH_VIEW,
+  CHOOSE_ACCOUNT_QUERY_KEY,
+  VALID_AUTH_VIEWS,
+} from "../authViews";
+import { AgencyEmailSignInScreen } from "../screens/AgencyEmailSignInScreen";
+import { AgencyRegistrationScreen } from "../screens/AgencyRegistrationScreen";
+import { AgencySignInScreen } from "../screens/AgencySignInScreen";
 import { AccountChooseScreen } from "../screens/AccountChooseScreen";
+import { ForgotPasswordScreen } from "../screens/ForgotPasswordScreen";
+import { ResetPasswordScreen } from "../screens/ResetPasswordScreen";
 import { SignInScreen } from "../screens/SignInScreen";
-import { UserRegistrationScreen } from "../screens/UserRegistrationScreen";
+import { OTPVerificationScreen } from "../screens/OTPVerificationScreen";
+import { SignInWithOTPScreen } from "../screens/SignInWithOTPScreen";
 import { SocialRegistrationScreen } from "../screens/SocialRegistrationScreen";
 import { SocialSignInScreen } from "../screens/SocialSignInScreen";
-import type {
-  ChooseAccountMode,
-  ChooseAccountType,
-} from "./ChooseAccountForm";
-import { ForgotPasswordForm } from "./ForgotPasswordForm";
-import { OTPVerificationForm } from "./OTPVerificationForm";
-import { ResetPasswordForm } from "./ResetPasswordForm";
-import { SignInWithOTPForm } from "./SignInWithOTPForm";
+import { UserRegistrationScreen } from "../screens/UserRegistrationScreen";
 
-export const AUTH_QUERY_KEY = "auth";
-export const CHOOSE_ACCOUNT_QUERY_KEY = "choose-account";
-
-export const AUTH_VIEW = {
-  chooseAccount: "choose-account",
-  userSocialSignIn: "user-social-sign-in",
-  userSocialSignUp: "user-social-sign-up",
-  ownerSocialSignIn: "owner-social-sign-in",
-  ownerSocialSignUp: "owner-social-sign-up",
-  userSignIn: "user-sign-in",
-  ownerSignIn: "owner-sign-in",
-  userSignUp: "user-sign-up",
-  ownerSignUp: "owner-sign-up",
-  forgotPassword: "forgot-password",
-  resetPassword: "reset-password",
-  signInOtp: "signin-otp",
-  otpVerify: "otp-verify",
-} as const;
-
-export type AuthView = (typeof AUTH_VIEW)[keyof typeof AUTH_VIEW];
-
-const VALID_AUTH_VIEWS = new Set<string>(Object.values(AUTH_VIEW));
-
-export function resolveAccountTypeAuthView(
-  type: ChooseAccountType,
-  mode: ChooseAccountMode,
-): AuthView | null {
-  if (type === "user") {
-    return mode === "signin"
-      ? AUTH_VIEW.userSocialSignIn
-      : AUTH_VIEW.userSocialSignUp;
-  }
-  if (type === "owner") {
-    return mode === "signin"
-      ? AUTH_VIEW.ownerSocialSignIn
-      : AUTH_VIEW.ownerSocialSignUp;
-  }
-  return null;
-}
-
-export function resolveEmailSignInView(type: "user" | "owner"): AuthView {
-  return type === "user" ? AUTH_VIEW.userSignIn : AUTH_VIEW.ownerSignIn;
-}
-
-export function resolveEmailSignUpView(type: "user" | "owner"): AuthView {
-  return type === "user" ? AUTH_VIEW.userSignUp : AUTH_VIEW.ownerSignUp;
-}
+export {
+  AUTH_QUERY_KEY,
+  AUTH_RETURN_VIEW_QUERY_KEY,
+  AUTH_VIEW,
+  buildAuthModalUrl,
+  CHOOSE_ACCOUNT_QUERY_KEY,
+  resolveAccountTypeAuthView,
+  resolveEmailSignInView,
+  resolveEmailSignUpView,
+  type AuthView,
+} from "../authViews";
 
 function renderAuthView(view: string | null) {
   switch (view) {
@@ -102,14 +68,20 @@ function renderAuthView(view: string | null) {
           type={view === AUTH_VIEW.userSignUp ? "user" : "owner"}
         />
       );
+    case AUTH_VIEW.agencySignIn:
+      return <AgencySignInScreen />;
+    case AUTH_VIEW.agencySignUp:
+      return <AgencyRegistrationScreen />;
+    case AUTH_VIEW.agencyEmailSignIn:
+      return <AgencyEmailSignInScreen />;
     case AUTH_VIEW.forgotPassword:
-      return <ForgotPasswordForm />;
+      return <ForgotPasswordScreen />;
     case AUTH_VIEW.resetPassword:
-      return <ResetPasswordForm />;
+      return <ResetPasswordScreen />;
     case AUTH_VIEW.signInOtp:
-      return <SignInWithOTPForm />;
+      return <SignInWithOTPScreen />;
     case AUTH_VIEW.otpVerify:
-      return <OTPVerificationForm />;
+      return <OTPVerificationScreen />;
     default:
       return null;
   }
@@ -126,9 +98,6 @@ export function AuthModal() {
   const isOpen = activeView != null && VALID_AUTH_VIEWS.has(activeView);
   const content = renderAuthView(activeView);
 
-  const { theme } = useTheme();
-  const logoSrc = theme === "dark" ? mlsLogoDark : mlsLogoLight;
-
   const closeModal = () => {
     router.replace(pathname);
   };
@@ -140,9 +109,7 @@ export function AuthModal() {
   return (
     <Modal open={isOpen} onClose={closeModal}>
       <ModalBackdrop />
-      <ModalContainer>
-       {content}
-      </ModalContainer>
+      <ModalContainer>{content}</ModalContainer>
     </Modal>
   );
 }

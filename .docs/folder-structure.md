@@ -93,7 +93,11 @@ mls_website/
 │   ├── configs/
 │   ├── features/
 │   │   ├── auth/
+│   │   │   ├── authViews.ts
+│   │   │   ├── maskContact.ts
 │   │   │   ├── components/
+│   │   │   │   ├── AgencyAuthForm.tsx
+│   │   │   │   ├── AgencySignUpForm.tsx
 │   │   │   │   ├── AuthModal.tsx
 │   │   │   │   ├── AuthModalHeader.tsx
 │   │   │   │   ├── AccountTypeCard.tsx
@@ -108,11 +112,14 @@ mls_website/
 │   │   │   ├── hooks/
 │   │   │   ├── screens/
 │   │   │   │   ├── AccountChooseScreen.tsx
+│   │   │   │   ├── AgencyEmailSignInScreen.tsx
 │   │   │   │   ├── AgencyRegistrationScreen.tsx
+│   │   │   │   ├── AgencySignInScreen.tsx
 │   │   │   │   ├── ForgotPasswordScreen.tsx
 │   │   │   │   ├── OTPVerificationScreen.tsx
 │   │   │   │   ├── ResetPasswordScreen.tsx
 │   │   │   │   ├── SignInScreen.tsx
+│   │   │   │   ├── SignInWithOTPScreen.tsx
 │   │   │   │   ├── SocialRegistrationScreen.tsx
 │   │   │   │   ├── SocialSignInScreen.tsx
 │   │   │   │   └── UserRegistrationScreen.tsx

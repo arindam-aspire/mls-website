@@ -18,7 +18,7 @@ import {
 import { Select } from "@/src/components/ui/select";
 import { Link, usePathname, useRouter } from "@/src/i18n/navigation";
 import type { AppLocale } from "@/src/i18n/routing";
-import { AUTH_VIEW } from "@/src/features/auth/components/AuthModal";
+import { AUTH_VIEW } from "@/src/features/auth/authViews";
 import { useTheme, type ThemeMode } from "@/src/providers/ThemeProvider";
 import mlsLogoDark from "@/src/assets/images/MLS_Dark_Logo.png";
 import mlsLogoLight from "@/src/assets/images/MLS_Light_Logo.png";

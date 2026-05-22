@@ -12,7 +12,7 @@ import { usePathname, useRouter } from "@/src/i18n/navigation";
 import {
   AUTH_QUERY_KEY,
   AUTH_VIEW,
-} from "@/src/features/auth/components/AuthModal";
+} from "@/src/features/auth/authViews";
 import { AuthModalHeader } from "../components/AuthModalHeader";
 import { ChooseAccountForm } from "../components/ChooseAccountForm";
 
