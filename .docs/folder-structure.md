@@ -23,6 +23,7 @@ mls_website/
 │   ├── globals.css
 │   ├── icon.png
 │   ├── layout.tsx
+│   ├── loading.tsx
 │   └── page.tsx
 ├── eslint.config.mjs
 ├── lib/
@@ -39,7 +40,8 @@ mls_website/
 │   │   └── endpoints/
 │   │       ├── authEndpoints.ts
 │   │       ├── index.ts
-│   │       └── propertyEndpoints.ts
+│   │       ├── propertyEndpoints.ts
+│   │       └── publicEndpoints.ts
 │   ├── assets/
 │   │   └── images/
 │   │       ├── favicon.png
@@ -91,6 +93,7 @@ mls_website/
 │   │           ├── index.tsx
 │   │           └── types.ts
 │   ├── configs/
+│   │   └── environment.config.ts
 │   ├── features/
 │   │   ├── auth/
 │   │   │   ├── authViews.ts
