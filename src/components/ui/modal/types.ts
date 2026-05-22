@@ -5,7 +5,7 @@ import type {
   DialogTitleProps,
   DescriptionProps,
 } from "@headlessui/react";
-import type { HTMLAttributes, ReactNode } from "react";
+import type { ButtonHTMLAttributes, HTMLAttributes, ReactNode } from "react";
 
 export const MODAL_SIZES = ["sm", "md", "lg", "xl"] as const;
 
@@ -51,5 +51,10 @@ export interface ModalFooterProps extends HTMLAttributes<HTMLDivElement> {
 
 export interface ModalCloseButtonProps
   extends HTMLAttributes<HTMLButtonElement> {
+  "aria-label"?: string;
+}
+
+export interface ModalBackButtonProps
+  extends ButtonHTMLAttributes<HTMLButtonElement> {
   "aria-label"?: string;
 }

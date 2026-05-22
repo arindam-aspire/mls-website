@@ -172,8 +172,8 @@ export function PublicHeader() {
     ? "text-white hover:text-white/90"
     : "text-text hover:text-secondary";
 
-  const openSignIn = () => {
-    router.push({ pathname: "/", query: { auth: AUTH_VIEW.signIn } });
+  const openChooseAccount = () => {
+    router.push({ pathname: "/", query: { auth: AUTH_VIEW.chooseAccount } });
   };
 
   const handleLocaleChange = (nextLocale: string) => {
@@ -201,9 +201,7 @@ export function PublicHeader() {
         <Image
           src={logoSrc}
           alt={t("brand")}
-          width={220}
-          height={90}
-          className="h-10 w-auto transition-opacity duration-300 sm:h-12 md:h-15"
+          className="w-auto h-20 transition-opacity duration-300"
           priority
         />
       </Link>
@@ -233,7 +231,7 @@ export function PublicHeader() {
         variant="solid"
         size="sm"
         className="col-start-2 max-w-[min(100%,11rem)] justify-self-center truncate md:hidden"
-        onClick={openSignIn}
+        onClick={openChooseAccount}
       >
         {t("signInSignUp")}
       </Button>
@@ -259,7 +257,7 @@ export function PublicHeader() {
           variant="solid"
           size="md"
           className="shrink-0"
-          onClick={openSignIn}
+          onClick={openChooseAccount}
         >
           {t("signInSignUp")}
         </Button>

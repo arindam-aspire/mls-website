@@ -64,6 +64,13 @@ mls_website/
 │   │       ├── input/
 │   │       │   ├── index.tsx
 │   │       │   └── types.ts
+│   │       ├── phone-input/
+│   │       │   ├── countries.ts
+│   │       │   ├── index.tsx
+│   │       │   └── types.ts
+│   │       ├── link/
+│   │       │   ├── index.tsx
+│   │       │   └── types.ts
 │   │       ├── modal/
 │   │       │   ├── index.tsx
 │   │       │   └── types.ts
@@ -77,7 +84,10 @@ mls_website/
 │   │       ├── select-dropdown/
 │   │       │   ├── index.tsx
 │   │       │   └── types.ts
-│   │       └── textarea/
+│   │       ├── textarea/
+│   │       │   ├── index.tsx
+│   │       │   └── types.ts
+│   │       └── toggle-button/
 │   │           ├── index.tsx
 │   │           └── types.ts
 │   ├── configs/
@@ -85,6 +95,10 @@ mls_website/
 │   │   ├── auth/
 │   │   │   ├── components/
 │   │   │   │   ├── AuthModal.tsx
+│   │   │   │   ├── AuthModalHeader.tsx
+│   │   │   │   ├── AccountTypeCard.tsx
+│   │   │   │   ├── ChooseAccountForm.tsx
+│   │   │   │   ├── SocialAuthForm.tsx
 │   │   │   │   ├── ForgotPasswordForm.tsx
 │   │   │   │   ├── OTPVerificationForm.tsx
 │   │   │   │   ├── ResetPasswordForm.tsx
@@ -93,6 +107,15 @@ mls_website/
 │   │   │   │   └── SignUpForm.tsx
 │   │   │   ├── hooks/
 │   │   │   ├── screens/
+│   │   │   │   ├── AccountChooseScreen.tsx
+│   │   │   │   ├── AgencyRegistrationScreen.tsx
+│   │   │   │   ├── ForgotPasswordScreen.tsx
+│   │   │   │   ├── OTPVerificationScreen.tsx
+│   │   │   │   ├── ResetPasswordScreen.tsx
+│   │   │   │   ├── SignInScreen.tsx
+│   │   │   │   ├── SocialRegistrationScreen.tsx
+│   │   │   │   ├── SocialSignInScreen.tsx
+│   │   │   │   └── UserRegistrationScreen.tsx
 │   │   │   ├── store/
 │   │   │   └── types/
 │   │   ├── not-found/
@@ -118,6 +141,7 @@ mls_website/
 │   │       ├── store/
 │   │       └── types/
 │   ├── hooks/
+│   │   └── useForm.ts
 │   ├── i18n/
 │   │   ├── navigation.ts
 │   │   ├── request.ts

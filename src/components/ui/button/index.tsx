@@ -45,9 +45,9 @@ const colorVariantClasses: Record<
     solid:
       "bg-inherit-color text-white data-hover:opacity-90 data-active:opacity-80",
     ghost:
-      "bg-transparent text-inherit-color data-hover:bg-inherit-color/15 data-active:bg-inherit-color/20",
+      "bg-transparent text-text data-hover:bg-page data-active:bg-page",
     outline:
-      "border border-inherit-color bg-transparent text-inherit-color data-hover:bg-inherit-color/15 data-active:bg-inherit-color/20",
+      "border border-secondary/15 bg-surface text-text data-hover:bg-page data-active:bg-page",
   },
   danger: {
     solid:
@@ -67,18 +67,16 @@ const colorVariantClasses: Record<
   },
 };
 
-const sizeTypography = "text-[14px] font-medium";
-
 const sizeClasses: Record<ButtonSize, string> = {
-  sm: "px-3 py-1.5 text-sm",
-  md: `px-5 py-2.5 ${sizeTypography}`,
-  lg: `px-5 py-2.5 ${sizeTypography}`,
+  sm: "px-3 py-1.5 text-sm font-medium",
+  md: "px-5 py-2.5 text-[14px] font-medium",
+  lg: "px-6 py-3 text-base font-medium",
 };
 
 const iconSizeClasses: Record<ButtonSize, string> = {
   sm: "size-4",
   md: "size-[1.125rem]",
-  lg: "size-5",
+  lg: "size-6",
 };
 
 function cn(...classes: (string | false | undefined)[]) {

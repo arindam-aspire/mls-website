@@ -8,11 +8,12 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
-import { X } from "lucide-react";
+import { ChevronLeft, X } from "lucide-react";
 import { createContext, useContext } from "react";
 import { cn } from "@/lib/cn";
 import type {
   ModalBackdropProps,
+  ModalBackButtonProps,
   ModalCloseButtonProps,
   ModalContainerProps,
   ModalContentProps,
@@ -50,15 +51,18 @@ function mergeHeadlessClassName<TBag>(
 }
 
 const backdropClasses = cn(
-  "fixed inset-0 bg-black/40 transition-opacity",
+  "fixed inset-0 bg-black/65 transition-opacity",
   "data-closed:opacity-0 data-enter:opacity-100 data-leave:opacity-0",
 );
 
 const containerClasses =
-  "fixed inset-0 z-50 flex w-screen items-center justify-center overflow-y-auto p-4 sm:p-6";
+  "fixed inset-0 z-50 w-screen overflow-y-auto p-4 sm:p-6";
+
+const containerInnerClasses =
+  "flex min-h-full justify-center";
 
 const panelBaseClasses = cn(
-  "relative w-full rounded-xl border border-secondary/15 bg-surface text-text shadow-lg",
+  "relative my-auto w-full rounded-xl border border-secondary/15 bg-surface text-text shadow-lg",
   "transition duration-200 ease-out",
   "data-closed:scale-95 data-closed:opacity-0",
   "data-enter:scale-100 data-enter:opacity-100",
@@ -106,7 +110,7 @@ export function ModalContainer({
 }: ModalContainerProps) {
   return (
     <div className={cn(containerClasses, className)} {...rest}>
-      {children}
+      <div className={containerInnerClasses}>{children}</div>
     </div>
   );
 }
@@ -138,7 +142,7 @@ export function ModalHeader({ className, children, ...rest }: ModalHeaderProps) 
   return (
     <div
       className={cn(
-        "flex items-start justify-between gap-4 border-b border-secondary/15 pb-4",
+        "flex items-start justify-between gap-4 border-b border-secondary/15 px-4 pt-4 pb-4 sm:px-6 sm:pt-6",
         className,
       )}
       {...rest}
@@ -193,13 +197,34 @@ export function ModalFooter({ className, children, ...rest }: ModalFooterProps) 
   return (
     <div
       className={cn(
-        "flex flex-col-reverse gap-3 border-t border-secondary/15 pt-4 sm:flex-row sm:justify-end sm:gap-2",
+        "flex flex-col-reverse gap-3 border-t border-secondary/15 px-4 pt-4 pb-4 sm:flex-row sm:justify-end sm:gap-2 sm:px-6 sm:pb-6",
         className,
       )}
       {...rest}
     >
       {children}
     </div>
+  );
+}
+
+const modalCornerButtonClasses =
+  "absolute top-1.5 z-10 inline-flex size-11 shrink-0 items-center justify-center rounded-lg text-muted transition-colors hover:bg-page hover:text-text focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary/40";
+
+export function ModalBackButton({
+  className,
+  "aria-label": ariaLabel = "Back",
+  type = "button",
+  ...rest
+}: ModalBackButtonProps) {
+  return (
+    <button
+      type={type}
+      aria-label={ariaLabel}
+      className={cn(modalCornerButtonClasses, "start-1.5", className)}
+      {...rest}
+    >
+      <ChevronLeft className="size-5" aria-hidden />
+    </button>
   );
 }
 
@@ -212,11 +237,7 @@ export function ModalCloseButton({
     <CloseButton
       type="button"
       aria-label={ariaLabel}
-      className={cn(
-        "absolute top-1.5 end-1.5 z-10 inline-flex size-11 shrink-0 items-center justify-center rounded-lg text-muted transition-colors",
-        "hover:bg-page hover:text-text focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary/40",
-        className,
-      )}
+      className={cn(modalCornerButtonClasses, "end-1.5", className)}
       {...rest}
     >
       <X className="size-5" aria-hidden />
@@ -226,6 +247,7 @@ export function ModalCloseButton({
 
 export type {
   ModalBackdropProps,
+  ModalBackButtonProps,
   ModalCloseButtonProps,
   ModalContainerProps,
   ModalContentProps,
