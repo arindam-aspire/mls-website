@@ -4,6 +4,7 @@ import { Geist, Geist_Mono, Tajawal } from "next/font/google";
 import { isRtlLocale } from "@/src/i18n/routing";
 import { ThemeProvider } from "@/src/providers/ThemeProvider";
 import QueryProvider from "@/src/providers/QueryProvider";
+import ToastProvider from "@/src/providers/ToastProvider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -47,7 +48,9 @@ export default async function RootLayout({
       >
         <QueryProvider>
           <ThemeProvider>
-            <div className="flex min-h-0 flex-1 flex-col">{children}</div>
+            <ToastProvider>
+              <div className="flex min-h-0 flex-1 flex-col">{children}</div>
+            </ToastProvider>
           </ThemeProvider>
         </QueryProvider>
       </body>

@@ -1,145 +1,140 @@
 import axios, { type AxiosError } from "axios";
 
-export function normalizeAxiosError(error: unknown): unknown {
-  if (axios.isAxiosError(error)) {
-    return (error as AxiosError).response?.data ?? error;
+export type NormalizedApiErrorCode =
+  | "NETWORK_ERROR"
+  | "TIMEOUT"
+  | "FORBIDDEN"
+  | "SERVER_ERROR"
+  | "UNKNOWN";
+
+export type ApiError = {
+  code: NormalizedApiErrorCode | number;
+  message: string;
+  status?: number;
+  details?: unknown;
+};
+
+const NORMALIZED_MESSAGES: Record<
+  Exclude<NormalizedApiErrorCode, "UNKNOWN">,
+  string
+> = {
+  NETWORK_ERROR: "Network error. Check your connection and try again.",
+  TIMEOUT: "The request timed out. Please try again.",
+  FORBIDDEN: "You do not have permission to access this resource.",
+  SERVER_ERROR: "Something went wrong on the server. Please try again later.",
+};
+
+function extractResponseMessage(data: unknown): string | undefined {
+  if (!data || typeof data !== "object") {
+    return undefined;
   }
 
-  return error;
+  const record = data as Record<string, unknown>;
+
+  if (typeof record.message === "string") {
+    return record.message;
+  }
+
+  if (typeof record.detail === "string") {
+    return record.detail;
+  }
+
+  if (Array.isArray(record.errors) && record.errors.length > 0) {
+    const first = record.errors[0];
+    if (typeof first === "string") {
+      return first;
+    }
+    if (first && typeof first === "object" && "message" in first) {
+      const message = (first as { message?: unknown }).message;
+      if (typeof message === "string") {
+        return message;
+      }
+    }
+  }
+
+  return undefined;
 }
 
+function resolveNormalizedCode(status: number): "FORBIDDEN" | "SERVER_ERROR" | null {
+  if (status === 403) {
+    return "FORBIDDEN";
+  }
+  if (status >= 500) {
+    return "SERVER_ERROR";
+  }
+  return null;
+}
 
+export function normalizeAxiosError(error: unknown): ApiError {
+  if (axios.isAxiosError(error)) {
+    const axiosError = error as AxiosError<unknown>;
 
-/* OLD CODE ---------------------------------------------------------------------------- */
+    if (axiosError.code === "ECONNABORTED") {
+      return {
+        code: "TIMEOUT",
+        message: NORMALIZED_MESSAGES.TIMEOUT,
+        details: axiosError.response?.data,
+      };
+    }
 
+    if (!axiosError.response) {
+      return {
+        code: "NETWORK_ERROR",
+        message: NORMALIZED_MESSAGES.NETWORK_ERROR,
+        details: axiosError.message,
+      };
+    }
 
-// import axios, { type AxiosError } from "axios";
+    const status = axiosError.response.status;
+    const normalizedCode = resolveNormalizedCode(status);
 
-// export type ApiErrorCode =
-//   | "NETWORK_ERROR"
-//   | "TIMEOUT"
-//   | "UNAUTHORIZED"
-//   | "FORBIDDEN"
-//   | "NOT_FOUND"
-//   | "VALIDATION_ERROR"
-//   | "SERVER_ERROR"
-//   | "UNKNOWN";
+    if (normalizedCode) {
+      return {
+        code: normalizedCode,
+        message: NORMALIZED_MESSAGES[normalizedCode],
+        status,
+        details: axiosError.response.data,
+      };
+    }
 
-// export type ApiError = {
-//   code: ApiErrorCode;
-//   message: string;
-//   status?: number;
-//   details?: unknown;
-// };
+    const message =
+      extractResponseMessage(axiosError.response.data) ??
+      axiosError.message ??
+      "Request failed.";
 
-// function extractResponseMessage(data: unknown): string | undefined {
-//   if (!data || typeof data !== "object") {
-//     return undefined;
-//   }
+    return {
+      code: status,
+      message,
+      status,
+      details: axiosError.response.data,
+    };
+  }
 
-//   const record = data as Record<string, unknown>;
+  if (isApiError(error)) {
+    return error;
+  }
 
-//   if (typeof record.message === "string") {
-//     return record.message;
-//   }
+  if (error instanceof Error) {
+    return {
+      code: "UNKNOWN",
+      message: error.message,
+    };
+  }
 
-//   if (typeof record.detail === "string") {
-//     return record.detail;
-//   }
+  return {
+    code: "UNKNOWN",
+    message: "An unexpected error occurred.",
+  };
+}
 
-//   if (Array.isArray(record.errors) && record.errors.length > 0) {
-//     const first = record.errors[0];
-//     if (typeof first === "string") {
-//       return first;
-//     }
-//     if (first && typeof first === "object" && "message" in first) {
-//       const message = (first as { message?: unknown }).message;
-//       if (typeof message === "string") {
-//         return message;
-//       }
-//     }
-//   }
-
-//   return undefined;
-// }
-
-// function mapStatusToCode(status: number): ApiErrorCode {
-//   if (status === 401) {
-//     return "UNAUTHORIZED";
-//   }
-//   if (status === 403) {
-//     return "FORBIDDEN";
-//   }
-//   if (status === 404) {
-//     return "NOT_FOUND";
-//   }
-//   if (status === 422) {
-//     return "VALIDATION_ERROR";
-//   }
-//   if (status >= 500) {
-//     return "SERVER_ERROR";
-//   }
-//   return "UNKNOWN";
-// }
-
-// export function normalizeError(error: unknown): ApiError {
-//   if (axios.isAxiosError(error)) {
-//     const axiosError = error as AxiosError<unknown>;
-
-//     if (axiosError.code === "ECONNABORTED") {
-//       return {
-//         code: "TIMEOUT",
-//         message: "The request timed out. Please try again.",
-//         details: axiosError.response?.data,
-//       };
-//     }
-
-//     if (!axiosError.response) {
-//       return {
-//         code: "NETWORK_ERROR",
-//         message: "Network error. Check your connection and try again.",
-//         details: axiosError.message,
-//       };
-//     }
-
-//     const status = axiosError.response.status;
-//     const message =
-//       extractResponseMessage(axiosError.response.data) ??
-//       axiosError.message ??
-//       "Request failed.";
-
-//     return {
-//       code: mapStatusToCode(status),
-//       message,
-//       status,
-//       details: axiosError.response.data,
-//     };
-//   }
-
-//   if (isApiError(error)) {
-//     return error;
-//   }
-
-//   if (error instanceof Error) {
-//     return {
-//       code: "UNKNOWN",
-//       message: error.message,
-//     };
-//   }
-
-//   return {
-//     code: "UNKNOWN",
-//     message: "An unexpected error occurred.",
-//   };
-// }
-
-// export function isApiError(value: unknown): value is ApiError {
-//   return (
-//     typeof value === "object" &&
-//     value !== null &&
-//     "code" in value &&
-//     "message" in value &&
-//     typeof (value as ApiError).code === "string" &&
-//     typeof (value as ApiError).message === "string"
-//   );
-// }
+export function isApiError(value: unknown): value is ApiError {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "code" in value &&
+    "message" in value &&
+    (typeof (value as ApiError).code === "string" ||
+      typeof (value as ApiError).code === "number") &&
+    typeof (value as ApiError).message === "string"
+  );
+}
