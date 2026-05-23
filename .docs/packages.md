@@ -6,10 +6,17 @@
 
 | Package | Version | Purpose |
 | --- | --- | --- |
-| axios | ^1.16.1 | Promise-based HTTP client for browser and Node.js |
 | next | 16.2.6 | React framework with App Router and server components |
 | react | 19.2.4 | UI library |
 | react-dom | 19.2.4 | React DOM renderer |
+
+## Data fetching & state
+
+| Package | Version | Purpose |
+| --- | --- | --- |
+| @tanstack/react-query | ^5.100.11 | Async server-state fetching, caching, and synchronization for React |
+| axios | ^1.16.1 | Promise-based HTTP client for browser and Node.js |
+| zustand | ^5.0.13 | Lightweight client state store for React |
 
 ## Internationalization
 
@@ -30,6 +37,7 @@
 | --- | --- | --- |
 | tailwindcss | ^4 | Utility-first CSS framework |
 | @tailwindcss/postcss | ^4 | PostCSS plugin for Tailwind CSS v4 |
+| tailwindcss-animate | ^1.0.7 | Tailwind CSS animation utilities plugin |
 
 ## TypeScript & types
 

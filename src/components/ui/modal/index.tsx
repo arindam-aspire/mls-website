@@ -10,7 +10,7 @@ import {
 } from "@headlessui/react";
 import { ChevronLeft, X } from "lucide-react";
 import { createContext, useContext } from "react";
-import { cn } from "@/lib/cn";
+import { cn } from "@/src/lib/cn";
 import type {
   ModalBackdropProps,
   ModalBackButtonProps,
@@ -260,3 +260,4 @@ export type {
   ModalTitleProps,
 } from "./types";
 export { MODAL_SIZES } from "./types";
+

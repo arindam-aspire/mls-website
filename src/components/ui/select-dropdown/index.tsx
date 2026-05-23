@@ -11,8 +11,12 @@ import {
 import { ChevronDown } from "lucide-react";
 import { useLocale } from "next-intl";
 import { useId, useMemo, useState } from "react";
-import { cn } from "@/lib/cn";
+import { cn } from "@/src/lib/cn";
 import { isRtlLocale } from "@/src/i18n/routing";
+import {
+  inheritOutlineFocusVisibleClasses,
+  inheritOutlineVariantClasses,
+} from "../fieldVariants";
 import type {
   SelectDropdownProps,
   SelectDropdownSize,
@@ -42,9 +46,8 @@ const triggerBaseClasses = cn(
 
 const triggerVariantClasses: Record<SelectDropdownVariant, string> = {
   outline: cn(
-    "border border-secondary-light bg-surface shadow-sm",
-    "hover:border-secondary",
-    "focus-visible:border-secondary-dark focus-visible:ring-2 focus-visible:ring-secondary-dark/12",
+    inheritOutlineVariantClasses,
+    inheritOutlineFocusVisibleClasses,
   ),
   ghost: cn(
     "border border-transparent bg-transparent shadow-none",
@@ -262,3 +265,4 @@ export {
   SELECT_DROPDOWN_SIZES,
   SELECT_DROPDOWN_VARIANTS,
 } from "./types";
+

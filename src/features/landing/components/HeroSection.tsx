@@ -1,10 +1,20 @@
-import { getTranslations } from "next-intl/server";
 import heroImage from "@/src/assets/images/MLS_Home_Image.png";
+import type { PropertyTaxonomyResponse } from "@/src/features/landing/types/propertyTaxonomy.types";
 import { HeroSearchBar } from "./HeroSearchBar";
 
-export async function HeroSection() {
-  const t = await getTranslations("home");
+type HeroSectionProps = {
+  t: (key: string) => string;
+  theme: string;
+  isLoading: boolean;
+  propertyTaxonomy?: PropertyTaxonomyResponse;
+};
 
+export function HeroSection({
+  t,
+  theme,
+  isLoading,
+  propertyTaxonomy,
+}: HeroSectionProps) {
   return (
     <section
       className="relative flex min-h-screen w-full items-center justify-center bg-cover bg-center bg-no-repeat py-24 sm:py-28 lg:py-32"
@@ -36,7 +46,7 @@ export async function HeroSection() {
         </p>
 
         <div className="w-full min-w-0">
-          <HeroSearchBar />
+          <HeroSearchBar t={t} theme={theme} isLoading={isLoading} propertyTaxonomy={propertyTaxonomy} />
         </div>
       </div>
     </section>

@@ -3,7 +3,7 @@
 import { Clock, Info, Mail, Shield } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/src/components/ui";
-import { cn } from "@/lib/cn";
+import { cn } from "@/src/lib/cn";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
 import {
   AUTH_QUERY_KEY,
@@ -107,3 +107,4 @@ export function AgencyAuthForm({ className }: AgencyAuthFormProps) {
     </div>
   );
 }
+

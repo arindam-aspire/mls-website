@@ -10,6 +10,12 @@ import {
 } from "@headlessui/react";
 import { ChevronDown } from "lucide-react";
 import { useId } from "react";
+import { cn } from "@/src/lib/cn";
+import {
+  inheritOutlineDataHoverClasses,
+  inheritOutlineFocusVisibleClasses,
+  inheritOutlineVariantClasses,
+} from "../fieldVariants";
 import type { SelectProps, SelectSize, SelectVariant } from "./types";
 
 const sizeTypography = "text-[14px] font-medium";
@@ -27,8 +33,11 @@ const iconSizeClasses: Record<SelectSize, string> = {
 };
 
 const variantClasses: Record<SelectVariant, string> = {
-  outline:
-    "border border-secondary/30 data-hover:border-secondary/50 data-hover:bg-primary-light/30",
+  outline: cn(
+    inheritOutlineVariantClasses,
+    inheritOutlineDataHoverClasses,
+    inheritOutlineFocusVisibleClasses,
+  ),
   ghost:
     "border-0 bg-transparent data-hover:bg-primary-light/50 data-hover:text-text",
   clear:
@@ -40,10 +49,6 @@ const triggerBaseClasses =
 
 const optionClasses =
   "cursor-pointer px-3 py-2 text-text transition-colors data-focus:bg-primary data-focus:text-white data-selected:bg-primary data-selected:text-white data-disabled:cursor-not-allowed data-disabled:opacity-50";
-
-function cn(...classes: (string | false | undefined)[]) {
-  return classes.filter(Boolean).join(" ");
-}
 
 export function Select({
   options,

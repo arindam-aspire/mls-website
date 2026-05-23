@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Menu, Moon, Sun, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { cn } from "@/lib/cn";
+import { cn } from "@/src/lib/cn";
 import { Button } from "@/src/components/ui/button";
 import { IconButton } from "@/src/components/ui/icon-button";
 import {
@@ -287,3 +287,4 @@ export function PublicHeader() {
     </header>
   );
 }
+

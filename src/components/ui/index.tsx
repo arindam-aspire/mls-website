@@ -89,6 +89,9 @@ export {
   PHONE_INPUT_COUNTRIES,
   type PhoneInputCountry,
 } from "./phone-input";
+export { Skeleton, SkeletonText } from "./skeleton";
+export type { SkeletonProps, SkeletonTextProps, SkeletonVariant } from "./skeleton";
+export { SKELETON_VARIANTS } from "./skeleton";
 export { Select } from "./select";
 export { Textarea } from "./textarea";
 export {

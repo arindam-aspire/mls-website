@@ -3,6 +3,7 @@ import { getLocale } from "next-intl/server";
 import { Geist, Geist_Mono, Tajawal } from "next/font/google";
 import { isRtlLocale } from "@/src/i18n/routing";
 import { ThemeProvider } from "@/src/providers/ThemeProvider";
+import QueryProvider from "@/src/providers/QueryProvider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -44,9 +45,11 @@ export default async function RootLayout({
       <body
         className={`flex min-h-full flex-col bg-page text-text ${fontClass}`}
       >
-        <ThemeProvider>
-          <div className="flex min-h-0 flex-1 flex-col">{children}</div>
-        </ThemeProvider>
+        <QueryProvider>
+          <ThemeProvider>
+            <div className="flex min-h-0 flex-1 flex-col">{children}</div>
+          </ThemeProvider>
+        </QueryProvider>
       </body>
     </html>
   );

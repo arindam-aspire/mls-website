@@ -1,8 +1,4 @@
-import { getTranslations } from "next-intl/server";
-
-export async function DetailsSection() {
-  const t = await getTranslations("home");
-
+export function DetailsSection({ t }: { t: any }) {
   return (
     <section className="bg-surface px-6 py-24 sm:py-28 lg:py-32">
       <div className="mx-auto flex max-w-3xl flex-col items-center text-center">

@@ -8,7 +8,7 @@ import {
   PopoverPanel as HeadlessPopoverPanel,
 } from "@headlessui/react";
 import { useLocale } from "next-intl";
-import { cn } from "@/lib/cn";
+import { cn } from "@/src/lib/cn";
 import { isRtlLocale } from "@/src/i18n/routing";
 import type {
   PopoverBackdropWrapperProps,
@@ -187,3 +187,4 @@ export type {
   PopoverTitleProps,
   PopoverTriggerProps,
 } from "./types";
+

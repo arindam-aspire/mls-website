@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button, Input, Link } from "@/src/components/ui";
 import { useForm } from "@/src/hooks/useForm";
-import { cn } from "@/lib/cn";
+import { cn } from "@/src/lib/cn";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
 import { AUTH_VIEW, buildAuthModalUrl, type AuthView } from "../authViews";
 
@@ -184,3 +184,4 @@ export function SignInForm({
     </form>
   );
 }
+

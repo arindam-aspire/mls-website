@@ -1,4 +1,4 @@
-import { cn } from "@/lib/cn";
+import { cn } from "@/src/lib/cn";
 import type {
   CardContentProps,
   CardDescriptionProps,
@@ -92,3 +92,4 @@ export type {
   CardProps,
   CardTitleProps,
 } from "./types";
+

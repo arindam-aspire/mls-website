@@ -2,7 +2,11 @@
 
 import { Field, Label } from "@headlessui/react";
 import { forwardRef, useId, type ReactNode } from "react";
-import { cn } from "@/lib/cn";
+import { cn } from "@/src/lib/cn";
+import {
+  inheritOutlineFocusWithinClasses,
+  inheritOutlineVariantClasses,
+} from "../fieldVariants";
 import type { InputProps, InputSize, InputVariant } from "./types";
 
 const wrapperSizeClasses: Record<InputSize, string> = {
@@ -18,11 +22,7 @@ const iconSizeClasses: Record<InputSize, string> = {
 };
 
 const variantClasses: Record<InputVariant, string> = {
-  outline: cn(
-    "border border-secondary-light bg-surface shadow-sm",
-    "hover:border-secondary",
-    "focus-within:border-secondary-dark focus-within:ring-2 focus-within:ring-secondary-dark/12",
-  ),
+  outline: cn(inheritOutlineVariantClasses, inheritOutlineFocusWithinClasses),
   ghost: cn(
     "border border-transparent bg-transparent shadow-none",
     "hover:border-secondary/30 hover:bg-page",
@@ -171,3 +171,4 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
 
 export type { InputProps, InputSize, InputVariant } from "./types";
 export { INPUT_SIZES, INPUT_VARIANTS } from "./types";
+

@@ -10,7 +10,7 @@ import {
   type DragEvent,
 } from "react";
 import { Button, Input, PhoneInput } from "@/src/components/ui";
-import { cn } from "@/lib/cn";
+import { cn } from "@/src/lib/cn";
 import { useForm } from "@/src/hooks/useForm";
 
 export type AgencySignUpFormValues = {
@@ -373,3 +373,4 @@ export function AgencySignUpForm({ onSuccess }: AgencySignUpFormProps) {
     </form>
   );
 }
+

@@ -8,7 +8,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { cn } from "@/lib/cn";
+import { cn } from "@/src/lib/cn";
 import type {
   ToggleButtonColor,
   ToggleButtonProps,
@@ -22,32 +22,32 @@ const containerVariantClasses: Record<
 > = {
   primary: {
     solid: "border border-secondary/30 bg-surface",
-    outline: "border border-primary bg-surface",
+    outline: "border border-secondary/15 bg-surface",
     ghost: "border border-transparent bg-primary-light",
   },
   secondary: {
     solid: "border border-secondary/30 bg-surface",
-    outline: "border border-secondary bg-surface",
+    outline: "border border-secondary/15 bg-surface",
     ghost: "border border-transparent bg-transparent",
   },
   tertiary: {
     solid: "border border-secondary/30 bg-surface",
-    outline: "border border-tertiary-dark bg-surface",
+    outline: "border border-secondary/15 bg-surface",
     ghost: "border border-transparent bg-transparent",
   },
   inherit: {
     solid: "border border-secondary/30 bg-surface",
-    outline: "border border-inherit-color bg-surface",
+    outline: "border border-secondary/15 bg-surface",
     ghost: "border border-transparent bg-transparent",
   },
   danger: {
     solid: "border border-secondary/30 bg-surface",
-    outline: "border border-danger bg-surface",
+    outline: "border border-secondary/15 bg-surface",
     ghost: "border border-transparent bg-transparent",
   },
   success: {
     solid: "border border-secondary/30 bg-surface",
-    outline: "border border-success bg-surface",
+    outline: "border border-secondary/15 bg-surface",
     ghost: "border border-transparent bg-transparent",
   },
 };
@@ -130,32 +130,32 @@ const inactiveLabelVariantClasses: Record<
 > = {
   primary: {
     solid: "text-muted data-hover:text-text",
-    outline: "text-primary-dark data-hover:text-primary",
+    outline: "text-text data-hover:text-text",
     ghost: "text-muted data-hover:text-primary-dark",
   },
   secondary: {
     solid: "text-muted data-hover:text-text",
-    outline: "text-secondary data-hover:text-secondary-dark",
+    outline: "text-text data-hover:text-text",
     ghost: "text-muted data-hover:text-secondary",
   },
   tertiary: {
     solid: "text-muted data-hover:text-text",
-    outline: "text-tertiary-dark data-hover:text-tertiary",
+    outline: "text-text data-hover:text-text",
     ghost: "text-muted data-hover:text-tertiary-dark",
   },
   inherit: {
     solid: "text-muted data-hover:text-text",
-    outline: "text-inherit-color data-hover:opacity-90",
+    outline: "text-text data-hover:text-text",
     ghost: "text-muted data-hover:text-inherit-color",
   },
   danger: {
     solid: "text-muted data-hover:text-text",
-    outline: "text-danger data-hover:opacity-90",
+    outline: "text-text data-hover:text-text",
     ghost: "text-muted data-hover:text-danger",
   },
   success: {
     solid: "text-muted data-hover:text-text",
-    outline: "text-success data-hover:opacity-90",
+    outline: "text-text data-hover:text-text",
     ghost: "text-muted data-hover:text-success",
   },
 };
@@ -359,3 +359,4 @@ export type {
   ToggleButtonSize,
   ToggleButtonVariant,
 } from "./types";
+

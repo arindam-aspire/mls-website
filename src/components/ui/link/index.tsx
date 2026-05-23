@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { cn } from "@/lib/cn";
+import { cn } from "@/src/lib/cn";
 import type { LinkColor, LinkProps, LinkSize, LinkVariant } from "./types";
 
 const baseClasses = cn(
@@ -117,3 +117,4 @@ export function Link({
 
 export { LINK_COLORS, LINK_SIZES, LINK_VARIANTS } from "./types";
 export type { LinkColor, LinkProps, LinkSize, LinkVariant } from "./types";
+

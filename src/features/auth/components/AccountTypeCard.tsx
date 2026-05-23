@@ -2,7 +2,7 @@
 
 import { ChevronRight } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import { cn } from "@/lib/cn";
+import { cn } from "@/src/lib/cn";
 
 export interface AccountTypeCardProps {
   icon: LucideIcon;
@@ -50,3 +50,4 @@ export function AccountTypeCard({
     </button>
   );
 }
+

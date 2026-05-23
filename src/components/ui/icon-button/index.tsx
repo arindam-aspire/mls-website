@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/cn";
+import { cn } from "@/src/lib/cn";
 import { Button } from "../button";
 import type { ButtonSize } from "../button/types";
 import type { IconButtonProps } from "./types";
@@ -32,3 +32,4 @@ export function IconButton({
 }
 
 export type { IconButtonProps } from "./types";
+

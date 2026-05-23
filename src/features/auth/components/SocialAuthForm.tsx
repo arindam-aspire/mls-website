@@ -4,7 +4,7 @@ import { Clock, Mail } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { SVGProps } from "react";
 import { Button, ToggleButton } from "@/src/components/ui";
-import { cn } from "@/lib/cn";
+import { cn } from "@/src/lib/cn";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
 import {
   AUTH_QUERY_KEY,
@@ -217,3 +217,4 @@ export function SocialAuthForm({
     </div>
   );
 }
+

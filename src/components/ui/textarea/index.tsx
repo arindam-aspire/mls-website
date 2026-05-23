@@ -2,7 +2,11 @@
 
 import { Field, Label } from "@headlessui/react";
 import { forwardRef, useId } from "react";
-import { cn } from "@/lib/cn";
+import { cn } from "@/src/lib/cn";
+import {
+  inheritOutlineFocusVisibleClasses,
+  inheritOutlineVariantClasses,
+} from "../fieldVariants";
 import type { TextareaProps, TextareaSize, TextareaVariant } from "./types";
 
 const sizeClasses: Record<TextareaSize, string> = {
@@ -13,9 +17,8 @@ const sizeClasses: Record<TextareaSize, string> = {
 
 const variantClasses: Record<TextareaVariant, string> = {
   outline: cn(
-    "border border-secondary-light bg-surface shadow-sm",
-    "hover:border-secondary",
-    "focus-visible:border-secondary-dark focus-visible:ring-2 focus-visible:ring-secondary-dark/12",
+    inheritOutlineVariantClasses,
+    inheritOutlineFocusVisibleClasses,
   ),
   ghost: cn(
     "border-0 bg-page-ghost shadow-none",
@@ -129,3 +132,4 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
 
 export type { TextareaProps, TextareaSize, TextareaVariant } from "./types";
 export { TEXTAREA_SIZES, TEXTAREA_VARIANTS } from "./types";
+

@@ -12,7 +12,7 @@ import {
   type KeyboardEvent,
 } from "react";
 import { Button, Link } from "@/src/components/ui";
-import { cn } from "@/lib/cn";
+import { cn } from "@/src/lib/cn";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
 import type { AuthOtpFlow, AuthView } from "../authViews";
 import {
@@ -301,3 +301,4 @@ export function OTPVerificationForm({
     </form>
   );
 }
+

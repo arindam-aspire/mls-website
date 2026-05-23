@@ -26,8 +26,6 @@ mls_website/
 │   ├── loading.tsx
 │   └── page.tsx
 ├── eslint.config.mjs
-├── lib/
-│   └── cn.ts
 ├── next-env.d.ts
 ├── next.config.ts
 ├── package-lock.json
@@ -37,6 +35,15 @@ mls_website/
 ├── README.md
 ├── src/
 │   ├── apis/
+│   │   ├── clients/
+│   │   │   └── api.client.ts
+│   │   ├── core/
+│   │   │   ├── axios.factory.ts
+│   │   │   ├── axios.interceptor.ts
+│   │   │   ├── error.normalizer.ts
+│   │   │   ├── index.ts
+│   │   │   ├── token.refresh.ts
+│   │   │   └── token.store.ts
 │   │   └── endpoints/
 │   │       ├── authEndpoints.ts
 │   │       ├── index.ts
@@ -51,6 +58,7 @@ mls_website/
 │   │       └── MLS_Light_Logo.png
 │   ├── components/
 │   │   └── ui/
+│   │       ├── fieldVariants.ts
 │   │       ├── button/
 │   │       │   ├── index.tsx
 │   │       │   └── types.ts
@@ -86,7 +94,14 @@ mls_website/
 │   │       ├── select-dropdown/
 │   │       │   ├── index.tsx
 │   │       │   └── types.ts
+│   │       ├── skeleton/
+│   │       │   ├── index.tsx
+│   │       │   └── types.ts
 │   │       ├── textarea/
+│   │       │   ├── index.tsx
+│   │       │   └── types.ts
+│   │       ├── toaster/
+│   │       │   ├── ToastIcons.tsx
 │   │       │   ├── index.tsx
 │   │       │   └── types.ts
 │   │       └── toggle-button/
@@ -94,6 +109,8 @@ mls_website/
 │   │           └── types.ts
 │   ├── configs/
 │   │   └── environment.config.ts
+│   ├── lib/
+│   │   └── cn.ts
 │   ├── features/
 │   │   ├── auth/
 │   │   │   ├── authViews.ts
@@ -136,11 +153,15 @@ mls_website/
 │   │   │   │   ├── DetailsSection.tsx
 │   │   │   │   ├── HeroSearchBar.tsx
 │   │   │   │   └── HeroSection.tsx
-│   │   │   ├── hooks/
+│   │   │   ├── query/
+│   │   │   │   └── landing.query.ts
+│   │   │   ├── services/
+│   │   │   │   └── landing.service.ts
 │   │   │   ├── screens/
 │   │   │   │   └── LandingScreen.tsx
 │   │   │   ├── store/
 │   │   │   └── types/
+│   │   │       └── propertyTaxonomy.types.ts
 │   │   └── property/
 │   │       ├── components/
 │   │       ├── hooks/
@@ -151,7 +172,8 @@ mls_website/
 │   │       ├── store/
 │   │       └── types/
 │   ├── hooks/
-│   │   └── useForm.ts
+│   │   ├── useForm.ts
+│   │   └── useToast.tsx
 │   ├── i18n/
 │   │   ├── navigation.ts
 │   │   ├── request.ts
@@ -189,10 +211,12 @@ mls_website/
 │   │   ├── QueryProvider.tsx
 │   │   ├── ReduxProvider.tsx
 │   │   ├── SocketProvider.tsx
-│   │   └── ThemeProvider.tsx
+│   │   ├── ThemeProvider.tsx
+│   │   └── ToastProvider.tsx
 │   ├── services/
 │   ├── stores/
 │   ├── types/
+│   │   └── toast.types.ts
 │   └── utils/
 └── tsconfig.json
 ```

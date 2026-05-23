@@ -10,8 +10,12 @@ import {
   useState,
   type ChangeEvent,
 } from "react";
-import { cn } from "@/lib/cn";
+import { cn } from "@/src/lib/cn";
 import { isRtlLocale } from "@/src/i18n/routing";
+import {
+  inheritOutlineFocusWithinClasses,
+  inheritOutlineVariantClasses,
+} from "../fieldVariants";
 import { Popover, PopoverButton, PopoverPanel } from "../popover";
 import {
   countryFlagUrl,
@@ -151,12 +155,12 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
 
         <div
           className={cn(
-            "relative flex h-12 w-full items-center gap-2 rounded-[0.7rem] border bg-surface px-3 transition-colors",
-            "focus-within:outline-none",
-            disabled && "cursor-not-allowed bg-page opacity-50",
-            hasError
-              ? "border-danger focus-within:border-danger focus-within:ring-2 focus-within:ring-danger/20"
-              : "border-secondary-light focus-within:border-secondary-dark",
+            "relative flex h-12 w-full items-center gap-2 rounded-xl px-3 transition-colors",
+            inheritOutlineVariantClasses,
+            inheritOutlineFocusWithinClasses,
+            disabled && "cursor-not-allowed opacity-50",
+            hasError &&
+              "border-danger hover:border-danger focus-within:border-danger focus-within:bg-surface focus-within:ring-danger/20",
           )}
         >
           <div
@@ -266,7 +270,7 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
           </Popover>
           </div>
 
-          <div className="h-6 w-px shrink-0 bg-secondary-light" aria-hidden />
+          <div className="h-6 w-px shrink-0 bg-secondary/15" aria-hidden />
 
           <input
             ref={ref}
@@ -329,3 +333,4 @@ export {
   PHONE_INPUT_COUNTRIES,
   type PhoneInputCountry,
 } from "./countries";
+
