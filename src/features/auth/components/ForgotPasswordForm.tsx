@@ -1,31 +1,29 @@
 "use client";
 
-import { Info, Mail } from "lucide-react";
+import { Info, Mail, Send } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button, Input, PhoneInput, ToggleButton } from "@/src/components/ui";
 import { useForm } from "@/src/hooks/useForm";
-import { usePathname, useRouter } from "@/src/i18n/navigation";
-import { AUTH_VIEW, buildAuthModalUrl } from "../authViews";
+import type { ForgotPasswordFormValues } from "../types/auth.types";
 
 export type ForgotPasswordMethod = "email" | "phone";
-
-export type ForgotPasswordFormValues = {
-  email: string;
-  phoneCountryCode: string;
-  phoneNationalNumber: string;
-};
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 type ForgotPasswordFormProps = {
-  onSuccess?: () => void;
+  onSubmit: (
+    values: ForgotPasswordFormValues,
+    method: ForgotPasswordMethod,
+  ) => void;
+  isLoading: boolean;
 };
 
-export function ForgotPasswordForm({ onSuccess }: ForgotPasswordFormProps) {
+export function ForgotPasswordForm({
+  onSubmit,
+  isLoading,
+}: ForgotPasswordFormProps) {
   const t = useTranslations("auth");
-  const router = useRouter();
-  const pathname = usePathname();
   const [method, setMethod] = useState<ForgotPasswordMethod>("email");
 
   const {
@@ -45,8 +43,9 @@ export function ForgotPasswordForm({ onSuccess }: ForgotPasswordFormProps) {
       phoneNationalNumber: "",
     },
     validate: (formValues) => {
-      const nextErrors: Partial<Record<keyof ForgotPasswordFormValues, string>> =
-        {};
+      const nextErrors: Partial<
+        Record<keyof ForgotPasswordFormValues, string>
+      > = {};
 
       if (method === "email") {
         if (!formValues.email.trim()) {
@@ -59,7 +58,9 @@ export function ForgotPasswordForm({ onSuccess }: ForgotPasswordFormProps) {
 
       if (!formValues.phoneNationalNumber.trim()) {
         nextErrors.phoneNationalNumber = t("forgotPasswordPhoneRequired");
-      } else if (formValues.phoneNationalNumber.replace(/\D/g, "").length < 7) {
+      } else if (
+        formValues.phoneNationalNumber.replace(/\D/g, "").length < 7
+      ) {
         nextErrors.phoneNationalNumber = t("forgotPasswordPhoneInvalid");
       }
 
@@ -112,20 +113,7 @@ export function ForgotPasswordForm({ onSuccess }: ForgotPasswordFormProps) {
   return (
     <form
       noValidate
-      onSubmit={handleSubmit(() => {
-        onSuccess?.();
-        router.replace(
-          buildAuthModalUrl(pathname, AUTH_VIEW.otpVerify, {
-            otpFlow: "forgot",
-            returnView: AUTH_VIEW.forgotPassword,
-            contactEmail: method === "email" ? values.email : undefined,
-            contactPhone:
-              method === "phone" ? values.phoneNationalNumber : undefined,
-            contactPhoneCountry:
-              method === "phone" ? values.phoneCountryCode : undefined,
-          }),
-        );
-      })}
+      onSubmit={handleSubmit((formValues) => onSubmit(formValues, method))}
       className="flex flex-col gap-6"
     >
       <div className="space-y-1 text-center">
@@ -205,6 +193,8 @@ export function ForgotPasswordForm({ onSuccess }: ForgotPasswordFormProps) {
         size="lg"
         fullWidth
         className="font-semibold"
+        isLoading={isLoading}
+        iconStart={<Send className="size-5" aria-hidden />}
       >
         {t("forgotPasswordSendOtp")}
       </Button>

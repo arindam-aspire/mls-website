@@ -1,6 +1,6 @@
 "use client";
 
-import { Clock } from "lucide-react";
+import { Clock, ShieldCheck } from "lucide-react";
 import { useTranslations } from "next-intl";
 import {
   useEffect,
@@ -13,24 +13,21 @@ import {
 } from "react";
 import { Button, Link } from "@/src/components/ui";
 import { cn } from "@/src/lib/cn";
-import { usePathname, useRouter } from "@/src/i18n/navigation";
-import type { AuthOtpFlow, AuthView } from "../authViews";
-import {
-  AUTH_VIEW,
-  buildAuthModalUrl,
-  isAgencyAuthView,
-} from "../authViews";
+import type { AuthOtpFlow } from "../authViews";
 import { maskEmail, maskPhone } from "../maskContact";
 
 const OTP_LENGTH = 6;
-const RESEND_SECONDS = 45;
+const RESEND_SECONDS = 60;
 
 type OTPVerificationFormProps = {
   otpFlow: AuthOtpFlow;
   contactEmail?: string;
   contactPhone?: string;
   contactPhoneCountry?: string;
-  returnView?: AuthView;
+  onSubmit: (code: string) => void;
+  onResend: () => void;
+  isLoading: boolean;
+  isResending: boolean;
 };
 
 function formatResendTimer(seconds: number): string {
@@ -44,11 +41,12 @@ export function OTPVerificationForm({
   contactEmail,
   contactPhone,
   contactPhoneCountry = "JO",
-  returnView,
+  onSubmit,
+  onResend,
+  isLoading,
+  isResending,
 }: OTPVerificationFormProps) {
   const t = useTranslations("auth");
-  const router = useRouter();
-  const pathname = usePathname();
   const legendId = useId();
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
 
@@ -151,10 +149,11 @@ export function OTPVerificationForm({
   };
 
   const handleResend = () => {
-    if (resendSeconds > 0) {
+    if (resendSeconds > 0 || isResending) {
       return;
     }
 
+    onResend();
     setResendSeconds(RESEND_SECONDS);
     setDigits(Array(OTP_LENGTH).fill(""));
     setError(undefined);
@@ -169,22 +168,7 @@ export function OTPVerificationForm({
       return;
     }
 
-    const nextView =
-      otpFlow === "forgot"
-        ? AUTH_VIEW.resetPassword
-        : returnView != null && isAgencyAuthView(returnView)
-          ? AUTH_VIEW.agencyEmailSignIn
-          : AUTH_VIEW.userSignIn;
-
-    router.replace(
-      buildAuthModalUrl(pathname, nextView, {
-        returnView,
-        otpFlow,
-        contactEmail,
-        contactPhone,
-        contactPhoneCountry,
-      }),
-    );
+    onSubmit(code);
   };
 
   const getDigitClassName = (index: number) => {
@@ -272,10 +256,10 @@ export function OTPVerificationForm({
             size="sm"
             className={cn(
               "font-semibold",
-              resendSeconds > 0 && "pointer-events-none opacity-50",
+              (resendSeconds > 0 || isResending) && "pointer-events-none opacity-50",
             )}
             onClick={handleResend}
-            disabled={resendSeconds > 0}
+            disabled={resendSeconds > 0 || isResending}
           >
             {t("otpVerifyResend")}
           </Link>
@@ -295,10 +279,11 @@ export function OTPVerificationForm({
         fullWidth
         className="font-semibold"
         disabled={!isComplete}
+        isLoading={isLoading}
+        iconStart={<ShieldCheck className="size-5" aria-hidden />}
       >
         {t("otpVerifyContinue")}
       </Button>
     </form>
   );
 }
-

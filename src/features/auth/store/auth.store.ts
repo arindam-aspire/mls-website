@@ -7,11 +7,14 @@ interface AuthState {
   isLoadingUser: boolean;
   access_token: string | null;
   refresh_token: string | null;
+  forgotPasswordOtp: string | null;
   setAuth: (access_token: string, refresh_token: string) => void;
   setAccessToken: (access_token: string) => void;
   setRefreshToken: (refresh_token: string) => void;
   setUser: (user: LoggedInUser) => void;
   setIsLoadingUser: (loading: boolean) => void;
+  setForgotPasswordOtp: (otp: string) => void;
+  clearForgotPasswordOtp: () => void;
   clearAuth: () => void;
 }
 
@@ -20,6 +23,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   isLoadingUser: false,
   access_token: null,
   refresh_token: null,
+  forgotPasswordOtp: null,
 
   setAuth: (access_token, refresh_token) => {
     tokenStore.setAccessToken(access_token);
@@ -43,6 +47,14 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   setIsLoadingUser: (loading) => {
     set({ isLoadingUser: loading });
+  },
+
+  setForgotPasswordOtp: (otp) => {
+    set({ forgotPasswordOtp: otp });
+  },
+
+  clearForgotPasswordOtp: () => {
+    set({ forgotPasswordOtp: null });
   },
 
   clearAuth: () => {

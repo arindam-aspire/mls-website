@@ -10,15 +10,23 @@ import {
 import { useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
 import { useSearchParams } from "next/navigation";
+import { useEffect, useRef } from "react";
 import {
   AUTH_QUERY_KEY,
   AUTH_RETURN_VIEW_QUERY_KEY,
   AUTH_VIEW,
+  buildAuthModalUrl,
   isAuthView,
   type AuthView,
 } from "@/src/features/auth/authViews";
 import { AuthModalHeader } from "../components/AuthModalHeader";
-import { ForgotPasswordForm } from "../components/ForgotPasswordForm";
+import {
+  ForgotPasswordForm,
+  type ForgotPasswordMethod,
+} from "../components/ForgotPasswordForm";
+import type { ForgotPasswordFormValues } from "../types/auth.types";
+import { useForgotPassword } from "../mutations/auth.mutation";
+import { useToast } from "@/src/hooks/useToast";
 
 function resolveReturnView(from: string | null): AuthView {
   if (isAuthView(from)) {
@@ -37,9 +45,51 @@ export function ForgotPasswordScreen() {
     searchParams.get(AUTH_RETURN_VIEW_QUERY_KEY),
   );
 
+  const { mutate: forgotPasswordMutate, isPending, isSuccess } = useForgotPassword();
+  const toast = useToast();
+
+  const lastSubmitRef = useRef<{
+    values: ForgotPasswordFormValues;
+    method: ForgotPasswordMethod;
+  } | null>(null);
+
   const handleBack = () => {
     router.replace(`${pathname}?${AUTH_QUERY_KEY}=${returnView}`);
   };
+
+  const handleFormSubmit = (
+    values: ForgotPasswordFormValues,
+    method: ForgotPasswordMethod,
+  ) => {
+    if (method === "phone") {
+      toast.info("Coming Soon", {
+        description: "Password reset via phone number is not available yet. Please use email instead.",
+      });
+      return;
+    }
+
+    lastSubmitRef.current = { values, method };
+    forgotPasswordMutate({
+      email: values.email,
+    });
+  };
+
+  useEffect(() => {
+    if (isSuccess && lastSubmitRef.current) {
+      const { values, method } = lastSubmitRef.current;
+      router.replace(
+        buildAuthModalUrl(pathname, AUTH_VIEW.otpVerify, {
+          otpFlow: "forgot",
+          returnView: AUTH_VIEW.forgotPassword,
+          contactEmail: method === "email" ? values.email : undefined,
+          contactPhone:
+            method === "phone" ? values.phoneNationalNumber : undefined,
+          contactPhoneCountry:
+            method === "phone" ? values.phoneCountryCode : undefined,
+        }),
+      );
+    }
+  }, [isSuccess]);
 
   return (
     <ModalPanel size="md">
@@ -47,7 +97,10 @@ export function ForgotPasswordScreen() {
       <ModalCloseButton />
       <ModalContent className="!py-0 sm:!py-0">
         <div className="px-4 pb-4 sm:px-6 sm:pb-6">
-          <ForgotPasswordForm />
+          <ForgotPasswordForm
+            onSubmit={handleFormSubmit}
+            isLoading={isPending}
+          />
         </div>
       </ModalContent>
       <ModalFooter className="!block rounded-b-xl border-t-0 bg-primary-light !px-4 !pt-4 !pb-4 dark:bg-page sm:!gap-3 sm:!px-6 sm:!pb-6">

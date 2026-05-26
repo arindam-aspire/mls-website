@@ -1,11 +1,11 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
-import { getLoggedInUser, logout, signInWithPassword } from "../services/auth.service";
+import { confirmSignUp, forgotPassword, getLoggedInUser, logout, signInWithOtpVerify, signInWithPassword, signUp } from "../services/auth.service";
 import { useToast } from "@/src/hooks/useToast";
 import { type ApiError } from "@/src/apis/core/error.normalizer";
 import { useAuthStore } from "../store/auth.store";
-import type { LoggedInUserResponse, SignInResponse } from "../types/auth.types";
+import type { SignInResponse, SignInWithOtpVerifyResponse } from "../types/auth.types";
 
 export const useSignInWithPassword = () => {
   const toast = useToast();
@@ -46,6 +46,86 @@ export const useLogout = () => {
     },
     onError: (error: ApiError) => {
       toast.error("Logout failed", {
+        description: error.message,
+      });
+    },
+  });
+};
+
+export const useSignUp = () => {
+  const toast = useToast();
+
+  return useMutation({
+    mutationFn: signUp,
+    onSuccess: () => {
+      toast.success("Account created successfully", {
+        description: "You can now sign in with your credentials.",
+      });
+    },
+    onError: (error: ApiError) => {
+      toast.error("Sign up failed", {
+        description: error.message,
+      });
+    },
+  });
+};
+
+export const useConfirmSignUp = () => {
+  const toast = useToast();
+
+  return useMutation({
+    mutationFn: confirmSignUp,
+    onSuccess: () => {
+      toast.success("Account verified successfully", {
+        description: "You can now sign in with your credentials.",
+      });
+    },
+    onError: (error: ApiError) => {
+      toast.error("Verification failed", {
+        description: error.message,
+      });
+    },
+  });
+};
+
+export const useSignInWithOtpVerify = () => {
+  const toast = useToast();
+  const { setAuth, setUser } = useAuthStore();
+
+  return useMutation({
+    mutationFn: signInWithOtpVerify,
+    onSuccess: async (response: SignInWithOtpVerifyResponse) => {
+      const { access_token, refresh_token } = response.data;
+      setAuth(access_token, refresh_token);
+      try {
+        await Promise.resolve();
+        const userResponse = await getLoggedInUser();
+        setUser(userResponse.data);
+      } catch (error: any) {
+        toast.error("Failed", {
+          description: error.message,
+        });
+      }
+    },
+    onError: (error: ApiError) => {
+      toast.error("OTP verification failed", {
+        description: error.message,
+      });
+    },
+  });
+};
+
+export const useForgotPassword = () => {
+  const toast = useToast();
+  return useMutation({
+    mutationFn: forgotPassword,
+    onSuccess: () => {
+      toast.success("OTP Sent Successfully", {
+        description: "A verification code has been sent. Please check your inbox.",
+      });
+    },
+    onError: (error: ApiError) => {
+      toast.error("Failed to send OTP", {
         description: error.message,
       });
     },

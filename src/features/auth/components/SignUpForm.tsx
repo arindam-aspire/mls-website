@@ -1,26 +1,27 @@
 "use client";
 
-import { Eye, EyeOff, Lock, Mail, User } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail, User, UserPlus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button, Input, PhoneInput } from "@/src/components/ui";
 import { useForm } from "@/src/hooks/useForm";
-
-export type SignUpFormValues = {
-  fullName: string;
-  email: string;
-  phoneCountryCode: string;
-  phoneNationalNumber: string;
-  password: string;
-};
+import type { SignUpFormValues } from "../types/auth.types";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PASSWORD_PATTERN =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,12}$/;
+const FULL_NAME_PATTERN = /^[a-zA-Z\s]+$/;
 
-export function SignUpForm() {
+type SignUpFormProps = {
+  onSubmit: (values: SignUpFormValues) => void;
+  isLoading: boolean;
+};
+
+export function SignUpForm({ onSubmit, isLoading }: SignUpFormProps) {
   const t = useTranslations("auth");
   const [showPassword, setShowPassword] = useState(false);
+  const [phoneCountryCode, setPhoneCountryCode] = useState("JO");
+  const [phoneNationalNumber, setPhoneNationalNumber] = useState("");
 
   const {
     values,
@@ -34,17 +35,21 @@ export function SignUpForm() {
     setTouched,
   } = useForm<SignUpFormValues>({
     initialValues: {
-      fullName: "",
+      full_name: "",
       email: "",
-      phoneCountryCode: "JO",
-      phoneNationalNumber: "",
+      phone_number: "",
       password: "",
     },
     validate: (formValues) => {
       const nextErrors: Partial<Record<keyof SignUpFormValues, string>> = {};
 
-      if (!formValues.fullName.trim()) {
-        nextErrors.fullName = t("signUpFullNameRequired");
+      if (!formValues.full_name.trim()) {
+        nextErrors.full_name = t("signUpFullNameRequired");
+      } else if (
+        !FULL_NAME_PATTERN.test(formValues.full_name.trim()) ||
+        (formValues.full_name.match(/[a-zA-Z]/g) || []).length < 2
+      ) {
+        nextErrors.full_name = t("signUpFullNameInvalid");
       }
 
       if (!formValues.email.trim()) {
@@ -53,10 +58,10 @@ export function SignUpForm() {
         nextErrors.email = t("signUpEmailInvalid");
       }
 
-      if (!formValues.phoneNationalNumber.trim()) {
-        nextErrors.phoneNationalNumber = t("signUpPhoneRequired");
-      } else if (formValues.phoneNationalNumber.replace(/\D/g, "").length < 7) {
-        nextErrors.phoneNationalNumber = t("signUpPhoneInvalid");
+      if (!phoneNationalNumber.trim()) {
+        nextErrors.phone_number = t("signUpPhoneRequired");
+      } else if (phoneNationalNumber.replace(/\D/g, "").length < 7) {
+        nextErrors.phone_number = t("signUpPhoneInvalid");
       }
 
       if (!formValues.password) {
@@ -80,37 +85,41 @@ export function SignUpForm() {
   };
 
   const handlePhoneChange = (payload: {
-    country: { iso2: string };
+    country: { iso2: string; dialCode: string };
     nationalNumber: string;
   }) => {
+    setPhoneCountryCode(payload.country.iso2);
+    setPhoneNationalNumber(payload.nationalNumber);
+
+    const phoneNumber = payload.nationalNumber
+      ? `${payload.country.dialCode} ${payload.nationalNumber}`
+      : "";
+
     setValues((prev) => ({
       ...prev,
-      phoneCountryCode: payload.country.iso2,
-      phoneNationalNumber: payload.nationalNumber,
+      phone_number: phoneNumber,
     }));
 
-    if (touched.phoneNationalNumber) {
+    if (touched.phone_number) {
       setErrors((prev) => ({
         ...prev,
-        phoneNationalNumber: getPhoneError(payload.nationalNumber),
+        phone_number: getPhoneError(payload.nationalNumber),
       }));
     }
   };
 
   const handlePhoneBlur = () => {
-    setTouched((prev) => ({ ...prev, phoneNationalNumber: true }));
+    setTouched((prev) => ({ ...prev, phone_number: true }));
     setErrors((prev) => ({
       ...prev,
-      phoneNationalNumber: getPhoneError(values.phoneNationalNumber),
+      phone_number: getPhoneError(phoneNationalNumber),
     }));
   };
 
   return (
     <form
       noValidate
-      onSubmit={handleSubmit(() => {
-        // Email sign-up submit — wire API when ready
-      })}
+      onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col gap-6"
     >
       <div className="space-y-1 text-center">
@@ -122,16 +131,16 @@ export function SignUpForm() {
 
       <div className="flex flex-col gap-5">
         <Input
-          name="fullName"
+          name="full_name"
           type="text"
           autoComplete="name"
           size="lg"
           label={t("signUpFullNameLabel")}
           placeholder={t("signUpFullNamePlaceholder")}
-          value={values.fullName}
+          value={values.full_name}
           onChange={handleChange}
           onBlur={handleBlur}
-          error={errors.fullName}
+          error={errors.full_name}
           iconStart={<User className="size-4" aria-hidden />}
           isRequired
         />
@@ -154,11 +163,11 @@ export function SignUpForm() {
         <PhoneInput
           label={t("signUpPhoneLabel")}
           placeholder={t("signUpPhonePlaceholder")}
-          countryCode={values.phoneCountryCode}
-          nationalNumber={values.phoneNationalNumber}
+          countryCode={phoneCountryCode}
+          nationalNumber={phoneNationalNumber}
           onChange={handlePhoneChange}
           onBlur={handlePhoneBlur}
-          error={errors.phoneNationalNumber}
+          error={errors.phone_number}
           searchPlaceholder={t("signUpPhoneSearchPlaceholder")}
           emptySearchLabel={t("signUpPhoneNoMatches")}
           showPhoneIcon={false}
@@ -207,6 +216,8 @@ export function SignUpForm() {
         size="lg"
         fullWidth
         className="font-semibold"
+        isLoading={isLoading}
+        iconStart={<UserPlus className="size-5" aria-hidden />}
       >
         {t("signUpCreateAccount")}
       </Button>

@@ -1,4 +1,49 @@
+// ── Sign Up ──────────────────────────────────────────────────────────────────
+
+export type SignUpFormValues = {
+  full_name: string;
+  email: string;
+  phone_number: string;
+  password: string;
+};
+
+export type SignUpRequest = {
+  full_name: string;
+  email: string;
+  phone_number: string;
+  password: string;
+};
+
+export type SignUpResponse = {
+  success: boolean;
+  message: string;
+  data: unknown;
+  error: unknown;
+  meta: Record<string, unknown>;
+};
+
+export type ConfirmSignUpRequest = {
+  email: string;
+  otp: string;
+};
+
+export type ConfirmSignUpResponse = {
+  success: boolean;
+  message: string;
+  data: unknown;
+  error: unknown;
+  meta: Record<string, unknown>;
+};
+
+// ── Sign In ──────────────────────────────────────────────────────────────────
+
 export type SignInFormValues = {
+  username: string;
+  password: string;
+  rememberMe: boolean;
+};
+
+export type SignInRequest = {
   username: string;
   password: string;
   rememberMe: boolean;
@@ -21,6 +66,46 @@ export type SignInResponse = {
   error: unknown;
   meta: Record<string, unknown>;
 };
+
+// ── Sign In with OTP ────────────────────────────────────────────────────────
+
+export type SignInWithOtpVerifyRequest = {
+  otp: string;
+  email?: string;
+  phone_number?: string;
+};
+
+export type SignInWithOtpVerifyResponse = {
+  success: boolean;
+  message: string;
+  data: SignInTokens;
+  error: unknown;
+  meta: Record<string, unknown>;
+};
+
+// ── Forgot Password ─────────────────────────────────────────────────────────
+
+export type ForgotPasswordFormValues = {
+  email: string;
+  phoneCountryCode: string;
+  phoneNationalNumber: string;
+};
+
+export type ForgotPasswordRequest = {
+  email?: string;
+  phoneCountryCode?: string;
+  phoneNationalNumber?: string;
+};
+
+export type ForgotPasswordResponse = {
+  success: boolean;
+  message: string;
+  data: boolean;
+  error: unknown;
+  meta: Record<string, unknown>;
+};
+
+// ── User & Auth Session ─────────────────────────────────────────────────────
 
 export type Permission = {
   code: string;
@@ -59,6 +144,8 @@ export type LoggedInUserResponse = {
   error: unknown;
   meta: Record<string, unknown>;
 };
+
+// ── Logout ──────────────────────────────────────────────────────────────────
 
 export type LogoutResponse = {
   success: boolean;

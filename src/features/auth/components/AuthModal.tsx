@@ -25,6 +25,7 @@ import { SignInWithOTPScreen } from "../screens/SignInWithOTPScreen";
 import { SocialRegistrationScreen } from "../screens/SocialRegistrationScreen";
 import { SocialSignInScreen } from "../screens/SocialSignInScreen";
 import { UserRegistrationScreen } from "../screens/UserRegistrationScreen";
+import { ConfirmSignUpScreen } from "../screens/ConfirmSignUpScreen";
 
 export {
   AUTH_QUERY_KEY,
@@ -82,6 +83,8 @@ function renderAuthView(view: string | null, onSighinSuccess: () => void) {
       return <SignInWithOTPScreen />;
     case AUTH_VIEW.otpVerify:
       return <OTPVerificationScreen />;
+    case AUTH_VIEW.confirmSignUp:
+      return <ConfirmSignUpScreen />;
     default:
       return null;
   }

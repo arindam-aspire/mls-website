@@ -6,7 +6,7 @@ export const AUTH_OTP_PHONE_QUERY_KEY = "otp-phone";
 export const AUTH_OTP_PHONE_COUNTRY_QUERY_KEY = "otp-phone-country";
 export const CHOOSE_ACCOUNT_QUERY_KEY = "choose-account";
 
-export type AuthOtpFlow = "signin" | "forgot";
+export type AuthOtpFlow = "signin" | "forgot" | "signup";
 
 export type AuthModalUrlOptions = {
   returnView?: AuthView;
@@ -33,6 +33,7 @@ export const AUTH_VIEW = {
   agencySignIn: "agency-sign-in",
   agencySignUp: "agency-sign-up",
   agencyEmailSignIn: "agency-email-sign-in",
+  confirmSignUp: "confirm-sign-up",
 } as const;
 
 export type AuthView = (typeof AUTH_VIEW)[keyof typeof AUTH_VIEW];

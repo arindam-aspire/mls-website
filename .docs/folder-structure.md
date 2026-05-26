@@ -138,6 +138,7 @@ mls_website/
 │   │   │   ├── mutations/
 │   │   │   │   └── auth.mutation.ts
 │   │   │   ├── screens/
+│   │   │   │   ├── ConfirmSignUpScreen.tsx
 │   │   │   │   ├── AccountChooseScreen.tsx
 │   │   │   │   ├── AgencyEmailSignInScreen.tsx
 │   │   │   │   ├── AgencyRegistrationScreen.tsx
