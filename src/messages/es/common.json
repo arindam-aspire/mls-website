@@ -19,5 +19,17 @@
   "navOffPlan": "Sobre plano",
   "navSell": "Vender",
   "navAboutUs": "Sobre nosotros",
-  "notifications": "Notificaciones"
+  "notifications": "Notificaciones",
+  "profile": "Mi Perfil",
+  "myListings": "Mis Listados",
+  "myFavourites": "Mis Favoritos",
+  "mySavedSearches": "Mis Búsquedas Guardadas",
+  "myRecentlyViewed": "Vistos Recientemente",
+  "myInquiries": "Mis Consultas",
+  "signOut": "Cerrar sesión",
+  "logout": "Cerrar sesión",
+  "logoutConfirmTitle": "¿Estás seguro de que quieres cerrar sesión?",
+  "logoutConfirmDescription": "Necesitarás iniciar sesión de nuevo para acceder a tu cuenta.",
+  "logoutCancel": "Permanecer conectado",
+  "signingOut": "Cerrando sesión…"
 }

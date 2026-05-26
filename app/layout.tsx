@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getLocale } from "next-intl/server";
 import { Geist, Geist_Mono, Tajawal } from "next/font/google";
 import { isRtlLocale } from "@/src/i18n/routing";
+import { AuthProvider } from "@/src/providers/AuthProvider";
 import { ThemeProvider } from "@/src/providers/ThemeProvider";
 import QueryProvider from "@/src/providers/QueryProvider";
 import ToastProvider from "@/src/providers/ToastProvider";
@@ -49,7 +50,9 @@ export default async function RootLayout({
         <QueryProvider>
           <ThemeProvider>
             <ToastProvider>
-              <div className="flex min-h-0 flex-1 flex-col">{children}</div>
+              <AuthProvider>
+                <div className="flex min-h-0 flex-1 flex-col">{children}</div>
+              </AuthProvider>
             </ToastProvider>
           </ThemeProvider>
         </QueryProvider>

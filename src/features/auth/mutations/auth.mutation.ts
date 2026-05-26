@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
-import { getLoggedInUser, signInWithPassword } from "../services/auth.service";
+import { getLoggedInUser, logout, signInWithPassword } from "../services/auth.service";
 import { useToast } from "@/src/hooks/useToast";
 import { type ApiError } from "@/src/apis/core/error.normalizer";
 import { useAuthStore } from "../store/auth.store";
@@ -29,6 +29,23 @@ export const useSignInWithPassword = () => {
     },
     onError: (error: ApiError) => {
       toast.error("Sign in failed", {
+        description: error.message,
+      });
+    },
+  });
+};
+
+export const useLogout = () => {
+  const toast = useToast();
+  const { clearAuth } = useAuthStore();
+
+  return useMutation({
+    mutationFn: logout,
+    onSuccess: () => {
+      clearAuth();
+    },
+    onError: (error: ApiError) => {
+      toast.error("Logout failed", {
         description: error.message,
       });
     },

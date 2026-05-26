@@ -19,5 +19,17 @@
   "navOffPlan": "Sur plan",
   "navSell": "Vendre",
   "navAboutUs": "À propos",
-  "notifications": "Notifications"
+  "notifications": "Notifications",
+  "profile": "Mon Profil",
+  "myListings": "Mes Annonces",
+  "myFavourites": "Mes Favoris",
+  "mySavedSearches": "Mes Recherches Sauvegardées",
+  "myRecentlyViewed": "Vus Récemment",
+  "myInquiries": "Mes Demandes",
+  "signOut": "Déconnexion",
+  "logout": "Déconnexion",
+  "logoutConfirmTitle": "Êtes-vous sûr de vouloir vous déconnecter ?",
+  "logoutConfirmDescription": "Vous devrez vous reconnecter pour accéder à votre compte.",
+  "logoutCancel": "Rester connecté",
+  "signingOut": "Déconnexion en cours…"
 }

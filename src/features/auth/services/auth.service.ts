@@ -1,6 +1,6 @@
 import { authClient } from "@/src/apis/clients/api.client";
 import { authEndpoints } from "@/src/apis/endpoints/authEndpoints";
-import type { LoggedInUserResponse, SignInFormValues, SignInResponse } from "../types/auth.types";
+import type { LoggedInUserResponse, LogoutResponse, SignInFormValues, SignInResponse } from "../types/auth.types";
 
 export async function signInWithPassword(data: SignInFormValues): Promise<SignInResponse> {
   return authClient.request<SignInResponse>({
@@ -15,5 +15,13 @@ export async function getLoggedInUser(): Promise<LoggedInUserResponse> {
     endpoint: authEndpoints.LOGGED_IN_USER,
     method: "GET",
     auth: true
+  });
+}
+
+export async function logout(): Promise<LogoutResponse> {
+  return authClient.request<LogoutResponse>({
+    endpoint: authEndpoints.LOGOUT,
+    method: "POST",
+    auth: true,
   });
 }

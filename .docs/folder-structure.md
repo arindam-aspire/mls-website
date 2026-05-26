@@ -57,6 +57,8 @@ mls_website/
 │   │       ├── MLS_Home_Image.png
 │   │       └── MLS_Light_Logo.png
 │   ├── components/
+│   │   ├── common/
+│   │   │   └── ConfirmModal.tsx
 │   │   └── ui/
 │   │       ├── fieldVariants.ts
 │   │       ├── avatar/
@@ -191,8 +193,12 @@ mls_website/
 │   │   ├── protected-layout/
 │   │   └── public-layout/
 │   │       ├── index.tsx
+│   │       ├── DesktopActions.tsx
+│   │       ├── DesktopNav.tsx
+│   │       ├── ProfilePopover.tsx
 │   │       ├── PublicFooter.tsx
 │   │       ├── PublicHeader.tsx
+│   │       ├── PublicHeaderThemeButton.tsx
 │   │       └── PublicMain.tsx
 │   ├── messages/
 │   │   ├── ar/

@@ -19,5 +19,17 @@
   "navOffPlan": "Off-Plan",
   "navSell": "Sell",
   "navAboutUs": "About Us",
-  "notifications": "Notifications"
+  "notifications": "Notifications",
+  "profile": "My Profile",
+  "myListings": "My Listings",
+  "myFavourites": "My Favourites",
+  "mySavedSearches": "My Saved Searches",
+  "myRecentlyViewed": "My Recently Viewed",
+  "myInquiries": "My Inquiries",
+  "signOut": "Sign Out",
+  "logout": "Logout",
+  "logoutConfirmTitle": "Are you sure you want to logout?",
+  "logoutConfirmDescription": "You will need to sign in again to access your account.",
+  "logoutCancel": "Stay signed in",
+  "signingOut": "Signing out…"
 }

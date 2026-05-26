@@ -19,5 +19,17 @@
   "navOffPlan": "على المخطط",
   "navSell": "بيع",
   "navAboutUs": "من نحن",
-  "notifications": "الإشعارات"
+  "notifications": "الإشعارات",
+  "profile": "ملفي الشخصي",
+  "myListings": "إعلاناتي",
+  "myFavourites": "مفضلاتي",
+  "mySavedSearches": "عمليات البحث المحفوظة",
+  "myRecentlyViewed": "شوهد مؤخراً",
+  "myInquiries": "استفساراتي",
+  "signOut": "تسجيل الخروج",
+  "logout": "تسجيل الخروج",
+  "logoutConfirmTitle": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
+  "logoutConfirmDescription": "ستحتاج إلى تسجيل الدخول مرة أخرى للوصول إلى حسابك.",
+  "logoutCancel": "ابقَ مسجلاً",
+  "signingOut": "جارٍ تسجيل الخروج…"
 }

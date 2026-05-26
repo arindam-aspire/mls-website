@@ -2,13 +2,13 @@
 
 import { CloseButton, useClose } from "@headlessui/react";
 import Image from "next/image";
-import { Bell, Menu, Moon, Sun, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { cn } from "@/src/lib/cn";
 import { Avatar } from "@/src/components/ui/avatar";
 import { Button } from "@/src/components/ui/button";
-import { IconButton } from "@/src/components/ui/icon-button";
+import { Skeleton } from "@/src/components/ui/skeleton";
 import {
   Popover,
   PopoverBackdrop,
@@ -17,14 +17,15 @@ import {
   PopoverPanel,
 } from "@/src/components/ui/popover";
 import { Select } from "@/src/components/ui/select";
+import { AUTH_VIEW } from "@/src/features/auth/authViews";
+import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { Link, usePathname, useRouter } from "@/src/i18n/navigation";
 import type { AppLocale } from "@/src/i18n/routing";
-import { AUTH_VIEW } from "@/src/features/auth/authViews";
-import { useTheme, type ThemeMode } from "@/src/providers/ThemeProvider";
 import mlsLogoDark from "@/src/assets/images/MLS_Dark_Logo.png";
 import mlsLogoLight from "@/src/assets/images/MLS_Light_Logo.png";
-import { LoggedInUser } from "@/src/features/auth/types/auth.types";
-import { useAuthStore } from "@/src/features/auth/store/auth.store";
+import { PublicHeaderThemeButton } from "./PublicHeaderThemeButton";
+import { DesktopNav } from "./DesktopNav";
+import { DesktopActions } from "./DesktopActions";
 
 const LOCALE_OPTIONS: { value: AppLocale; label: string }[] = [
   { value: "en", label: "En" },
@@ -44,38 +45,7 @@ const NAV_ITEMS = [
 const mobileNavLinkClass =
   "w-full rounded-lg px-4 py-3.5 text-start text-base font-medium text-text transition-colors hover:bg-surface focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary/40";
 
-function getThemeToggleIcon(mode: ThemeMode) {
-  return mode === "light" ? <Moon aria-hidden /> : <Sun aria-hidden />;
-}
-
-function PublicHeaderThemeButton({
-  overHero,
-  className,
-}: {
-  overHero: boolean;
-  className?: string;
-}) {
-  const t = useTranslations("common");
-  const { theme, setTheme } = useTheme();
-
-  return (
-    <IconButton
-      type="button"
-      icon={getThemeToggleIcon(theme)}
-      aria-label={t(theme === "light" ? "themeSwitchToDark" : "themeSwitchToLight")}
-      color="secondary"
-      variant="ghost"
-      size="md"
-      onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-      className={cn(
-        overHero && "!bg-transparent !text-white hover:!bg-white/15",
-        className,
-      )}
-    />
-  );
-}
-
-interface PublicHeaderMobileMenuProps {
+interface MobileMenuProps {
   onNavigate: (path: string) => void;
   onLocaleChange: (locale: string) => void;
   locale: AppLocale;
@@ -84,14 +54,14 @@ interface PublicHeaderMobileMenuProps {
   closeMenuLabel: string;
 }
 
-function PublicHeaderMobileMenu({
+function MobileMenu({
   onNavigate,
   onLocaleChange,
   locale,
   navLabel,
   languageLabel,
   closeMenuLabel,
-}: PublicHeaderMobileMenuProps) {
+}: MobileMenuProps) {
   const t = useTranslations("common");
   const close = useClose();
 
@@ -151,7 +121,7 @@ function PublicHeaderMobileMenu({
 }
 
 export function PublicHeader() {
-  const { user } = useAuthStore();
+  const { user, isLoadingUser } = useAuthStore();
   const t = useTranslations("common");
   const locale = useLocale() as AppLocale;
   const router = useRouter();
@@ -172,9 +142,6 @@ export function PublicHeader() {
   const overHero = isHome && !scrolled;
 
   const logoSrc = overHero ? mlsLogoDark : mlsLogoLight;
-  const navLinkClass = overHero
-    ? "text-white hover:text-white/90"
-    : "text-text hover:text-secondary";
 
   const openChooseAccount = () => {
     router.push({ pathname: "/", query: { auth: AUTH_VIEW.chooseAccount } });
@@ -198,10 +165,7 @@ export function PublicHeader() {
           : "border-b border-secondary/10 bg-page/90 backdrop-blur-md",
       )}
     >
-      <Link
-        href="/"
-        className="col-start-1 justify-self-start"
-      >
+      <Link href="/" className="col-start-1 justify-self-start">
         <Image
           src={logoSrc}
           alt={t("brand")}
@@ -210,26 +174,11 @@ export function PublicHeader() {
         />
       </Link>
 
-      <nav
-        aria-label={t("mainNav")}
-        className="col-start-2 row-start-1 hidden items-center justify-center gap-6 md:flex lg:gap-8"
-      >
-        {NAV_ITEMS.map(({ path, labelKey }) => (
-          <button
-            key={path}
-            type="button"
-            onClick={() => router.push(path)}
-            className={cn(
-              "cursor-pointer text-[14px] font-medium transition-colors",
-              navLinkClass,
-            )}
-          >
-            {t(labelKey)}
-          </button>
-        ))}
-      </nav>
+      <DesktopNav overHero={overHero} />
 
-      {user ? (
+      {isLoadingUser ? (
+        <Skeleton variant="circular" className="col-start-2 size-9 justify-self-center md:hidden" />
+      ) : user ? (
         <Avatar
           src={user.profile_picture_url}
           name={user.full_name}
@@ -249,54 +198,7 @@ export function PublicHeader() {
         </Button>
       )}
 
-      <div className="col-start-3 hidden items-center gap-3 justify-self-end md:flex">
-        <PublicHeaderThemeButton overHero={overHero} />
-
-        <Select
-          aria-label={t("language")}
-          options={LOCALE_OPTIONS}
-          value={locale}
-          onChange={handleLocaleChange}
-          variant="outline"
-          size="md"
-          fullWidth={false}
-          wrapperClassName="relative z-[60] w-auto min-w-[4.5rem] shrink-0"
-          selectClassName={overHero ? "bg-surface/90 backdrop-blur-sm" : undefined}
-        />
-
-        {user ? (
-          <>
-            <IconButton
-              icon={<Bell className="size-5" aria-hidden />}
-              aria-label={t("notifications")}
-              color="primary"
-              variant="solid"
-              isRounded={true}
-              size="md"
-              className={cn(
-                overHero && "!bg-surface !text-text hover:!bg-surface/80 rounded-full",
-              )}
-            />
-            <Avatar
-              src={user.profile_picture_url}
-              name={user.full_name}
-              size="md"
-              className="cursor-pointer border-2 border-page size-14"
-            />
-          </>
-        ) : (
-          <Button
-            type="button"
-            color="primary"
-            variant="solid"
-            size="md"
-            className="shrink-0"
-            onClick={openChooseAccount}
-          >
-            {t("signInSignUp")}
-          </Button>
-        )}
-      </div>
+      <DesktopActions overHero={overHero} />
 
       <Popover className="col-start-3 justify-self-end md:hidden">
         <PopoverButton
@@ -309,7 +211,7 @@ export function PublicHeader() {
         <PopoverBackdrop className="z-[90] bg-black/40" />
 
         <PopoverPanel fullScreen className="p-0">
-          <PublicHeaderMobileMenu
+          <MobileMenu
             onNavigate={(path) => router.push(path)}
             onLocaleChange={handleLocaleChange}
             locale={locale}
@@ -322,4 +224,3 @@ export function PublicHeader() {
     </header>
   );
 }
-

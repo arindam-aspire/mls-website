@@ -11,8 +11,8 @@ const baseClasses = cn(
 );
 
 const underlineClasses = {
-  always: "underline decoration-1 hover:decoration-2",
-  hover: "no-underline hover:underline hover:decoration-2 decoration-1",
+  always: "underline decoration-1 hover:decoration-1",
+  hover: "no-underline hover:underline hover:decoration-1 decoration-1",
 } as const;
 
 const colorClasses: Record<LinkColor, Record<LinkVariant, string>> = {

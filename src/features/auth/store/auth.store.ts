@@ -4,17 +4,20 @@ import { LoggedInUser } from "../types/auth.types";
 
 interface AuthState {
   user: LoggedInUser | null;
+  isLoadingUser: boolean;
   access_token: string | null;
   refresh_token: string | null;
   setAuth: (access_token: string, refresh_token: string) => void;
   setAccessToken: (access_token: string) => void;
   setRefreshToken: (refresh_token: string) => void;
   setUser: (user: LoggedInUser) => void;
+  setIsLoadingUser: (loading: boolean) => void;
   clearAuth: () => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
+  isLoadingUser: false,
   access_token: null,
   refresh_token: null,
 
@@ -35,12 +38,16 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   setUser: (user) => {
-    set({ user });
+    set({ user, isLoadingUser: false });
+  },
+
+  setIsLoadingUser: (loading) => {
+    set({ isLoadingUser: loading });
   },
 
   clearAuth: () => {
     tokenStore.removeAccessToken();
     tokenStore.removeRefreshToken();
-    set({ user: null, access_token: null, refresh_token: null });
+    set({ user: null, isLoadingUser: false, access_token: null, refresh_token: null });
   },
 }));
