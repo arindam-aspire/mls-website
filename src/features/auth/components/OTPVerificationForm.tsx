@@ -200,16 +200,6 @@ export function OTPVerificationForm({
 
   return (
     <form noValidate onSubmit={handleSubmit} className="flex flex-col gap-6">
-      <div className="space-y-2 text-center">
-        <h2 className="text-xl font-bold text-secondary sm:text-2xl">
-          {t("otpVerifyTitle")}
-        </h2>
-        <p className="text-sm text-muted">{subtitle}</p>
-        {contactLine !== "" && (
-          <p className="text-sm font-semibold text-text">{contactLine}</p>
-        )}
-      </div>
-
       <div className="flex flex-col gap-2">
         <div
           role="group"

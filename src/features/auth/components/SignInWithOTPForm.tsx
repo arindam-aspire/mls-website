@@ -132,13 +132,6 @@ export function SignInWithOTPForm({
       })}
       className="flex flex-col gap-6"
     >
-      <div className="space-y-1 text-center">
-        <h2 className="text-xl font-bold text-secondary sm:text-2xl">
-          {t("chooseAccountSignInTitle")}
-        </h2>
-        <p className="text-sm text-muted">{t("forgotPasswordSubtitle")}</p>
-      </div>
-
       <ToggleButton<SignInOtpMethod>
         className="w-full"
         color="primary"

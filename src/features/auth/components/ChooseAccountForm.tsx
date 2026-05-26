@@ -7,7 +7,7 @@ import {
   KeyRound,
   User,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { ToggleButton } from "@/src/components/ui";
 import { useTranslations } from "next-intl";
 import { cn } from "@/src/lib/cn";
@@ -27,18 +27,21 @@ export const CHOOSE_ACCOUNT_TYPES = [
 export type ChooseAccountType = (typeof CHOOSE_ACCOUNT_TYPES)[number];
 
 type ChooseAccountFormProps = {
+  mode: ChooseAccountMode;
+  onModeChange: (mode: ChooseAccountMode) => void;
   onAccountTypeSelect?: (type: ChooseAccountType) => void;
   className?: string;
 };
 
 export function ChooseAccountForm({
+  mode,
+  onModeChange,
   onAccountTypeSelect,
   className,
 }: ChooseAccountFormProps) {
   const t = useTranslations("auth");
   const router = useRouter();
   const pathname = usePathname();
-  const [mode, setMode] = useState<ChooseAccountMode>("signin");
 
   const handleAccountTypeSelect = (type: ChooseAccountType) => {
     const view = resolveAccountTypeAuthView(type, mode);
@@ -47,11 +50,6 @@ export function ChooseAccountForm({
     }
     onAccountTypeSelect?.(type);
   };
-
-  const title =
-    mode === "signin"
-      ? t("chooseAccountSignInTitle")
-      : t("chooseAccountSignUpTitle");
 
   const accountTypes = useMemo(
     () =>
@@ -99,19 +97,13 @@ export function ChooseAccountForm({
           isRounded
           value={mode}
           variant="ghost"
-          onChange={setMode}
+          onChange={onModeChange}
           aria-label={t("chooseAccountModeLabel")}
           items={[
             { value: "signin", label: t("signIn") },
             { value: "signup", label: t("signUp") },
           ]}
         />
-      </div>
-      <div className="space-y-1 text-center">
-        <h2 className="text-xl font-bold text-secondary sm:text-2xl">{title}</h2>
-        <p className="text-sm text-muted">
-          {t("chooseAccountSubtitle")}
-        </p>
       </div>
       <div className="flex flex-col gap-3">
         {accountTypes.map((item) => (

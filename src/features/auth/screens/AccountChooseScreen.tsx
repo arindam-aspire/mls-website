@@ -14,13 +14,21 @@ import {
   AUTH_VIEW,
 } from "@/src/features/auth/authViews";
 import { AuthModalHeader } from "../components/AuthModalHeader";
-import { ChooseAccountForm } from "../components/ChooseAccountForm";
+import { ChooseAccountForm, type ChooseAccountMode } from "../components/ChooseAccountForm";
+import { useState } from "react";
 
 export function AccountChooseScreen() {
   const t = useTranslations("auth");
   const tCommon = useTranslations("common");
   const router = useRouter();
   const pathname = usePathname();
+  const [mode, setMode] = useState<ChooseAccountMode>("signin");
+
+  const title =
+    mode === "signin"
+      ? t("chooseAccountSignInTitle")
+      : t("chooseAccountSignUpTitle");
+
   const openAuthView = (view: (typeof AUTH_VIEW)[keyof typeof AUTH_VIEW]) => {
     router.replace(`${pathname}?${AUTH_QUERY_KEY}=${view}`);
   };
@@ -30,7 +38,11 @@ export function AccountChooseScreen() {
       <AuthModalHeader />
       <ModalCloseButton />
       <ModalContent className="!py-0 sm:!py-0">
-        <ChooseAccountForm />
+        <div className="space-y-1 px-4 pt-2 text-center sm:px-6">
+          <h2 className="text-xl font-bold text-secondary sm:text-2xl">{title}</h2>
+          <p className="text-sm text-muted">{t("chooseAccountSubtitle")}</p>
+        </div>
+        <ChooseAccountForm mode={mode} onModeChange={setMode} />
       </ModalContent>
       <ModalFooter className="!block rounded-b-xl border-t-0 bg-primary-light !px-4 !pt-4 !pb-4 dark:bg-page sm:!gap-3 sm:!px-6 sm:!pb-6">
         <div className="space-y-2">

@@ -9,13 +9,14 @@ import {
 } from "@/src/components/ui";
 import { useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { AUTH_QUERY_KEY, AUTH_VIEW, buildAuthModalUrl } from "@/src/features/auth/authViews";
 import { AuthModalHeader } from "../components/AuthModalHeader";
 import { SignUpForm } from "../components/SignUpForm";
 import type { SocialAccountType } from "../components/SocialAuthForm";
 import type { SignUpFormValues } from "../types/auth.types";
 import { useSignUp } from "../mutations/auth.mutation";
+import { useAuthStore } from "../store/auth.store";
 
 type UserRegistrationScreenProps = {
   type: SocialAccountType;
@@ -34,26 +35,22 @@ export function UserRegistrationScreen({ type }: UserRegistrationScreenProps) {
     type === "user" ? AUTH_VIEW.userSocialSignIn : AUTH_VIEW.ownerSocialSignIn;
 
   const { mutate: signUpMutate, isPending, isSuccess } = useSignUp();
-  const lastSubmitRef = useRef<SignUpFormValues | null>(null);
+  const setPendingSignUp = useAuthStore((s) => s.setPendingSignUp);
 
   const openAuthView = (view: (typeof AUTH_VIEW)[keyof typeof AUTH_VIEW]) => {
     router.replace(`${pathname}?${AUTH_QUERY_KEY}=${view}`);
   };
 
   const handleFormSubmit = (values: SignUpFormValues) => {
-    lastSubmitRef.current = values;
+    setPendingSignUp(values);
     signUpMutate(values);
   };
 
   useEffect(() => {
-    if (isSuccess && lastSubmitRef.current) {
-      const values = lastSubmitRef.current;
+    if (isSuccess) {
       const returnView = type === "user" ? AUTH_VIEW.userSignUp : AUTH_VIEW.ownerSignUp;
       router.replace(
-        buildAuthModalUrl(pathname, AUTH_VIEW.confirmSignUp, {
-          returnView,
-          contactEmail: values.email,
-        }),
+        buildAuthModalUrl(pathname, AUTH_VIEW.confirmSignUp, { returnView }),
       );
     }
   }, [isSuccess]);
@@ -68,7 +65,13 @@ export function UserRegistrationScreen({ type }: UserRegistrationScreenProps) {
       />
       <ModalCloseButton />
       <ModalContent className="!py-0 sm:!py-0">
-        <div className="px-4 pb-4 sm:px-6 sm:pb-6">
+        <div className="flex flex-col gap-6 px-4 pb-4 sm:px-6 sm:pb-6">
+          <div className="space-y-1 text-center">
+            <h2 className="text-xl font-bold text-secondary sm:text-2xl">
+              {t("signUpFormTitle")}
+            </h2>
+            <p className="text-sm text-muted">{t("signUpFormSubtitle")}</p>
+          </div>
           <SignUpForm onSubmit={handleFormSubmit} isLoading={isPending} />
         </div>
       </ModalContent>

@@ -1,6 +1,6 @@
 "use client";
 
-import { Clock, Info, Mail, Shield } from "lucide-react";
+import { Clock, Info, Mail } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/src/components/ui";
 import { cn } from "@/src/lib/cn";
@@ -31,25 +31,6 @@ export function AgencyAuthForm({ className }: AgencyAuthFormProps) {
         className,
       )}
     >
-      <div className="flex flex-col items-center gap-4">
-        <div
-          className={cn(
-            "inline-flex items-center gap-2 rounded-full border border-secondary/30",
-            "bg-secondary-light px-4 py-1.5 text-sm font-semibold text-secondary-dark",
-          )}
-        >
-          <Shield className="size-4 shrink-0" aria-hidden />
-          <span>{t("agencyPortalBadge")}</span>
-        </div>
-
-        <div className="space-y-1 text-center">
-          <h2 className="text-xl font-bold text-secondary sm:text-2xl">
-            {t("chooseAccountSignInTitle")}
-          </h2>
-          <p className="text-sm text-muted">{t("agencySignInSubtitle")}</p>
-        </div>
-      </div>
-
       <div
         role="note"
         className="flex gap-3 rounded-xl border border-tertiary-dark/25 bg-tertiary-light p-4"

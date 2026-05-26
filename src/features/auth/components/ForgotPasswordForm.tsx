@@ -116,13 +116,6 @@ export function ForgotPasswordForm({
       onSubmit={handleSubmit((formValues) => onSubmit(formValues, method))}
       className="flex flex-col gap-6"
     >
-      <div className="space-y-1 text-center">
-        <h2 className="text-xl font-bold text-secondary sm:text-2xl">
-          {t("forgotPasswordTitle")}
-        </h2>
-        <p className="text-sm text-muted">{t("forgotPasswordSubtitle")}</p>
-      </div>
-
       <ToggleButton<ForgotPasswordMethod>
         className="w-full"
         color="primary"

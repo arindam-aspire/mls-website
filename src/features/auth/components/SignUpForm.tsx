@@ -6,10 +6,11 @@ import { useState } from "react";
 import { Button, Input, PhoneInput } from "@/src/components/ui";
 import { useForm } from "@/src/hooks/useForm";
 import type { SignUpFormValues } from "../types/auth.types";
+import { PasswordStrengthIndicator } from "@/src/components/common/PasswordStrengthIndicator";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PASSWORD_PATTERN =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,12}$/;
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9_]).{8,20}$/;
 const FULL_NAME_PATTERN = /^[a-zA-Z\s]+$/;
 
 type SignUpFormProps = {
@@ -122,13 +123,6 @@ export function SignUpForm({ onSubmit, isLoading }: SignUpFormProps) {
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col gap-6"
     >
-      <div className="space-y-1 text-center">
-        <h2 className="text-xl font-bold text-secondary sm:text-2xl">
-          {t("signUpFormTitle")}
-        </h2>
-        <p className="text-sm text-muted">{t("signUpFormSubtitle")}</p>
-      </div>
-
       <div className="flex flex-col gap-5">
         <Input
           name="full_name"
@@ -186,7 +180,7 @@ export function SignUpForm({ onSubmit, isLoading }: SignUpFormProps) {
           onChange={handleChange}
           onBlur={handleBlur}
           error={errors.password}
-          hint={!errors.password ? t("signUpPasswordHint") : undefined}
+          hint={!errors.password && !values.password ? t("signUpPasswordHint") : undefined}
           iconStart={<Lock className="size-4" aria-hidden />}
           iconEnd={
             <button
@@ -208,6 +202,8 @@ export function SignUpForm({ onSubmit, isLoading }: SignUpFormProps) {
           }
           isRequired
         />
+
+        <PasswordStrengthIndicator password={values.password} />
       </div>
 
       <Button

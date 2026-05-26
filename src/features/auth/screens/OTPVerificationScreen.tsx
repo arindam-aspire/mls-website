@@ -30,6 +30,7 @@ import { AuthModalHeader } from "../components/AuthModalHeader";
 import { OTPVerificationForm } from "../components/OTPVerificationForm";
 import { useForgotPassword, useSignInWithOtpVerify } from "../mutations/auth.mutation";
 import { useAuthStore } from "../store/auth.store";
+import { maskEmail, maskPhone } from "../maskContact";
 
 function resolveReturnView(from: string | null): AuthView {
   if (isAuthView(from)) {
@@ -53,6 +54,47 @@ function resolveOtpBackView(
     return AUTH_VIEW.agencySignIn;
   }
   return AUTH_VIEW.signInOtp;
+}
+
+function OtpTitle({
+  contactEmail,
+  contactPhone,
+  contactPhoneCountry = "JO",
+}: {
+  contactEmail?: string;
+  contactPhone?: string;
+  contactPhoneCountry?: string;
+}) {
+  const t = useTranslations("auth");
+  const maskedEmail = contactEmail?.trim() ? maskEmail(contactEmail) : null;
+  const maskedPhone = contactPhone?.trim()
+    ? maskPhone(contactPhone, contactPhoneCountry)
+    : null;
+  const hasEmail = maskedEmail != null;
+  const hasPhone = maskedPhone != null;
+
+  const subtitle =
+    hasEmail && hasPhone
+      ? t("otpVerifySubtitleBoth")
+      : hasEmail
+        ? t("otpVerifySubtitleEmail")
+        : hasPhone
+          ? t("otpVerifySubtitlePhone")
+          : t("otpVerifySubtitle");
+
+  const contactLine = [maskedEmail, maskedPhone].filter(Boolean).join(" | ");
+
+  return (
+    <div className="space-y-2 text-center">
+      <h2 className="text-xl font-bold text-secondary sm:text-2xl">
+        {t("otpVerifyTitle")}
+      </h2>
+      <p className="text-sm text-muted">{subtitle}</p>
+      {contactLine !== "" && (
+        <p className="text-sm font-semibold text-text">{contactLine}</p>
+      )}
+    </div>
+  );
 }
 
 export function OTPVerificationScreen() {
@@ -133,7 +175,12 @@ export function OTPVerificationScreen() {
       <AuthModalHeader showBack onBack={handleBack} />
       <ModalCloseButton />
       <ModalContent className="!py-0 sm:!py-0">
-        <div className="px-4 pb-4 sm:px-6 sm:pb-6">
+        <div className="flex flex-col gap-6 px-4 pb-4 sm:px-6 sm:pb-6">
+          <OtpTitle
+            contactEmail={contactEmail}
+            contactPhone={contactPhone}
+            contactPhoneCountry={contactPhoneCountry}
+          />
           <OTPVerificationForm
             otpFlow={otpFlow}
             contactEmail={contactEmail}

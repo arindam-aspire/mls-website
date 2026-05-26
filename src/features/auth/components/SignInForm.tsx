@@ -69,13 +69,6 @@ export function SignInForm({
       onSubmit={handleSubmit(onClickSignIn)}
       className="flex flex-col gap-6"
     >
-      <div className="space-y-1 text-center">
-        <h2 className="text-xl font-bold text-secondary sm:text-2xl">
-          {t("signInFormTitle")}
-        </h2>
-        <p className="text-sm text-muted">{t("signInFormSubtitle")}</p>
-      </div>
-
       <div className="flex flex-col gap-4">
         <Input
           name="username"

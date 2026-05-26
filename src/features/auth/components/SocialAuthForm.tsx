@@ -80,16 +80,6 @@ export function SocialAuthForm({
   const router = useRouter();
   const pathname = usePathname();
 
-  const title =
-    flow === "signin"
-      ? t("chooseAccountSignInTitle")
-      : t("chooseAccountSignUpTitle");
-
-  const subtitle =
-    flow === "signin"
-      ? t("socialSignInWelcome")
-      : t("socialSignUpWelcome");
-
   const emailLabel =
     flow === "signin" ? t("loginWithEmail") : t("signUpWithEmail");
 
@@ -126,10 +116,6 @@ export function SocialAuthForm({
           { value: "owner", label: t("accountTypeOwnerTitle") },
         ]}
       />
-      <div className="space-y-1 text-center">
-        <h2 className="text-xl font-bold text-secondary sm:text-2xl">{title}</h2>
-        <p className="text-sm text-muted">{subtitle}</p>
-      </div>
       <div className="flex flex-col gap-3">
         <Button
           type="button"

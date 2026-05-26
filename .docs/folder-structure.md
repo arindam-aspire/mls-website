@@ -58,7 +58,8 @@ mls_website/
 │   │       └── MLS_Light_Logo.png
 │   ├── components/
 │   │   ├── common/
-│   │   │   └── ConfirmModal.tsx
+│   │   │   ├── ConfirmModal.tsx
+│   │   │   └── PasswordStrengthIndicator.tsx
 │   │   └── ui/
 │   │       ├── fieldVariants.ts
 │   │       ├── avatar/

@@ -91,13 +91,6 @@ export function ResetPasswordForm({
       })}
       className="flex flex-col gap-6"
     >
-      <div className="space-y-1 text-center">
-        <h2 className="text-xl font-bold text-secondary sm:text-2xl">
-          {t("resetPasswordTitle")}
-        </h2>
-        <p className="text-sm text-muted">{t("resetPasswordSubtitle")}</p>
-      </div>
-
       <div className="flex flex-col gap-5">
         <Input
           name="password"

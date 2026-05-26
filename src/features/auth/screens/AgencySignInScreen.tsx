@@ -12,6 +12,8 @@ import { usePathname, useRouter } from "@/src/i18n/navigation";
 import { AUTH_QUERY_KEY, AUTH_VIEW } from "@/src/features/auth/authViews";
 import { AgencyAuthForm } from "../components/AgencyAuthForm";
 import { AuthModalHeader } from "../components/AuthModalHeader";
+import { Shield } from "lucide-react";
+import { cn } from "@/src/lib/cn";
 
 export function AgencySignInScreen() {
   const t = useTranslations("auth");
@@ -28,6 +30,23 @@ export function AgencySignInScreen() {
       <AuthModalHeader showBack />
       <ModalCloseButton />
       <ModalContent className="!py-0 sm:!py-0">
+        <div className="flex flex-col items-center gap-4 px-4 sm:px-6">
+          <div
+            className={cn(
+              "inline-flex items-center gap-2 rounded-full border border-secondary/30",
+              "bg-secondary-light px-4 py-1.5 text-sm font-semibold text-secondary-dark",
+            )}
+          >
+            <Shield className="size-4 shrink-0" aria-hidden />
+            <span>{t("agencyPortalBadge")}</span>
+          </div>
+          <div className="space-y-1 text-center">
+            <h2 className="text-xl font-bold text-secondary sm:text-2xl">
+              {t("chooseAccountSignInTitle")}
+            </h2>
+            <p className="text-sm text-muted">{t("agencySignInSubtitle")}</p>
+          </div>
+        </div>
         <AgencyAuthForm />
       </ModalContent>
       <ModalFooter className="!block rounded-b-xl border-t-0 bg-primary-light !px-4 !pt-4 !pb-4 dark:bg-page sm:!gap-3 sm:!px-6 sm:!pb-6">
