@@ -1,30 +1,31 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Bell, Eye, Heart, Home, LogOut, Search, Send, User } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/src/lib/cn";
 import { Avatar } from "@/src/components/ui/avatar";
 import { Button } from "@/src/components/ui/button";
 import { IconButton } from "@/src/components/ui/icon-button";
-import { Link as UiLink } from "@/src/components/ui/link";
 import {
   Popover,
   PopoverButton,
   PopoverPanel,
 } from "@/src/components/ui/popover";
+import { Link as UiLink } from "@/src/components/ui/link";
 import { ConfirmModal } from "@/src/components/common/ConfirmModal";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import type { LoggedInUser } from "@/src/features/auth/types/auth.types";
 import { useLogout } from "@/src/features/auth/mutations/auth.mutation";
+import { useRouter } from "@/src/i18n/navigation";
 
 const PROFILE_MENU_ITEMS = [
-  { labelKey: "profile", icon: User, path: "/profile" },
-  { labelKey: "myListings", icon: Home, path: "/my-listings" },
-  { labelKey: "myFavourites", icon: Heart, path: "/my-favourites" },
-  { labelKey: "mySavedSearches", icon: Search, path: "/my-saved-searches" },
-  { labelKey: "myRecentlyViewed", icon: Eye, path: "/my-recently-viewed" },
-  { labelKey: "myInquiries", icon: Send, path: "/my-inquiries" },
+  { labelKey: "profile", icon: User, path: "/my-profile" },
+  { labelKey: "myListings", icon: Home, path: "/listing" },
+  { labelKey: "myFavourites", icon: Heart, path: "/favourites" },
+  { labelKey: "mySavedSearches", icon: Search, path: "/saved-searches" },
+  { labelKey: "myRecentlyViewed", icon: Eye, path: "/recently-viewed" },
+  { labelKey: "myInquiries", icon: Send, path: "/inquiries" },
 ] as const;
 
 interface ProfilePopoverProps {
@@ -34,6 +35,7 @@ interface ProfilePopoverProps {
 
 export function ProfilePopover({ user, overHero }: ProfilePopoverProps) {
   const t = useTranslations("common");
+  const router = useRouter();
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const { mutate: logout, isPending: isLoggingOut, isSuccess: isLoggedOut } = useLogout();
 
@@ -92,6 +94,7 @@ export function ProfilePopover({ user, overHero }: ProfilePopoverProps) {
                 alwaysUnderline={false}
                 iconStart={<Icon />}
                 className="w-full justify-start rounded-lg px-2 py-2 hover:bg-inherit-color/10"
+                onClick={() => router.push(path)}
               >
                 {t(labelKey)}
               </UiLink>

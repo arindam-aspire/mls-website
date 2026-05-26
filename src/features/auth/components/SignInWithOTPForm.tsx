@@ -1,12 +1,10 @@
 "use client";
 
-import { Info, Mail } from "lucide-react";
+import { Info, Mail, Send } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button, Input, PhoneInput, ToggleButton } from "@/src/components/ui";
 import { useForm } from "@/src/hooks/useForm";
-import { usePathname, useRouter } from "@/src/i18n/navigation";
-import { AUTH_VIEW, buildAuthModalUrl, type AuthView } from "../authViews";
 
 export type SignInOtpMethod = "email" | "phone";
 
@@ -19,17 +17,15 @@ export type SignInWithOTPFormValues = {
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 type SignInWithOTPFormProps = {
-  signInReturnView?: AuthView;
-  onSuccess?: () => void;
+  onSubmit: (values: SignInWithOTPFormValues, method: SignInOtpMethod) => void;
+  isLoading: boolean;
 };
 
 export function SignInWithOTPForm({
-  signInReturnView = AUTH_VIEW.userSignIn,
-  onSuccess,
+  onSubmit,
+  isLoading,
 }: SignInWithOTPFormProps) {
   const t = useTranslations("auth");
-  const router = useRouter();
-  const pathname = usePathname();
   const [method, setMethod] = useState<SignInOtpMethod>("email");
 
   const {
@@ -116,20 +112,7 @@ export function SignInWithOTPForm({
   return (
     <form
       noValidate
-      onSubmit={handleSubmit(() => {
-        onSuccess?.();
-        router.replace(
-          buildAuthModalUrl(pathname, AUTH_VIEW.otpVerify, {
-            otpFlow: "signin",
-            returnView: signInReturnView,
-            contactEmail: method === "email" ? values.email : undefined,
-            contactPhone:
-              method === "phone" ? values.phoneNationalNumber : undefined,
-            contactPhoneCountry:
-              method === "phone" ? values.phoneCountryCode : undefined,
-          }),
-        );
-      })}
+      onSubmit={handleSubmit((formValues) => onSubmit(formValues, method))}
       className="flex flex-col gap-6"
     >
       <ToggleButton<SignInOtpMethod>
@@ -202,6 +185,8 @@ export function SignInWithOTPForm({
         size="lg"
         fullWidth
         className="font-semibold"
+        isLoading={isLoading}
+        iconStart={<Send className="size-5" aria-hidden />}
       >
         {t("forgotPasswordSendOtp")}
       </Button>

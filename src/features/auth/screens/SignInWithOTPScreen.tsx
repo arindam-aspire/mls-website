@@ -10,17 +10,25 @@ import {
 import { useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
 import { useSearchParams } from "next/navigation";
+import { useEffect, useRef } from "react";
 import {
   AUTH_QUERY_KEY,
   AUTH_RETURN_VIEW_QUERY_KEY,
   AUTH_VIEW,
+  buildAuthModalUrl,
   isAgencyAuthView,
   isAuthView,
   resolveAuthSignUpView,
   type AuthView,
 } from "@/src/features/auth/authViews";
 import { AuthModalHeader } from "../components/AuthModalHeader";
-import { SignInWithOTPForm } from "../components/SignInWithOTPForm";
+import {
+  SignInWithOTPForm,
+  type SignInOtpMethod,
+  type SignInWithOTPFormValues,
+} from "../components/SignInWithOTPForm";
+import { useSignInWithOtpRequest } from "../mutations/auth.mutation";
+import { useToast } from "@/src/hooks/useToast";
 
 function resolveReturnView(from: string | null): AuthView {
   if (isAuthView(from)) {
@@ -40,6 +48,9 @@ export function SignInWithOTPScreen() {
   );
   const signUpView = resolveAuthSignUpView(returnView);
   const isAgency = isAgencyAuthView(returnView);
+  const toast = useToast();
+  const { mutate: requestOtp, isPending, isSuccess } = useSignInWithOtpRequest();
+  const lastEmailRef = useRef<string | null>(null);
 
   const openAuthView = (view: AuthView) => {
     router.replace(`${pathname}?${AUTH_QUERY_KEY}=${view}`);
@@ -48,6 +59,33 @@ export function SignInWithOTPScreen() {
   const handleBack = () => {
     openAuthView(returnView);
   };
+
+  const handleFormSubmit = (
+    values: SignInWithOTPFormValues,
+    method: SignInOtpMethod,
+  ) => {
+    if (method === "phone") {
+      toast.info("Coming Soon", {
+        description: "Sign in via phone number is not available yet. Please use email instead.",
+      });
+      return;
+    }
+
+    lastEmailRef.current = values.email;
+    requestOtp({ username: values.email });
+  };
+
+  useEffect(() => {
+    if (isSuccess && lastEmailRef.current) {
+      router.replace(
+        buildAuthModalUrl(pathname, AUTH_VIEW.otpVerify, {
+          otpFlow: "signin",
+          returnView,
+          contactEmail: lastEmailRef.current,
+        }),
+      );
+    }
+  }, [isSuccess]);
 
   return (
     <ModalPanel size="md">
@@ -61,7 +99,10 @@ export function SignInWithOTPScreen() {
             </h2>
             <p className="text-sm text-muted">{t("forgotPasswordSubtitle")}</p>
           </div>
-          <SignInWithOTPForm signInReturnView={returnView} />
+          <SignInWithOTPForm
+            onSubmit={handleFormSubmit}
+            isLoading={isPending}
+          />
         </div>
       </ModalContent>
       <ModalFooter className="!block rounded-b-xl border-t-0 bg-primary-light !px-4 !pt-4 !pb-4 dark:bg-page sm:!gap-3 sm:!px-6 sm:!pb-6">

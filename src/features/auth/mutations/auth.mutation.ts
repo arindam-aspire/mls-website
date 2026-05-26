@@ -1,11 +1,11 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
-import { confirmSignUp, forgotPassword, getLoggedInUser, logout, signInWithOtpVerify, signInWithPassword, signUp } from "../services/auth.service";
+import { confirmSignUp, forgotPassword, getLoggedInUser, logout, signInWithOtpRequest, signInWithOtpVerify, signInWithPassword, signUp } from "../services/auth.service";
 import { useToast } from "@/src/hooks/useToast";
 import { type ApiError } from "@/src/apis/core/error.normalizer";
 import { useAuthStore } from "../store/auth.store";
-import type { SignInResponse, SignInWithOtpVerifyResponse } from "../types/auth.types";
+import type { SignInResponse, SignInWithOtpResponse, SignInWithOtpVerifyResponse } from "../types/auth.types";
 
 export const useSignInWithPassword = () => {
   const toast = useToast();
@@ -82,6 +82,26 @@ export const useConfirmSignUp = () => {
     },
     onError: (error: ApiError) => {
       toast.error("Verification failed", {
+        description: error.message,
+      });
+    },
+  });
+};
+
+export const useSignInWithOtpRequest = () => {
+  const toast = useToast();
+  const { setPendingOtpSession } = useAuthStore();
+
+  return useMutation({
+    mutationFn: signInWithOtpRequest,
+    onSuccess: (response: SignInWithOtpResponse) => {
+      setPendingOtpSession(response.data);
+      toast.success("OTP Sent Successfully", {
+        description: "A verification code has been sent. Please check your inbox.",
+      });
+    },
+    onError: (error: ApiError) => {
+      toast.error("Failed to send OTP", {
         description: error.message,
       });
     },

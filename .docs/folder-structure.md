@@ -14,12 +14,28 @@ mls_website/
 │   │   │   └── page.tsx
 │   │   ├── not-found.tsx
 │   │   ├── (auth)/
+│   │   ├── (public)/
 │   │   ├── (main)/
+│   │   │   ├── dashboard/
+│   │   │   │   └── page.tsx
 │   │   │   ├── layout.tsx
+│   │   │   ├── my-profile/
+│   │   │   │   └── page.tsx
 │   │   │   └── page.tsx
 │   │   └── (property)/
+│   │       ├── layout.tsx
+│   │       ├── favourites/
+│   │       │   └── page.tsx
+│   │       ├── inquiries/
+│   │       │   └── page.tsx
+│   │       ├── listing/
+│   │       │   └── page.tsx
 │   │       ├── propert-details/
-│   │       └── property-list/
+│   │       ├── property-list/
+│   │       ├── recently-viewed/
+│   │       │   └── page.tsx
+│   │       └── saved-searches/
+│   │           └── page.tsx
 │   ├── globals.css
 │   ├── icon.png
 │   ├── layout.tsx
@@ -58,6 +74,7 @@ mls_website/
 │   │       └── MLS_Light_Logo.png
 │   ├── components/
 │   │   ├── common/
+│   │   │   ├── ComingSoonCard.tsx
 │   │   │   ├── ConfirmModal.tsx
 │   │   │   └── PasswordStrengthIndicator.tsx
 │   │   └── ui/
@@ -158,6 +175,8 @@ mls_website/
 │   │   │   │   └── auth.store.ts
 │   │   │   └── types/
 │   │   │       └── auth.types.ts
+│   │   ├── dashboard/
+│   │   │   └── screens/
 │   │   ├── not-found/
 │   │   │   └── screens/
 │   │   │       └── NotFoundScreen.tsx
@@ -175,11 +194,17 @@ mls_website/
 │   │   │   ├── store/
 │   │   │   └── types/
 │   │   │       └── propertyTaxonomy.types.ts
+│   │   ├── profile/
+│   │   │   └── screens/
 │   │   └── property/
 │   │       ├── components/
 │   │       ├── hooks/
 │   │       ├── screens/
 │   │       │   ├── FavouritePropertyScreen.tsx
+│   │       │   ├── InquiriesScreen.tsx
+│   │       │   ├── ListingPropertyScreen.tsx
+│   │       │   ├── RecentlyViewedScreen.tsx
+│   │       │   ├── SavedSearchesScreen.tsx
 │   │       │   ├── PropertyDetailsScreen.tsx
 │   │       │   └── PropertyListScreen.tsx
 │   │       ├── store/

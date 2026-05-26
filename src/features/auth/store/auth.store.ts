@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { tokenStore } from "@/src/apis/core/token.store";
-import { LoggedInUser, SignUpFormValues } from "../types/auth.types";
+import { LoggedInUser, SignInWithOtpResponseData, SignUpFormValues } from "../types/auth.types";
 
 interface AuthState {
   user: LoggedInUser | null;
@@ -9,6 +9,7 @@ interface AuthState {
   refresh_token: string | null;
   forgotPasswordOtp: string | null;
   pendingSignUp: SignUpFormValues | null;
+  pendingOtpSession: SignInWithOtpResponseData | null;
   setAuth: (access_token: string, refresh_token: string) => void;
   setAccessToken: (access_token: string) => void;
   setRefreshToken: (refresh_token: string) => void;
@@ -18,6 +19,8 @@ interface AuthState {
   clearForgotPasswordOtp: () => void;
   setPendingSignUp: (data: SignUpFormValues) => void;
   clearPendingSignUp: () => void;
+  setPendingOtpSession: (data: SignInWithOtpResponseData) => void;
+  clearPendingOtpSession: () => void;
   clearAuth: () => void;
 }
 
@@ -28,6 +31,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   refresh_token: null,
   forgotPasswordOtp: null,
   pendingSignUp: null,
+  pendingOtpSession: null,
 
   setAuth: (access_token, refresh_token) => {
     tokenStore.setAccessToken(access_token);
@@ -67,6 +71,14 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   clearPendingSignUp: () => {
     set({ pendingSignUp: null });
+  },
+
+  setPendingOtpSession: (data) => {
+    set({ pendingOtpSession: data });
+  },
+
+  clearPendingOtpSession: () => {
+    set({ pendingOtpSession: null });
   },
 
   clearAuth: () => {

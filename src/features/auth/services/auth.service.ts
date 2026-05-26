@@ -1,6 +1,6 @@
 import { authClient } from "@/src/apis/clients/api.client";
 import { authEndpoints } from "@/src/apis/endpoints/authEndpoints";
-import type { ConfirmSignUpRequest, ConfirmSignUpResponse, ForgotPasswordRequest, ForgotPasswordResponse, LoggedInUserResponse, LogoutResponse, SignInRequest, SignInResponse, SignInWithOtpVerifyRequest, SignInWithOtpVerifyResponse, SignUpRequest, SignUpResponse } from "../types/auth.types";
+import type { ConfirmSignUpRequest, ConfirmSignUpResponse, ForgotPasswordRequest, ForgotPasswordResponse, LoggedInUserResponse, LogoutResponse, SignInRequest, SignInResponse, SignInWithOtpRequest, SignInWithOtpResponse, SignInWithOtpVerifyRequest, SignInWithOtpVerifyResponse, SignUpRequest, SignUpResponse } from "../types/auth.types";
 
 export async function signInWithPassword(data: SignInRequest): Promise<SignInResponse> {
   return authClient.request<SignInResponse>({
@@ -23,6 +23,14 @@ export async function logout(): Promise<LogoutResponse> {
     endpoint: authEndpoints.LOGOUT,
     method: "POST",
     auth: true,
+  });
+}
+
+export async function signInWithOtpRequest(data: SignInWithOtpRequest): Promise<SignInWithOtpResponse> {
+  return authClient.request<SignInWithOtpResponse>({
+    endpoint: authEndpoints.SIGN_IN_WITH_OTP,
+    method: "POST",
+    body: data,
   });
 }
 

@@ -69,6 +69,23 @@ export type SignInResponse = {
 
 // ── Sign In with OTP ────────────────────────────────────────────────────────
 
+export type SignInWithOtpRequest = {
+  username: string;
+};
+
+export type SignInWithOtpResponseData = {
+  session: string;
+  otp: string;
+};
+
+export type SignInWithOtpResponse = {
+  success: boolean;
+  message: string;
+  data: SignInWithOtpResponseData;
+  error: unknown;
+  meta: Record<string, unknown>;
+};
+
 export type SignInWithOtpVerifyRequest = {
   otp: string;
   email?: string;
