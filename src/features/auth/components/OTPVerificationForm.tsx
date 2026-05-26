@@ -14,7 +14,6 @@ import {
 import { Button, Link } from "@/src/components/ui";
 import { cn } from "@/src/lib/cn";
 import type { AuthOtpFlow } from "../authViews";
-import { maskEmail, maskPhone } from "../maskContact";
 
 const OTP_LENGTH = 6;
 const RESEND_SECONDS = 60;
@@ -54,18 +53,6 @@ export function OTPVerificationForm({
   const [focusedIndex, setFocusedIndex] = useState(0);
   const [error, setError] = useState<string | undefined>();
   const [resendSeconds, setResendSeconds] = useState(RESEND_SECONDS);
-
-  const maskedEmail =
-    contactEmail != null && contactEmail.trim() !== ""
-      ? maskEmail(contactEmail)
-      : null;
-  const maskedPhone =
-    contactPhone != null && contactPhone.trim() !== ""
-      ? maskPhone(contactPhone, contactPhoneCountry)
-      : null;
-
-  const hasEmail = maskedEmail != null;
-  const hasPhone = maskedPhone != null;
 
   const code = digits.join("");
   const isComplete = code.length === OTP_LENGTH && digits.every((d) => d !== "");
@@ -186,17 +173,6 @@ export function OTPVerificationForm({
         "border-primary bg-surface text-text ring-2 ring-primary/25",
     );
   };
-
-  const subtitle =
-    hasEmail && hasPhone
-      ? t("otpVerifySubtitleBoth")
-      : hasEmail
-        ? t("otpVerifySubtitleEmail")
-        : hasPhone
-          ? t("otpVerifySubtitlePhone")
-          : t("otpVerifySubtitle");
-
-  const contactLine = [maskedEmail, maskedPhone].filter(Boolean).join(" | ");
 
   return (
     <form noValidate onSubmit={handleSubmit} className="flex flex-col gap-6">

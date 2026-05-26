@@ -24,7 +24,7 @@ export type SignUpResponse = {
 
 export type ConfirmSignUpRequest = {
   email: string;
-  otp: string;
+  code: string;
 };
 
 export type ConfirmSignUpResponse = {

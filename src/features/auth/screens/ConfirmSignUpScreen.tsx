@@ -23,50 +23,12 @@ import { OTPVerificationForm } from "../components/OTPVerificationForm";
 import { useConfirmSignUp, useSignUp } from "../mutations/auth.mutation";
 import { useToast } from "@/src/hooks/useToast";
 import { useAuthStore } from "../store/auth.store";
-import { maskEmail, maskPhone } from "../maskContact";
 
 function resolveReturnView(from: string | null): AuthView {
   if (isAuthView(from)) {
     return from;
   }
   return AUTH_VIEW.userSignUp;
-}
-
-function ConfirmSignUpTitle({
-  contactEmail,
-  contactPhone,
-}: {
-  contactEmail?: string;
-  contactPhone?: string;
-}) {
-  const t = useTranslations("auth");
-  const maskedEmail = contactEmail?.trim() ? maskEmail(contactEmail) : null;
-  const maskedPhone = contactPhone?.trim() ? maskPhone(contactPhone) : null;
-  const hasEmail = maskedEmail != null;
-  const hasPhone = maskedPhone != null;
-
-  const subtitle =
-    hasEmail && hasPhone
-      ? t("otpVerifySubtitleBoth")
-      : hasEmail
-        ? t("otpVerifySubtitleEmail")
-        : hasPhone
-          ? t("otpVerifySubtitlePhone")
-          : t("otpVerifySubtitle");
-
-  const contactLine = [maskedEmail, maskedPhone].filter(Boolean).join(" | ");
-
-  return (
-    <div className="space-y-2 text-center">
-      <h2 className="text-xl font-bold text-secondary sm:text-2xl">
-        {t("otpVerifyTitle")}
-      </h2>
-      <p className="text-sm text-muted">{subtitle}</p>
-      {contactLine !== "" && (
-        <p className="text-sm font-semibold text-text">{contactLine}</p>
-      )}
-    </div>
-  );
 }
 
 export function ConfirmSignUpScreen() {
@@ -104,12 +66,13 @@ export function ConfirmSignUpScreen() {
   };
 
   const handleBack = () => {
+    clearPendingSignUp();
     openAuthView(returnView);
   };
 
   const handleSubmit = (code: string) => {
     if (!contactEmail) return;
-    confirmSignUpMutate({ email: contactEmail, otp: code });
+    confirmSignUpMutate({ email: contactEmail, code });
   };
 
   const handleResend = () => {
@@ -136,7 +99,12 @@ export function ConfirmSignUpScreen() {
       <ModalCloseButton />
       <ModalContent className="!py-0 sm:!py-0">
         <div className="flex flex-col gap-6 px-4 pb-4 sm:px-6 sm:pb-6">
-          <ConfirmSignUpTitle contactEmail={contactEmail} contactPhone={contactPhone} />
+          <div className="space-y-1 text-center">
+            <h2 className="text-xl font-bold text-secondary sm:text-2xl">
+              {t("confirmSignUpTitle")}
+            </h2>
+            <p className="text-sm text-muted">{t("confirmSignUpSubtitle")}</p>
+          </div>
           <OTPVerificationForm
             otpFlow="signup"
             contactEmail={contactEmail}
