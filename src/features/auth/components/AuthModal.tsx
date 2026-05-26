@@ -38,7 +38,7 @@ export {
   type AuthView,
 } from "../authViews";
 
-function renderAuthView(view: string | null) {
+function renderAuthView(view: string | null, onSighinSuccess: () => void) {
   switch (view) {
     case AUTH_VIEW.chooseAccount:
       return <AccountChooseScreen />;
@@ -59,7 +59,7 @@ function renderAuthView(view: string | null) {
     case AUTH_VIEW.userSignIn:
     case AUTH_VIEW.ownerSignIn:
       return (
-        <SignInScreen type={view === AUTH_VIEW.userSignIn ? "user" : "owner"} />
+        <SignInScreen type={view === AUTH_VIEW.userSignIn ? "user" : "owner"} onSighinSuccess={onSighinSuccess} />
       );
     case AUTH_VIEW.userSignUp:
     case AUTH_VIEW.ownerSignUp:
@@ -96,7 +96,11 @@ export function AuthModal() {
   const authView = searchParams.get(AUTH_QUERY_KEY);
   const activeView = hasChooseAccount ? AUTH_VIEW.chooseAccount : authView;
   const isOpen = activeView != null && VALID_AUTH_VIEWS.has(activeView);
-  const content = renderAuthView(activeView);
+  const onSighinSuccess = () => {
+   closeModal();
+  };
+  const content = renderAuthView(activeView, onSighinSuccess);
+
 
   const closeModal = () => {
     router.replace(pathname);

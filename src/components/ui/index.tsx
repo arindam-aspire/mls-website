@@ -1,3 +1,6 @@
+export { Avatar } from "./avatar";
+export type { AvatarProps, AvatarSize } from "./avatar";
+export { AVATAR_SIZES } from "./avatar/types";
 export { Button } from "./button";
 export { ToggleButton } from "./toggle-button";
 export type {

@@ -8,18 +8,15 @@ export function applyInterceptors(
 ) {
   instance.interceptors.request.use((config) => {
     if (useAuth()) {
-      const accessToken = tokenStore.getAccess();
-      const refreshTokenValue = tokenStore.getRefresh();
+      const accessToken = tokenStore.getAccessToken();
+      const refreshTokenValue = tokenStore.getRefreshToken();
 
-      // If auth is required but we don't have the necessary tokens,
-      // treat it as unauthorized and redirect to home.
       if (!accessToken || !refreshTokenValue) {
         window.location.href = '/';
         return Promise.reject(new Error('Unauthorized: missing tokens'));
       }
 
       if (accessToken) {
-        // Ensure headers object exists and is compatible with Axios typings
         const headers: any = config.headers ?? {};
         headers.Authorization = `Bearer ${accessToken}`;
         config.headers = headers;

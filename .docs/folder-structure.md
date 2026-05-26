@@ -59,6 +59,9 @@ mls_website/
 │   ├── components/
 │   │   └── ui/
 │   │       ├── fieldVariants.ts
+│   │       ├── avatar/
+│   │       │   ├── index.tsx
+│   │       │   └── types.ts
 │   │       ├── button/
 │   │       │   ├── index.tsx
 │   │       │   └── types.ts
@@ -130,6 +133,8 @@ mls_website/
 │   │   │   │   ├── SignInWithOTPForm.tsx
 │   │   │   │   └── SignUpForm.tsx
 │   │   │   ├── hooks/
+│   │   │   ├── mutations/
+│   │   │   │   └── auth.mutation.ts
 │   │   │   ├── screens/
 │   │   │   │   ├── AccountChooseScreen.tsx
 │   │   │   │   ├── AgencyEmailSignInScreen.tsx
@@ -143,8 +148,12 @@ mls_website/
 │   │   │   │   ├── SocialRegistrationScreen.tsx
 │   │   │   │   ├── SocialSignInScreen.tsx
 │   │   │   │   └── UserRegistrationScreen.tsx
+│   │   │   ├── services/
+│   │   │   │   └── auth.service.ts
 │   │   │   ├── store/
+│   │   │   │   └── auth.store.ts
 │   │   │   └── types/
+│   │   │       └── auth.types.ts
 │   │   ├── not-found/
 │   │   │   └── screens/
 │   │   │       └── NotFoundScreen.tsx

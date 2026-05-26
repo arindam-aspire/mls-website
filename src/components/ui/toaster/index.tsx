@@ -151,7 +151,7 @@ export function Toaster({
     <div
       aria-label="Notifications"
       className={cn(
-        "pointer-events-none fixed z-50 flex flex-col gap-2",
+        "pointer-events-none fixed z-[9999] flex flex-col gap-2",
         positionClasses[position],
       )}
     >

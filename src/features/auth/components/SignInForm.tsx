@@ -1,6 +1,6 @@
 "use client";
 
-import { Clock, Eye, EyeOff, Lock, Mail } from "lucide-react";
+import { Clock, Eye, EyeOff, Lock, LogIn, Mail } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button, Input, Link } from "@/src/components/ui";
@@ -8,19 +8,20 @@ import { useForm } from "@/src/hooks/useForm";
 import { cn } from "@/src/lib/cn";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
 import { AUTH_VIEW, buildAuthModalUrl, type AuthView } from "../authViews";
+import { SignInFormValues } from "../types/auth.types";
 
-export type SignInFormValues = {
-  emailOrPhone: string;
-  password: string;
-  rememberMe: boolean;
-};
+
 
 type SignInFormProps = {
   signInReturnView?: AuthView;
+  onClickSignIn: (values: SignInFormValues) => void;
+  isLoading: boolean;
 };
 
 export function SignInForm({
   signInReturnView = AUTH_VIEW.userSignIn,
+  onClickSignIn,
+  isLoading,
 }: SignInFormProps) {
   const t = useTranslations("auth");
   const router = useRouter();
@@ -36,15 +37,15 @@ export function SignInForm({
     setValues,
   } = useForm<SignInFormValues>({
     initialValues: {
-      emailOrPhone: "",
+      username: "",
       password: "",
       rememberMe: true,
     },
     validate: (formValues) => {
       const nextErrors: Partial<Record<keyof SignInFormValues, string>> = {};
 
-      if (!formValues.emailOrPhone.trim()) {
-        nextErrors.emailOrPhone = t("signInEmailOrPhoneRequired");
+      if (!formValues.username?.trim()) {
+        nextErrors.username = t("signInEmailOrPhoneRequired");
       }
 
       if (!formValues.password) {
@@ -65,9 +66,7 @@ export function SignInForm({
   return (
     <form
       noValidate
-      onSubmit={handleSubmit(() => {
-        // Email sign-in submit — wire API when ready
-      })}
+      onSubmit={handleSubmit(onClickSignIn)}
       className="flex flex-col gap-6"
     >
       <div className="space-y-1 text-center">
@@ -79,15 +78,15 @@ export function SignInForm({
 
       <div className="flex flex-col gap-4">
         <Input
-          name="emailOrPhone"
+          name="username"
           type="text"
           autoComplete="username"
           label={t("signInEmailOrPhoneLabel")}
           placeholder={t("signInEmailOrPhonePlaceholder")}
-          value={values.emailOrPhone}
+          value={values.username}
           onChange={handleChange}
           onBlur={handleBlur}
-          error={errors.emailOrPhone}
+          error={errors.username}
           iconStart={<Mail className="size-4" aria-hidden />}
           isRequired
         />
@@ -154,7 +153,7 @@ export function SignInForm({
       </div>
 
       <div className="flex flex-col gap-3">
-        <Button type="submit" color="primary" size="lg" fullWidth className="font-semibold">
+        <Button type="submit" color="primary" size="lg" fullWidth className="font-semibold" isLoading={isLoading} loadingLabel={t("signingIn")} iconStart={<LogIn className="size-5" aria-hidden />}>
           {t("signIn")}
         </Button>
 

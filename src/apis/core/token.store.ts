@@ -1,16 +1,46 @@
+import Cookies from "js-cookie";
+
+const ACCESS_TOKEN_KEY = "access_token";
+const REFRESH_TOKEN_KEY = "refresh_token";
+
+const cookieOptions: Cookies.CookieAttributes = {
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "Strict",
+  expires: 7, // days
+};
+
 export const tokenStore = {
-  getAccess: () => localStorage.getItem('access_token'),
-  getRefresh: () => localStorage.getItem('refresh_token'),
+  // Access token
+  getAccessToken: (): string | undefined => {
+    return Cookies.get(ACCESS_TOKEN_KEY);
+  },
+  setAccessToken: (token: string): void => {
+    Cookies.set(ACCESS_TOKEN_KEY, token, {
+      ...cookieOptions,
+      expires: 1, // 1 day for access token
+    });
+  },
+  removeAccessToken: (): void => {
+    Cookies.remove(ACCESS_TOKEN_KEY);
+  },
 
-  setAccess: (token: string) =>
-    localStorage.setItem('access_token', token),
+  // Refresh token
+  getRefreshToken: (): string | undefined => {
+    return Cookies.get(REFRESH_TOKEN_KEY);
+  },
+  setRefreshToken: (token: string): void => {
+    Cookies.set(REFRESH_TOKEN_KEY, token, {
+      ...cookieOptions,
+      expires: 7, // 7 days for refresh token
+    });
+  },
+  removeRefreshToken: (): void => {
+    Cookies.remove(REFRESH_TOKEN_KEY);
+  },
 
-  setRefresh: (token: string) =>
-    localStorage.setItem('refresh_token', token),
-
-
-  clear: () => {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
+  // Clear all tokens (logout)
+  clearTokens: (): void => {
+    Cookies.remove(ACCESS_TOKEN_KEY);
+    Cookies.remove(REFRESH_TOKEN_KEY);
   },
 };

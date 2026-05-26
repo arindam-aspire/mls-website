@@ -12,7 +12,7 @@ export async function refreshToken(): Promise<boolean> {
 
   refreshPromise = (async () => {
     try {
-      const refreshToken = tokenStore.getRefresh();
+      const refreshToken = tokenStore.getRefreshToken();
       if (!refreshToken) return false;
 
       const res = await axios.post(
@@ -20,14 +20,14 @@ export async function refreshToken(): Promise<boolean> {
         { refresh_token: refreshToken }
       );
 
-      tokenStore.setAccess(res.data.access_token);
+      tokenStore.setAccessToken(res.data.access_token);
       if (res.data.refresh_token) {
-        tokenStore.setRefresh(res.data.refresh_token);
+        tokenStore.setRefreshToken(res.data.refresh_token);
       }
 
       return true;
     } catch {
-      tokenStore.clear();
+      tokenStore.clearTokens();
       return false;
     } finally {
       refreshing = false;

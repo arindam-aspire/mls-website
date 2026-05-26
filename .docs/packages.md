@@ -39,6 +39,12 @@
 | @tailwindcss/postcss | ^4 | PostCSS plugin for Tailwind CSS v4 |
 | tailwindcss-animate | ^1.0.7 | Tailwind CSS animation utilities plugin |
 
+## Utilities
+
+| Package | Version | Purpose |
+| --- | --- | --- |
+| js-cookie | ^3.0.7 | Lightweight cookie read/write helper |
+
 ## TypeScript & types
 
 | Package | Version | Purpose |
@@ -47,6 +53,7 @@
 | @types/node | ^20 | TypeScript types for Node.js |
 | @types/react | ^19 | TypeScript types for React |
 | @types/react-dom | ^19 | TypeScript types for React DOM |
+| @types/js-cookie | ^3.0.6 | TypeScript types for js-cookie |
 
 ## Linting
 

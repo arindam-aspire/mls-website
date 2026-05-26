@@ -2,10 +2,11 @@
 
 import { CloseButton, useClose } from "@headlessui/react";
 import Image from "next/image";
-import { Menu, Moon, Sun, X } from "lucide-react";
+import { Bell, Menu, Moon, Sun, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { cn } from "@/src/lib/cn";
+import { Avatar } from "@/src/components/ui/avatar";
 import { Button } from "@/src/components/ui/button";
 import { IconButton } from "@/src/components/ui/icon-button";
 import {
@@ -22,6 +23,8 @@ import { AUTH_VIEW } from "@/src/features/auth/authViews";
 import { useTheme, type ThemeMode } from "@/src/providers/ThemeProvider";
 import mlsLogoDark from "@/src/assets/images/MLS_Dark_Logo.png";
 import mlsLogoLight from "@/src/assets/images/MLS_Light_Logo.png";
+import { LoggedInUser } from "@/src/features/auth/types/auth.types";
+import { useAuthStore } from "@/src/features/auth/store/auth.store";
 
 const LOCALE_OPTIONS: { value: AppLocale; label: string }[] = [
   { value: "en", label: "En" },
@@ -148,6 +151,7 @@ function PublicHeaderMobileMenu({
 }
 
 export function PublicHeader() {
+  const { user } = useAuthStore();
   const t = useTranslations("common");
   const locale = useLocale() as AppLocale;
   const router = useRouter();
@@ -225,16 +229,25 @@ export function PublicHeader() {
         ))}
       </nav>
 
-      <Button
-        type="button"
-        color="primary"
-        variant="solid"
-        size="sm"
-        className="col-start-2 max-w-[min(100%,11rem)] justify-self-center truncate md:hidden"
-        onClick={openChooseAccount}
-      >
-        {t("signInSignUp")}
-      </Button>
+      {user ? (
+        <Avatar
+          src={user.profile_picture_url}
+          name={user.full_name}
+          size="sm"
+          className="col-start-2 justify-self-center md:hidden"
+        />
+      ) : (
+        <Button
+          type="button"
+          color="primary"
+          variant="solid"
+          size="sm"
+          className="col-start-2 max-w-[min(100%,11rem)] justify-self-center truncate md:hidden"
+          onClick={openChooseAccount}
+        >
+          {t("signInSignUp")}
+        </Button>
+      )}
 
       <div className="col-start-3 hidden items-center gap-3 justify-self-end md:flex">
         <PublicHeaderThemeButton overHero={overHero} />
@@ -251,16 +264,38 @@ export function PublicHeader() {
           selectClassName={overHero ? "bg-surface/90 backdrop-blur-sm" : undefined}
         />
 
-        <Button
-          type="button"
-          color="primary"
-          variant="solid"
-          size="md"
-          className="shrink-0"
-          onClick={openChooseAccount}
-        >
-          {t("signInSignUp")}
-        </Button>
+        {user ? (
+          <>
+            <IconButton
+              icon={<Bell className="size-5" aria-hidden />}
+              aria-label={t("notifications")}
+              color="primary"
+              variant="solid"
+              isRounded={true}
+              size="md"
+              className={cn(
+                overHero && "!bg-surface !text-text hover:!bg-surface/80 rounded-full",
+              )}
+            />
+            <Avatar
+              src={user.profile_picture_url}
+              name={user.full_name}
+              size="md"
+              className="cursor-pointer border-2 border-page size-14"
+            />
+          </>
+        ) : (
+          <Button
+            type="button"
+            color="primary"
+            variant="solid"
+            size="md"
+            className="shrink-0"
+            onClick={openChooseAccount}
+          >
+            {t("signInSignUp")}
+          </Button>
+        )}
       </div>
 
       <Popover className="col-start-3 justify-self-end md:hidden">
