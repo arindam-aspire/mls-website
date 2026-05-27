@@ -2,11 +2,92 @@
 
 High-level layout of this repository (non-excluded paths only). Update this document when the on-disk tree changes in ways that affect listed paths.
 
-**Excluded:** `.cursor/`, `.docs/`, `.expo/`, `.git/`, `.idea/`, `.next/`, `.turbo/`, `.vercel/`, `.vscode/`, `build/`, `coverage/`, `docs/`, `node_modules/`, `out/`, `scripts/`
+**Excluded:** `.cursor/`, `.expo/`, `.git/`, `.idea/`, `.next/`, `.turbo/`, `.vercel/`, `.vscode/`, `build/`, `coverage/`, `docs/`, `node_modules/`, `out/`, `scripts/`
+
+**`.docs/`:** Mirrors `app/` and `src/` as markdown (`.md` per source file + folder `README.md`). Top-level indexes: `README.md`, `application.md`, `packages.md`. Regenerate scaffolding: `node scripts/bootstrap-docs.mjs`.
 
 ```text
 mls_website/
 ├── .gitignore
+├── .docs/
+│   ├── README.md
+│   ├── application.md
+│   ├── folder-structure.md
+│   ├── packages.md
+│   ├── app/
+│   │   ├── layout.md
+│   │   ├── loading.md
+│   │   ├── page.md
+│   │   └── [locale]/
+│   │       ├── layout.md
+│   │       ├── not-found.md
+│   │       ├── [...rest]/
+│   │       │   └── page.md
+│   │       ├── (main)/
+│   │       │   ├── README.md
+│   │       │   ├── layout.md
+│   │       │   ├── page.md
+│   │       │   ├── dashboard/
+│   │       │   │   └── page.md
+│   │       │   └── my-profile/
+│   │       │       └── page.md
+│   │       └── (property)/
+│   │           ├── README.md
+│   │           ├── layout.md
+│   │           ├── favourites/
+│   │           │   └── page.md
+│   │           ├── inquiries/
+│   │           │   └── page.md
+│   │           ├── listing/
+│   │           │   └── page.md
+│   │           ├── recently-viewed/
+│   │           │   └── page.md
+│   │           └── saved-searches/
+│   │               └── page.md
+│   └── src/
+│       ├── README.md
+│       ├── apis/
+│       │   ├── README.md
+│       │   ├── clients/
+│       │   ├── core/
+│       │   └── endpoints/
+│       ├── components/
+│       │   ├── README.md
+│       │   ├── common/
+│       │   │   └── README.md
+│       │   └── ui/
+│       │       └── README.md
+│       ├── configs/
+│       ├── features/
+│       │   ├── README.md
+│       │   ├── auth/
+│       │   │   ├── README.md
+│       │   │   ├── components/
+│       │   │   │   └── README.md
+│       │   │   ├── mutations/
+│       │   │   ├── screens/
+│       │   │   │   └── README.md
+│       │   │   ├── services/
+│       │   │   ├── store/
+│       │   │   └── types/
+│       │   ├── dashboard/
+│       │   ├── landing/
+│       │   ├── not-found/
+│       │   ├── profile/
+│       │   └── property/
+│       │       └── screens/
+│       │           └── README.md
+│       ├── hooks/
+│       ├── i18n/
+│       ├── initializers/
+│       ├── layouts/
+│       │   ├── README.md
+│       │   └── public-layout/
+│       │       └── README.md
+│       ├── lib/
+│       ├── messages/
+│       ├── providers/
+│       └── utils/
 ├── app/
 │   ├── [locale]/
 │   │   ├── layout.tsx

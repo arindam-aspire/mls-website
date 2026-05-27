@@ -14,9 +14,10 @@ Whenever you **create, delete, rename, or move** a file or directory in this rep
 
 Do **not** add branches for anything under these roots (they stay **out of the diagram**; only the doc’s **`Excluded`** line lists them):
 
-`.cursor/`, `.docs/`, `.expo/`, `.git/`, `.idea/`, `.next/`, `.turbo/`, `.vercel/`, `.vscode/`, `build/`, `coverage/`, `docs/`, `node_modules/`, `out/`, `scripts/`
+`.cursor/`, `.expo/`, `.git/`, `.idea/`, `.next/`, `.turbo/`, `.vercel/`, `.vscode/`, `build/`, `coverage/`, `docs/`, `node_modules/`, `out/`, `scripts/`
 
 - If your change is **only** inside those excluded areas, **do not** edit **`folder-structure.md`** for that change.
+- **`.docs/`** is listed in the tree as the documentation mirror; update its branch when adding major doc folders or top-level `.docs` files (not every per-file `.md` unless the mirror layout changes).
 - If your change touches **`src/`**, the **repository root** files shown in the tree, or any other path that **should** appear in the diagram, **update the tree** (add/remove/rename lines; fix `├──` / `└──` / `│` continuity).
 
 ## How to edit the doc
