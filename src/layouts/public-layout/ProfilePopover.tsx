@@ -1,5 +1,6 @@
 "use client";
 
+import { useClose } from "@headlessui/react";
 import { useEffect, useState } from "react";
 import { Bell, Eye, Heart, Home, LogOut, Search, Send, User } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -27,6 +28,33 @@ const PROFILE_MENU_ITEMS = [
   { labelKey: "myRecentlyViewed", icon: Eye, path: "/recently-viewed" },
   { labelKey: "myInquiries", icon: Send, path: "/inquiries" },
 ] as const;
+
+function ProfileMenuItems({ router }: { router: ReturnType<typeof useRouter> }) {
+  const t = useTranslations("common");
+  const close = useClose();
+
+  return (
+    <div className="flex flex-col gap-0.5 py-2 px-2">
+      {PROFILE_MENU_ITEMS.map(({ labelKey, icon: Icon, path }) => (
+        <UiLink
+          key={path}
+          color="muted"
+          variant="subtle"
+          size="md"
+          alwaysUnderline={false}
+          iconStart={<Icon />}
+          className="w-full justify-start rounded-lg px-2 py-2 hover:bg-inherit-color/10"
+          onClick={() => {
+            close();
+            router.push(path);
+          }}
+        >
+          {t(labelKey)}
+        </UiLink>
+      ))}
+    </div>
+  );
+}
 
 interface ProfilePopoverProps {
   user: LoggedInUser;
@@ -84,22 +112,7 @@ export function ProfilePopover({ user, overHero }: ProfilePopoverProps) {
             </div>
           </div>
 
-          <div className="flex flex-col gap-0.5 py-2 px-2">
-            {PROFILE_MENU_ITEMS.map(({ labelKey, icon: Icon, path }) => (
-              <UiLink
-                key={path}
-                color="muted"
-                variant="subtle"
-                size="md"
-                alwaysUnderline={false}
-                iconStart={<Icon />}
-                className="w-full justify-start rounded-lg px-2 py-2 hover:bg-inherit-color/10"
-                onClick={() => router.push(path)}
-              >
-                {t(labelKey)}
-              </UiLink>
-            ))}
-          </div>
+          <ProfileMenuItems router={router} />
 
           <div className="border-t border-secondary/15 px-3 py-2">
             <Button
