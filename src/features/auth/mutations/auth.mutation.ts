@@ -6,6 +6,9 @@ import { useToast } from "@/src/hooks/useToast";
 import { type ApiError } from "@/src/apis/core/error.normalizer";
 import { useAuthStore } from "../store/auth.store";
 import type { SignInResponse, SignInWithOtpResponse, SignInWithOtpVerifyResponse } from "../types/auth.types";
+import { navigateTo } from "@/src/utils/navigation.utils";
+import { AppLocale } from "@/src/i18n/routing";
+import { useLocale } from "next-intl";
 
 export const useSignInWithPassword = () => {
   const toast = useToast();
@@ -38,11 +41,13 @@ export const useSignInWithPassword = () => {
 export const useLogout = () => {
   const toast = useToast();
   const { clearAuth } = useAuthStore();
+  const locale = useLocale() as AppLocale;
 
   return useMutation({
     mutationFn: logout,
     onSuccess: () => {
       clearAuth();
+      navigateTo(`/${locale}`);
     },
     onError: (error: ApiError) => {
       toast.error("Logout failed", {

@@ -1,24 +1,23 @@
 "use client";
 
-import { useClose } from "@headlessui/react";
-import { useEffect, useState } from "react";
-import { Bell, Eye, Heart, Home, LogOut, Search, Send, User } from "lucide-react";
-import { useTranslations } from "next-intl";
-import { cn } from "@/src/lib/cn";
+import { ConfirmModal } from "@/src/components/common/ConfirmModal";
 import { Avatar } from "@/src/components/ui/avatar";
 import { Button } from "@/src/components/ui/button";
 import { IconButton } from "@/src/components/ui/icon-button";
+import { Link as UiLink } from "@/src/components/ui/link";
 import {
   Popover,
   PopoverButton,
   PopoverPanel,
 } from "@/src/components/ui/popover";
-import { Link as UiLink } from "@/src/components/ui/link";
-import { ConfirmModal } from "@/src/components/common/ConfirmModal";
-import { useAuthStore } from "@/src/features/auth/store/auth.store";
-import type { LoggedInUser } from "@/src/features/auth/types/auth.types";
 import { useLogout } from "@/src/features/auth/mutations/auth.mutation";
+import type { LoggedInUser } from "@/src/features/auth/types/auth.types";
 import { useRouter } from "@/src/i18n/navigation";
+import { cn } from "@/src/lib/cn";
+import { useClose } from "@headlessui/react";
+import { Bell, Eye, Heart, Home, LogOut, Search, Send, User } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 
 const PROFILE_MENU_ITEMS = [
   { labelKey: "profile", icon: User, path: "/my-profile" },
@@ -69,7 +68,7 @@ export function ProfilePopover({ user, overHero }: ProfilePopoverProps) {
 
   useEffect(() => {
     if (isLoggedOut) {
-      setShowLogoutConfirm(false);
+     setShowLogoutConfirm(false);
     }
   }, [isLoggedOut]);
 

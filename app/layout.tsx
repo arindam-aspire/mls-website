@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/src/providers/ThemeProvider";
 import QueryProvider from "@/src/providers/QueryProvider";
 import ToastProvider from "@/src/providers/ToastProvider";
 import "./globals.css";
+import { NavigationInitializer } from "@/src/initializers/NavigationInitializer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -51,6 +52,7 @@ export default async function RootLayout({
           <ThemeProvider>
             <ToastProvider>
               <AuthProvider>
+                <NavigationInitializer />
                 <div className="flex min-h-0 flex-1 flex-col">{children}</div>
               </AuthProvider>
             </ToastProvider>

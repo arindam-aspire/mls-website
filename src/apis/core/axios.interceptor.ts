@@ -1,6 +1,7 @@
 import { AxiosInstance } from 'axios';
 import { tokenStore } from './token.store';
 import { refreshToken } from './token.refresh';
+import { navigateTo } from '@/src/utils/navigation.utils';
 
 export function applyInterceptors(
   instance: AxiosInstance,
@@ -12,7 +13,7 @@ export function applyInterceptors(
       const refreshTokenValue = tokenStore.getRefreshToken();
 
       if (!accessToken || !refreshTokenValue) {
-        window.location.href = '/';
+        navigateTo('/');
         return Promise.reject(new Error('Unauthorized: missing tokens'));
       }
 
@@ -43,7 +44,7 @@ export function applyInterceptors(
           return instance(originalRequest);
         } else {
           // Refresh failed or no refresh token available – treat as unauthorized
-          window.location.href = '/';
+          navigateTo('/');
         }
       }
 
