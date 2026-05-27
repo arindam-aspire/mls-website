@@ -7,10 +7,12 @@ User property areas: listings, favourites, saved searches, recently viewed, inqu
 ```
 property/
   screens/     *Screen.tsx — wired from app/[locale]/(property)/*
+  mutations/   property.mutation.ts — React Query mutation hook
+  services/    property.service.ts — GET /properties
+  store/       property.store.ts — list params/response state
   components/  (reserved)
   hooks/       (reserved)
-  store/       (reserved)
-  types/       (reserved)
+  types/       property.types.ts — list API shapes
 ```
 
 ## Routes (locale-prefixed)
@@ -31,11 +33,19 @@ Most routed screens use [ComingSoonCard](../../components/common/ComingSoonCard.
 
 ## API
 
-`propertyEndpoints` is currently empty. Future services will use `apiClient` with `auth: true`.
+| Constant | Path |
+| --- | --- |
+| `PROPERTY_LIST` | `/properties` |
+
+Types: [types/README.md](./types/README.md). Service: [services/README.md](./services/README.md) (`getPropertyList` via `apiClient`).
 
 ## Subfolders
 
 - [screens/README.md](./screens/README.md)
+- [mutations/README.md](./mutations/README.md)
+- [services/README.md](./services/README.md)
+- [store/README.md](./store/README.md)
+- [types/README.md](./types/README.md)
 
 ## Profile menu
 

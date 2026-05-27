@@ -74,7 +74,7 @@ function renderAuthView(view: string | null, onSighinSuccess: () => void) {
     case AUTH_VIEW.agencySignUp:
       return <AgencyRegistrationScreen />;
     case AUTH_VIEW.agencyEmailSignIn:
-      return <AgencyEmailSignInScreen />;
+      return <AgencyEmailSignInScreen onSighinSuccess={onSighinSuccess} />;
     case AUTH_VIEW.forgotPassword:
       return <ForgotPasswordScreen />;
     case AUTH_VIEW.resetPassword:

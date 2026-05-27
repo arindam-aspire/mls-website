@@ -40,6 +40,8 @@ mls_website/
 │   │           │   └── page.md
 │   │           ├── listing/
 │   │           │   └── page.md
+│   │           ├── property-list/
+│   │           │   └── page.md
 │   │           ├── recently-viewed/
 │   │           │   └── page.md
 │   │           └── saved-searches/
@@ -70,13 +72,34 @@ mls_website/
 │       │   │   ├── services/
 │       │   │   ├── store/
 │       │   │   └── types/
+│       │   │       ├── README.md
+│       │   │       ├── auth.types.md
+│       │   │       ├── forgotPassword.types.md
+│       │   │       ├── index.md
+│       │   │       ├── logout.types.md
+│       │   │       ├── signIn.types.md
+│       │   │       ├── signInOtp.types.md
+│       │   │       ├── signUp.types.md
+│       │   │       └── user.types.md
 │       │   ├── dashboard/
 │       │   ├── landing/
 │       │   ├── not-found/
 │       │   ├── profile/
 │       │   └── property/
-│       │       └── screens/
-│       │           └── README.md
+│       │       ├── mutations/
+│       │       │   ├── README.md
+│       │       │   └── property.mutation.md
+│       │       ├── screens/
+│       │       │   └── README.md
+│       │       ├── services/
+│       │       │   ├── README.md
+│       │       │   └── property.service.md
+│       │       ├── store/
+│       │       │   ├── README.md
+│       │       │   └── property.store.md
+│       │       └── types/
+│       │           ├── README.md
+│       │           └── property.types.md
 │       ├── hooks/
 │       ├── i18n/
 │       ├── initializers/
@@ -113,6 +136,7 @@ mls_website/
 │   │       │   └── page.tsx
 │   │       ├── propert-details/
 │   │       ├── property-list/
+│   │       │   └── page.tsx
 │   │       ├── recently-viewed/
 │   │       │   └── page.tsx
 │   │       └── saved-searches/
@@ -255,7 +279,14 @@ mls_website/
 │   │   │   ├── store/
 │   │   │   │   └── auth.store.ts
 │   │   │   └── types/
-│   │   │       └── auth.types.ts
+│   │   │       ├── auth.types.ts
+│   │   │       ├── forgotPassword.types.ts
+│   │   │       ├── index.ts
+│   │   │       ├── logout.types.ts
+│   │   │       ├── signIn.types.ts
+│   │   │       ├── signInOtp.types.ts
+│   │   │       ├── signUp.types.ts
+│   │   │       └── user.types.ts
 │   │   ├── dashboard/
 │   │   │   └── screens/
 │   │   ├── not-found/
@@ -280,6 +311,10 @@ mls_website/
 │   │   └── property/
 │   │       ├── components/
 │   │       ├── hooks/
+│   │       ├── mutations/
+│   │       │   └── property.mutation.ts
+│   │       ├── services/
+│   │       │   └── property.service.ts
 │   │       ├── screens/
 │   │       │   ├── FavouritePropertyScreen.tsx
 │   │       │   ├── InquiriesScreen.tsx
@@ -289,7 +324,9 @@ mls_website/
 │   │       │   ├── PropertyDetailsScreen.tsx
 │   │       │   └── PropertyListScreen.tsx
 │   │       ├── store/
+│   │       │   └── property.store.ts
 │   │       └── types/
+│   │           └── property.types.ts
 │   ├── hooks/
 │   │   ├── useForm.ts
 │   │   └── useToast.tsx

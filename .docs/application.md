@@ -189,6 +189,7 @@ All paths below are **without** locale; prepend `/<locale>` (e.g. `/en/listing`)
 | `/dashboard` | `(main)/dashboard/page.tsx` | `DashboardScreen` (Coming Soon) |
 | `/my-profile` | `(main)/my-profile/page.tsx` | `ProfileScreen` (Coming Soon) |
 | `/listing` | `(property)/listing/page.tsx` | `ListingPropertyScreen` (Coming Soon) |
+| `/property-list` | `(property)/property-list/page.tsx` | `PropertyListScreen` (Coming Soon) |
 | `/favourites` | `(property)/favourites/page.tsx` | `FavouritePropertyScreen` (Coming Soon) |
 | `/saved-searches` | `(property)/saved-searches/page.tsx` | `SavedSearchesScreen` (Coming Soon) |
 | `/recently-viewed` | `(property)/recently-viewed/page.tsx` | `RecentlyViewedScreen` (Coming Soon) |
@@ -199,7 +200,6 @@ All paths below are **without** locale; prepend `/<locale>` (e.g. `/en/listing`)
 | Folder under `(property)/` | Intended use |
 | --- | --- |
 | `propert-details/` | Property detail page |
-| `property-list/` | Property list / search results |
 
 ### Header navigation (not yet implemented as routes)
 
@@ -280,7 +280,7 @@ Reserved; not wired to routes yet.
 | Area | Location |
 | --- | --- |
 | Views & query helpers | `authViews.ts` |
-| Types | `types/auth.types.ts` |
+| Types | `types/` — `signUp`, `signIn`, `signInOtp`, `forgotPassword`, `user`, `logout` modules; barrel `index.ts` / `auth.types.ts` |
 | Store | `store/auth.store.ts` |
 | Service | `services/auth.service.ts` |
 | Mutations | `mutations/auth.mutation.ts` |
@@ -340,7 +340,7 @@ Reserved; not wired to routes yet.
 | `RecentlyViewedScreen` | Coming Soon |
 | `InquiriesScreen` | Coming Soon |
 
-`components/`, `hooks/`, `store/`, `types/` — reserved for future implementation.
+`components/`, `hooks/` — reserved. `mutations/property.mutation.ts` — `useGetPropertyList`. `services/property.service.ts` — `getPropertyList`. `store/property.store.ts` — property list filters/response state. `types/property.types.ts` — list params/response for `/properties`.
 
 ---
 
@@ -470,7 +470,13 @@ From `src/configs/environment.config.ts` → `API_BASE_URL` (env: `NEXT_PUBLIC_A
 | --- | --- |
 | `CATEGORY_PROPERTY_LIST` | `/property-taxonomy` |
 
-**Property** (`propertyEndpoints.ts`): empty object (reserved).
+**Property** (`propertyEndpoints.ts`):
+
+| Constant | Path |
+| --- | --- |
+| `PROPERTY_LIST` | `/properties` |
+
+Types: `src/features/property/types/property.types.ts` (`Property`, `PropertyListResponse`, …).
 
 ### Images (remote)
 

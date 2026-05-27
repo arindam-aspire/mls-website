@@ -22,7 +22,11 @@ _N/A — no local/global state in this module._
 
 # API Usage
 
-- Path constants only; consumed by feature services.
+| Constant | Path |
+| --- | --- |
+| `PROPERTY_LIST` | `/properties` |
+
+Consumed by [property.service.ts](../../features/property/services/property.service.ts); types in `src/features/property/types/property.types.ts`.
 
 # Navigation
 

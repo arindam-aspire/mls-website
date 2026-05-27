@@ -1,49 +1,35 @@
 # File Overview
 
-TypeScript types and API shape definitions.
+Compatibility barrel: re-exports all auth types from [index.ts](./index.ts) so existing `import … from "../types/auth.types"` paths keep working.
 
 **Source:** `src/features/auth/types/auth.types.ts`
 
 # Responsibilities
 
-- TypeScript types and API shape definitions.
+- Re-export every type from split modules via `./index`.
 
 # Imports
 
-_No notable imports._
+- `./index` (aggregates `signUp`, `signIn`, `signInOtp`, `forgotPassword`, `user`, `logout` modules)
 
 # Exports
 
-- `SignUpFormValues`
-- `SignUpRequest`
-- `SignUpResponse`
-- `ConfirmSignUpRequest`
-- `ConfirmSignUpResponse`
-- `SignInFormValues`
-- `SignInRequest`
-- `SignInTokens`
-- `SignInResponse`
-- `SignInWithOtpRequest`
-- `SignInWithOtpResponseData`
-- `SignInWithOtpResponse`
-- `SignInWithOtpVerifyRequest`
-- `SignInWithOtpVerifyResponse`
-- `ForgotPasswordFormValues`
-- `ForgotPasswordRequest`
-- `ForgotPasswordResponse`
-- `Permission`
-- `Role`
-- `LoggedInUser`
-- `LoggedInUserResponse`
-- `LogoutResponse`
+All types from:
+
+- [signUp.types.md](./signUp.types.md)
+- [signIn.types.md](./signIn.types.md)
+- [signInOtp.types.md](./signInOtp.types.md)
+- [forgotPassword.types.md](./forgotPassword.types.md)
+- [user.types.md](./user.types.md)
+- [logout.types.md](./logout.types.md)
 
 # State Management
 
-_N/A — no local/global state in this module._
+_N/A._
 
 # API Usage
 
-_N/A unless extended._
+_N/A — definitions only._
 
 # Navigation
 
@@ -51,25 +37,11 @@ _N/A._
 
 # Props / Parameters
 
-_N/A — non-component module._
+_N/A._
 
 # Actions / Inputs
 
-## Inputs
-
-_No explicit inputs detected._
-
-## Actions
-
-_No explicit actions detected._
-
-## Validations
-
-_No explicit validations detected._
-
-## Show/Hide Controls
-
-_No explicit show/hide controls detected._
+_N/A._
 
 # UI Details
 
@@ -77,13 +49,12 @@ _N/A._
 
 # Flow Description
 
-See source in `src/features/auth/types/auth.types.ts` for step-by-step behavior aligned with [application.md](../../application.md) (path relative may vary).
+Consumers import from this file or from `index.ts` / domain-specific `*.types.ts` files interchangeably.
 
 # Dependencies
 
-- Parent feature or route that imports this file.
-- See **Imports** for direct module dependencies.
+- [README.md](./README.md) — folder index
 
 # Notes
 
-- Keep in sync when `src/features/auth/types/auth.types.ts` changes.
+- Prefer importing from the domain file (e.g. `user.types`) in new code for clearer dependencies.

@@ -1,32 +1,38 @@
 # File Overview
 
-Route-level screen component composing feature UI.
+Route-level property list screen that currently renders a placeholder card while triggering list fetch from URL query params.
 
 **Source:** `src/features/property/screens/PropertyListScreen.tsx`
 
 # Responsibilities
 
-- Route-level screen component composing feature UI.
+- Read `status` and `category` from URL search params.
+- Trigger property list fetch through `useGetPropertyList`.
+- Keep existing placeholder UI unchanged.
 
 # Imports
 
-_No notable imports._
+- `import { ComingSoonCard } from "@/src/components/common/ComingSoonCard"`
+- `import { useSearchParams } from "next/navigation"`
+- `import { useGetPropertyList } from "../mutations/property.mutation"`
 
 # Exports
 
-_See source exports._
+- `PropertyListScreen`
+- `default`
 
 # State Management
 
-_No significant state; presentational or config module._
+- **React** `useEffect` for fetch lifecycle
 
 # API Usage
 
-_N/A unless extended._
+- Fetches property list via `useGetPropertyList` (`mutationFn: getPropertyList` → `GET /properties`).
+- Sends params directly from URL query with defaults (`status=buy`, empty `category`, page `1`, pageSize `10`).
 
 # Navigation
 
-_No direct navigation._
+- Reads search params from route URL (`status`, `category`) via `useSearchParams`.
 
 # Props / Parameters
 
@@ -40,7 +46,7 @@ _No explicit inputs detected._
 
 ## Actions
 
-_No explicit actions detected._
+- On mount/URL change: trigger property list mutation using URL query params.
 
 ## Validations
 
@@ -59,7 +65,9 @@ _No explicit show/hide controls detected._
 
 # Flow Description
 
-See source in `src/features/property/screens/PropertyListScreen.tsx` for step-by-step behavior aligned with [application.md](../../application.md) (path relative may vary).
+1. Screen reads `status` and `category` from URL query.
+2. Calls `useGetPropertyList().mutate({ page, pageSize, category, status })`.
+3. Keeps rendering `ComingSoonCard` placeholder UI.
 
 # Dependencies
 

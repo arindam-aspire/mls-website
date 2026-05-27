@@ -1,17 +1,21 @@
 # File Overview
 
-Feature or shared UI component.
+Landing hero search bar: property category tabs (taxonomy), buy/rent listing type, subtype dropdown, location input, and search navigation to the property list route.
 
 **Source:** `src/features/landing/components/HeroSearchBar.tsx` (Client Component)
 
 # Responsibilities
 
-- Feature or shared UI component.
+- Render taxonomy-driven category tabs and dependent subtype options.
+- Restrict listing type to `buy` | `rent` (default `buy`).
+- On search, navigate to locale-prefixed `/property-list` with query `status` and `category`.
 
 # Imports
 
-- `import { ButtonGroup } from "@/src/components/ui/button-group"`
-- `import { cn } from "@/src/lib/cn"`
+- UI: `Button`, `Card`, `Input`, `SelectDropdown`, `Skeleton`, `ButtonGroup`
+- `getPropertyCategories`, `PropertyTaxonomyResponse` from landing types
+- `useRouter` from `@/src/i18n/navigation`
+- `cn` from `@/src/lib/cn`
 
 # Exports
 
@@ -19,54 +23,71 @@ Feature or shared UI component.
 
 # State Management
 
-- **React** `useState`
+- **React** `useState` for `propertyType`, `subtype`, `listingType`, `location`
+- **React** `useMemo` / `useEffect` for taxonomy-derived options
 
 # API Usage
 
-_N/A unless extended._
+_N/A — reads taxonomy via parent (`propertyTaxonomy` prop)._
 
 # Navigation
 
-_No direct navigation._
+- **`useRouter`** from `@/src/i18n/navigation`
+- Search button: `router.push({ pathname: "/property-list", query: { status: listingType, category: activePropertyType } })` → e.g. `/en/property-list?status=buy&category=<slug>`
 
 # Props / Parameters
 
-- See component/handler props in source (TypeScript interfaces).
+| Prop | Type | Purpose |
+| --- | --- | --- |
+| `t` | `(key: string) => string` | next-intl translator for `home` keys |
+| `theme` | `string` | Tab styling (`dark` vs light hero) |
+| `isLoading` | `boolean` | Show skeleton |
+| `propertyTaxonomy` | optional taxonomy response | Category / subtype data |
 
 # Actions / Inputs
 
 ## Inputs
 
-_No explicit inputs detected._
+- Category tabs (property type slug)
+- Listing type select (`buy` | `rent`)
+- Subtype select (taxonomy `property_types` ids)
+- Location text field
 
 ## Actions
 
-_No explicit actions detected._
+- **Search** — navigates to property list with `status` + `category` query params
+- Change property type tab — resets subtype
+- Change listing type — updates `listingType`
 
 ## Validations
 
-_No explicit validations detected._
+_No form submit validation yet (navigation only)._
 
 ## Show/Hide Controls
 
-_No explicit show/hide controls detected._
+_N/A._
 
 # UI Details
 
 - **Theme:** semantic tokens (`bg-page`, `bg-surface`, `text-text`, `text-muted`, `bg-primary`, `border-secondary/15`).
 - **Light/dark:** via `ThemeProvider` / `html.light` | `html.dark`.
-- **Radius:** `rounded-lg` controls; `rounded-xl` cards/modals/popovers; `rounded-full` avatars/pills.
-- **Responsive:** mobile-first (`sm:`, `md:`, `lg:`).
+- **Radius:** `rounded-lg` controls; `rounded-xl` cards; tabs use project button-group patterns.
+- **Responsive:** mobile-first grid (`md:grid-cols-4`).
 
 # Flow Description
 
-See source in `src/features/landing/components/HeroSearchBar.tsx` for step-by-step behavior aligned with [application.md](../../application.md) (path relative may vary).
+1. Parent passes taxonomy + loading; skeleton shows while loading.
+2. User picks category tab → `activePropertyType` drives subtype options.
+3. User picks buy/rent (default buy).
+4. User clicks Search → `router.push` to `/[locale]/property-list?status=…&category=…`.
 
 # Dependencies
 
-- Parent feature or route that imports this file.
-- See **Imports** for direct module dependencies.
+- [HeroSection.md](./HeroSection.md) (typical parent)
+- [property-list page.md](../../../../app/[locale]/(property)/property-list/page.md)
 
 # Notes
 
+- `category` is the selected category **slug** (`activePropertyType`), matching taxonomy `PropertyCategory.slug`.
+- `status` is `buy` or `rent` (listing type).
 - Keep in sync when `src/features/landing/components/HeroSearchBar.tsx` changes.

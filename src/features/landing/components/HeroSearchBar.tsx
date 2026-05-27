@@ -13,6 +13,7 @@ import {
   getPropertyCategories,
   type PropertyTaxonomyResponse,
 } from "@/src/features/landing/types/propertyTaxonomy.types";
+import { useRouter } from "@/src/i18n/navigation";
 import { cn } from "@/src/lib/cn";
 import { MapPin, Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
@@ -83,6 +84,7 @@ export function HeroSearchBar({
   isLoading,
   propertyTaxonomy,
 }: HeroSearchBarProps) {
+  const router = useRouter();
   const categories = useMemo(
     () => getPropertyCategories(propertyTaxonomy),
     [propertyTaxonomy],
@@ -90,7 +92,9 @@ export function HeroSearchBar({
 
   const [propertyType, setPropertyType] = useState("");
   const [subtype, setSubtype] = useState(SELECT_DROPDOWN_EMPTY_VALUE);
-  const [listingType, setListingType] = useState(SELECT_DROPDOWN_EMPTY_VALUE);
+  const [listingType, setListingType] = useState<(typeof LISTING_TYPES)[number]>(
+    LISTING_TYPES[0],
+  );
   const [location, setLocation] = useState("");
 
   useEffect(() => {
@@ -129,6 +133,22 @@ export function HeroSearchBar({
   const handlePropertyTypeChange = (nextType: string) => {
     setPropertyType(nextType);
     setSubtype(SELECT_DROPDOWN_EMPTY_VALUE);
+  };
+
+  const handleListingTypeChange = (nextType: string) => {
+    if (LISTING_TYPES.includes(nextType as (typeof LISTING_TYPES)[number])) {
+      setListingType(nextType as (typeof LISTING_TYPES)[number]);
+    }
+  };
+
+  const handleSearch = () => {
+    router.push({
+      pathname: "/property-list",
+      query: {
+        status: listingType,
+        category: activePropertyType,
+      },
+    });
   };
 
   if (isLoading) {
@@ -178,7 +198,7 @@ export function HeroSearchBar({
             aria-label={t("heroListingPlaceholder")}
             placeholder={t("heroListingPlaceholder")}
             value={listingType}
-            onChange={setListingType}
+            onChange={handleListingTypeChange}
             options={LISTING_TYPES.map((type) => ({
               value: type,
               label: t(`heroListing_${type}`),
@@ -210,6 +230,7 @@ export function HeroSearchBar({
             isRounded
             iconStart={<Search />}
             className="h-11 min-w-0 shrink-0"
+            onClick={handleSearch}
           >
             {t("heroSearch")}
           </Button>
