@@ -1,0 +1,68 @@
+# File Overview
+
+Axios infrastructure (tokens, interceptors, errors).
+
+**Source:** `src/apis/core/token.store.ts`
+
+# Responsibilities
+
+- Axios infrastructure (tokens, interceptors, errors).
+
+# Imports
+
+_No notable imports._
+
+# Exports
+
+- `tokenStore`
+
+# State Management
+
+- **Cookies** via `tokenStore`
+
+# API Usage
+
+_N/A unless extended._
+
+# Navigation
+
+_No direct navigation._
+
+# Props / Parameters
+
+_N/A — non-component module._
+
+# Actions / Inputs
+
+## Inputs
+
+_No explicit inputs detected._
+
+## Actions
+
+_No explicit actions detected._
+
+## Validations
+
+_No explicit validations detected._
+
+## Show/Hide Controls
+
+_No explicit show/hide controls detected._
+
+# UI Details
+
+_N/A._
+
+# Flow Description
+
+See source in `src/apis/core/token.store.ts` for step-by-step behavior aligned with [application.md](../../application.md) (path relative may vary).
+
+# Dependencies
+
+- Parent feature or route that imports this file.
+- See **Imports** for direct module dependencies.
+
+# Notes
+
+- Keep in sync when `src/apis/core/token.store.ts` changes.

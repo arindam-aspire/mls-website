@@ -1,0 +1,18 @@
+# Property screens (`src/features/property/screens/`)
+
+Screens mounted by `app/[locale]/(property)/*/page.tsx`.
+
+| Screen | Route | Status |
+| --- | --- | --- |
+| [ListingPropertyScreen.md](./ListingPropertyScreen.md) | `/en/listing` | Coming Soon |
+| [FavouritePropertyScreen.md](./FavouritePropertyScreen.md) | `/en/favourites` | Coming Soon |
+| [SavedSearchesScreen.md](./SavedSearchesScreen.md) | `/en/saved-searches` | Coming Soon |
+| [RecentlyViewedScreen.md](./RecentlyViewedScreen.md) | `/en/recently-viewed` | Coming Soon |
+| [InquiriesScreen.md](./InquiriesScreen.md) | `/en/inquiries` | Coming Soon |
+| [PropertyListScreen.md](./PropertyListScreen.md) | (planned) | Stub |
+| [PropertyDetailsScreen.md](./PropertyDetailsScreen.md) | (planned) | Stub |
+
+## Conventions
+
+- Default export or named export consumed by thin `page.tsx` files.
+- Use `ComingSoonCard` with custom title/description until APIs exist.

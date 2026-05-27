@@ -1,0 +1,214 @@
+---
+description: Keep .docs/ markdown in sync with source—mirror structure, per-file docs, folder READMEs
+globs:
+  - "src/**/*"
+  - "app/**/*"
+  - ".docs/**/*"
+alwaysApply: true
+---
+
+# Documentation synchronization (`.docs/`)
+
+You are maintaining documentation for a **Next.js 16 App Router** MLS project. **`.docs/`** is the single source of truth for application flow, module behavior, file responsibility, and feature documentation—alongside:
+
+| Top-level doc | Purpose |
+| --- | --- |
+| `.docs/application.md` | Whole-app reference (routes, auth, APIs, architecture) |
+| `.docs/folder-structure.md` | Repository tree diagram (see `folder-structure-sync` rule) |
+| `.docs/packages.md` | `package.json` dependencies (see `packages-docs-sync` rule) |
+
+**Code changes are incomplete if `.docs` is not updated.** Documentation updates are mandatory; never skip them.
+
+---
+
+## 1. When to update
+
+Whenever any **source** file or folder under `src/` or `app/` is **created, updated, renamed, moved, or deleted**, update the corresponding `.docs` markdown in the **same session**.
+
+Also update `.docs/application.md` when behavior affects app-wide flows (routing, auth, APIs, profile menu, providers).
+
+---
+
+## 2. Mirror structure
+
+Documentation paths mirror the repo, rooted under `.docs/`:
+
+| Source | Documentation |
+| --- | --- |
+| `src/features/auth/components/SignInForm.tsx` | `.docs/src/features/auth/components/SignInForm.md` |
+| `src/features/auth/components/` | `.docs/src/features/auth/components/README.md` |
+| `app/[locale]/(main)/dashboard/page.tsx` | `.docs/app/[locale]/(main)/dashboard/page.md` |
+
+Use the same folder names and file basename (`.md` instead of `.tsx`/`.ts`).
+
+**Folder READMEs** are required for major areas, e.g.:
+
+- `.docs/src/features/auth/README.md`
+- `.docs/src/features/property/README.md`
+- `.docs/src/components/ui/README.md`
+- `.docs/src/apis/README.md`
+- `.docs/src/providers/README.md`
+- `.docs/app/[locale]/README.md`
+
+---
+
+## 3. Per-file markdown template
+
+Each file-level `.md` must include **all sections that apply** (omit only if truly N/A):
+
+### File Overview
+- Purpose, where used, related feature/module
+
+### Responsibilities
+- Main duties, business logic, UI behavior
+
+### Imports
+- Important modules, services, hooks, components
+
+### Exports
+- Functions, components, types
+
+### State Management
+- Zustand, React Query, local state
+
+### API Usage
+- APIs, mutations/queries, endpoints
+
+### Navigation
+- Routes, locale-prefixed URLs, `useRouter` / `Link` from `@/src/i18n/navigation`
+
+### Props / Parameters
+- Props, hook params, function arguments
+
+### Actions / Inputs
+- Enumerate user inputs controlled by the UI (form fields, toggle state, checkbox values, etc.)
+- Enumerate user actions/events (submit, open modal views, navigation clicks, logout confirmation, etc.)
+- If there are show/hide toggles (e.g. password visibility), declare them and explain what state they toggle.
+- If inputs have validation, list what validations can fail (required/format/length) and the error message keys used.
+
+### UI Details
+- Tailwind, **semantic tokens** (`bg-page`, `text-muted`, etc.)
+- `rounded-xl` (cards/modals/popovers) vs `rounded-lg` (controls)
+- Light/dark theme, responsive/mobile-first, a11y
+
+### Flow Description
+- Step-by-step flow, user interactions, data flow, loading/error/success
+
+### Dependencies
+- Related files, parent/child relationships
+
+### Notes
+- Edge cases, TODOs, limitations
+
+Use headings, tables, code blocks, and bullet lists. Be **detailed, technical, and beginner-friendly**. Explain **why** the file exists, **how** it works, **where** it connects—never vague one-liners.
+
+---
+
+## 4. Folder README template
+
+Each major folder `README.md` must cover:
+
+- Purpose and architecture of the folder
+- Flow between files and dependency relationships
+- Conventions and feature lifecycle
+- Routing behavior (if applicable)
+- API interaction flow (if applicable)
+
+---
+
+## 5. Architecture context
+
+Document against the real stack:
+
+- Next.js 16 App Router, React 19
+- **next-intl** (`localePrefix: always` — routes like `/en/listing`)
+- TanStack Query, Zustand, Axios (`authClient` / `apiClient`)
+- Tailwind CSS v4, Headless UI
+- Feature-first layout under `src/features/<name>/`
+
+---
+
+## 6. Locale-aware navigation
+
+When documenting navigation:
+
+- Always show **locale-prefixed** examples (`/en/my-profile`, not only `/my-profile`)
+- Prefer `useRouter`, `Link`, `redirect` from `@/src/i18n/navigation`
+- Note `NavigationInitializer` + `navigation.utils` for imperative redirects (e.g. logout, 401)
+
+---
+
+## 7. Styling in docs
+
+- Document **semantic tokens** only; do not recommend raw `gray-*` / hex for themed UI
+- Reference light/dark via `ThemeProvider` and `globals.css` variables
+- Mobile-first responsive patterns (`sm:`, `md:`, `lg:`)
+
+---
+
+## 8. Auth-related files
+
+Always document when relevant:
+
+- Query params: `auth`, `from`, `otp-flow`, OTP contact keys (`authViews.ts`)
+- `AuthModal` view switching and `AUTH_VIEW` constants
+- Token storage (`token.store`), `AuthProvider`, `auth.store`
+- Mutation lifecycle (`auth.mutation.ts`), logout redirect behavior
+
+---
+
+## 9. API / service files
+
+Include:
+
+- Endpoint path and HTTP method
+- Auth required (`auth: true` on client)
+- Request/response shapes (point to `*.types.ts`)
+- Interceptors, 401 refresh, redirect on failure
+
+---
+
+## 10. Change tracking
+
+On code changes, update docs for:
+
+- Flow descriptions, imports/exports, routes, dependency graphs
+- **Rename** `.md` files when source files rename
+- **Delete** obsolete `.md` and fix parent README links
+
+Docs must reflect the **current** codebase only.
+
+---
+
+## 11. New files and folders
+
+| Action | Documentation action |
+| --- | --- |
+| New source file | Create matching `.docs/.../*.md` with full template |
+| New source folder | Create folder `README.md` + child docs as files appear |
+| Delete source | Remove mirrored `.md`; update parent READMEs |
+| Move/rename source | Move/rename mirrored `.md`; update references |
+
+---
+
+## 12. Exclusions
+
+- Do **not** mirror documentation for paths excluded from `folder-structure.md` tree **unless** they are intentional doc targets (e.g. updating `.docs/application.md` itself).
+- Changes **only** under `.cursor/`, `.git/`, `.next/`, `node_modules/`, etc. do not require new mirrored `src/` docs.
+- Editing `.docs/packages.md` or `.docs/folder-structure.md` follows their dedicated rules, not per-file mirroring.
+
+---
+
+## 13. Workflow (same session)
+
+1. Implement code change under `src/` or `app/`.
+2. Create/update/delete mirrored `.docs/...` files and folder READMEs.
+3. Update `.docs/application.md` if routes, auth, APIs, or global flows changed.
+4. Update `.docs/folder-structure.md` if the on-disk tree changed (non-excluded paths).
+5. Update `.docs/packages.md` if `package.json` dependencies changed.
+
+**Bulk scaffold:** `node scripts/bootstrap-docs.mjs` — then review and enrich critical flows (auth, navigation, layouts); do not treat generated text as final without verification.
+
+## 14. Quality bar
+
+Documentation consistency is **mandatory**. Prefer updating existing docs over adding duplicate summaries. Keep `.docs/application.md` as the index-level overview; use mirrored files for file-level depth. Doc index: `.docs/README.md`.
