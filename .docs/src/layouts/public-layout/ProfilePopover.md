@@ -18,7 +18,6 @@ Project source module.
 - `import { useLogout } from "@/src/features/auth/mutations/auth.mutation"`
 - `import type { LoggedInUser } from "@/src/features/auth/types/auth.types"`
 - `import { useRouter } from "@/src/i18n/navigation"`
-- `import { cn } from "@/src/lib/cn"`
 
 # Exports
 
@@ -78,4 +77,5 @@ See source in `src/layouts/public-layout/ProfilePopover.tsx` for step-by-step be
 
 # Notes
 
+- Landing-specific visual variants now live in `src/layouts/landing-layout/LandingProfilePopover.tsx`.
 - Keep in sync when `src/layouts/public-layout/ProfilePopover.tsx` changes.

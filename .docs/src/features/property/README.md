@@ -10,7 +10,7 @@ property/
   mutations/   property.mutation.ts — React Query mutation hook
   services/    property.service.ts — GET /properties
   store/       property.store.ts — list params/response state
-  components/  (reserved)
+  components/  PropertyListFilters.tsx — property list filters UI
   hooks/       (reserved)
   types/       property.types.ts — list API shapes
 ```
@@ -42,6 +42,7 @@ Types: [types/README.md](./types/README.md). Service: [services/README.md](./ser
 ## Subfolders
 
 - [screens/README.md](./screens/README.md)
+- [components/README.md](./components/README.md)
 - [mutations/README.md](./mutations/README.md)
 - [services/README.md](./services/README.md)
 - [store/README.md](./store/README.md)

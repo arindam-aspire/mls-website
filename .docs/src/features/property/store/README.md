@@ -9,4 +9,5 @@ Zustand state container for property list filters and fetched list results.
 ## Notes
 
 - Keeps list query params (`page`, `pageSize`, `category`, `status`).
-- Stores last fetched `PropertyListResponse` for reuse across property screens.
+- Stores last fetched property listings for reuse across property screens.
+- Stores landing property taxonomy payload for cross-feature filter hydration.

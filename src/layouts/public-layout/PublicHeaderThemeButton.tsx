@@ -2,7 +2,6 @@
 
 import { Moon, Sun } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { cn } from "@/src/lib/cn";
 import { IconButton } from "@/src/components/ui/icon-button";
 import { useTheme, type ThemeMode } from "@/src/providers/ThemeProvider";
 
@@ -11,12 +10,10 @@ function getThemeToggleIcon(mode: ThemeMode) {
 }
 
 interface PublicHeaderThemeButtonProps {
-  overHero: boolean;
   className?: string;
 }
 
 export function PublicHeaderThemeButton({
-  overHero,
   className,
 }: PublicHeaderThemeButtonProps) {
   const t = useTranslations("common");
@@ -31,10 +28,7 @@ export function PublicHeaderThemeButton({
       variant="ghost"
       size="md"
       onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-      className={cn(
-        overHero && "!bg-transparent !text-white hover:!bg-white/15",
-        className,
-      )}
+      className={className}
     />
   );
 }

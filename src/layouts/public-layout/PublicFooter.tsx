@@ -53,7 +53,7 @@ export async function PublicFooter() {
 
   return (
     <footer className="border-t-4 border-primary bg-inherit-color text-white">
-      <div className="w-full px-6">
+      <div className="container mx-auto w-full px-6">
         <div className="flex flex-col gap-6 py-4 sm:flex-row sm:items-center sm:justify-between">
           <Link href="/" className="inline-flex shrink-0">
             <Image

@@ -12,17 +12,11 @@ const NAV_ITEMS = [
   { path: "/about-us", labelKey: "navAboutUs" },
 ] as const;
 
-interface DesktopNavProps {
-  overHero: boolean;
-}
-
-export function DesktopNav({ overHero }: DesktopNavProps) {
+export function DesktopNav() {
   const t = useTranslations("common");
   const router = useRouter();
 
-  const navLinkClass = overHero
-    ? "text-white hover:text-white/90"
-    : "text-text hover:text-secondary";
+  const navLinkClass = "text-text hover:text-secondary";
 
   return (
     <nav

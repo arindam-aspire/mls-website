@@ -23,10 +23,13 @@ mls_website/
 │   │       ├── not-found.md
 │   │       ├── [...rest]/
 │   │       │   └── page.md
+│   │       ├── (landing)/
+│   │       │   ├── README.md
+│   │       │   ├── layout.md
+│   │       │   └── page.md
 │   │       ├── (main)/
 │   │       │   ├── README.md
 │   │       │   ├── layout.md
-│   │       │   ├── page.md
 │   │       │   ├── dashboard/
 │   │       │   │   └── page.md
 │   │       │   └── my-profile/
@@ -83,9 +86,15 @@ mls_website/
 │       │   │       └── user.types.md
 │       │   ├── dashboard/
 │       │   ├── landing/
+│       │   │   └── mutations/
+│       │   │       ├── README.md
+│       │   │       └── landing.mutation.md
 │       │   ├── not-found/
 │       │   ├── profile/
 │       │   └── property/
+│       │       ├── components/
+│       │       │   ├── README.md
+│       │       │   └── PropertyListFilters.md
 │       │       ├── mutations/
 │       │       │   ├── README.md
 │       │       │   └── property.mutation.md
@@ -105,6 +114,16 @@ mls_website/
 │       ├── initializers/
 │       ├── layouts/
 │       │   ├── README.md
+│       │   ├── landing-layout/
+│       │   │   ├── README.md
+│       │   │   ├── index.md
+│       │   │   ├── LandingDesktopActions.md
+│       │   │   ├── LandingDesktopNav.md
+│       │   │   ├── LandingFooter.md
+│       │   │   ├── LandingHeader.md
+│       │   │   ├── LandingHeaderThemeButton.md
+│       │   │   ├── LandingMain.md
+│       │   │   └── LandingProfilePopover.md
 │       │   └── public-layout/
 │       │       └── README.md
 │       ├── lib/
@@ -119,13 +138,15 @@ mls_website/
 │   │   ├── not-found.tsx
 │   │   ├── (auth)/
 │   │   ├── (public)/
+│   │   ├── (landing)/
+│   │   │   ├── layout.tsx
+│   │   │   └── page.tsx
 │   │   ├── (main)/
 │   │   │   ├── dashboard/
 │   │   │   │   └── page.tsx
 │   │   │   ├── layout.tsx
 │   │   │   ├── my-profile/
 │   │   │   │   └── page.tsx
-│   │   │   └── page.tsx
 │   │   └── (property)/
 │   │       ├── layout.tsx
 │   │       ├── favourites/
@@ -297,8 +318,8 @@ mls_website/
 │   │   │   │   ├── DetailsSection.tsx
 │   │   │   │   ├── HeroSearchBar.tsx
 │   │   │   │   └── HeroSection.tsx
-│   │   │   ├── query/
-│   │   │   │   └── landing.query.ts
+│   │   │   ├── mutations/
+│   │   │   │   └── landing.mutation.ts
 │   │   │   ├── services/
 │   │   │   │   └── landing.service.ts
 │   │   │   ├── screens/
@@ -310,6 +331,7 @@ mls_website/
 │   │   │   └── screens/
 │   │   └── property/
 │   │       ├── components/
+│   │       │   └── PropertyListFilters.tsx
 │   │       ├── hooks/
 │   │       ├── mutations/
 │   │       │   └── property.mutation.ts
@@ -335,6 +357,15 @@ mls_website/
 │   │   ├── request.ts
 │   │   └── routing.ts
 │   ├── layouts/
+│   │   ├── landing-layout/
+│   │   │   ├── index.tsx
+│   │   │   ├── LandingDesktopActions.tsx
+│   │   │   ├── LandingDesktopNav.tsx
+│   │   │   ├── LandingFooter.tsx
+│   │   │   ├── LandingHeader.tsx
+│   │   │   ├── LandingHeaderThemeButton.tsx
+│   │   │   ├── LandingMain.tsx
+│   │   │   └── LandingProfilePopover.tsx
 │   │   ├── protected-layout/
 │   │   └── public-layout/
 │   │       ├── index.tsx

@@ -170,10 +170,11 @@ router.replace("/");
 
 ### Route groups under `app/[locale]/`
 
-Route groups `(main)`, `(property)`, `(auth)`, `(public)` do **not** appear in the URL.
+Route groups `(landing)`, `(main)`, `(property)`, `(auth)`, `(public)` do **not** appear in the URL.
 
 | Group | Layout | Purpose |
 | --- | --- | --- |
+| `(landing)` | `LandingLayout` | Locale root landing page |
 | `(main)` | `PublicLayout` | Home, dashboard, my-profile |
 | `(property)` | `PublicLayout` | User property-related pages |
 | `(auth)` | *(empty — reserved)* | Future auth routes |
@@ -185,7 +186,7 @@ All paths below are **without** locale; prepend `/<locale>` (e.g. `/en/listing`)
 
 | URL path | App route file | Screen / component |
 | --- | --- | --- |
-| `/` | `(main)/page.tsx` | `LandingScreen` |
+| `/` | `(landing)/page.tsx` | `LandingScreen` |
 | `/dashboard` | `(main)/dashboard/page.tsx` | `DashboardScreen` (Coming Soon) |
 | `/my-profile` | `(main)/my-profile/page.tsx` | `ProfileScreen` (Coming Soon) |
 | `/listing` | `(property)/listing/page.tsx` | `ListingPropertyScreen` (Coming Soon) |
@@ -265,6 +266,21 @@ Used by `(main)` and `(property)` route groups.
 | `PublicFooter.tsx` | Footer |
 | `PublicMain.tsx` | Main content wrapper |
 
+### Landing layout — `src/layouts/landing-layout/`
+
+Used by `(landing)` route group.
+
+| File | Role |
+| --- | --- |
+| `index.tsx` | Shell: landing header, `AuthModal`, main, footer |
+| `LandingHeader.tsx` | Landing-prefixed header module |
+| `LandingDesktopNav.tsx` | Landing-prefixed desktop nav module |
+| `LandingDesktopActions.tsx` | Landing-prefixed desktop actions module |
+| `LandingProfilePopover.tsx` | Landing-prefixed profile popover module |
+| `LandingHeaderThemeButton.tsx` | Landing-prefixed theme toggle module |
+| `LandingFooter.tsx` | Landing-prefixed footer module |
+| `LandingMain.tsx` | Landing-prefixed main content wrapper |
+
 ### Protected layout — `src/layouts/protected-layout/`
 
 Reserved; not wired to routes yet.
@@ -320,7 +336,7 @@ Reserved; not wired to routes yet.
 | `components/HeroSection.tsx` | Full-screen hero with search |
 | `components/HeroSearchBar.tsx` | Search UI |
 | `components/DetailsSection.tsx` | “Why MLS” section |
-| `query/landing.query.ts` | `usePropertyTaxonomy` |
+| `mutations/landing.mutation.ts` | `useGetPropertyTaxonomy` |
 | `services/landing.service.ts` | Fetches taxonomy API |
 | `types/propertyTaxonomy.types.ts` | Taxonomy types |
 

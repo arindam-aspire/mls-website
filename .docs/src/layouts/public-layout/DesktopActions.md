@@ -7,6 +7,7 @@ Project source module.
 # Responsibilities
 
 - Project source module.
+- Render desktop theme, locale, and auth/profile controls for non-landing public routes.
 
 # Imports
 
@@ -76,4 +77,5 @@ See source in `src/layouts/public-layout/DesktopActions.tsx` for step-by-step be
 
 # Notes
 
+- Landing-specific action styling and behavior now lives in `src/layouts/landing-layout/LandingDesktopActions.tsx`.
 - Keep in sync when `src/layouts/public-layout/DesktopActions.tsx` changes.

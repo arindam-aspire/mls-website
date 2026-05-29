@@ -7,6 +7,7 @@ Project source module.
 # Responsibilities
 
 - Project source module.
+- Render desktop nav links with standard public-layout styling.
 
 # Imports
 
@@ -69,4 +70,5 @@ See source in `src/layouts/public-layout/DesktopNav.tsx` for step-by-step behavi
 
 # Notes
 
+- Landing-specific visual treatment now lives in `src/layouts/landing-layout/LandingDesktopNav.tsx`.
 - Keep in sync when `src/layouts/public-layout/DesktopNav.tsx` changes.

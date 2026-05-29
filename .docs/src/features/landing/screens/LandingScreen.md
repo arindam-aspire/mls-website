@@ -7,14 +7,15 @@ Route-level screen component composing feature UI.
 # Responsibilities
 
 - Route-level screen component composing feature UI.
+- Fetch property taxonomy and mirror it into `usePropertyStore` for property feature reuse.
 
 # Imports
 
 - `import { DetailsSection } from "@/src/features/landing/components/DetailsSection"`
 - `import { HeroSection } from "@/src/features/landing/components/HeroSection"`
-- `import { usePropertyTaxonomy } from "../query/landing.query"`
+- `import { useGetPropertyTaxonomy } from "../mutations/landing.mutation"`
 - `import { useTheme } from "@/src/providers/ThemeProvider"`
-- `import { useToast } from "@/src/hooks/useToast"`
+- `import { usePropertyStore } from "@/src/features/property/store/property.store"`
 
 # Exports
 
@@ -22,7 +23,9 @@ Route-level screen component composing feature UI.
 
 # State Management
 
-_No significant state; presentational or config module._
+- Reads taxonomy mutation state from React Query (`useGetPropertyTaxonomy`).
+- Taxonomy persistence to Zustand happens inside the mutation hook `onSuccess`.
+- Reads cached taxonomy from `usePropertyStore` to avoid duplicate API calls on revisit.
 
 # API Usage
 
@@ -44,7 +47,9 @@ _No explicit inputs detected._
 
 ## Actions
 
-_No explicit actions detected._
+- On mount, trigger taxonomy mutation via `mutate()`.
+- API call is skipped when `propertyTaxonomy` already exists in store.
+- Mutation hook handles store persistence and error toast.
 
 ## Validations
 

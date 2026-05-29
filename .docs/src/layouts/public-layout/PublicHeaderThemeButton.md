@@ -10,7 +10,6 @@ Project source module.
 
 # Imports
 
-- `import { cn } from "@/src/lib/cn"`
 - `import { IconButton } from "@/src/components/ui/icon-button"`
 - `import { useTheme, type ThemeMode } from "@/src/providers/ThemeProvider"`
 
@@ -70,4 +69,5 @@ See source in `src/layouts/public-layout/PublicHeaderThemeButton.tsx` for step-b
 
 # Notes
 
+- Landing-specific transparent/hero variant lives in `src/layouts/landing-layout/LandingHeaderThemeButton.tsx`.
 - Keep in sync when `src/layouts/public-layout/PublicHeaderThemeButton.tsx` changes.

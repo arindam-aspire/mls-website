@@ -13,7 +13,6 @@ import {
 import { useLogout } from "@/src/features/auth/mutations/auth.mutation";
 import type { LoggedInUser } from "@/src/features/auth/types/auth.types";
 import { useRouter } from "@/src/i18n/navigation";
-import { cn } from "@/src/lib/cn";
 import { useClose } from "@headlessui/react";
 import { Bell, Eye, Heart, Home, LogOut, Search, Send, User } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -57,10 +56,9 @@ function ProfileMenuItems({ router }: { router: ReturnType<typeof useRouter> }) 
 
 interface ProfilePopoverProps {
   user: LoggedInUser;
-  overHero: boolean;
 }
 
-export function ProfilePopover({ user, overHero }: ProfilePopoverProps) {
+export function ProfilePopover({ user }: ProfilePopoverProps) {
   const t = useTranslations("common");
   const router = useRouter();
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -81,9 +79,7 @@ export function ProfilePopover({ user, overHero }: ProfilePopoverProps) {
         variant="solid"
         isRounded={true}
         size="md"
-        className={cn(
-          overHero && "!bg-surface !text-inherit hover:!bg-surface/80 rounded-full",
-        )}
+        className="rounded-full"
       />
 
       <Popover className="relative flex items-center">
@@ -92,9 +88,7 @@ export function ProfilePopover({ user, overHero }: ProfilePopoverProps) {
             src={user.profile_picture_url}
             name={user.full_name}
             size="md"
-            className={cn(
-              overHero && "!bg-surface !text-primary hover:!bg-surface/80 rounded-full border-2 border-page",
-            )}
+            className="rounded-full"
           />
         </PopoverButton>
 

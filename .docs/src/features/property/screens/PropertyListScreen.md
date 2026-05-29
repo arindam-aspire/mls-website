@@ -8,6 +8,7 @@ Route-level property list screen that currently renders a placeholder card while
 
 - Read `status` and `category` from URL search params.
 - Trigger property list fetch through `useGetPropertyList`.
+- Reuse cached property list from `usePropertyStore` when params are unchanged.
 - Keep existing placeholder UI unchanged.
 
 # Imports
@@ -46,7 +47,8 @@ _No explicit inputs detected._
 
 ## Actions
 
-- On mount/URL change: trigger property list mutation using URL query params.
+- On mount/URL change: build params from query and update `usePropertyStore` only when params differ.
+- Trigger property list mutation only when cache is missing or params changed.
 
 ## Validations
 
@@ -66,8 +68,11 @@ _No explicit show/hide controls detected._
 # Flow Description
 
 1. Screen reads `status` and `category` from URL query.
-2. Calls `useGetPropertyList().mutate({ page, pageSize, category, status })`.
-3. Keeps rendering `ComingSoonCard` placeholder UI.
+2. Builds `nextParams` and stores them in `usePropertyStore`.
+3. If store already has listings for same params, skip API call.
+4. Otherwise call `useGetPropertyList().mutate(nextParams)`.
+5. Maps response items/pagination into store listings.
+6. Keeps rendering `ComingSoonCard` placeholder UI.
 
 # Dependencies
 
@@ -76,4 +81,5 @@ _No explicit show/hide controls detected._
 
 # Notes
 
+- Mock list data now maps image selection from `sampleImages` by index (`images: [sampleImages[index % sampleImages.length]]`).
 - Keep in sync when `src/features/property/screens/PropertyListScreen.tsx` changes.

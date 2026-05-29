@@ -7,13 +7,15 @@ Zustand store for property list parameters and fetched list response cache.
 # Responsibilities
 
 - Hold active list filters/pagination in `propertyListParams`.
-- Hold fetched list response in `propertyListResponse`.
+- Hold fetched list response in `propertyListings`.
+- Hold landing taxonomy response in `propertyTaxonomy` for cross-feature reuse.
 - Provide update and reset actions for list state.
 
 # Imports
 
 - `create` from `zustand`
-- `PropertyListParams`, `PropertyListResponse` from `../types/property.types`
+- `PropertyTaxonomyResponse` from `src/features/landing/types/propertyTaxonomy.types`
+- `PropertyListParams`, `PropertyListings` from `../types/property.types`
 
 # Exports
 
@@ -44,7 +46,8 @@ _No explicit inputs detected._
 ## Actions
 
 - `setPropertyListParams`
-- `setPropertyListResponse`
+- `setPropertyListings`
+- `setPropertyTaxonomy`
 - `resetPropertyList`
 
 ## Validations
@@ -63,8 +66,9 @@ _N/A._
 
 1. Screens/hooks read `propertyListParams`.
 2. UI events update params via `setPropertyListParams`.
-3. Fetch result is stored with `setPropertyListResponse`.
-4. `resetPropertyList` clears filters and cached response.
+3. Property list fetch result is stored with `setPropertyListings`.
+4. Landing taxonomy fetch result is stored with `setPropertyTaxonomy`.
+5. `resetPropertyList` clears filters and cached property data.
 
 # Dependencies
 
@@ -75,3 +79,4 @@ _N/A._
 # Notes
 
 - Initial params: `page=1`, `pageSize=10`, `category=""`, `status=""`.
+- `propertyTaxonomy` is initialized as `null` and populated from `LandingScreen`.

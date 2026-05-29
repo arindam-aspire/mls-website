@@ -12,9 +12,12 @@ Dynamic segment `[locale]` must be one of `en`, `ar`, `es`, `fr`.
 
 ## Route groups
 
-### `(main)` — [main documentation](./(main)/README.md)
+### `(landing)` — [landing documentation](./(landing)/README.md)
 
 - `/[locale]/` — home (`LandingScreen`)
+
+### `(main)` — [main documentation](./(main)/README.md)
+
 - `/[locale]/dashboard` — dashboard (Coming Soon)
 - `/[locale]/my-profile` — profile (Coming Soon)
 

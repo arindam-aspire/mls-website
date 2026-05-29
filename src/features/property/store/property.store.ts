@@ -1,11 +1,14 @@
 import { create } from "zustand";
-import type { PropertyListParams, PropertyListResponse } from "../types/property.types";
+import type { PropertyTaxonomyResponse } from "@/src/features/landing/types/propertyTaxonomy.types";
+import type { PropertyListings, PropertyListParams } from "../types/property.types";
 
 type PropertyState = {
   propertyListParams: PropertyListParams;
-  propertyListResponse: PropertyListResponse | null;
+  propertyListings: PropertyListings | null;
+  propertyTaxonomy: PropertyTaxonomyResponse | null;
   setPropertyListParams: (params: Partial<PropertyListParams>) => void;
-  setPropertyListResponse: (response: PropertyListResponse) => void;
+  setPropertyListings: (listings: PropertyListings) => void;
+  setPropertyTaxonomy: (taxonomy: PropertyTaxonomyResponse) => void;
   resetPropertyList: () => void;
 };
 
@@ -18,7 +21,8 @@ const INITIAL_PARAMS: PropertyListParams = {
 
 export const usePropertyStore = create<PropertyState>((set) => ({
   propertyListParams: INITIAL_PARAMS,
-  propertyListResponse: null,
+  propertyListings: null,
+  propertyTaxonomy: null,
 
   setPropertyListParams: (params) => {
     set((state) => ({
@@ -29,14 +33,19 @@ export const usePropertyStore = create<PropertyState>((set) => ({
     }));
   },
 
-  setPropertyListResponse: (response) => {
-    set({ propertyListResponse: response });
+  setPropertyListings: (data) => {
+    set({ propertyListings: data });
+  },
+
+  setPropertyTaxonomy: (taxonomy) => {
+    set({ propertyTaxonomy: taxonomy });
   },
 
   resetPropertyList: () => {
     set({
       propertyListParams: INITIAL_PARAMS,
-      propertyListResponse: null,
+      propertyListings: null,
+      propertyTaxonomy: null,
     });
   },
 }));

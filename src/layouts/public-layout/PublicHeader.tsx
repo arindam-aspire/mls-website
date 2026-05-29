@@ -4,8 +4,6 @@ import { CloseButton, useClose } from "@headlessui/react";
 import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
-import { cn } from "@/src/lib/cn";
 import { Avatar } from "@/src/components/ui/avatar";
 import { Button } from "@/src/components/ui/button";
 import { Skeleton } from "@/src/components/ui/skeleton";
@@ -21,7 +19,6 @@ import { AUTH_VIEW } from "@/src/features/auth/authViews";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { Link, usePathname, useRouter } from "@/src/i18n/navigation";
 import type { AppLocale } from "@/src/i18n/routing";
-import mlsLogoDark from "@/src/assets/images/MLS_Dark_Logo.png";
 import mlsLogoLight from "@/src/assets/images/MLS_Light_Logo.png";
 import { PublicHeaderThemeButton } from "./PublicHeaderThemeButton";
 import { DesktopNav } from "./DesktopNav";
@@ -99,7 +96,7 @@ function MobileMenu({
 
       <div className="flex items-center justify-between border-t border-secondary/15 px-4 py-4 sm:px-6 sm:py-5">
         <span className="text-sm font-medium text-text">{t("theme")}</span>
-        <PublicHeaderThemeButton overHero={false} />
+        <PublicHeaderThemeButton />
       </div>
 
       <div className="border-t border-secondary/15 px-4 py-4 sm:px-6 sm:py-5">
@@ -126,22 +123,7 @@ export function PublicHeader() {
   const locale = useLocale() as AppLocale;
   const router = useRouter();
   const pathname = usePathname();
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 48);
-    };
-
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const isHome = pathname === "/";
-  const overHero = isHome && !scrolled;
-
-  const logoSrc = overHero ? mlsLogoDark : mlsLogoLight;
+  const logoSrc = mlsLogoLight;
 
   const openChooseAccount = () => {
     router.push({ pathname: "/", query: { auth: AUTH_VIEW.chooseAccount } });
@@ -151,76 +133,68 @@ export function PublicHeader() {
     router.replace(pathname, { locale: nextLocale as AppLocale });
   };
 
-  const menuTriggerClass = cn(
-    "size-11 shrink-0 p-0 hover:bg-page",
-    overHero && "!bg-transparent !text-white hover:!bg-white/15",
-  );
-
   return (
     <header
-      className={cn(
-        "sticky top-0 z-50 grid h-16 w-full grid-cols-3 items-center gap-2 px-4 transition-colors duration-300 sm:h-20 md:grid-cols-[1fr_auto_1fr] md:gap-0 md:px-6",
-        overHero
-          ? "bg-page/20 backdrop-blur-[2px]"
-          : "border-b border-secondary/10 bg-page/90 backdrop-blur-md",
-      )}
+      className="sticky top-0 z-50 h-16 w-full border-b border-secondary/10 bg-page/90 transition-colors duration-300 backdrop-blur-md sm:h-20"
     >
-      <Link href="/" className="col-start-1 justify-self-start">
-        <Image
-          src={logoSrc}
-          alt={t("brand")}
-          className="w-auto h-20 transition-opacity duration-300"
-          priority
-        />
-      </Link>
-
-      <DesktopNav overHero={overHero} />
-
-      {isLoadingUser ? (
-        <Skeleton variant="circular" className="col-start-2 size-9 justify-self-center md:hidden" />
-      ) : user ? (
-        <Avatar
-          src={user.profile_picture_url}
-          name={user.full_name}
-          size="sm"
-          className="col-start-2 justify-self-center md:hidden"
-        />
-      ) : (
-        <Button
-          type="button"
-          color="primary"
-          variant="solid"
-          size="sm"
-          className="col-start-2 max-w-[min(100%,11rem)] justify-self-center truncate md:hidden"
-          onClick={openChooseAccount}
-        >
-          {t("signInSignUp")}
-        </Button>
-      )}
-
-      <DesktopActions overHero={overHero} />
-
-      <Popover className="col-start-3 justify-self-end md:hidden">
-        <PopoverButton
-          aria-label={t("openMenu")}
-          className={menuTriggerClass}
-        >
-          <Menu className="size-6" aria-hidden />
-        </PopoverButton>
-
-        <PopoverBackdrop className="z-[90] bg-black/40" />
-
-        <PopoverPanel fullScreen className="p-0">
-          <MobileMenu
-            onNavigate={(path) => router.push(path)}
-            onLocaleChange={handleLocaleChange}
-            locale={locale}
-            navLabel={t("mainNav")}
-            languageLabel={t("language")}
-            closeMenuLabel={t("closeMenu")}
+      <div className="container mx-auto grid h-full w-full grid-cols-3 items-center gap-2 px-4 md:grid-cols-[1fr_auto_1fr] md:gap-0 md:px-6">
+        <Link href="/" className="col-start-1 justify-self-start">
+          <Image
+            src={logoSrc}
+            alt={t("brand")}
+            className="w-auto h-20 transition-opacity duration-300"
+            priority
           />
-        </PopoverPanel>
-      </Popover>
+        </Link>
+
+        <DesktopNav />
+
+        {isLoadingUser ? (
+          <Skeleton variant="circular" className="col-start-2 size-9 justify-self-center md:hidden" />
+        ) : user ? (
+          <Avatar
+            src={user.profile_picture_url}
+            name={user.full_name}
+            size="sm"
+            className="col-start-2 justify-self-center md:hidden"
+          />
+        ) : (
+          <Button
+            type="button"
+            color="primary"
+            variant="solid"
+            size="sm"
+            className="col-start-2 max-w-[min(100%,11rem)] justify-self-center truncate md:hidden"
+            onClick={openChooseAccount}
+          >
+            {t("signInSignUp")}
+          </Button>
+        )}
+
+        <DesktopActions />
+
+        <Popover className="col-start-3 justify-self-end md:hidden">
+          <PopoverButton
+            aria-label={t("openMenu")}
+            className="size-11 shrink-0 p-0 hover:bg-page"
+          >
+            <Menu className="size-6" aria-hidden />
+          </PopoverButton>
+
+          <PopoverBackdrop className="z-[90] bg-black/40" />
+
+          <PopoverPanel fullScreen className="p-0">
+            <MobileMenu
+              onNavigate={(path) => router.push(path)}
+              onLocaleChange={handleLocaleChange}
+              locale={locale}
+              navLabel={t("mainNav")}
+              languageLabel={t("language")}
+              closeMenuLabel={t("closeMenu")}
+            />
+          </PopoverPanel>
+        </Popover>
+      </div>
     </header>
   );
 }

@@ -7,6 +7,7 @@ Project source module.
 # Responsibilities
 
 - Project source module.
+- Render footer content inside a centered container wrapper.
 
 # Imports
 

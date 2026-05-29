@@ -7,10 +7,10 @@ Project source module.
 # Responsibilities
 
 - Project source module.
+- Keep header content constrained with a centered container wrapper.
 
 # Imports
 
-- `import { cn } from "@/src/lib/cn"`
 - `import { Avatar } from "@/src/components/ui/avatar"`
 - `import { Button } from "@/src/components/ui/button"`
 - `import { Skeleton } from "@/src/components/ui/skeleton"`
@@ -19,7 +19,6 @@ Project source module.
 - `import { useAuthStore } from "@/src/features/auth/store/auth.store"`
 - `import { Link, usePathname, useRouter } from "@/src/i18n/navigation"`
 - `import type { AppLocale } from "@/src/i18n/routing"`
-- `import mlsLogoDark from "@/src/assets/images/MLS_Dark_Logo.png"`
 - `import mlsLogoLight from "@/src/assets/images/MLS_Light_Logo.png"`
 - `import { PublicHeaderThemeButton } from "./PublicHeaderThemeButton"`
 - `import { DesktopNav } from "./DesktopNav"`
@@ -32,7 +31,6 @@ Project source module.
 # State Management
 
 - **Zustand** `useAuthStore`
-- **React** `useState`
 
 # API Usage
 
@@ -83,4 +81,5 @@ See source in `src/layouts/public-layout/PublicHeader.tsx` for step-by-step beha
 
 # Notes
 
+- Landing-specific hero/scroll styling was moved to `src/layouts/landing-layout/LandingHeader.tsx`.
 - Keep in sync when `src/layouts/public-layout/PublicHeader.tsx` changes.

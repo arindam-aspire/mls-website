@@ -7,10 +7,11 @@ Project source module.
 # Responsibilities
 
 - Project source module.
+- Wrap route children in a centered container within the main region.
 
 # Imports
 
-_No notable imports._
+- _No external runtime imports._
 
 # Exports
 
@@ -26,7 +27,7 @@ _N/A unless extended._
 
 # Navigation
 
-_No direct navigation._
+- No route-specific branching in this wrapper.
 
 # Props / Parameters
 
@@ -68,4 +69,5 @@ See source in `src/layouts/public-layout/PublicMain.tsx` for step-by-step behavi
 
 # Notes
 
+- Landing-only spacing logic was moved to `src/layouts/landing-layout/LandingMain.tsx`.
 - Keep in sync when `src/layouts/public-layout/PublicMain.tsx` changes.

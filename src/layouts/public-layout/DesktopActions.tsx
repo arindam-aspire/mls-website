@@ -18,11 +18,7 @@ const LOCALE_OPTIONS: { value: AppLocale; label: string }[] = [
   { value: "fr", label: "Fr" },
 ];
 
-interface DesktopActionsProps {
-  overHero: boolean;
-}
-
-export function DesktopActions({ overHero }: DesktopActionsProps) {
+export function DesktopActions() {
   const t = useTranslations("common");
   const locale = useLocale() as AppLocale;
   const router = useRouter();
@@ -39,7 +35,7 @@ export function DesktopActions({ overHero }: DesktopActionsProps) {
 
   return (
     <div className="col-start-3 hidden items-center gap-3 justify-self-end md:flex">
-      <PublicHeaderThemeButton overHero={overHero} />
+      <PublicHeaderThemeButton />
 
       <Select
         aria-label={t("language")}
@@ -50,7 +46,6 @@ export function DesktopActions({ overHero }: DesktopActionsProps) {
         size="md"
         fullWidth={false}
         wrapperClassName="relative z-[60] w-auto min-w-[4.5rem] shrink-0"
-        selectClassName={overHero ? "bg-surface/90 backdrop-blur-sm" : undefined}
       />
 
       {isLoadingUser ? (
@@ -59,7 +54,7 @@ export function DesktopActions({ overHero }: DesktopActionsProps) {
           <Skeleton variant="circular" className="size-11" />
         </div>
       ) : user ? (
-        <ProfilePopover user={user} overHero={overHero} />
+        <ProfilePopover user={user} />
       ) : (
         <Button
           type="button"

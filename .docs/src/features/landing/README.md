@@ -8,21 +8,22 @@ Home page experience: full-screen hero with property taxonomy search, and market
 landing/
   screens/LandingScreen.tsx     Orchestrates hero + details
   components/                   HeroSection, HeroSearchBar, DetailsSection
-  query/landing.query.ts        usePropertyTaxonomy
+  mutations/landing.mutation.ts useGetPropertyTaxonomy
   services/landing.service.ts   GET /property-taxonomy
   types/propertyTaxonomy.types.ts
 ```
 
 ## Data flow
 
-1. `LandingScreen` calls `usePropertyTaxonomy()`.
-2. Query → `landing.service` → `publicEndpoints.CATEGORY_PROPERTY_LIST`.
-3. Taxonomy passed to `HeroSection` / `HeroSearchBar` for filters.
-4. Errors surfaced via `useToast`.
+1. `LandingScreen` calls `useGetPropertyTaxonomy().mutate()`.
+2. Mutation → `landing.service` → `publicEndpoints.CATEGORY_PROPERTY_LIST`.
+3. On success, taxonomy is persisted in `property.store`.
+4. Taxonomy passed to `HeroSection` / `HeroSearchBar` for filters.
+5. Errors surfaced via `useToast`.
 
 ## Route
 
-- `/en/` (and other locales) — `app/[locale]/(main)/page.tsx` → `LandingScreen`.
+- `/en/` (and other locales) — `app/[locale]/(landing)/page.tsx` → `LandingScreen`.
 
 ## Subfolders
 
@@ -30,7 +31,7 @@ landing/
 | --- | --- |
 | [screens/](./screens/README.md) | `LandingScreen` |
 | [components/](./components/README.md) | Hero UI |
-| [query/](./query/README.md) | React Query hook |
+| [mutations/](./mutations/README.md) | React Query mutation hook |
 | [services/](./services/README.md) | Public API |
 | [types/](./types/README.md) | Taxonomy types |
 
