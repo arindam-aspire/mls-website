@@ -1,13 +1,30 @@
 "use client";
 
+import { usePathname } from "@/src/i18n/navigation";
+import { cn } from "@/src/lib/cn";
+
+const PROPERTY_LIST_PATH = "/property-list";
+
 export function PublicMain({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const pathname = usePathname();
+  const isPropertyListScreen = pathname === PROPERTY_LIST_PATH;
+
   return (
-    <main className="flex min-h-0 flex-1 flex-col px-6 py-4">
-      <div className="container mx-auto w-full">{children}</div>
+    <main
+      className={cn(
+        "flex flex-1 flex-col overflow-visible px-6 py-4",
+        isPropertyListScreen && "pb-4 pt-0 sm:pb-6",
+      )}
+    >
+      {isPropertyListScreen ? (
+        children
+      ) : (
+        <div className="container mx-auto w-full">{children}</div>
+      )}
     </main>
   );
 }

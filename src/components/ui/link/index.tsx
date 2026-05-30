@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { cn } from "@/src/lib/cn";
+import { linkIconSizeClasses, linkSizeClasses } from "../responsiveSizes";
 import type { LinkColor, LinkProps, LinkSize, LinkVariant } from "./types";
 
 const baseClasses = cn(
@@ -57,17 +58,9 @@ const colorClasses: Record<LinkColor, Record<LinkVariant, string>> = {
   },
 };
 
-const sizeClasses: Record<LinkSize, string> = {
-  sm: "gap-1 text-sm",
-  md: "gap-1.5 text-sm",
-  lg: "gap-2 text-base",
-};
+const sizeClasses = linkSizeClasses;
 
-const iconSizeClasses: Record<LinkSize, string> = {
-  sm: "size-3.5 shrink-0",
-  md: "size-4 shrink-0",
-  lg: "size-[1.125rem] shrink-0",
-};
+const iconSizeClasses = linkIconSizeClasses;
 
 function LinkIcon({ icon, size }: { icon: ReactNode; size: LinkSize }) {
   return (

@@ -259,7 +259,7 @@ Used by `(main)` and `(property)` route groups.
 | `ProfilePopover.tsx` | Avatar menu, logout, profile links |
 | `PublicHeaderThemeButton.tsx` | Light/dark toggle |
 | `PublicFooter.tsx` | Footer |
-| `PublicMain.tsx` | Main content wrapper |
+| `PublicMain.tsx` | Main content wrapper; property list bypasses outer container for sticky filters |
 
 ### Landing layout — `src/layouts/landing-layout/`
 
@@ -536,6 +536,10 @@ Semantic Tailwind colors — use these, not raw grays:
 | `text-hero-on-image` | White text on hero image |
 
 `html` has `.light` or `.dark` (also system preference when no explicit class).
+
+### Responsive control sizing
+
+Shared tokens in `src/components/ui/responsiveSizes.ts`: controls use **three viewport steps** — compact default (< 640px), standard (`sm:` ≥ 640px), roomy (`lg:` ≥ 1024px). This is separate from the component `size="sm" | "md" | "lg"` prop.
 
 ### Border radius (project rule)
 

@@ -97,7 +97,9 @@ mls_website/
 │       │   └── property/
 │       │       ├── components/
 │       │       │   ├── README.md
-│       │       │   └── PropertyListFilters.md
+│       │       │   ├── PropertyListAdvancedFilters.md
+│       │       │   ├── PropertyListFilters.md
+│       │       │   └── propertyListAdvancedFilters.constants.md
 │       │       ├── hooks/
 │       │       │   ├── README.md
 │       │       │   ├── usePropertyDetails.md
@@ -217,8 +219,16 @@ mls_website/
 │   │   │   ├── ConfirmModal.tsx
 │   │   │   └── UpcomingFeatureModal.tsx
 │   │   │   └── PasswordStrengthIndicator.tsx
+│   │   ├── search/
+│   │   │   ├── AnchoredDropdown.tsx
+│   │   │   ├── BudgetField.tsx
+│   │   │   ├── BudgetRangeInputs.tsx
+│   │   │   ├── budget.utils.ts
+│   │   │   ├── index.ts
+│   │   │   └── types.ts
 │   │   └── ui/
 │   │       ├── fieldVariants.ts
+│   │       ├── responsiveSizes.ts
 │   │       ├── avatar/
 │   │       │   ├── index.tsx
 │   │       │   └── types.ts
@@ -228,6 +238,11 @@ mls_website/
 │   │       ├── button-group/
 │   │       │   ├── index.tsx
 │   │       │   └── types.ts
+│   │       ├── budget-select/
+│   │       │   ├── index.tsx
+│   │       │   ├── ranges.ts
+│   │       │   ├── types.ts
+│   │       │   └── utils.ts
 │   │       ├── card/
 │   │       │   ├── index.tsx
 │   │       │   └── types.ts
@@ -345,7 +360,9 @@ mls_website/
 │   │   │   └── screens/
 │   │   └── property/
 │   │       ├── components/
-│   │       │   └── PropertyListFilters.tsx
+│   │       │   ├── PropertyListAdvancedFilters.tsx
+│   │       │   ├── PropertyListFilters.tsx
+│   │       │   └── propertyListAdvancedFilters.constants.ts
 │   │       ├── hooks/
 │   │       │   ├── usePropertyDetails.ts
 │   │       │   └── usePropertyList.ts
@@ -370,6 +387,7 @@ mls_website/
 │   │           └── property.types.ts
 │   ├── hooks/
 │   │   ├── useForm.ts
+│   │   ├── useMatchMedia.ts
 │   │   └── useToast.tsx
 │   ├── i18n/
 │   │   ├── navigation.ts

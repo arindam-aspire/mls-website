@@ -24,29 +24,37 @@ export default function PropertyListScreen() {
   } = usePropertyList();
 
   return (
-    <div className="flex flex-col gap-4 sm:gap-6">
-      <PropertyListFilters {...filters} />
+    <>
+      <div className="sticky top-[var(--layout-header-height)] z-50 -mx-6 border-b border-secondary/10 bg-page/95 px-6 py-3 backdrop-blur-md sm:py-4">
+        <div className="container mx-auto w-full min-w-0">
+          <PropertyListFilters {...filters} />
+        </div>
+      </div>
+
       <UpcomingFeatureModal
         open={upcomingFeatureModal.open}
         onClose={upcomingFeatureModal.onClose}
       />
-      <PropertyCardList
-        data={listings}
-        isLoading={isLoading}
-        layoutVariant={layoutVariant}
-        listTitle={listTitle}
-        toolbar={toolbar}
-        pagination={pagination}
-        noDataFound={noDataFound}
-        canViewAgents
-        canViewOwners
-        canViewBadges
-        onClick={onClickProperty}
-        onClickFavourite={toggleFavourite}
-        onClickEmail={onClickEmail}
-        onClickCall={onClickCall}
-        onClickWhatsApp={onClickWhatsApp}
-      />
-    </div>
+
+      <div className="container mx-auto mt-4 w-full min-w-0 sm:mt-6">
+        <PropertyCardList
+          data={listings}
+          isLoading={isLoading}
+          layoutVariant={layoutVariant}
+          listTitle={listTitle}
+          toolbar={toolbar}
+          pagination={pagination}
+          noDataFound={noDataFound}
+          canViewAgents
+          canViewOwners
+          canViewBadges
+          onClick={onClickProperty}
+          onClickFavourite={toggleFavourite}
+          onClickEmail={onClickEmail}
+          onClickCall={onClickCall}
+          onClickWhatsApp={onClickWhatsApp}
+        />
+      </div>
+    </>
   );
 }

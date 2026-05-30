@@ -9,6 +9,11 @@ import {
   type ReactNode,
 } from "react";
 import { cn } from "@/src/lib/cn";
+import {
+  toggleContainerSizeClasses,
+  toggleIconSizeClasses,
+  toggleSegmentSizeClasses,
+} from "../responsiveSizes";
 import type {
   ToggleButtonColor,
   ToggleButtonProps,
@@ -160,23 +165,11 @@ const inactiveLabelVariantClasses: Record<
   },
 };
 
-const containerSizeClasses: Record<ToggleButtonSize, string> = {
-  sm: "p-0.5",
-  md: "p-1",
-  lg: "p-1",
-};
+const containerSizeClasses = toggleContainerSizeClasses;
 
-const segmentSizeClasses: Record<ToggleButtonSize, string> = {
-  sm: "gap-1 px-3 py-1.5 text-sm",
-  md: "gap-1.5 px-4 py-2 text-[14px]",
-  lg: "gap-2 px-5 py-2.5 text-base",
-};
+const segmentSizeClasses = toggleSegmentSizeClasses;
 
-const iconSizeClasses: Record<ToggleButtonSize, string> = {
-  sm: "size-3.5 shrink-0",
-  md: "size-4 shrink-0",
-  lg: "size-[1.125rem] shrink-0",
-};
+const iconSizeClasses = toggleIconSizeClasses;
 
 function ToggleButtonIcon({
   icon,

@@ -1,15 +1,11 @@
 "use client";
 
 import { cn } from "@/src/lib/cn";
+import { iconButtonSizeClasses } from "../responsiveSizes";
 import { Button } from "../button";
-import type { ButtonSize } from "../button/types";
 import type { IconButtonProps } from "./types";
 
-const iconButtonSizeClasses: Record<ButtonSize, string> = {
-  sm: "size-9 shrink-0 !px-0",
-  md: "size-11 shrink-0 !px-0",
-  lg: "size-12 shrink-0 !px-0",
-};
+const iconButtonSizeClassesMap = iconButtonSizeClasses;
 
 export function IconButton({
   icon,
@@ -25,7 +21,7 @@ export function IconButton({
       isRounded={isRounded}
       fullWidth={fullWidth}
       iconStart={icon}
-      className={cn(iconButtonSizeClasses[size], className)}
+      className={cn(iconButtonSizeClassesMap[size], className)}
       {...rest}
     />
   );

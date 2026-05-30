@@ -16,21 +16,19 @@ import {
   inheritOutlineFocusVisibleClasses,
   inheritOutlineVariantClasses,
 } from "../fieldVariants";
+import {
+  fieldErrorSizeClasses,
+  fieldHintSizeClasses,
+  fieldIconSizeClasses,
+  fieldLabelSizeClasses,
+  selectOptionSizeClasses,
+  selectTriggerSizeClasses,
+} from "../responsiveSizes";
 import type { SelectProps, SelectSize, SelectVariant } from "./types";
 
-const sizeTypography = "text-[14px] font-medium";
+const triggerSizeClasses = selectTriggerSizeClasses;
 
-const triggerSizeClasses: Record<SelectSize, string> = {
-  sm: "px-3 py-1.5 pe-9 text-sm",
-  md: `px-4 py-2.5 pe-10 ${sizeTypography}`,
-  lg: "px-5 py-3 pe-11 text-base",
-};
-
-const iconSizeClasses: Record<SelectSize, string> = {
-  sm: "size-4",
-  md: "size-[1.125rem]",
-  lg: "size-5",
-};
+const iconSizeClasses = fieldIconSizeClasses;
 
 const variantClasses: Record<SelectVariant, string> = {
   outline: cn(
@@ -45,10 +43,12 @@ const variantClasses: Record<SelectVariant, string> = {
 };
 
 const triggerBaseClasses =
-  "relative w-full rounded-lg bg-surface text-start text-text transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary/40 data-disabled:cursor-not-allowed data-disabled:opacity-50";
+  "relative flex w-full items-center rounded-lg bg-surface text-start text-text transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary/40 data-disabled:cursor-not-allowed data-disabled:opacity-50";
 
-const optionClasses =
-  "cursor-pointer px-3 py-2 text-text transition-colors data-focus:bg-primary data-focus:text-white data-selected:bg-primary data-selected:text-white data-disabled:cursor-not-allowed data-disabled:opacity-50";
+const optionClasses = cn(
+  "cursor-pointer text-text transition-colors data-focus:bg-primary data-focus:text-white data-selected:bg-primary data-selected:text-white data-disabled:cursor-not-allowed data-disabled:opacity-50",
+  selectOptionSizeClasses,
+);
 
 export function Select({
   options,
@@ -98,10 +98,7 @@ export function Select({
       {label != null && (
         <Label
           htmlFor={selectId}
-          className={cn(
-            "mb-1.5 block text-[14px] font-medium text-text",
-            labelClassName,
-          )}
+          className={cn(fieldLabelSizeClasses, labelClassName)}
         >
           {label}
           {isRequired && (
@@ -148,7 +145,7 @@ export function Select({
             </span>
             <ChevronDown
               className={cn(
-                "pointer-events-none absolute top-1/2 end-3 -translate-y-1/2 text-muted",
+                "pointer-events-none absolute top-1/2 end-2.5 -translate-y-1/2 text-muted sm:end-3",
                 iconSizeClasses[size],
                 iconClassName,
               )}
@@ -181,14 +178,14 @@ export function Select({
         <p
           id={errorId}
           role="alert"
-          className="mt-1.5 text-sm text-danger"
+          className={fieldErrorSizeClasses}
         >
           {error}
         </p>
       )}
 
       {!hasError && hint != null && (
-        <p id={hintId} className="mt-1.5 text-sm text-muted">
+        <p id={hintId} className={fieldHintSizeClasses}>
           {hint}
         </p>
       )}

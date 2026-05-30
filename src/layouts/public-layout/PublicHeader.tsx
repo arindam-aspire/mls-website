@@ -135,7 +135,7 @@ export function PublicHeader() {
 
   return (
     <header
-      className="sticky top-0 z-50 h-16 w-full border-b border-secondary/10 bg-page/90 transition-colors duration-300 backdrop-blur-md sm:h-20"
+      className="sticky top-0 z-50 h-[var(--layout-header-height)] w-full border-b border-secondary/10 bg-page/90 transition-colors duration-300 backdrop-blur-md"
     >
       <div className="container mx-auto grid h-full w-full grid-cols-3 items-center gap-2 px-4 md:grid-cols-[1fr_auto_1fr] md:gap-0 md:px-6">
         <Link href="/" className="col-start-1 justify-self-start">

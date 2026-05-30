@@ -7,10 +7,20 @@ import { getPathname, usePathname, useRouter } from "@/src/i18n/navigation";
 import type { AppLocale } from "@/src/i18n/routing";
 import { useGetPropertyTaxonomy } from "@/src/features/landing/mutations/landing.mutation";
 import { getPropertyCategories } from "@/src/features/landing/types/propertyTaxonomy.types";
+import {
+  getInitialBudgetMax,
+  getInitialBudgetMin,
+} from "@/src/components/search";
 import { SELECT_DROPDOWN_EMPTY_VALUE } from "@/src/components/ui";
 import { useGetPropertyList } from "../mutations/property.mutation";
 import { usePropertyStore } from "../store/property.store";
 import type { PropertyListParams, PropertyListing } from "../types/property.types";
+import {
+  hasAdvancedFilters,
+  normalizeAmenitiesParam,
+  parseAmenitiesParam,
+  serializeAmenitiesParam,
+} from "../components/propertyListAdvancedFilters.constants";
 
 const DEFAULT_SORT = "newest";
 
@@ -86,8 +96,8 @@ function parseUrlListParams(searchParams: URLSearchParams): PropertyListParams {
     sort: searchParams.get("sort") || DEFAULT_SORT,
     type: getOptionalString(searchParams.get("type")),
     location: getOptionalString(searchParams.get("location")),
-    budgetMin: parseOptionalNumber(searchParams.get("budgetMin")),
-    budgetMax: parseOptionalNumber(searchParams.get("budgetMax")),
+    budgetMin: parseOptionalNumber(getInitialBudgetMin(searchParams) || null),
+    budgetMax: parseOptionalNumber(getInitialBudgetMax(searchParams) || null),
     furnitureStatus: getOptionalString(searchParams.get("furnitureStatus")),
     bedrooms: parseOptionalNumber(searchParams.get("bedrooms")),
     bathrooms: parseOptionalNumber(searchParams.get("bathrooms")),
@@ -95,7 +105,7 @@ function parseUrlListParams(searchParams: URLSearchParams): PropertyListParams {
     propertyAge: getOptionalString(searchParams.get("propertyAge")),
     minArea: parseOptionalNumber(searchParams.get("minArea")),
     maxArea: parseOptionalNumber(searchParams.get("maxArea")),
-    amenities: getOptionalString(searchParams.get("amenities")),
+    amenities: normalizeAmenitiesParam(getOptionalString(searchParams.get("amenities"))),
   };
 }
 
@@ -137,6 +147,38 @@ export function usePropertyList() {
   const [locationDraft, setLocationDraft] = useState(
     () => listParams.location ?? "",
   );
+  const [budgetMinDraft, setBudgetMinDraft] = useState(
+    () =>
+      listParams.budgetMin != null ? String(listParams.budgetMin) : "",
+  );
+  const [budgetMaxDraft, setBudgetMaxDraft] = useState(
+    () =>
+      listParams.budgetMax != null ? String(listParams.budgetMax) : "",
+  );
+  const [minAreaDraft, setMinAreaDraft] = useState(
+    () => (listParams.minArea != null ? String(listParams.minArea) : ""),
+  );
+  const [maxAreaDraft, setMaxAreaDraft] = useState(
+    () => (listParams.maxArea != null ? String(listParams.maxArea) : ""),
+  );
+
+  useEffect(() => {
+    setBudgetMinDraft(
+      listParams.budgetMin != null ? String(listParams.budgetMin) : "",
+    );
+    setBudgetMaxDraft(
+      listParams.budgetMax != null ? String(listParams.budgetMax) : "",
+    );
+  }, [listParams.budgetMax, listParams.budgetMin]);
+
+  useEffect(() => {
+    setMinAreaDraft(
+      listParams.minArea != null ? String(listParams.minArea) : "",
+    );
+    setMaxAreaDraft(
+      listParams.maxArea != null ? String(listParams.maxArea) : "",
+    );
+  }, [listParams.maxArea, listParams.minArea]);
 
   // 5. Data fetching / queries
   const {
@@ -251,7 +293,12 @@ export function usePropertyList() {
 
   const onStatusChange = useCallback(
     (status: string) => {
-      updateSearchParams({ status, page: 1 });
+      updateSearchParams({
+        status,
+        budgetMin: "" as unknown as number,
+        budgetMax: "" as unknown as number,
+        page: 1,
+      });
     },
     [updateSearchParams],
   );
@@ -287,6 +334,134 @@ export function usePropertyList() {
     updateSearchParams({ location: trimmedLocation, page: 1 });
   }, [listParams.location, locationDraft, updateSearchParams]);
 
+  const onBudgetCommit = useCallback(() => {
+    updateSearchParams({
+      budgetMin: budgetMinDraft
+        ? Number(budgetMinDraft)
+        : ("" as unknown as number),
+      budgetMax: budgetMaxDraft
+        ? Number(budgetMaxDraft)
+        : ("" as unknown as number),
+      page: 1,
+    });
+  }, [budgetMaxDraft, budgetMinDraft, updateSearchParams]);
+
+  const onBudgetReset = useCallback(() => {
+    setBudgetMinDraft("");
+    setBudgetMaxDraft("");
+    updateSearchParams({
+      budgetMin: "" as unknown as number,
+      budgetMax: "" as unknown as number,
+      page: 1,
+    });
+  }, [updateSearchParams]);
+
+  const onBedroomsChange = useCallback(
+    (value: string) => {
+      updateSearchParams({
+        bedrooms:
+          value === SELECT_DROPDOWN_EMPTY_VALUE
+            ? ("" as unknown as number)
+            : Number(value),
+        page: 1,
+      });
+    },
+    [updateSearchParams],
+  );
+
+  const onBathroomsChange = useCallback(
+    (value: string) => {
+      updateSearchParams({
+        bathrooms:
+          value === SELECT_DROPDOWN_EMPTY_VALUE
+            ? ("" as unknown as number)
+            : Number(value),
+        page: 1,
+      });
+    },
+    [updateSearchParams],
+  );
+
+  const onParkingChange = useCallback(
+    (value: string) => {
+      updateSearchParams({
+        parking:
+          value === SELECT_DROPDOWN_EMPTY_VALUE
+            ? ("" as unknown as number)
+            : Number(value),
+        page: 1,
+      });
+    },
+    [updateSearchParams],
+  );
+
+  const onPropertyAgeChange = useCallback(
+    (value: string) => {
+      updateSearchParams({
+        propertyAge:
+          value === SELECT_DROPDOWN_EMPTY_VALUE ? "" : value,
+        page: 1,
+      });
+    },
+    [updateSearchParams],
+  );
+
+  const onMinAreaChange = useCallback((value: string) => {
+    setMinAreaDraft(value.replace(/\D/g, ""));
+  }, []);
+
+  const onMaxAreaChange = useCallback((value: string) => {
+    setMaxAreaDraft(value.replace(/\D/g, ""));
+  }, []);
+
+  const onMinAreaCommit = useCallback(() => {
+    const nextValue = minAreaDraft ? Number(minAreaDraft) : undefined;
+    const currentValue = listParams.minArea;
+
+    if (nextValue === currentValue || (nextValue == null && currentValue == null)) {
+      return;
+    }
+
+    updateSearchParams({
+      minArea: nextValue ?? ("" as unknown as number),
+      page: 1,
+    });
+  }, [listParams.minArea, minAreaDraft, updateSearchParams]);
+
+  const onMaxAreaCommit = useCallback(() => {
+    const nextValue = maxAreaDraft ? Number(maxAreaDraft) : undefined;
+    const currentValue = listParams.maxArea;
+
+    if (nextValue === currentValue || (nextValue == null && currentValue == null)) {
+      return;
+    }
+
+    updateSearchParams({
+      maxArea: nextValue ?? ("" as unknown as number),
+      page: 1,
+    });
+  }, [listParams.maxArea, maxAreaDraft, updateSearchParams]);
+
+  const onAmenityChange = useCallback(
+    (slug: string, checked: boolean) => {
+      const nextAmenities = parseAmenitiesParam(listParams.amenities);
+
+      if (checked) {
+        nextAmenities.add(slug);
+      } else {
+        nextAmenities.delete(slug);
+      }
+
+      updateSearchParams({
+        amenities:
+          serializeAmenitiesParam(nextAmenities) ??
+          ("" as unknown as string),
+        page: 1,
+      });
+    },
+    [listParams.amenities, updateSearchParams],
+  );
+
   const onResetSearch = useCallback(() => {
     const params = new URLSearchParams();
 
@@ -310,6 +485,43 @@ export function usePropertyList() {
     setIsUpcomingFeatureModalOpen(false);
   }, []);
 
+  const activeParkingValue = useMemo(() => {
+    if (listParams.parking == null) {
+      return SELECT_DROPDOWN_EMPTY_VALUE;
+    }
+
+    return String(listParams.parking);
+  }, [listParams.parking]);
+
+  const activeBedroomsValue = useMemo(() => {
+    if (listParams.bedrooms == null) {
+      return SELECT_DROPDOWN_EMPTY_VALUE;
+    }
+
+    return String(listParams.bedrooms);
+  }, [listParams.bedrooms]);
+
+  const activeBathroomsValue = useMemo(() => {
+    if (listParams.bathrooms == null) {
+      return SELECT_DROPDOWN_EMPTY_VALUE;
+    }
+
+    return String(listParams.bathrooms);
+  }, [listParams.bathrooms]);
+
+  const activePropertyAgeValue = useMemo(() => {
+    if (!listParams.propertyAge) {
+      return SELECT_DROPDOWN_EMPTY_VALUE;
+    }
+
+    return listParams.propertyAge;
+  }, [listParams.propertyAge]);
+
+  const selectedAmenities = useMemo(
+    () => [...parseAmenitiesParam(listParams.amenities)],
+    [listParams.amenities],
+  );
+
   const filters = useMemo(
     () => ({
       status: listParams.status || STATUS_OPTIONS[0].value,
@@ -324,26 +536,69 @@ export function usePropertyList() {
       location: locationDraft,
       onLocationChange,
       onLocationCommit,
+      budgetMin: budgetMinDraft,
+      budgetMax: budgetMaxDraft,
+      onBudgetMinChange: setBudgetMinDraft,
+      onBudgetMaxChange: setBudgetMaxDraft,
+      onBudgetCommit,
+      onBudgetReset,
+      rentMode: listParams.status === "rent",
+      bedrooms: activeBedroomsValue,
+      bathrooms: activeBathroomsValue,
+      parking: activeParkingValue,
+      propertyAge: activePropertyAgeValue,
+      minArea: minAreaDraft,
+      maxArea: maxAreaDraft,
+      selectedAmenities,
+      onBedroomsChange,
+      onBathroomsChange,
+      onParkingChange,
+      onPropertyAgeChange,
+      onMinAreaChange,
+      onMaxAreaChange,
+      onMinAreaCommit,
+      onMaxAreaCommit,
+      onAmenityChange,
+      hasAdvancedFilters: hasAdvancedFilters(listParams),
       onResetSearch,
-      onAdvanceSearch: openUpcomingFeature,
       onSaveSearch: openUpcomingFeature,
       disabled: isLoadingTaxonomy && propertyTaxonomy == null,
     }),
     [
+      activeBedroomsValue,
+      activeBathroomsValue,
       activeCategorySlug,
+      activeParkingValue,
+      activePropertyAgeValue,
       activeTypeValue,
+      budgetMaxDraft,
+      budgetMinDraft,
       categoryOptions,
       isLoadingTaxonomy,
-      listParams.status,
+      listParams,
       locationDraft,
+      maxAreaDraft,
+      minAreaDraft,
+      onAmenityChange,
+      onBathroomsChange,
+      onBedroomsChange,
+      onBudgetCommit,
+      onBudgetReset,
       onCategoryChange,
       onLocationChange,
       onLocationCommit,
+      onMaxAreaChange,
+      onMaxAreaCommit,
+      onMinAreaChange,
+      onMinAreaCommit,
+      onParkingChange,
+      onPropertyAgeChange,
       onResetSearch,
       onStatusChange,
       onTypeChange,
       openUpcomingFeature,
       propertyTaxonomy,
+      selectedAmenities,
       typeOptions,
     ],
   );

@@ -44,7 +44,7 @@ export default async function RootLayout({
     <html
       lang={locale}
       dir={direction}
-      className={`${geistSans.variable} ${geistMono.variable} ${tajawal.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${tajawal.variable} min-h-full antialiased`}
     >
       <body
         className={`flex min-h-full flex-col bg-page text-text ${fontClass}`}
@@ -54,7 +54,7 @@ export default async function RootLayout({
             <ToastProvider>
               <AuthProvider>
                 <NavigationInitializer />
-                <div className="flex min-h-0 flex-1 flex-col">{children}</div>
+                <div className="flex flex-1 flex-col">{children}</div>
               </AuthProvider>
             </ToastProvider>
           </ThemeProvider>

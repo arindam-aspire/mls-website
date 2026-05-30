@@ -7,13 +7,15 @@ import {
   inheritOutlineFocusVisibleClasses,
   inheritOutlineVariantClasses,
 } from "../fieldVariants";
+import {
+  fieldErrorSizeClasses,
+  fieldHintSizeClasses,
+  fieldLabelSizeClasses,
+  textareaSizeClasses,
+} from "../responsiveSizes";
 import type { TextareaProps, TextareaSize, TextareaVariant } from "./types";
 
-const sizeClasses: Record<TextareaSize, string> = {
-  sm: "min-h-[4.5rem] px-3 py-2 text-sm",
-  md: "min-h-[5.5rem] px-4 py-2.5 text-sm",
-  lg: "min-h-[6.5rem] px-5 py-3 text-base",
-};
+const sizeClasses = textareaSizeClasses;
 
 const variantClasses: Record<TextareaVariant, string> = {
   outline: cn(
@@ -78,10 +80,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         {label != null && (
           <Label
             htmlFor={textareaId}
-            className={cn(
-              "mb-1.5 block text-sm font-medium text-text",
-              labelClassName,
-            )}
+              className={cn(fieldLabelSizeClasses, labelClassName)}
           >
             {label}
             {isRequired && (
@@ -115,13 +114,13 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         />
 
         {hasError && (
-          <p id={errorId} role="alert" className="mt-1.5 text-sm text-danger">
+          <p id={errorId} role="alert" className={fieldErrorSizeClasses}>
             {error}
           </p>
         )}
 
         {!hasError && hint != null && (
-          <p id={hintId} className="mt-1.5 text-sm text-muted">
+          <p id={hintId} className={fieldHintSizeClasses}>
             {hint}
           </p>
         )}

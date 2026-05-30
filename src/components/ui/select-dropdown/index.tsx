@@ -17,6 +17,15 @@ import {
   inheritOutlineFocusVisibleClasses,
   inheritOutlineVariantClasses,
 } from "../fieldVariants";
+import {
+  dropdownOptionSizeClasses,
+  dropdownPanelSizeClasses,
+  fieldControlSizeClasses,
+  fieldErrorSizeClasses,
+  fieldHintSizeClasses,
+  fieldIconSizeClasses,
+  fieldLabelSizeClasses,
+} from "../responsiveSizes";
 import type {
   SelectDropdownProps,
   SelectDropdownSize,
@@ -27,17 +36,9 @@ import {
   type SelectDropdownOption,
 } from "./types";
 
-const triggerSizeClasses: Record<SelectDropdownSize, string> = {
-  sm: "h-9 gap-1.5 px-3 text-sm",
-  md: "h-11 gap-2 px-4 text-sm",
-  lg: "h-12 gap-2 px-5 text-base",
-};
+const triggerSizeClasses = fieldControlSizeClasses;
 
-const iconSizeClasses: Record<SelectDropdownSize, string> = {
-  sm: "size-3.5",
-  md: "size-4",
-  lg: "size-5",
-};
+const iconSizeClasses = fieldIconSizeClasses;
 
 const triggerBaseClasses = cn(
   "relative flex w-full items-center rounded-xl transition-colors",
@@ -62,12 +63,14 @@ const triggerVariantClasses: Record<SelectDropdownVariant, string> = {
 };
 
 const panelClasses = cn(
-  "z-50 max-h-64 min-w-64 w-(--button-width) overflow-auto rounded-2xl border border-secondary-light/80 bg-surface p-2 text-sm leading-5 shadow-xl ring-1 ring-black/5",
+  "z-50 max-h-64 min-w-64 w-(--button-width) overflow-auto rounded-2xl border border-secondary-light/80 bg-surface shadow-xl ring-1 ring-black/5",
+  dropdownPanelSizeClasses,
   "[scrollbar-width:thin] focus:outline-none",
 );
 
 const optionBaseClasses = cn(
-  "cursor-pointer rounded-xl px-3 py-2 text-sm leading-5 text-text transition-colors",
+  "cursor-pointer rounded-xl text-text transition-colors",
+  dropdownOptionSizeClasses,
   "data-focus:bg-page data-hover:bg-page",
   "data-selected:bg-page data-selected:font-medium data-selected:text-secondary-dark",
   "data-disabled:cursor-not-allowed data-disabled:opacity-50",
@@ -157,10 +160,7 @@ export function SelectDropdown({
       {label != null && (
         <Label
           htmlFor={selectId}
-          className={cn(
-            "mb-1.5 block text-sm font-medium text-text",
-            labelClassName,
-          )}
+            className={cn(fieldLabelSizeClasses, labelClassName)}
         >
           {label}
           {isRequired && (
@@ -240,13 +240,13 @@ export function SelectDropdown({
       </Listbox>
 
       {hasError && (
-        <p id={errorId} role="alert" className="mt-1.5 text-sm text-danger">
+        <p id={errorId} role="alert" className={fieldErrorSizeClasses}>
           {error}
         </p>
       )}
 
       {!hasError && hint != null && (
-        <p id={hintId} className="mt-1.5 text-sm text-muted">
+        <p id={hintId} className={fieldHintSizeClasses}>
           {hint}
         </p>
       )}

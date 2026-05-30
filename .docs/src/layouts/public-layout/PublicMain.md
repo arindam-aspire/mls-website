@@ -6,12 +6,13 @@ Project source module.
 
 # Responsibilities
 
-- Project source module.
 - Wrap route children in a centered container within the main region.
+- On `/property-list`, skip the outer container so the screen can render a full-width sticky filter bar and a separate container for list content.
 
 # Imports
 
-- _No external runtime imports._
+- `usePathname` from `@/src/i18n/navigation`
+- `cn` from `@/src/lib/cn`
 
 # Exports
 
@@ -19,55 +20,19 @@ Project source module.
 
 # State Management
 
-_No significant state; presentational or config module._
-
-# API Usage
-
-_N/A unless extended._
+_No significant state; presentational wrapper._
 
 # Navigation
 
-- No route-specific branching in this wrapper.
-
-# Props / Parameters
-
-- See component/handler props in source (TypeScript interfaces).
-
-# Actions / Inputs
-
-## Inputs
-
-_No explicit inputs detected._
-
-## Actions
-
-_No explicit actions detected._
-
-## Validations
-
-_No explicit validations detected._
-
-## Show/Hide Controls
-
-_No explicit show/hide controls detected._
+- When `pathname === "/property-list"`, children render directly (no `container` wrapper) and top padding is removed so the sticky filter bar aligns with the header offset.
 
 # UI Details
 
-- **Theme:** semantic tokens (`bg-page`, `bg-surface`, `text-text`, `text-muted`, `bg-primary`, `border-secondary/15`).
-- **Light/dark:** via `ThemeProvider` / `html.light` | `html.dark`.
-- **Radius:** `rounded-lg` controls; `rounded-xl` cards/modals/popovers; `rounded-full` avatars/pills.
-- **Responsive:** mobile-first (`sm:`, `md:`, `lg:`).
-
-# Flow Description
-
-See source in `src/layouts/public-layout/PublicMain.tsx` for step-by-step behavior aligned with [application.md](../../application.md) (path relative may vary).
-
-# Dependencies
-
-- Parent feature or route that imports this file.
-- See **Imports** for direct module dependencies.
+- Default: `flex flex-1 flex-col overflow-visible px-6 py-4` + inner `container mx-auto`
+- Property list: `pt-0` on main; sticky filters and list each use their own `container mx-auto`
+- Document scroll (not an inner scroll trap) — required for `position: sticky` on the filter bar
 
 # Notes
 
-- Landing-only spacing logic was moved to `src/layouts/landing-layout/LandingMain.tsx`.
-- Keep in sync when `src/layouts/public-layout/PublicMain.tsx` changes.
+- Landing-only spacing logic lives in `LandingMain.tsx`.
+- Sticky offset uses global `--layout-header-height` (see `app/globals.css`).

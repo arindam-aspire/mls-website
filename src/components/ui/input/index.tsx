@@ -7,19 +7,18 @@ import {
   inheritOutlineFocusWithinClasses,
   inheritOutlineVariantClasses,
 } from "../fieldVariants";
+import {
+  fieldControlSizeClasses,
+  fieldErrorSizeClasses,
+  fieldHintSizeClasses,
+  fieldIconSizeClasses,
+  fieldLabelSizeClasses,
+} from "../responsiveSizes";
 import type { InputProps, InputSize, InputVariant } from "./types";
 
-const wrapperSizeClasses: Record<InputSize, string> = {
-  sm: "h-9 gap-1.5 px-3 text-sm",
-  md: "h-11 gap-2 px-4 text-sm",
-  lg: "h-12 gap-2 px-5 text-base",
-};
+const wrapperSizeClasses = fieldControlSizeClasses;
 
-const iconSizeClasses: Record<InputSize, string> = {
-  sm: "size-3.5",
-  md: "size-4",
-  lg: "size-5",
-};
+const iconSizeClasses = fieldIconSizeClasses;
 
 const variantClasses: Record<InputVariant, string> = {
   outline: cn(inheritOutlineVariantClasses, inheritOutlineFocusWithinClasses),
@@ -111,10 +110,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
       {label != null && (
         <Label
           htmlFor={inputId}
-          className={cn(
-            "mb-1.5 block text-sm font-medium text-text",
-            labelClassName,
-          )}
+            className={cn(fieldLabelSizeClasses, labelClassName)}
         >
           {label}
           {isRequired && (
@@ -155,13 +151,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
       </div>
 
       {hasError && (
-        <p id={errorId} role="alert" className="mt-1.5 text-sm text-danger">
+        <p id={errorId} role="alert" className={fieldErrorSizeClasses}>
           {error}
         </p>
       )}
 
       {!hasError && hint != null && (
-        <p id={hintId} className="mt-1.5 text-sm text-muted">
+        <p id={hintId} className={fieldHintSizeClasses}>
           {hint}
         </p>
       )}

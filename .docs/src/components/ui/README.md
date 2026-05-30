@@ -9,6 +9,7 @@ Headless UI–based design system for MLS. Exported from [index.md](./index.md).
 | [avatar/](./avatar/index.md) | `Avatar` |
 | [button/](./button/index.md) | `Button` |
 | [button-group/](./button-group/index.md) | `ButtonGroup` |
+| [budget-select/](./budget-select/index.md) | `BudgetSelect`, Buy/Rent range presets |
 | [card/](./card/index.md) | `Card`, `CardHeader`, … |
 | [icon-button/](./icon-button/index.md) | `IconButton` |
 | [toggle-button/](./toggle-button/index.md) | `ToggleButton` |
@@ -26,6 +27,7 @@ Headless UI–based design system for MLS. Exported from [index.md](./index.md).
 ## Shared styles
 
 - [fieldVariants.md](./fieldVariants.md) — shared input/field class variants.
+- [responsiveSizes.md](./responsiveSizes.md) — mobile-first compact sizing (`sm:` restores full scale) for controls.
 
 ## Types
 

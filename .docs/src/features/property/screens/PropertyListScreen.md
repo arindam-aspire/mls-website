@@ -51,6 +51,8 @@ _No props._
 
 # UI Details
 
+- **Sticky filters:** full-width bar (`-mx-6 px-6`) sticks at `top-[var(--layout-header-height)]` below `PublicHeader`; filters sit in `container mx-auto`; list content in a separate container below
+- **Scroll:** document-level scroll (see `PublicMain` property-list branch and root `html min-h-full`) — required for sticky to engage
 - **Library:** `@abdoun/abdoun-library` styles imported in `app/globals.css`
 - **Theme:** library + app semantic tokens
 - **Responsive:** `PropertyCardList` grid/list layouts
@@ -59,7 +61,7 @@ _No props._
 
 1. Screen calls `usePropertyList()`.
 2. Renders `PropertyListFilters` with `{...filters}` from the hook.
-3. Renders `UpcomingFeatureModal` when Advance Search, Save Search, Email, Call, WhatsApp, or Favourite is clicked.
+3. Renders `UpcomingFeatureModal` when Save Search, Email, Call, WhatsApp, or Favourite is clicked (Advance Search toggles the inline advanced filter panel).
 4. Renders `PropertyCardList` with listings and callbacks.
 
 # Dependencies

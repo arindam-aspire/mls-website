@@ -18,6 +18,7 @@ Custom hook for the property list flow. Owns URL param sync, fetch mutation, too
 - `useGetPropertyList` from `../mutations/property.mutation`
 - `useGetPropertyTaxonomy` from `@/src/features/landing/mutations/landing.mutation`
 - `usePropertyStore` from `../store/property.store`
+- `getInitialBudgetMin` / `getInitialBudgetMax` from `@/src/components/search` (legacy `minPrice` / `maxPrice`)
 - Types from `../types/property.types`
 
 # Exports
@@ -67,6 +68,13 @@ _No hook arguments._
 | `onClickWhatsApp` | Open upcoming modal |
 | `toggleFavourite` | Open upcoming modal |
 | `upcomingFeatureModal` | `{ open, onClose }` for `UpcomingFeatureModal` |
+| `filters.budgetMin` / `filters.budgetMax` | Digit string drafts synced from URL |
+| `filters.onBudgetCommit` | Writes URL on Done |
+| `filters.onBudgetReset` | Clears budget on panel Reset |
+| `filters.rentMode` | `true` when `status === "rent"` |
+| `filters.bedrooms` … `filters.onAmenityChange` | Advanced search URL params + handlers |
+| `filters.hasAdvancedFilters` | True when any advanced param is in URL |
+| `filters.onSaveSearch` | Opens upcoming modal (Save Search only) |
 
 # UI Details
 
@@ -76,9 +84,10 @@ _N/A — hook only._
 
 1. If `propertyTaxonomy` is missing in store, call `getPropertyTaxonomy()`.
 2. Build `filters` from URL + taxonomy; filter changes update URL and reset page to `1`.
-3. `useEffect` reads URL + advanced filters → `fetchProperties`.
-4. Mutation success writes items + pagination meta to store.
-5. Screen spreads `filters` into `PropertyListFilters` and passes list props to `PropertyCardList`.
+3. Budget: string drafts; commit on Done; legacy `minPrice`/`maxPrice` hydrate; rent vs buy suggestions.
+4. `useEffect` reads URL + advanced filters → `fetchProperties`.
+5. Mutation success writes items + pagination meta to store.
+6. Screen spreads `filters` into `PropertyListFilters` and passes list props to `PropertyCardList`.
 
 # Dependencies
 

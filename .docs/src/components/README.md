@@ -7,6 +7,7 @@ Shared UI outside feature folders.
 | Folder | Purpose | README |
 | --- | --- | --- |
 | `ui/` | Design system (buttons, inputs, modal, …) | [ui/README.md](./ui/README.md) |
+| `search/` | Search filters (budget range field, anchored dropdown) | [search/README.md](./search/README.md) |
 | `common/` | App-wide composites (coming soon, confirm dialog) | [common/README.md](./common/README.md) |
 
 ## Conventions

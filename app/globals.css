@@ -8,6 +8,13 @@
   --white: #ffffff;
   --black: #000000;
   --inherit: #5f5e5a;
+  --layout-header-height: 4rem;
+}
+
+@media (min-width: 640px) {
+  :root {
+    --layout-header-height: 5rem;
+  }
 }
 
 /* Light theme (default) */

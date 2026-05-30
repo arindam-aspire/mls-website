@@ -9,6 +9,10 @@ import type {
   ButtonSize,
   ButtonVariant,
 } from "./types";
+import {
+  buttonIconSizeClasses,
+  buttonSizeClasses,
+} from "../responsiveSizes";
 
 const baseClasses =
   "inline-flex items-center justify-center gap-2 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary/40 data-disabled:cursor-not-allowed data-disabled:opacity-50";
@@ -67,17 +71,9 @@ const colorVariantClasses: Record<
   },
 };
 
-const sizeClasses: Record<ButtonSize, string> = {
-  sm: "px-3 py-1.5 text-sm font-medium",
-  md: "px-5 py-2.5 text-[14px] font-medium",
-  lg: "px-6 py-3 text-base font-medium",
-};
+const sizeClasses = buttonSizeClasses;
 
-const iconSizeClasses: Record<ButtonSize, string> = {
-  sm: "size-4",
-  md: "size-[1.125rem]",
-  lg: "size-6",
-};
+const iconSizeClasses = buttonIconSizeClasses;
 
 function cn(...classes: (string | false | undefined)[]) {
   return classes.filter(Boolean).join(" ");

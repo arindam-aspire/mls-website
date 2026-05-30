@@ -18,6 +18,15 @@ import {
 } from "../fieldVariants";
 import { Popover, PopoverButton, PopoverPanel } from "../popover";
 import {
+  fieldErrorSizeClasses,
+  fieldHintSizeClasses,
+  fieldLabelSizeClasses,
+  phoneInputListItemSizeClasses,
+  phoneInputSearchSizeClasses,
+  phoneInputShellSizeClasses,
+  phoneInputTextSizeClasses,
+} from "../responsiveSizes";
+import {
   countryFlagUrl,
   DEFAULT_PHONE_INPUT_COUNTRY_CODE,
   getPhoneInputCountryByCode,
@@ -139,10 +148,7 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
         {label != null && (
           <Label
             htmlFor={inputId}
-            className={cn(
-              "mb-1.5 block text-sm font-medium text-text",
-              labelClassName,
-            )}
+            className={cn(fieldLabelSizeClasses, labelClassName)}
           >
             {label}
             {isRequired && (
@@ -155,7 +161,8 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
 
         <div
           className={cn(
-            "relative flex h-12 w-full items-center gap-2 rounded-xl px-3 transition-colors",
+            "relative flex w-full items-center transition-colors",
+            phoneInputShellSizeClasses,
             inheritOutlineVariantClasses,
             inheritOutlineFocusWithinClasses,
             disabled && "cursor-not-allowed opacity-50",
@@ -189,7 +196,7 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
                 className="h-7 w-10 shrink-0 rounded-sm object-cover"
               />
               <ChevronDown
-                className="phone-input-chevron size-4 shrink-0 text-muted transition-transform duration-100"
+                className="phone-input-chevron size-3 shrink-0 text-muted transition-transform duration-100 sm:size-4"
                 aria-hidden
               />
             </PopoverButton>
@@ -201,10 +208,10 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
                 "transition duration-100 data-closed:scale-95 data-closed:opacity-0",
               )}
             >
-              <div className="border-b border-secondary/15 p-2">
+              <div className="border-b border-secondary/15 p-1.5 sm:p-2">
                 <div className="relative">
                   <Search
-                    className="pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted"
+                    className="pointer-events-none absolute start-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted sm:start-3 sm:size-4"
                     aria-hidden
                   />
                   <input
@@ -213,8 +220,8 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder={searchPlaceholder}
                     className={cn(
-                      "h-9 w-full rounded-lg border border-secondary-light bg-page py-0 ps-9 pe-3 text-sm text-text outline-none",
-                      "placeholder:text-muted focus:border-secondary-dark focus:outline-none",
+                      phoneInputSearchSizeClasses,
+                      "text-text placeholder:text-muted focus:border-secondary-dark focus:outline-none",
                     )}
                   />
                 </div>
@@ -226,7 +233,7 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
                 aria-label={searchPlaceholder}
               >
                 {filteredCountries.length === 0 ? (
-                  <li className="px-3 py-6 text-center text-sm text-muted">
+                  <li className="px-2.5 py-4 text-center text-xs text-muted sm:px-3 sm:py-6 sm:text-sm">
                     {emptySearchLabel}
                   </li>
                 ) : (
@@ -242,7 +249,7 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
                           aria-selected={isSelected}
                           onClick={() => handleCountrySelect(country)}
                           className={cn(
-                            "flex w-full items-center gap-2 px-3 py-2 text-start text-sm text-text transition-colors",
+                            phoneInputListItemSizeClasses,
                             "hover:bg-page focus:bg-page focus:outline-none",
                             isSelected && "bg-primary-light",
                           )}
@@ -289,7 +296,8 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
             aria-invalid={hasError || undefined}
             aria-describedby={describedBy}
             className={cn(
-              "min-w-0 flex-1 border-0 bg-transparent py-0 text-sm text-text outline-none",
+              "min-w-0 flex-1 border-0 bg-transparent py-0 text-text outline-none",
+              phoneInputTextSizeClasses,
               "placeholder:font-normal placeholder:text-muted",
               showPhoneIcon && "pe-8",
               disabled && "cursor-not-allowed",
@@ -299,7 +307,7 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
 
           {showPhoneIcon && (
             <Phone
-              className="pointer-events-none absolute end-3 top-1/2 size-5 -translate-y-1/2 text-muted"
+              className="pointer-events-none absolute end-2.5 top-1/2 size-4 -translate-y-1/2 text-muted sm:end-3 sm:size-5"
               aria-hidden
             />
           )}
@@ -309,14 +317,14 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
           <p
             id={errorId}
             role="alert"
-            className="mt-1.5 text-sm text-danger"
+            className={fieldErrorSizeClasses}
           >
             {error}
           </p>
         )}
 
         {!hasError && hint != null && (
-          <p id={hintId} className="mt-1.5 text-sm text-muted">
+          <p id={hintId} className={fieldHintSizeClasses}>
             {hint}
           </p>
         )}
