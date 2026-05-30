@@ -13,6 +13,7 @@ import {
 } from "react";
 import { Button, Link } from "@/src/components/ui";
 import { cn } from "@/src/lib/cn";
+import { bodyTextClasses, otpDigitTextClasses } from "@/src/lib/typography";
 import type { AuthOtpFlow } from "../authViews";
 
 const OTP_LENGTH = 6;
@@ -163,7 +164,10 @@ export function OTPVerificationForm({
     const isFocused = focusedIndex === index;
 
     return cn(
-      "size-12 rounded-lg border text-center text-lg font-semibold tabular-nums transition-colors outline-none sm:size-14 sm:text-xl",
+      cn(
+        "size-12 rounded-lg border text-center tabular-nums transition-colors outline-none sm:size-14",
+        otpDigitTextClasses,
+      ),
       hasValue &&
         "border-primary bg-primary-light text-primary-dark",
       !hasValue &&
@@ -207,14 +211,14 @@ export function OTPVerificationForm({
           ))}
         </div>
         {error != null && (
-          <p role="alert" className="text-center text-sm text-danger">
+          <p role="alert" className={cn("text-center text-danger", bodyTextClasses)}>
             {error}
           </p>
         )}
       </div>
 
       <div className="space-y-2 text-center">
-        <p className="text-sm text-text">
+        <p className={cn(bodyTextClasses, "text-text")}>
           {t("otpVerifyDidntReceive")}{" "}
           <Link
             type="button"
@@ -231,7 +235,7 @@ export function OTPVerificationForm({
           </Link>
         </p>
         {resendSeconds > 0 && (
-          <p className="inline-flex items-center justify-center gap-1.5 text-sm text-muted">
+          <p className={cn("inline-flex items-center justify-center gap-1.5 text-muted", bodyTextClasses)}>
             <Clock className="size-4 shrink-0" aria-hidden />
             {t("otpVerifyResendIn", { time: formatResendTimer(resendSeconds) })}
           </p>

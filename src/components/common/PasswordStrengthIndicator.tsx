@@ -4,6 +4,10 @@ import { Check, ChevronDown } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { cn } from "@/src/lib/cn";
+import {
+  bodyTextClasses,
+  passwordStrengthTextClasses,
+} from "@/src/lib/typography";
 
 type PasswordRule = {
   key: string;
@@ -119,11 +123,11 @@ export function PasswordStrengthIndicator({
   return (
     <div className="rounded-xl border border-secondary/15 bg-surface p-4">
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-text">
+        <span className={cn("font-medium text-text", bodyTextClasses)}>
           {t("passwordStrength")}
         </span>
         <span
-          className="text-sm font-semibold"
+          className={cn("font-semibold", bodyTextClasses)}
           style={{ color: strength.color }}
         >
           {strength.label}
@@ -143,7 +147,10 @@ export function PasswordStrengthIndicator({
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="mt-3 flex w-full items-center justify-between text-sm text-muted transition-colors hover:text-text"
+        className={cn(
+          "mt-3 flex w-full items-center justify-between text-muted transition-colors hover:text-text",
+          bodyTextClasses,
+        )}
       >
         <span>
           {isOpen
@@ -161,12 +168,12 @@ export function PasswordStrengthIndicator({
 
       {isOpen && (
         <div className="mt-3">
-          <p className="mb-2 text-sm font-semibold text-text">
+          <p className={cn("mb-2 font-semibold text-text", bodyTextClasses)}>
             {t("passwordRequirementsTitle")}
           </p>
           <ul className="space-y-1.5">
             {results.map((rule) => (
-              <li key={rule.key} className="flex items-center gap-2 text-sm">
+              <li key={rule.key} className={cn("flex items-center gap-2", bodyTextClasses)}>
                 {rule.passed ? (
                   <Check
                     className="size-4 shrink-0 text-success"
@@ -192,7 +199,7 @@ export function PasswordStrengthIndicator({
           </ul>
 
           {failedRules.length > 0 && (
-            <p className="mt-3 text-xs text-muted">
+            <p className={cn("mt-3 text-muted", passwordStrengthTextClasses)}>
               {t("passwordStrengthHint", {
                 rules: failedRules.map((r) => r.label).join(", "),
               })}

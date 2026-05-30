@@ -10,6 +10,10 @@ import {
 import { Input, SelectDropdown } from "@/src/components/ui";
 import { useMatchMedia } from "@/src/hooks/useMatchMedia";
 import { cn } from "@/src/lib/cn";
+import {
+  checkboxLabelClasses,
+  sheetTitleClasses,
+} from "@/src/lib/typography";
 import { X } from "lucide-react";
 import {
   ADVANCED_AMENITY_OPTIONS,
@@ -166,7 +170,10 @@ function AdvancedFiltersFields({
           return (
             <label
               key={amenity.slug}
-              className="inline-flex min-h-11 cursor-pointer items-center gap-2 text-xs text-text sm:text-sm"
+              className={cn(
+                "inline-flex min-h-11 cursor-pointer items-center gap-2 text-text",
+                checkboxLabelClasses,
+              )}
             >
               <input
                 type="checkbox"
@@ -240,7 +247,7 @@ export function PropertyListAdvancedFilters({
                   <div className="h-1 w-10 rounded-full bg-secondary/25" />
                 </div>
                 <div className="relative px-4 py-3 sm:px-6">
-                  <DialogTitle className="pe-12 text-base font-semibold text-text sm:text-lg">
+                  <DialogTitle className={cn("pe-12", sheetTitleClasses)}>
                     {title}
                   </DialogTitle>
                   <CloseButton

@@ -15,6 +15,12 @@ import {
   ModalTitle,
 } from "@/src/components/ui/modal";
 import { Button } from "@/src/components/ui/button";
+import {
+  displayCaptionClasses,
+  displayEyebrowClasses,
+  displayLeadClasses,
+  displayModalTitleClasses,
+} from "@/src/lib/typography";
 import type { ModalSize } from "@/src/components/ui/modal/types";
 
 export interface UpcomingFeatureModalProps {
@@ -59,20 +65,20 @@ export function UpcomingFeatureModal({
               </span>
 
               <div className="space-y-1.5">
-                <p className="text-xs font-bold tracking-[0.2em] text-secondary-dark uppercase">
+                <p className={displayEyebrowClasses}>
                   {subtitle}
                 </p>
-                <ModalTitle className="text-center font-serif text-2xl sm:text-3xl">
+                <ModalTitle className={cn("text-center", displayModalTitleClasses)}>
                   {title}
                 </ModalTitle>
-                <ModalDescription className="text-center text-base leading-relaxed">
+                <ModalDescription className={cn("text-center", displayLeadClasses)}>
                   {description}
                 </ModalDescription>
               </div>
 
               <div className="flex items-center gap-2 text-muted">
                 <Clock className="size-4" aria-hidden />
-                <span className="text-xs tracking-wide sm:text-sm">
+                <span className={displayCaptionClasses}>
                   Check back soon
                 </span>
               </div>

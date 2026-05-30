@@ -27,7 +27,7 @@ Filter bar for the property list: primary row (status, category, type, location,
 - **Advanced Search** — toggles advanced panel; icon switches `SlidersHorizontal` ↔ `Minus`; `aria-expanded`.
 - **Budget trigger** — opens min/max editor; **bottom sheet** below `md`, **anchored dropdown** on `md`+.
 - **Done** (budget) — commits `budgetMin` / `budgetMax` to URL.
-- **Reset Search** — clears all URL filters and closes advanced panel.
+- **Reset Search** — clears URL filters to defaults and closes advanced panel; **`similar_to` is kept** when present.
 - **Save Search** — still opens upcoming-feature modal (via hook).
 
 # UI Details

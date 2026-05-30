@@ -2,14 +2,15 @@
 
 import Image from "next/image";
 import { cn } from "@/src/lib/cn";
+import { avatarSizeTextClasses } from "@/src/lib/typography";
 import type { AvatarProps, AvatarSize } from "./types";
 
 const sizeClasses: Record<AvatarSize, string> = {
-  xs: "size-7 text-xs",
-  sm: "size-9 text-sm",
-  md: "size-11 text-base",
-  lg: "size-14 text-lg",
-  xl: "size-20 text-xl",
+  xs: cn("size-7", avatarSizeTextClasses.xs),
+  sm: cn("size-9", avatarSizeTextClasses.sm),
+  md: cn("size-11", avatarSizeTextClasses.md),
+  lg: cn("size-14", avatarSizeTextClasses.lg),
+  xl: cn("size-20", avatarSizeTextClasses.xl),
 };
 
 const imageSizeMap: Record<AvatarSize, number> = {

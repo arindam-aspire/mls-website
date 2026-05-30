@@ -4,6 +4,7 @@ import { Clock, Info, Mail } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/src/components/ui";
 import { cn } from "@/src/lib/cn";
+import { authFormOverlineClasses, bodyTextClasses } from "@/src/lib/typography";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
 import {
   AUTH_QUERY_KEY,
@@ -39,7 +40,7 @@ export function AgencyAuthForm({ className }: AgencyAuthFormProps) {
           className="mt-0.5 size-5 shrink-0 text-tertiary-dark"
           aria-hidden
         />
-        <p className="text-sm leading-relaxed text-text">
+        <p className={cn(bodyTextClasses, "leading-relaxed text-text")}>
           {t("agencyNoSocialSignInNote")}
         </p>
       </div>
@@ -60,7 +61,7 @@ export function AgencyAuthForm({ className }: AgencyAuthFormProps) {
 
         <div className="flex items-center gap-3">
           <div className="h-px flex-1 bg-secondary/20" aria-hidden />
-          <span className="text-xs font-medium uppercase tracking-wide text-muted">
+          <span className={authFormOverlineClasses}>
             {t("orDivider")}
           </span>
           <div className="h-px flex-1 bg-secondary/20" aria-hidden />

@@ -23,6 +23,12 @@ import mlsLogoLight from "@/src/assets/images/MLS_Light_Logo.png";
 import { PublicHeaderThemeButton } from "./PublicHeaderThemeButton";
 import { DesktopNav } from "./DesktopNav";
 import { DesktopActions } from "./DesktopActions";
+import { cn } from "@/src/lib/cn";
+import {
+  navBrandClasses,
+  navDrawerLinkClasses,
+  themeToggleLabelClasses,
+} from "@/src/lib/typography";
 
 const LOCALE_OPTIONS: { value: AppLocale; label: string }[] = [
   { value: "en", label: "En" },
@@ -39,8 +45,10 @@ const NAV_ITEMS = [
   { path: "/about-us", labelKey: "navAboutUs" },
 ] as const;
 
-const mobileNavLinkClass =
-  "w-full rounded-lg px-4 py-3.5 text-start text-base font-medium text-text transition-colors hover:bg-surface focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary/40";
+const mobileNavLinkClass = cn(
+  "w-full rounded-lg px-4 py-3.5 text-start font-medium text-text transition-colors hover:bg-surface focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary/40",
+  navDrawerLinkClasses,
+);
 
 interface MobileMenuProps {
   onNavigate: (path: string) => void;
@@ -65,7 +73,7 @@ function MobileMenu({
   return (
     <PopoverContent className="flex min-h-0 flex-1 flex-col p-0">
       <div className="flex items-center justify-between border-b border-secondary/15 px-4 py-4 sm:px-6">
-        <span className="text-lg font-semibold text-text">{navLabel}</span>
+        <span className={navBrandClasses}>{navLabel}</span>
         <CloseButton
           type="button"
           aria-label={closeMenuLabel}
@@ -95,7 +103,9 @@ function MobileMenu({
       </nav>
 
       <div className="flex items-center justify-between border-t border-secondary/15 px-4 py-4 sm:px-6 sm:py-5">
-        <span className="text-sm font-medium text-text">{t("theme")}</span>
+        <span className={cn("font-medium text-text", themeToggleLabelClasses)}>
+          {t("theme")}
+        </span>
         <PublicHeaderThemeButton />
       </div>
 

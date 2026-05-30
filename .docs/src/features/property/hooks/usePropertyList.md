@@ -100,3 +100,4 @@ _N/A — hook only._
 
 - Favourite, contact, and filter actions open `UpcomingFeatureModal` until those flows ship.
 - Sort is synced via URL `sort` query param and sent to the API; changing sort resets `page` to `1`.
+- **`onResetSearch`** restores default list params but keeps URL **`similar_to`** when it was set (e.g. from property detail “View More”).

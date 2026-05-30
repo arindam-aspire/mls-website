@@ -7,6 +7,7 @@ Custom hook for the property details flow. Fetches a single property by id, expo
 # Responsibilities
 
 - Fetch `GET /properties/:id` when `propertyId` changes.
+- Fetch `GET /properties/:id/similar` when `propertyId` changes (separate `isSimilarLoading`; does not block `PropertyView`).
 - Map app locale (`es` → `esp`) for `@abdoun/abdoun-library` `PropertyView`.
 - Manage detail tabs synced to URL search param `tab` (overview, features, locations, documents).
 - Expose favourite and agent email handlers (placeholder → upcoming modal).
@@ -16,7 +17,7 @@ Custom hook for the property details flow. Fetches a single property by id, expo
 - `useLocale` from `next-intl`
 - `usePathname`, `useRouter` from `@/src/i18n/navigation`
 - `useSearchParams` from `next/navigation`
-- `useGetPropertyDetails`, `useGetPropertyFeatureCatalog` from `../mutations/property.mutation`
+- `useGetPropertyDetails`, `useGetPropertyFeatureCatalog`, `useGetSimilarProperties` from `../mutations/property.mutation`
 - `mapFeatureCatalogItems` from `../mappers/propertyFeatures.mapper`
 - Types from `../types/property.types`
 - `PropertyView` (type-only via `ComponentProps`)
@@ -38,9 +39,13 @@ Custom hook for the property details flow. Fetches a single property by id, expo
 | `getPropertyDetails(id)` | GET | `/properties/:id` |
 | `getPropertyFeatureCatalog()` | GET | `/features?is_active=true` |
 
+| `getSimilarProperties(id)` | GET | `/properties/:id/similar` |
+
 On property success: `response.data` → `propertyDetails`.
 
 On features success: `response.data.items` → mapped via `mapFeatureCatalogItems` → `featureCatalog` for `PropertyView.features`.
+
+On similar success: `response.data.items` → `similarListings` for `SimilarProperties`.
 
 # Navigation
 
@@ -67,6 +72,8 @@ On features success: `response.data.items` → mapped via `mapFeatureCatalogItem
 | `tabs` | `{ tabOptions, activeTab, onTabChange }` |
 | `toggleFavourite` | Opens upcoming modal (receives property numeric id) |
 | `openAgentEmail` | Opens upcoming modal (receives property numeric id) |
+| `similarListings` | Items for `SimilarProperties.data` |
+| `isSimilarLoading` | Similar fetch pending |
 | `upcomingFeatureModal` | `{ open, onClose }` for `UpcomingFeatureModal` |
 
 # UI Details

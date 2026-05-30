@@ -11,10 +11,12 @@ import { mapFeatureCatalogItems } from "../mappers/propertyFeatures.mapper";
 import {
   useGetPropertyDetails,
   useGetPropertyFeatureCatalog,
+  useGetSimilarProperties,
 } from "../mutations/property.mutation";
 import type {
   PropertyDetails,
   PropertyFeatureDefinition,
+  PropertyListing,
 } from "../types/property.types";
 
 type PropertyViewProps = ComponentProps<typeof PropertyView>;
@@ -76,6 +78,8 @@ export function usePropertyDetails(propertyId: string) {
     useState(false);
   const [isDetailsSettled, setIsDetailsSettled] = useState(false);
   const [isFeaturesSettled, setIsFeaturesSettled] = useState(false);
+  const [similarListings, setSimilarListings] = useState<PropertyListing[]>([]);
+  const [isSimilarSettled, setIsSimilarSettled] = useState(false);
 
   // 5. Data fetching / queries
   const {
@@ -88,6 +92,11 @@ export function usePropertyDetails(propertyId: string) {
     mutate: fetchFeatureCatalog,
     isPending: isLoadingFeatures,
   } = useGetPropertyFeatureCatalog();
+
+  const {
+    mutate: fetchSimilarProperties,
+    isPending: isLoadingSimilar,
+  } = useGetSimilarProperties();
 
   const loadPropertyDetails = useCallback(() => {
     fetchPropertyDetails(propertyId, {
@@ -113,9 +122,22 @@ export function usePropertyDetails(propertyId: string) {
     });
   }, [fetchFeatureCatalog]);
 
+  const loadSimilarProperties = useCallback(() => {
+    fetchSimilarProperties(propertyId, {
+      onSuccess: (response) => {
+        setSimilarListings(response.data?.items ?? []);
+      },
+      onSettled: () => {
+        setIsSimilarSettled(true);
+      },
+    });
+  }, [fetchSimilarProperties, propertyId]);
+
   // 6. Derived / memoized values
   const isLoading =
     !isDetailsSettled || !isFeaturesSettled || isLoadingDetails || isLoadingFeatures;
+
+  const isSimilarLoading = !isSimilarSettled || isLoadingSimilar;
 
   const onTabChange = useCallback(
     (tab: string) => {
@@ -178,6 +200,12 @@ export function usePropertyDetails(propertyId: string) {
     loadPropertyDetails();
   }, [loadPropertyDetails]);
 
+  useEffect(() => {
+    setSimilarListings([]);
+    setIsSimilarSettled(false);
+    loadSimilarProperties();
+  }, [loadSimilarProperties]);
+
   // 10. Return values
   return {
     isLoading,
@@ -189,6 +217,8 @@ export function usePropertyDetails(propertyId: string) {
     tabs,
     toggleFavourite,
     openAgentEmail,
+    similarListings,
+    isSimilarLoading,
     upcomingFeatureModal: {
       open: isUpcomingFeatureModalOpen,
       onClose: closeUpcomingFeature,

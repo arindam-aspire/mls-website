@@ -14,6 +14,13 @@ import {
   AUTH_VIEW,
 } from "@/src/features/auth/authViews";
 import { AuthModalHeader } from "../components/AuthModalHeader";
+import { cn } from "@/src/lib/cn";
+import {
+  headingAuthClasses,
+  bodyTextClasses,
+  bodyLargeTextClasses,
+  captionTextClasses,
+} from "@/src/lib/typography";
 import {
   SocialAuthForm,
   type SocialAccountType,
@@ -42,16 +49,16 @@ export function SocialRegistrationScreen({ type }: SocialRegistrationScreenProps
       <ModalCloseButton />
       <ModalContent className="!py-0 sm:!py-0">
         <div className="space-y-1 px-4 text-center sm:px-6">
-          <h2 className="text-xl font-bold text-secondary sm:text-2xl">
+          <h2 className={headingAuthClasses}>
             {t("chooseAccountSignUpTitle")}
           </h2>
-          <p className="text-sm text-muted">{t("socialSignUpWelcome")}</p>
+          <p className={cn(bodyTextClasses, "text-muted")}>{t("socialSignUpWelcome")}</p>
         </div>
         <SocialAuthForm flow="signup" accountType={type} />
       </ModalContent>
       <ModalFooter className="!block rounded-b-xl border-t-0 bg-primary-light !px-4 !pt-4 !pb-4 dark:bg-page sm:!gap-3 sm:!px-6 sm:!pb-6">
         <div className="space-y-2">
-          <p className="text-center text-sm text-muted sm:text-base">
+          <p className={cn(bodyLargeTextClasses, "text-center text-muted")}>
             {t("socialSignUpHasAccount")}
           </p>
           <div className="flex justify-center">
@@ -64,7 +71,7 @@ export function SocialRegistrationScreen({ type }: SocialRegistrationScreenProps
               {t("socialSignUpLogIn")}
             </Link>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 pt-1 text-xs text-muted sm:text-sm">
+          <div className={cn("flex flex-wrap items-center justify-center gap-x-2 gap-y-1 pt-1 text-muted", captionTextClasses)}>
             <Link
               color="muted"
               variant="subtle"

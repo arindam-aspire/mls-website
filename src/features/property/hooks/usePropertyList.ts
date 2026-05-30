@@ -50,6 +50,7 @@ const LIST_PARAM_KEYS = [
   "minArea",
   "maxArea",
   "amenities",
+  "similar_to",
 ] as const satisfies readonly (keyof PropertyListParams)[];
 
 const SORT_OPTIONS = [
@@ -106,6 +107,7 @@ function parseUrlListParams(searchParams: URLSearchParams): PropertyListParams {
     minArea: parseOptionalNumber(searchParams.get("minArea")),
     maxArea: parseOptionalNumber(searchParams.get("maxArea")),
     amenities: normalizeAmenitiesParam(getOptionalString(searchParams.get("amenities"))),
+    similar_to: getOptionalString(searchParams.get("similar_to")),
   };
 }
 
@@ -471,8 +473,12 @@ export function usePropertyList() {
     params.set("page", String(DEFAULT_SEARCH_PARAMS.page));
     params.set("pageSize", String(DEFAULT_SEARCH_PARAMS.pageSize));
 
+    if (listParams.similar_to) {
+      params.set("similar_to", listParams.similar_to);
+    }
+
     router.replace(`${pathname}?${params.toString()}`);
-  }, [pathname, router]);
+  }, [listParams.similar_to, pathname, router]);
 
   const [isUpcomingFeatureModalOpen, setIsUpcomingFeatureModalOpen] =
     useState(false);

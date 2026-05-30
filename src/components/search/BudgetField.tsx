@@ -10,7 +10,15 @@ import {
 import { ChevronDown, X } from "lucide-react";
 import { useRef } from "react";
 import { cn } from "@/src/lib/cn";
-import { fieldControlSizeClasses } from "@/src/components/ui/responsiveSizes";
+import {
+  buttonIconSizeClasses,
+  fieldControlSizeClasses,
+} from "@/src/components/ui/responsiveSizes";
+import {
+  controlTextClasses,
+  currencyBadgeTextClasses,
+  sheetTitleClasses,
+} from "@/src/lib/typography";
 import { useMatchMedia } from "@/src/hooks/useMatchMedia";
 import { AnchoredDropdown } from "./AnchoredDropdown";
 import { BudgetRangeInputs } from "./BudgetRangeInputs";
@@ -105,15 +113,26 @@ export function BudgetField({
           disabled && "cursor-not-allowed opacity-50",
         )}
       >
-        <span className="inline-flex size-6 shrink-0 items-center justify-center rounded-full bg-page text-[11px] font-medium text-secondary sm:text-xs">
+        <span
+          className={cn(
+            "inline-flex size-6 shrink-0 items-center justify-center rounded-full bg-page text-secondary",
+            currencyBadgeTextClasses,
+          )}
+        >
           {currencyCode}
         </span>
-        <span className="min-w-0 flex-1 truncate text-start text-xs sm:text-sm">
+        <span
+          className={cn(
+            "min-w-0 flex-1 truncate text-start",
+            controlTextClasses.md,
+          )}
+        >
           {label}
         </span>
         <ChevronDown
           className={cn(
-            "size-3.5 shrink-0 text-muted transition-transform sm:size-4",
+            "shrink-0 text-muted transition-transform",
+            buttonIconSizeClasses.md,
             isOpen && "rotate-180",
           )}
           aria-hidden
@@ -161,7 +180,7 @@ export function BudgetField({
                   <div className="h-1 w-10 rounded-full bg-secondary/25" />
                 </div>
                 <div className="relative px-4 py-3 sm:px-6">
-                  <DialogTitle className="pe-12 text-base font-semibold text-text sm:text-lg">
+                  <DialogTitle className={cn("pe-12", sheetTitleClasses)}>
                     {sheetTitle}
                   </DialogTitle>
                   <CloseButton

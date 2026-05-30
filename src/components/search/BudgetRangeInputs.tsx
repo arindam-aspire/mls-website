@@ -2,7 +2,13 @@
 
 import { useMemo, useState } from "react";
 import { Button } from "@/src/components/ui/button";
+import {
+  buttonSizeClasses,
+  dropdownOptionSizeClasses,
+  fieldControlSizeClasses,
+} from "@/src/components/ui/responsiveSizes";
 import { cn } from "@/src/lib/cn";
+import { controlTextClasses, overlineLabelClasses } from "@/src/lib/typography";
 import {
   BUY_BUDGET_SUGGESTIONS,
   formatBudgetAmount,
@@ -15,13 +21,11 @@ import {
 import type { BudgetRangeInputsProps } from "./types";
 
 const inputClasses = cn(
-  "h-9 w-full rounded-lg border border-secondary/15 bg-surface px-2.5 text-xs text-text outline-none",
+  fieldControlSizeClasses.sm,
+  "h-9 w-full rounded-lg border border-secondary/15 bg-surface outline-none",
   "placeholder:text-muted/70",
   "focus:border-secondary focus:ring-2 focus:ring-secondary/20",
 );
-
-const labelClasses =
-  "mb-1 block text-[10px] font-semibold uppercase tracking-[0.16em] text-text/70";
 
 function SuggestionList({
   values,
@@ -54,7 +58,8 @@ function SuggestionList({
               role="option"
               aria-selected={isSelected}
               className={cn(
-                "w-full px-2.5 py-1.5 text-start text-xs text-text transition-colors",
+                "w-full text-start text-text transition-colors",
+                dropdownOptionSizeClasses,
                 "hover:bg-page focus:bg-page focus:outline-none",
                 isSelected && "bg-page font-medium text-secondary-dark",
               )}
@@ -74,8 +79,8 @@ function SuggestionList({
 }
 
 const panelButtonClassName = cn(
+  buttonSizeClasses.sm,
   "rounded-lg uppercase tracking-wide",
-  "h-7 px-2 text-[11px] sm:h-8 sm:px-2.5 sm:text-xs lg:h-8 lg:px-2.5",
 );
 
 export function BudgetRangeInputs({
@@ -107,7 +112,7 @@ export function BudgetRangeInputs({
   return (
     <div
       className={cn(
-        "text-xs",
+        controlTextClasses.md,
         isSheet
           ? "px-4 pb-6 pt-3 sm:px-6"
           : "rounded-xl border border-secondary/15 bg-surface p-3 shadow-xl ring-1 ring-black/5",
@@ -125,7 +130,7 @@ export function BudgetRangeInputs({
         }}
       >
         <div className="relative min-w-0 self-start">
-          <label htmlFor="budget-min-input" className={labelClasses}>
+          <label htmlFor="budget-min-input" className={overlineLabelClasses}>
             {minLabel}
           </label>
           <input
@@ -160,7 +165,7 @@ export function BudgetRangeInputs({
         </div>
 
         <div className="relative min-w-0 self-start">
-          <label htmlFor="budget-max-input" className={labelClasses}>
+          <label htmlFor="budget-max-input" className={overlineLabelClasses}>
             {maxLabel}
           </label>
           <input

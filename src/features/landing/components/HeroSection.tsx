@@ -1,5 +1,11 @@
 import heroImage from "@/src/assets/images/MLS_Home_Image.png";
 import type { PropertyTaxonomyResponse } from "@/src/features/landing/types/propertyTaxonomy.types";
+import { cn } from "@/src/lib/cn";
+import {
+  landingHeroEyebrowClasses,
+  landingHeroTaglineClasses,
+  landingHeroTitleClasses,
+} from "@/src/lib/typography";
 import { HeroSearchBar } from "./HeroSearchBar";
 
 type HeroSectionProps = {
@@ -27,21 +33,21 @@ export function HeroSection({
       />
 
       <div className="relative z-10 mx-auto flex w-full max-w-4xl flex-col items-center gap-2 px-4 text-center sm:gap-3 sm:px-6">
-        <p className="text-xs font-medium tracking-[0.28em] text-tertiary uppercase sm:text-sm">
+        <p className={cn("text-tertiary", landingHeroEyebrowClasses)}>
           {t("heroEyebrow")}
         </p>
 
         <div className="flex flex-col gap-0">
-          <h1 className="font-serif text-4xl leading-tight text-hero-on-image sm:text-5xl lg:text-6xl">
+          <h1 className={cn("text-hero-on-image", landingHeroTitleClasses)}>
             {t("heroTitleLine1")}
           </h1>
 
-          <p className="font-serif text-4xl leading-tight text-tertiary italic sm:text-5xl lg:text-6xl">
+          <p className={cn("text-tertiary italic", landingHeroTitleClasses)}>
             {t("heroTitleLine2")}
           </p>
         </div>
 
-        <p className="text-sm font-medium tracking-[0.22em] text-hero-on-image uppercase sm:text-base">
+        <p className={cn("text-hero-on-image", landingHeroTaglineClasses)}>
           {t("heroTagline")}
         </p>
 

@@ -7,12 +7,14 @@ Route-level property details screen. Renders `PropertyView` from `@abdoun/abdoun
 # Responsibilities
 
 - Compose `PropertyView` with data and handlers from `usePropertyDetails`.
+- Render `SimilarProperties` from `@abdoun/abdoun-library` below the detail view.
 - Show `UpcomingFeatureModal` for unreleased favourite and agent email actions.
 - Show a not-found panel when fetch fails or returns no data.
 
 # Imports
 
-- `PropertyView` from `@abdoun/abdoun-library`
+- `PropertyView`, `SimilarProperties` from `@abdoun/abdoun-library`
+- `useRouter` from `@/src/i18n/navigation`
 - `UpcomingFeatureModal` from `@/src/components/common/UpcomingFeatureModal`
 - `usePropertyDetails` from `../hooks/usePropertyDetails`
 
@@ -26,7 +28,7 @@ _All state in `usePropertyDetails`._
 
 # API Usage
 
-Indirect via `usePropertyDetails` → `GET /properties/:id`.
+Indirect via `usePropertyDetails` → `GET /properties/:id`, `GET /properties/:id/similar`.
 
 # Navigation
 
@@ -60,6 +62,7 @@ Indirect via `usePropertyDetails` → `GET /properties/:id`.
 3. Loading: `PropertyView` skeleton via `isLoading`.
 4. Error / missing data: not-found article.
 5. Success: `PropertyView` with tabs, agent/owner blocks, and feature catalog.
+6. `SimilarProperties` carousel below, fed by `similarListings` / `isSimilarLoading`.
 
 # Dependencies
 
@@ -71,3 +74,4 @@ Indirect via `usePropertyDetails` → `GET /properties/:id`.
 
 - `applicationKey` is `"abdoun_web"` (library branding).
 - Feature catalog is loaded from `GET /features?is_active=true` and mapped for `PropertyView.features`.
+- Similar properties API (`GET /properties/:id/similar`) loads in `usePropertyDetails`; rendered via library `SimilarProperties`.

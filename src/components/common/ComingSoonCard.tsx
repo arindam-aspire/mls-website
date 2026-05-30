@@ -1,5 +1,11 @@
 import { Clock, Hammer } from "lucide-react";
 import { cn } from "@/src/lib/cn";
+import {
+  comingSoonBodyClasses,
+  comingSoonTitleClasses,
+  displayCaptionClasses,
+  displayEyebrowClasses,
+} from "@/src/lib/typography";
 import type { ReactNode } from "react";
 
 export interface ComingSoonCardProps {
@@ -29,7 +35,7 @@ export function ComingSoonCard({
           {icon ?? <Hammer className="size-7 sm:size-9" aria-hidden />}
         </span>
 
-        <p className="mt-6 text-xs font-bold tracking-[0.2em] text-secondary-dark uppercase sm:text-sm">
+        <p className={cn("mt-6", displayEyebrowClasses)}>
           {subtitle}
         </p>
         <span
@@ -37,17 +43,17 @@ export function ComingSoonCard({
           aria-hidden
         />
 
-        <h2 className="mt-8 font-serif text-3xl leading-tight text-text sm:mt-10 sm:text-4xl lg:text-5xl">
+        <h2 className={cn("mt-8 sm:mt-10", comingSoonTitleClasses)}>
           {title}
         </h2>
 
-        <p className="mt-6 max-w-md text-base leading-relaxed text-muted sm:mt-8 sm:text-lg">
+        <p className={cn("mt-6 max-w-md text-muted sm:mt-8", comingSoonBodyClasses)}>
           {description}
         </p>
 
         <div className="mt-8 flex items-center gap-2 text-muted sm:mt-10">
           <Clock className="size-4" aria-hidden />
-          <span className="text-xs tracking-wide sm:text-sm">
+          <span className={displayCaptionClasses}>
             Check back soon
           </span>
         </div>

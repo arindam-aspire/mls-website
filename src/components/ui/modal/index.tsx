@@ -11,6 +11,10 @@ import {
 import { ChevronLeft, X } from "lucide-react";
 import { createContext, useContext } from "react";
 import { cn } from "@/src/lib/cn";
+import {
+  modalDescriptionClasses,
+  modalTitleClasses,
+} from "@/src/lib/typography";
 import type {
   ModalBackdropProps,
   ModalBackButtonProps,
@@ -156,7 +160,7 @@ export function ModalTitle({ className, children, ...rest }: ModalTitleProps) {
   return (
     <DialogTitle
       className={mergeHeadlessClassName(
-        "min-w-0 flex-1 text-lg font-semibold leading-tight text-text sm:text-xl",
+        cn("min-w-0 flex-1", modalTitleClasses),
         className,
       )}
       {...rest}
@@ -173,7 +177,7 @@ export function ModalDescription({
 }: ModalDescriptionProps) {
   return (
     <Description
-      className={mergeHeadlessClassName("mt-1.5 text-sm text-muted", className)}
+      className={mergeHeadlessClassName(modalDescriptionClasses, className)}
       {...rest}
     >
       {children}

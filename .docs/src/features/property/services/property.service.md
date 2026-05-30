@@ -8,6 +8,7 @@ API service for listing and fetching a single property.
 
 - Call `GET /properties` with query params from `PropertyListParams`.
 - Call `GET /properties/:id` for a single property record.
+- Call `GET /properties/:id/similar` for related listings.
 - Call `GET /features?is_active=true` for the feature/amenity catalog.
 
 # Imports
@@ -20,6 +21,7 @@ API service for listing and fetching a single property.
 
 - `getPropertyList`
 - `getPropertyDetails`
+- `getSimilarProperties`
 - `getPropertyFeatureCatalog`
 
 # State Management
@@ -32,6 +34,7 @@ _N/A — stateless service._
 | --- | --- | --- | --- |
 | `getPropertyList` | GET | `/properties?…` | no (`auth: false`) |
 | `getPropertyDetails` | GET | `/properties/:id` | no (`auth: false`) |
+| `getSimilarProperties` | GET | `/properties/:id/similar` | no (`auth: false`) |
 | `getPropertyFeatureCatalog` | GET | `/features?is_active=true` | no (`auth: false`) |
 
 Query string built by `propertyEndpoints.PROPERTY_LIST(params)` (`page`, `pageSize`, `category`, `status`).
@@ -45,7 +48,7 @@ _N/A._
 | Parameter | Type | Purpose |
 | --- | --- | --- |
 | `params` | `PropertyListParams` | List filters and pagination |
-| `id` | `string` | Property id for detail fetch |
+| `id` | `string` | Property id for detail or similar fetch |
 
 # Actions / Inputs
 

@@ -22,6 +22,7 @@ TypeScript types for property list and detail APIs, aligned with `@abdoun/abdoun
 - `PropertyDetails`
 - `PropertyFeatureDefinition`
 - `PropertyDetailsResponse`
+- `PropertySimilarResponse`
 - `FeatureCatalogItem`
 - `FeatureCatalogResponse`
 
@@ -35,6 +36,7 @@ _N/A — type-only module._
 | --- | --- | --- |
 | `PropertyListResponse` | `/properties` | GET |
 | `PropertyDetailsResponse` | `/properties/:id` | GET |
+| `PropertySimilarResponse` | `/properties/:id/similar` | GET |
 | `FeatureCatalogResponse` | `/features?is_active=true` | GET |
 
 Request query shape: `PropertyListParams` — required: `page`, `pageSize`, `category`, `status`; optional: `sort`, `type`, `location`, `budgetMin`, `budgetMax`, `furnitureStatus`, `bedrooms`, `bathrooms`, `parking`, `propertyAge`, `minArea`, `maxArea`, `amenities`.
@@ -66,6 +68,7 @@ _N/A._
 | `PropertyListParams.minArea?` | Minimum area |
 | `PropertyListParams.maxArea?` | Maximum area |
 | `PropertyListParams.amenities?` | Amenities filter |
+| `PropertyListParams.similar_to?` | Similar-to property id (from detail “View More”) |
 
 # Actions / Inputs
 

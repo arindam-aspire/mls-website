@@ -60,6 +60,7 @@ _No explicit show/hide controls detected._
 - **Light/dark:** via `ThemeProvider` / `html.light` | `html.dark`.
 - **Radius:** `rounded-lg` controls; `rounded-xl` cards/modals/popovers; `rounded-full` avatars/pills.
 - **Responsive:** mobile-first (`sm:`, `md:`, `lg:`).
+- **Options panel stacking:** `ListboxOptions` is portaled (Headless UI `anchor`) and uses `z-[100]` so options stay above modals (`z-50`) and bottom-sheet dialogs (`z-[80]`), e.g. the `PropertyListAdvancedFilters` mobile sheet. Only the toaster (`z-[9999]`) sits above it.
 
 # Flow Description
 

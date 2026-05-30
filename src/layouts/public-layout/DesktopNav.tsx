@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { cn } from "@/src/lib/cn";
+import { navDesktopLinkClasses } from "@/src/lib/typography";
 import { useRouter } from "@/src/i18n/navigation";
 
 const NAV_ITEMS = [
@@ -29,7 +30,8 @@ export function DesktopNav() {
           type="button"
           onClick={() => router.push(path)}
           className={cn(
-            "cursor-pointer text-[14px] font-medium transition-colors",
+            "cursor-pointer transition-colors",
+            navDesktopLinkClasses,
             navLinkClass,
           )}
         >

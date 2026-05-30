@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Button, Input, Link } from "@/src/components/ui";
 import { useForm } from "@/src/hooks/useForm";
 import { cn } from "@/src/lib/cn";
+import { authFormOverlineClasses, bodyTextClasses } from "@/src/lib/typography";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
 import { AUTH_VIEW, buildAuthModalUrl, type AuthView } from "../authViews";
 import { SignInFormValues } from "../types/auth.types";
@@ -131,7 +132,7 @@ export function SignInForm({
               "focus:ring-2 focus:ring-primary/40 focus:ring-offset-0",
             )}
           />
-          <span className="text-sm text-text">{t("signInRememberMe")}</span>
+          <span className={cn(bodyTextClasses, "text-text")}>{t("signInRememberMe")}</span>
         </label>
         <Link
           color="primary"
@@ -152,7 +153,7 @@ export function SignInForm({
 
         <div className="flex items-center gap-3">
           <div className="h-px flex-1 bg-secondary/20" aria-hidden />
-          <span className="text-xs font-medium uppercase tracking-wide text-muted">
+          <span className={authFormOverlineClasses}>
             {t("orDivider")}
           </span>
           <div className="h-px flex-1 bg-secondary/20" aria-hidden />

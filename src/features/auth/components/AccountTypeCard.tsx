@@ -3,6 +3,7 @@
 import { ChevronRight } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/src/lib/cn";
+import { bodyTextClasses } from "@/src/lib/typography";
 
 export interface AccountTypeCardProps {
   icon: LucideIcon;
@@ -41,7 +42,7 @@ export function AccountTypeCard({
       </span>
       <span className="min-w-0 flex-1">
         <span className="block font-bold text-text">{title}</span>
-        <span className="mt-0.5 block text-sm text-muted">{description}</span>
+        <span className={cn("mt-0.5 block text-muted", bodyTextClasses)}>{description}</span>
       </span>
       <ChevronRight
         className="size-5 shrink-0 text-muted"

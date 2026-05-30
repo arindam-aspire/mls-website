@@ -21,6 +21,7 @@ React Query mutation hooks for loading property lists and details on-demand.
 
 - `useGetPropertyList`
 - `useGetPropertyDetails`
+- `useGetSimilarProperties`
 - `useGetPropertyFeatureCatalog`
 
 # State Management
@@ -33,6 +34,7 @@ React Query mutation hooks for loading property lists and details on-demand.
 | --- | --- | --- |
 | `useGetPropertyList` | `getPropertyList(params)` | `GET /properties` |
 | `useGetPropertyDetails` | `getPropertyDetails(id)` | `GET /properties/:id` |
+| `useGetSimilarProperties` | `getSimilarProperties(id)` | `GET /properties/:id/similar` |
 | `useGetPropertyFeatureCatalog` | `getPropertyFeatureCatalog()` | `GET /features?is_active=true` |
 
 # Navigation

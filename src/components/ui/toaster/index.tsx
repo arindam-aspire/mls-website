@@ -1,6 +1,10 @@
 "use client";
 
 import { cn } from "@/src/lib/cn";
+import {
+  toastDescriptionClasses,
+  toastTitleClasses,
+} from "@/src/lib/typography";
 import { useToastContext } from "@/src/hooks/useToast";
 import { CloseIcon, ToastIcon } from "./ToastIcons";
 import type { Toast, ToastPosition, ToastStyle, ToastVariant } from "./types";
@@ -100,7 +104,8 @@ function ToastItem({ toast, onDismiss, styleVariant }: ToastItemProps) {
         {toast.title && (
           <p
             className={cn(
-              "text-sm leading-snug font-semibold",
+              "leading-snug font-semibold",
+              toastTitleClasses,
               isSolid ? "text-white" : c.titleColor,
             )}
           >
@@ -110,7 +115,8 @@ function ToastItem({ toast, onDismiss, styleVariant }: ToastItemProps) {
         {toast.description && (
           <p
             className={cn(
-              "mt-0.5 text-xs leading-relaxed",
+              "mt-0.5 leading-relaxed",
+              toastDescriptionClasses,
               isSolid ? "text-white/80" : "text-zinc-500 dark:text-zinc-400",
             )}
           >

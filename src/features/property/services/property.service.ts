@@ -5,6 +5,7 @@ import type {
   PropertyDetailsResponse,
   PropertyListParams,
   PropertyListResponse,
+  PropertySimilarResponse,
 } from "../types/property.types";
 
 export async function getPropertyList(
@@ -22,6 +23,16 @@ export async function getPropertyDetails(
 ): Promise<PropertyDetailsResponse> {
   return apiClient.request<PropertyDetailsResponse>({
     endpoint: propertyEndpoints.PROPERTY_DETAILS(id),
+    method: "GET",
+    auth: false,
+  });
+}
+
+export async function getSimilarProperties(
+  id: string,
+): Promise<PropertySimilarResponse> {
+  return apiClient.request<PropertySimilarResponse>({
+    endpoint: propertyEndpoints.PROPERTY_SIMILAR(id),
     method: "GET",
     auth: false,
   });

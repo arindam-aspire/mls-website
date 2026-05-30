@@ -11,6 +11,7 @@ import {
 } from "react";
 import { Button, Input, PhoneInput } from "@/src/components/ui";
 import { cn } from "@/src/lib/cn";
+import { bodyTextClasses, captionTextClasses } from "@/src/lib/typography";
 import { useForm } from "@/src/hooks/useForm";
 
 export type AgencySignUpFormValues = {
@@ -293,7 +294,7 @@ export function AgencySignUpForm({ onSuccess }: AgencySignUpFormProps) {
         />
 
         <div className="flex flex-col gap-1.5">
-          <span className="text-sm font-medium text-text">
+          <span className={cn(bodyTextClasses, "font-medium text-text")}>
             {t("agencySignUpLicenseLabel")}
             <span className="ms-0.5 text-danger" aria-hidden>
               *
@@ -324,14 +325,14 @@ export function AgencySignUpForm({ onSuccess }: AgencySignUpFormProps) {
               className="size-10 shrink-0 text-primary"
               aria-hidden
             />
-            <p className="text-sm font-medium text-text">
+            <p className={cn(bodyTextClasses, "font-medium text-text")}>
               {t("agencySignUpUploadPrompt")}
             </p>
-            <p className="text-xs text-muted">
+            <p className={cn(captionTextClasses, "text-muted")}>
               {t("agencySignUpUploadHint")}
             </p>
             {licenseFile != null && (
-              <p className="mt-1 max-w-full truncate text-xs font-medium text-primary-dark">
+              <p className={cn("mt-1 max-w-full truncate font-medium text-primary-dark", captionTextClasses)}>
                 {licenseFile.name}
               </p>
             )}
@@ -347,7 +348,7 @@ export function AgencySignUpForm({ onSuccess }: AgencySignUpFormProps) {
           />
 
           {licenseError != null && (
-            <p role="alert" className="text-sm text-danger">
+            <p role="alert" className={cn(bodyTextClasses, "text-danger")}>
               {licenseError}
             </p>
           )}

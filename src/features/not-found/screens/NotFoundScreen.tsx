@@ -3,6 +3,12 @@
 import { useTranslations } from "next-intl";
 import { Button } from "@/src/components/ui/button";
 import { useRouter } from "@/src/i18n/navigation";
+import { cn } from "@/src/lib/cn";
+import {
+  notFoundBodyClasses,
+  notFoundCodeClasses,
+  notFoundTitleClasses,
+} from "@/src/lib/typography";
 
 export function NotFoundScreen() {
   const t = useTranslations("notFound");
@@ -10,7 +16,7 @@ export function NotFoundScreen() {
 
   return (
     <section className="flex flex-1 flex-col items-center justify-center px-6 py-16 text-center sm:py-20">
-      <p className="text-4xl font-bold leading-none text-secondary sm:text-5xl">
+      <p className={notFoundCodeClasses}>
         {t("code")}
       </p>
       <span
@@ -18,11 +24,11 @@ export function NotFoundScreen() {
         aria-hidden
       />
 
-      <h1 className="mt-8 font-serif text-3xl leading-tight text-text sm:text-4xl lg:text-5xl">
+      <h1 className={cn("mt-8", notFoundTitleClasses)}>
         {t("title")}
       </h1>
 
-      <p className="mt-6 max-w-md text-base leading-relaxed text-muted sm:text-lg">
+      <p className={cn("mt-6 max-w-md text-muted", notFoundBodyClasses)}>
         {t("description")}
       </p>
 

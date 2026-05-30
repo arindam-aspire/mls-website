@@ -15,6 +15,7 @@ import {
 } from "@/src/features/landing/types/propertyTaxonomy.types";
 import { useRouter } from "@/src/i18n/navigation";
 import { cn } from "@/src/lib/cn";
+import { bodyTextClasses } from "@/src/lib/typography";
 import { MapPin, Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
@@ -159,8 +160,10 @@ export function HeroSearchBar({
     );
   }
 
-  const tabButtonClass =
-    "flex-1 px-3 py-2 text-xs font-medium uppercase md:flex-none md:px-5 md:py-2.5 md:text-sm";
+  const tabButtonClass = cn(
+    "flex-1 px-3 py-2 font-medium uppercase md:flex-none md:px-5 md:py-2.5",
+    bodyTextClasses,
+  );
 
   const selectedTabClass = cn(
     "!bg-white !text-black data-hover:!bg-white data-active:!bg-white",

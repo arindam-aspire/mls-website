@@ -13,6 +13,8 @@ import {
 import { useLogout } from "@/src/features/auth/mutations/auth.mutation";
 import type { LoggedInUser } from "@/src/features/auth/types/auth.types";
 import { useRouter } from "@/src/i18n/navigation";
+import { cn } from "@/src/lib/cn";
+import { profileEmailClasses, profileNameClasses } from "@/src/lib/typography";
 import { useClose } from "@headlessui/react";
 import { Bell, Eye, Heart, Home, LogOut, Search, Send, User } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -100,8 +102,8 @@ export function ProfilePopover({ user }: ProfilePopoverProps) {
               size="md"
             />
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-semibold text-text">{user.full_name}</p>
-              <p className="truncate text-xs text-muted">{user.email}</p>
+              <p className={cn("truncate text-text", profileNameClasses)}>{user.full_name}</p>
+              <p className={cn("truncate text-muted", profileEmailClasses)}>{user.email}</p>
             </div>
           </div>
 

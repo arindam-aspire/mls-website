@@ -29,6 +29,7 @@ export type PropertyListParams = {
   minArea?: number;
   maxArea?: number;
   amenities?: string;
+  similar_to?: string;
 };
 
 export interface PaginationMeta {
@@ -214,6 +215,18 @@ export type PropertyDetailsResponse = {
   success: boolean;
   message: string | null;
   data?: PropertyDetails | null;
+  error: unknown;
+  meta?: Record<string, unknown>;
+};
+
+// ── Similar properties (GET /properties/:id/similar) ────────────────────────
+
+export type PropertySimilarResponse = {
+  success: boolean;
+  message: string | null;
+  data?: {
+    items?: PropertyListing[];
+  } | null;
   error: unknown;
   meta?: Record<string, unknown>;
 };

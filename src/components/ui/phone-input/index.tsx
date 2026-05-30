@@ -11,6 +11,7 @@ import {
   type ChangeEvent,
 } from "react";
 import { cn } from "@/src/lib/cn";
+import { bodyTextClasses } from "@/src/lib/typography";
 import { isRtlLocale } from "@/src/i18n/routing";
 import {
   inheritOutlineFocusWithinClasses,
@@ -233,7 +234,7 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
                 aria-label={searchPlaceholder}
               >
                 {filteredCountries.length === 0 ? (
-                  <li className="px-2.5 py-4 text-center text-xs text-muted sm:px-3 sm:py-6 sm:text-sm">
+                  <li className={cn("px-2.5 py-4 text-center text-muted sm:px-3 sm:py-6", bodyTextClasses)}>
                     {emptySearchLabel}
                   </li>
                 ) : (

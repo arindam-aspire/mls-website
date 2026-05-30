@@ -5,6 +5,8 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button, Input, PhoneInput, ToggleButton } from "@/src/components/ui";
 import { useForm } from "@/src/hooks/useForm";
+import { cn } from "@/src/lib/cn";
+import { bodyTextClasses } from "@/src/lib/typography";
 import type { ForgotPasswordFormValues } from "../types/auth.types";
 
 export type ForgotPasswordMethod = "email" | "phone";
@@ -172,7 +174,7 @@ export function ForgotPasswordForm({
             className="mt-0.5 size-5 shrink-0 text-primary-dark"
             aria-hidden
           />
-          <p className="text-sm leading-relaxed text-text">
+          <p className={cn(bodyTextClasses, "leading-relaxed text-text")}>
             {method === "email"
               ? t("forgotPasswordInfoEmail")
               : t("forgotPasswordInfoPhone")}

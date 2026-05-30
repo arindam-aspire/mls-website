@@ -63,7 +63,7 @@ const triggerVariantClasses: Record<SelectDropdownVariant, string> = {
 };
 
 const panelClasses = cn(
-  "z-50 max-h-64 min-w-64 w-(--button-width) overflow-auto rounded-2xl border border-secondary-light/80 bg-surface shadow-xl ring-1 ring-black/5",
+  "z-[100] max-h-64 min-w-64 w-(--button-width) overflow-auto rounded-2xl border border-secondary-light/80 bg-surface shadow-xl ring-1 ring-black/5",
   dropdownPanelSizeClasses,
   "[scrollbar-width:thin] focus:outline-none",
 );

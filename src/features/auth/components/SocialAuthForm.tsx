@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import type { SVGProps } from "react";
 import { Button, ToggleButton } from "@/src/components/ui";
 import { cn } from "@/src/lib/cn";
+import { authFormOverlineClasses } from "@/src/lib/typography";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
 import {
   AUTH_QUERY_KEY,
@@ -153,7 +154,7 @@ export function SocialAuthForm({
       </div>
       <div className="flex items-center gap-3">
         <div className="h-px flex-1 bg-secondary/20" aria-hidden />
-        <span className="text-xs font-medium uppercase tracking-wide text-muted">
+        <span className={authFormOverlineClasses}>
           {t("orDivider")}
         </span>
         <div className="h-px flex-1 bg-secondary/20" aria-hidden />

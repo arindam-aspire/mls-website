@@ -7,6 +7,7 @@ import {
   getPropertyDetails,
   getPropertyFeatureCatalog,
   getPropertyList,
+  getSimilarProperties,
 } from "../services/property.service";
 
 export const useGetPropertyList = () => {
@@ -29,6 +30,19 @@ export const useGetPropertyDetails = () => {
     mutationFn: getPropertyDetails,
     onError: (error: ApiError) => {
       toast.error("Failed to fetch property details", {
+        description: error.message,
+      });
+    },
+  });
+};
+
+export const useGetSimilarProperties = () => {
+  const toast = useToast();
+
+  return useMutation({
+    mutationFn: getSimilarProperties,
+    onError: (error: ApiError) => {
+      toast.error("Failed to fetch similar properties", {
         description: error.message,
       });
     },

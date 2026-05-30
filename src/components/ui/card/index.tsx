@@ -1,4 +1,8 @@
 import { cn } from "@/src/lib/cn";
+import {
+  cardDescriptionClasses,
+  cardTitleClasses,
+} from "@/src/lib/typography";
 import type {
   CardContentProps,
   CardDescriptionProps,
@@ -39,10 +43,7 @@ export function CardHeader({ className, children, ...rest }: CardHeaderProps) {
 export function CardTitle({ className, children, ...rest }: CardTitleProps) {
   return (
     <h3
-      className={cn(
-        "text-lg font-semibold leading-none tracking-tight text-text",
-        className,
-      )}
+      className={cn(cardTitleClasses, "leading-none tracking-tight", className)}
       {...rest}
     >
       {children}
@@ -56,7 +57,7 @@ export function CardDescription({
   ...rest
 }: CardDescriptionProps) {
   return (
-    <p className={cn("text-sm text-muted", className)} {...rest}>
+    <p className={cn(cardDescriptionClasses, "text-muted", className)} {...rest}>
       {children}
     </p>
   );

@@ -34,10 +34,13 @@ export const propertyEndpoints = {
     appendOptionalParam(search, "minArea", params.minArea);
     appendOptionalParam(search, "maxArea", params.maxArea);
     appendOptionalParam(search, "amenities", params.amenities);
+    appendOptionalParam(search, "similar_to", params.similar_to);
 
     return `/properties?${search.toString()}`;
   },
   PROPERTY_DETAILS: (id: string): string => `/properties/${encodeURIComponent(id)}`,
+  PROPERTY_SIMILAR: (id: string): string =>
+    `/properties/${encodeURIComponent(id)}/similar`,
   FEATURE_CATALOG: (): string => {
     const search = new URLSearchParams({ is_active: "true" });
 

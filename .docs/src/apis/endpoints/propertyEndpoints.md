@@ -26,6 +26,7 @@ _N/A — no local/global state in this module._
 | --- | --- |
 | `PROPERTY_LIST` | `/properties` |
 | `PROPERTY_DETAILS` | `/properties/:id` |
+| `PROPERTY_SIMILAR` | `/properties/:id/similar` |
 | `FEATURE_CATALOG` | `/features?is_active=true` |
 
 Consumed by [property.service.ts](../../features/property/services/property.service.ts); types in `src/features/property/types/property.types.ts`.

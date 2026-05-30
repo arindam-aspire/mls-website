@@ -1,36 +1,43 @@
 # File Overview
 
-Shared mobile-first size tokens for UI controls. Compact below the `sm` viewport breakpoint; full scale from `sm` up.
+Shared mobile-first size tokens for UI controls. Compact below `sm`; full scale from `sm` up.
 
 **Source:** `src/components/ui/responsiveSizes.ts`
 
 # Responsibilities
 
-- Centralize viewport-responsive padding, height, and typography for buttons, fields, toggles, links, and dropdown panels.
+- Centralize viewport-responsive **heights**, padding, and gaps for buttons, fields, toggles, links, and dropdown panels.
+- Import **text** scales from [`typography.ts`](../../lib/typography.md) (`controlTextClasses`, field labels, dropdown text).
 - Keep component `size` props (`sm` | `md` | `lg`) unchanged — only screen width affects compact vs full sizing.
+
+# Imports
+
+- `@/src/lib/typography` — text tokens re-exported where needed
 
 # Exports
 
 | Export | Used by |
 | --- | --- |
 | `buttonSizeClasses`, `buttonIconSizeClasses` | `Button` |
-| `iconButtonSizeClasses` | `IconButton` |
+| `iconButtonSizeClasses`, `iconButtonIconSizeClasses` | `IconButton` |
 | `fieldControlSizeClasses`, `fieldIconSizeClasses` | `Input`, `SelectDropdown` |
-| `selectTriggerSizeClasses`, `selectOptionSizeClasses` | `Select` |
+| `selectTriggerSizeClasses`, `selectLeadingIconPositionClasses`, `selectTriggerLeadingIconPaddingClasses` | `Select` |
+| `selectOptionSizeClasses` | Select options |
 | `textareaSizeClasses` | `Textarea` |
 | `toggleContainerSizeClasses`, `toggleSegmentSizeClasses`, `toggleIconSizeClasses` | `ToggleButton` |
 | `linkSizeClasses`, `linkIconSizeClasses` | `Link` |
-| `budgetShellSizeClasses`, `budgetCurrencyPaddingClasses`, `budgetTriggerPaddingClasses` | `BudgetSelect` |
-| `dropdownPanelSizeClasses`, `dropdownOptionSizeClasses` | `SelectDropdown`, `BudgetSelect` |
-| `fieldLabelSizeClasses`, `fieldErrorSizeClasses`, `fieldHintSizeClasses` | Form field labels, errors, hints |
-| `phoneInputShellSizeClasses`, `phoneInputTextSizeClasses`, … | `PhoneInput` |
+| `budgetShellSizeClasses`, `budgetCurrencyPaddingClasses`, `budgetTriggerPaddingClasses` | `BudgetSelect`, `BudgetField` |
+| `dropdownPanelSizeClasses`, `dropdownOptionSizeClasses` | Dropdowns |
+| `fieldLabelSizeClasses`, `fieldErrorSizeClasses`, `fieldHintSizeClasses` | Form fields (from typography) |
+| `phoneInputShellSizeClasses`, … | `PhoneInput` |
+| `heroCarouselShellSizeClasses`, … | Property carousel controls |
 
 # UI Details
 
-- **Pattern:** shared `controlHeightClasses` — three **viewport** steps: default (< 640px), `sm:` (≥ 640px), `lg:` (≥ 1024px). Component `size` prop (`sm` | `md` | `lg`) is separate.
-- **Example (`size="md"`):** `h-8` → `sm:h-11` → `lg:h-12` (32px → 44px → 48px).
+- **Heights (`size="md"`):** `h-8` → `sm:h-11` (32px → 44px).
+- **Text:** paired with `controlTextClasses` — `text-xs` → `sm:text-sm` for `md` tier.
 
 # Notes
 
-- To adjust mobile density app-wide, edit this file rather than individual components.
-- See also [fieldVariants.md](./fieldVariants.md) for shared outline/focus styles.
+- To adjust mobile density app-wide, edit `typography.ts` (text) and this file (heights/padding).
+- See also [fieldVariants.md](./fieldVariants.md).

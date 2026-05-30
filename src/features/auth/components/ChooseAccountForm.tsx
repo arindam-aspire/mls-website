@@ -11,6 +11,7 @@ import { useMemo } from "react";
 import { ToggleButton } from "@/src/components/ui";
 import { useTranslations } from "next-intl";
 import { cn } from "@/src/lib/cn";
+import { bodyTextClasses } from "@/src/lib/typography";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
 import { AUTH_QUERY_KEY, resolveAccountTypeAuthView } from "../authViews";
 import { AccountTypeCard } from "./AccountTypeCard";
@@ -123,7 +124,7 @@ export function ChooseAccountForm({
             className="mt-0.5 size-5 shrink-0 text-primary-dark"
             aria-hidden
           />
-          <p className="text-sm leading-relaxed text-primary-dark">
+          <p className={cn(bodyTextClasses, "leading-relaxed text-primary-dark")}>
             {t("chooseAccountSocialSignInNote")}
           </p>
         </div>

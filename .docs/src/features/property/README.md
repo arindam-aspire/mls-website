@@ -9,7 +9,7 @@ property/
   screens/     *Screen.tsx — wired from app/[locale]/(property)/*
   hooks/       usePropertyList.ts, usePropertyDetails.ts — list/detail logic
   mutations/   property.mutation.ts — React Query mutation hooks
-  services/    property.service.ts — GET /properties, GET /properties/:id
+  services/    property.service.ts — GET /properties, GET /properties/:id, GET /properties/:id/similar
   store/       property.store.ts — list params/response state
   mappers/     propertyList.mapper.ts, propertyFeatures.mapper.ts — API → view models
   components/  PropertyListFilters.tsx — list filter bar (status, category, type)
@@ -38,6 +38,7 @@ Most routed screens use [ComingSoonCard](../../components/common/ComingSoonCard.
 | --- | --- |
 | `PROPERTY_LIST` | `/properties` |
 | `PROPERTY_DETAILS` | `/properties/:id` |
+| `PROPERTY_SIMILAR` | `/properties/:id/similar` |
 | `FEATURE_CATALOG` | `/features?is_active=true` |
 
 Types: [types/README.md](./types/README.md). Service: [services/README.md](./services/README.md) (`getPropertyList` via `apiClient`).

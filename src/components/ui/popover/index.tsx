@@ -9,6 +9,11 @@ import {
 } from "@headlessui/react";
 import { useLocale } from "next-intl";
 import { cn } from "@/src/lib/cn";
+import {
+  controlTextClasses,
+  popoverPanelTextClasses,
+  popoverTitleClasses,
+} from "@/src/lib/typography";
 import { isRtlLocale } from "@/src/i18n/routing";
 import type {
   PopoverBackdropWrapperProps,
@@ -32,7 +37,8 @@ function mergeHeadlessClassName<TBag>(
 }
 
 const triggerBaseClasses = cn(
-  "inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-text transition-colors",
+  "inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 font-medium text-text transition-colors",
+  controlTextClasses.md,
   "hover:bg-page focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary/40",
   "data-active:bg-page data-disabled:cursor-not-allowed data-disabled:opacity-50",
 );
@@ -43,7 +49,8 @@ const backdropClasses = cn(
 );
 
 const panelBaseClasses = cn(
-  "z-50 max-h-[min(24rem,calc(100vh-2rem))] min-w-48 w-(--button-width) max-w-[calc(100vw-2rem)] overflow-auto rounded-xl border border-secondary/15 bg-surface p-2 text-sm text-text shadow-lg ring-1 ring-black/5",
+  "z-50 max-h-[min(24rem,calc(100vh-2rem))] min-w-48 w-(--button-width) max-w-[calc(100vw-2rem)] overflow-auto rounded-xl border border-secondary/15 bg-surface p-2 text-text shadow-lg ring-1 ring-black/5",
+  popoverPanelTextClasses,
   "[scrollbar-width:thin] focus:outline-none [--anchor-gap:0.5rem]",
   "transition duration-150 ease-out",
   "data-closed:scale-95 data-closed:opacity-0",
@@ -158,10 +165,7 @@ export function PopoverHeader({ className, children, ...rest }: PopoverHeaderPro
 export function PopoverTitle({ className, children, ...rest }: PopoverTitleProps) {
   return (
     <h3
-      className={cn(
-        "text-sm font-semibold leading-tight text-text sm:text-base",
-        className,
-      )}
+      className={cn(popoverTitleClasses, className)}
       {...rest}
     >
       {children}
