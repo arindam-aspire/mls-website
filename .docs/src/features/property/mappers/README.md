@@ -1,4 +1,4 @@
-# Property mappers (`src/features/property/mapper/`)
+# Property mappers (`src/features/property/mappers/`)
 
 Transforms API or store shapes into UI-ready models for property screens.
 

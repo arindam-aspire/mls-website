@@ -27,7 +27,7 @@ Custom hook for the property list flow. Owns URL param sync, fetch mutation, too
 # State Management
 
 - **Zustand:** `propertyListParams`, `propertyListings`
-- **Local:** `layoutVariant`
+- **Local:** `layoutVariant`, `locationDraft` (synced from URL; committed via `onLocationCommit`)
 - **React Query:** list mutation; `isLoading` is true while `propertyListings === null` or fetch is pending (avoids empty flash on refresh)
 
 # API Usage

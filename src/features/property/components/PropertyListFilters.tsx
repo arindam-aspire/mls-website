@@ -2,12 +2,13 @@
 
 import {
   Button,
+  Input,
   SelectDropdown,
   ToggleButton,
   type SelectDropdownOption,
   type ToggleButtonItem,
 } from "@/src/components/ui";
-import { Bookmark, RotateCcw, SlidersHorizontal } from "lucide-react";
+import { Bookmark, MapPin, RotateCcw, SlidersHorizontal } from "lucide-react";
 
 export type PropertyListFiltersProps = {
   status: string;
@@ -19,6 +20,9 @@ export type PropertyListFiltersProps = {
   type: string;
   typeOptions: SelectDropdownOption[];
   onTypeChange: (value: string) => void;
+  location: string;
+  onLocationChange: (value: string) => void;
+  onLocationCommit: () => void;
   onResetSearch: () => void;
   onAdvanceSearch?: () => void;
   onSaveSearch?: () => void;
@@ -27,6 +31,8 @@ export type PropertyListFiltersProps = {
   categoryPlaceholder?: string;
   typeAriaLabel?: string;
   typePlaceholder?: string;
+  locationAriaLabel?: string;
+  locationPlaceholder?: string;
   disabled?: boolean;
 };
 
@@ -40,6 +46,9 @@ export function PropertyListFilters({
   type,
   typeOptions,
   onTypeChange,
+  location,
+  onLocationChange,
+  onLocationCommit,
   onResetSearch,
   onAdvanceSearch,
   onSaveSearch,
@@ -48,6 +57,8 @@ export function PropertyListFilters({
   categoryPlaceholder = "Select category",
   typeAriaLabel = "Property type",
   typePlaceholder = "Select type",
+  locationAriaLabel = "Location",
+  locationPlaceholder = "Search location",
   disabled = false,
 }: PropertyListFiltersProps) {
   return (
@@ -85,6 +96,23 @@ export function PropertyListFilters({
           onChange={onTypeChange}
           disabled={disabled || typeOptions.length === 0}
           variant="outline"
+        />
+
+        <Input
+          className="col-span-1 min-w-0"
+          aria-label={locationAriaLabel}
+          placeholder={locationPlaceholder}
+          value={location}
+          onChange={(event) => onLocationChange(event.target.value)}
+          onBlur={onLocationCommit}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              onLocationCommit();
+            }
+          }}
+          iconEnd={<MapPin className="size-4" aria-hidden />}
+          variant="outline"
+          disabled={disabled}
         />
       </div>
 

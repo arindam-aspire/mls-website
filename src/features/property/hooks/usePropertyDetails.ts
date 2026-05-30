@@ -7,7 +7,7 @@ import type { PropertyView } from "@abdoun/abdoun-library";
 import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
 import type { AppLocale } from "@/src/i18n/routing";
-import { mapFeatureCatalogItems } from "../mapper/propertyFeatures.mapper";
+import { mapFeatureCatalogItems } from "../mappers/propertyFeatures.mapper";
 import {
   useGetPropertyDetails,
   useGetPropertyFeatureCatalog,

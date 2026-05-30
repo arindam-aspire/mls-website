@@ -2,7 +2,7 @@
 
 Placeholder mapper for the property list flow. Maps API/list payloads to view models used by `PropertyListScreen`.
 
-**Source:** `src/features/property/mapper/propertyList.mapper.ts`
+**Source:** `src/features/property/mappers/propertyList.mapper.ts`
 
 # Responsibilities
 

@@ -2,7 +2,7 @@
 
 Maps feature catalog API items to `@abdoun/abdoun-library` `PropertyView` feature definitions.
 
-**Source:** `src/features/property/mapper/propertyFeatures.mapper.ts`
+**Source:** `src/features/property/mappers/propertyFeatures.mapper.ts`
 
 # Responsibilities
 

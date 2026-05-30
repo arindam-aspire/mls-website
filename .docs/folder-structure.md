@@ -102,7 +102,7 @@ mls_website/
 │       │       │   ├── README.md
 │       │       │   ├── usePropertyDetails.md
 │       │       │   └── usePropertyList.md
-│       │       ├── mapper/
+│       │       ├── mappers/
 │       │       │   ├── README.md
 │       │       │   ├── propertyFeatures.mapper.md
 │       │       │   └── propertyList.mapper.md
@@ -349,7 +349,7 @@ mls_website/
 │   │       ├── hooks/
 │   │       │   ├── usePropertyDetails.ts
 │   │       │   └── usePropertyList.ts
-│   │       ├── mapper/
+│   │       ├── mappers/
 │   │       │   ├── propertyFeatures.mapper.ts
 │   │       │   └── propertyList.mapper.ts
 │   │       ├── mutations/

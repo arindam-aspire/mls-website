@@ -11,7 +11,7 @@ property/
   mutations/   property.mutation.ts — React Query mutation hooks
   services/    property.service.ts — GET /properties, GET /properties/:id
   store/       property.store.ts — list params/response state
-  mapper/      propertyList.mapper.ts, propertyFeatures.mapper.ts — API → view models
+  mappers/     propertyList.mapper.ts, propertyFeatures.mapper.ts — API → view models
   components/  PropertyListFilters.tsx — list filter bar (status, category, type)
   types/       property.types.ts — list API shapes
 ```
@@ -48,7 +48,7 @@ Types: [types/README.md](./types/README.md). Service: [services/README.md](./ser
 - [components/README.md](./components/README.md)
 - [hooks/README.md](./hooks/README.md)
 - [mutations/README.md](./mutations/README.md)
-- [mapper/README.md](./mapper/README.md)
+- [mappers/README.md](./mappers/README.md)
 - [services/README.md](./services/README.md)
 - [store/README.md](./store/README.md)
 - [types/README.md](./types/README.md)

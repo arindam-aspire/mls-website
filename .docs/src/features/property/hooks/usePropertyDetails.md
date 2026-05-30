@@ -17,7 +17,7 @@ Custom hook for the property details flow. Fetches a single property by id, expo
 - `usePathname`, `useRouter` from `@/src/i18n/navigation`
 - `useSearchParams` from `next/navigation`
 - `useGetPropertyDetails`, `useGetPropertyFeatureCatalog` from `../mutations/property.mutation`
-- `mapFeatureCatalogItems` from `../mapper/propertyFeatures.mapper`
+- `mapFeatureCatalogItems` from `../mappers/propertyFeatures.mapper`
 - Types from `../types/property.types`
 - `PropertyView` (type-only via `ComponentProps`)
 
@@ -85,7 +85,7 @@ _N/A — hook only._
 
 - [../mutations/property.mutation.md](../mutations/property.mutation.md)
 - [../services/property.service.md](../services/property.service.md)
-- [../mapper/propertyFeatures.mapper.md](../mapper/propertyFeatures.mapper.md)
+- [../mappers/propertyFeatures.mapper.md](../mappers/propertyFeatures.mapper.md)
 - [../screens/PropertyDetailsScreen.md](../screens/PropertyDetailsScreen.md)
 
 # Notes

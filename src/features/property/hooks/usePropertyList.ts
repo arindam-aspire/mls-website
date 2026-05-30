@@ -134,6 +134,9 @@ export function usePropertyList() {
 
   // 4. Local state
   const [layoutVariant, setLayoutVariant] = useState<"grid" | "list">("grid");
+  const [locationDraft, setLocationDraft] = useState(
+    () => listParams.location ?? "",
+  );
 
   // 5. Data fetching / queries
   const {
@@ -270,6 +273,20 @@ export function usePropertyList() {
     [updateSearchParams],
   );
 
+  const onLocationChange = useCallback((location: string) => {
+    setLocationDraft(location);
+  }, []);
+
+  const onLocationCommit = useCallback(() => {
+    const trimmedLocation = locationDraft.trim();
+
+    if ((listParams.location ?? "") === trimmedLocation) {
+      return;
+    }
+
+    updateSearchParams({ location: trimmedLocation, page: 1 });
+  }, [listParams.location, locationDraft, updateSearchParams]);
+
   const onResetSearch = useCallback(() => {
     const params = new URLSearchParams();
 
@@ -304,6 +321,9 @@ export function usePropertyList() {
       type: activeTypeValue,
       typeOptions,
       onTypeChange,
+      location: locationDraft,
+      onLocationChange,
+      onLocationCommit,
       onResetSearch,
       onAdvanceSearch: openUpcomingFeature,
       onSaveSearch: openUpcomingFeature,
@@ -315,7 +335,10 @@ export function usePropertyList() {
       categoryOptions,
       isLoadingTaxonomy,
       listParams.status,
+      locationDraft,
       onCategoryChange,
+      onLocationChange,
+      onLocationCommit,
       onResetSearch,
       onStatusChange,
       onTypeChange,
@@ -399,6 +422,10 @@ export function usePropertyList() {
   }, [openUpcomingFeature]);
 
   // 9. Effects
+  useEffect(() => {
+    setLocationDraft(listParams.location ?? "");
+  }, [listParams.location]);
+
   useEffect(() => {
     if (propertyTaxonomy == null) {
       getPropertyTaxonomy();
