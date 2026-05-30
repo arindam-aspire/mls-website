@@ -414,7 +414,7 @@ export function usePropertyList() {
     listings,
     layoutVariant,
     listTitle,
-    isLoading: isLoadingPropertyList,
+    isLoading: propertyListings === null || isLoadingPropertyList,
     filters,
     toolbar,
     pagination,

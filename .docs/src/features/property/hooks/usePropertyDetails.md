@@ -29,7 +29,7 @@ Custom hook for the property details flow. Fetches a single property by id, expo
 
 - **Local:** `propertyDetails`, `featureCatalog`, upcoming modal open flag
 - **URL:** `tab` search param (default `overview`; omitted from URL when overview)
-- **React Query:** details + feature catalog mutations; `isLoading` is true while either fetch is pending
+- **React Query:** details + feature catalog mutations; `isLoading` stays true until each request settles (avoids empty flash on refresh)
 
 # API Usage
 

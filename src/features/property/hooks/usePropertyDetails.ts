@@ -74,6 +74,8 @@ export function usePropertyDetails(propertyId: string) {
   >([]);
   const [isUpcomingFeatureModalOpen, setIsUpcomingFeatureModalOpen] =
     useState(false);
+  const [isDetailsSettled, setIsDetailsSettled] = useState(false);
+  const [isFeaturesSettled, setIsFeaturesSettled] = useState(false);
 
   // 5. Data fetching / queries
   const {
@@ -92,6 +94,9 @@ export function usePropertyDetails(propertyId: string) {
       onSuccess: (response) => {
         setPropertyDetails(response.data ?? null);
       },
+      onSettled: () => {
+        setIsDetailsSettled(true);
+      },
     });
   }, [fetchPropertyDetails, propertyId]);
 
@@ -102,11 +107,15 @@ export function usePropertyDetails(propertyId: string) {
           mapFeatureCatalogItems(response.data?.items ?? []),
         );
       },
+      onSettled: () => {
+        setIsFeaturesSettled(true);
+      },
     });
   }, [fetchFeatureCatalog]);
 
   // 6. Derived / memoized values
-  const isLoading = isLoadingDetails || isLoadingFeatures;
+  const isLoading =
+    !isDetailsSettled || !isFeaturesSettled || isLoadingDetails || isLoadingFeatures;
 
   const onTabChange = useCallback(
     (tab: string) => {
@@ -159,11 +168,13 @@ export function usePropertyDetails(propertyId: string) {
 
   // 9. Effects
   useEffect(() => {
+    setIsFeaturesSettled(false);
     loadFeatureCatalog();
   }, [loadFeatureCatalog]);
 
   useEffect(() => {
     setPropertyDetails(null);
+    setIsDetailsSettled(false);
     loadPropertyDetails();
   }, [loadPropertyDetails]);
 

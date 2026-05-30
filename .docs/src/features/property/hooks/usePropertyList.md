@@ -28,7 +28,7 @@ Custom hook for the property list flow. Owns URL param sync, fetch mutation, too
 
 - **Zustand:** `propertyListParams`, `propertyListings`
 - **Local:** `layoutVariant`
-- **React Query:** list mutation + `isPending` as `isLoading`
+- **React Query:** list mutation; `isLoading` is true while `propertyListings === null` or fetch is pending (avoids empty flash on refresh)
 
 # API Usage
 
@@ -57,7 +57,7 @@ _No hook arguments._
 | `listings` | Card list data array |
 | `layoutVariant` | `"grid"` \| `"list"` |
 | `listTitle` | Heading (sale/rent from `status` param) |
-| `isLoading` | Fetch pending |
+| `isLoading` | Fetch pending or list not yet loaded (`propertyListings === null`) |
 | `toolbar` | Sort options, layout toggle |
 | `pagination` | Total, page, pageSize, handlers |
 | `noDataFound` | Empty state copy |
