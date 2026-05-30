@@ -1,85 +1,73 @@
 # File Overview
 
-Route-level property list screen that currently renders a placeholder card while triggering list fetch from URL query params.
+Route-level property list screen. Renders `PropertyCardList` from `@abdoun/abdoun-library`; all logic lives in `usePropertyList`.
 
 **Source:** `src/features/property/screens/PropertyListScreen.tsx`
 
 # Responsibilities
 
-- Read `status` and `category` from URL search params.
-- Trigger property list fetch through `useGetPropertyList`.
-- Reuse cached property list from `usePropertyStore` when params are unchanged.
-- Keep existing placeholder UI unchanged.
+- Compose `PropertyListFilters` (top) and `PropertyCardList` with data and handlers from `usePropertyList`.
+- Display loading, toolbar, pagination, and empty states via the library component.
 
 # Imports
 
-- `import { ComingSoonCard } from "@/src/components/common/ComingSoonCard"`
-- `import { useSearchParams } from "next/navigation"`
-- `import { useGetPropertyList } from "../mutations/property.mutation"`
+- `UpcomingFeatureModal` from `@/src/components/common/UpcomingFeatureModal`
+- `PropertyListFilters` from `../components/PropertyListFilters`
+- `PropertyCardList` from `@abdoun/abdoun-library`
+- `usePropertyList` from `../hooks/usePropertyList`
 
 # Exports
 
-- `PropertyListScreen`
-- `default`
+- `PropertyListScreen` (default)
 
 # State Management
 
-- **React** `useEffect` for fetch lifecycle
+_Delegated to [usePropertyList](../hooks/usePropertyList.md)._
 
 # API Usage
 
-- Fetches property list via `useGetPropertyList` (`mutationFn: getPropertyList` → `GET /properties`).
-- Sends params directly from URL query with defaults (`status=buy`, empty `category`, page `1`, pageSize `10`).
+_Delegated to hook → `GET /properties` and property taxonomy (when not cached in store)._
 
 # Navigation
 
-- Reads search params from route URL (`status`, `category`) via `useSearchParams`.
+- Route: `/en/property-list` with full query string (`page`, `pageSize`, `category`, `status`, `sort`, `type`, `location`, and optional advanced filters).
+- Card click opens `/en/propert-details/:id` in a **new tab** (locale-prefixed via `getPathname`).
 
 # Props / Parameters
 
-- See component/handler props in source (TypeScript interfaces).
+_No props._
 
 # Actions / Inputs
 
-## Inputs
-
-_No explicit inputs detected._
-
-## Actions
-
-- On mount/URL change: build params from query and update `usePropertyStore` only when params differ.
-- Trigger property list mutation only when cache is missing or params changed.
-
-## Validations
-
-_No explicit validations detected._
-
-## Show/Hide Controls
-
-_No explicit show/hide controls detected._
+| User action | Handler (from hook) |
+| --- | --- |
+| Status / category / type | `filters.onStatusChange`, `onCategoryChange`, `onTypeChange` |
+| Advance / Save search / Favourite / Email / Call / WhatsApp | Opens `UpcomingFeatureModal` |
+| Sort change | `toolbar.onSortChange` |
+| Grid/list toggle | `toolbar.onViewChange` |
+| Page change | `pagination.onPageChange` |
+| Page size change | `pagination.onPageSizeChange` |
+| Card click | `onClick` → property details (new tab) |
 
 # UI Details
 
-- **Theme:** semantic tokens (`bg-page`, `bg-surface`, `text-text`, `text-muted`, `bg-primary`, `border-secondary/15`).
-- **Light/dark:** via `ThemeProvider` / `html.light` | `html.dark`.
-- **Radius:** `rounded-lg` controls; `rounded-xl` cards/modals/popovers; `rounded-full` avatars/pills.
-- **Responsive:** mobile-first (`sm:`, `md:`, `lg:`).
+- **Library:** `@abdoun/abdoun-library` styles imported in `app/globals.css`
+- **Theme:** library + app semantic tokens
+- **Responsive:** `PropertyCardList` grid/list layouts
 
 # Flow Description
 
-1. Screen reads `status` and `category` from URL query.
-2. Builds `nextParams` and stores them in `usePropertyStore`.
-3. If store already has listings for same params, skip API call.
-4. Otherwise call `useGetPropertyList().mutate(nextParams)`.
-5. Maps response items/pagination into store listings.
-6. Keeps rendering `ComingSoonCard` placeholder UI.
+1. Screen calls `usePropertyList()`.
+2. Renders `PropertyListFilters` with `{...filters}` from the hook.
+3. Renders `UpcomingFeatureModal` when Advance Search, Save Search, Email, Call, WhatsApp, or Favourite is clicked.
+4. Renders `PropertyCardList` with listings and callbacks.
 
 # Dependencies
 
-- Parent feature or route that imports this file.
-- See **Imports** for direct module dependencies.
+- [../components/PropertyListFilters.md](../components/PropertyListFilters.md)
+- [../hooks/usePropertyList.md](../hooks/usePropertyList.md)
+- `@abdoun/abdoun-library` (`PropertyCardList`)
 
 # Notes
 
-- Mock list data now maps image selection from `sampleImages` by index (`images: [sampleImages[index % sampleImages.length]]`).
-- Keep in sync when `src/features/property/screens/PropertyListScreen.tsx` changes.
+- Sort is synced to the API via `sort` query param; changing sort resets page to 1.

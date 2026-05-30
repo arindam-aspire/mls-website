@@ -1,113 +1,127 @@
 "use client";
 
-import { Button } from "@/src/components/ui/button";
 import {
+  Button,
   SelectDropdown,
+  ToggleButton,
   type SelectDropdownOption,
-} from "@/src/components/ui/select-dropdown";
+  type ToggleButtonItem,
+} from "@/src/components/ui";
+import { Bookmark, RotateCcw, SlidersHorizontal } from "lucide-react";
 
-export type PropertyLayoutVariant = "grid" | "list";
-
-interface PropertyListFiltersProps {
+export type PropertyListFiltersProps = {
   status: string;
-  category: string;
-  sortBy: string;
-  layoutVariant: PropertyLayoutVariant;
-  statusOptions: SelectDropdownOption[];
-  categoryOptions: SelectDropdownOption[];
-  sortOptions: SelectDropdownOption[];
+  statusOptions: ToggleButtonItem[];
   onStatusChange: (value: string) => void;
+  category: string;
+  categoryOptions: SelectDropdownOption[];
   onCategoryChange: (value: string) => void;
-  onSortChange: (value: string) => void;
-  onLayoutVariantChange: (value: PropertyLayoutVariant) => void;
-  onApplyFilters?: () => void;
-  onResetFilters?: () => void;
-}
+  type: string;
+  typeOptions: SelectDropdownOption[];
+  onTypeChange: (value: string) => void;
+  onResetSearch: () => void;
+  onAdvanceSearch?: () => void;
+  onSaveSearch?: () => void;
+  statusAriaLabel?: string;
+  categoryAriaLabel?: string;
+  categoryPlaceholder?: string;
+  typeAriaLabel?: string;
+  typePlaceholder?: string;
+  disabled?: boolean;
+};
 
 export function PropertyListFilters({
   status,
-  category,
-  sortBy,
-  layoutVariant,
   statusOptions,
-  categoryOptions,
-  sortOptions,
   onStatusChange,
+  category,
+  categoryOptions,
   onCategoryChange,
-  onSortChange,
-  onLayoutVariantChange,
-  onApplyFilters,
-  onResetFilters,
+  type,
+  typeOptions,
+  onTypeChange,
+  onResetSearch,
+  onAdvanceSearch,
+  onSaveSearch,
+  statusAriaLabel = "Listing status",
+  categoryAriaLabel = "Property category",
+  categoryPlaceholder = "Select category",
+  typeAriaLabel = "Property type",
+  typePlaceholder = "Select type",
+  disabled = false,
 }: PropertyListFiltersProps) {
   return (
-    <section className="rounded-xl border border-secondary/15 bg-surface p-4 sm:p-5">
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-5">
-        <SelectDropdown
-          label="Status"
-          placeholder="Select status"
+    <section className="grid w-full min-w-0 grid-cols-1 gap-2 md:gap-4 lg:grid-cols-8 lg:gap-6">
+      <div className="col-span-1 grid min-w-0 grid-cols-1 items-center gap-2 md:grid-cols-4 md:gap-4 lg:col-span-5 lg:grid-cols-5 lg:gap-6">
+        <ToggleButton
+          className="col-span-1 w-full min-w-0"
+          color="primary"
+          variant="solid"
+          size="md"
           value={status}
-          options={statusOptions}
           onChange={onStatusChange}
-          fullWidth
+          items={statusOptions}
+          aria-label={statusAriaLabel}
+          disabled={disabled}
         />
+
         <SelectDropdown
-          label="Category"
-          placeholder="Select category"
+          className="col-span-1 min-w-0"
+          aria-label={categoryAriaLabel}
+          placeholder={categoryPlaceholder}
           value={category}
           options={categoryOptions}
           onChange={onCategoryChange}
-          fullWidth
+          disabled={disabled || categoryOptions.length === 0}
+          variant="outline"
         />
+
         <SelectDropdown
-          label="Sort by"
-          placeholder="Sort properties"
-          value={sortBy}
-          options={sortOptions}
-          onChange={onSortChange}
-          fullWidth
+          className="col-span-1 min-w-0"
+          aria-label={typeAriaLabel}
+          placeholder={typePlaceholder}
+          value={type}
+          options={typeOptions}
+          onChange={onTypeChange}
+          disabled={disabled || typeOptions.length === 0}
+          variant="outline"
         />
+      </div>
 
-        <div className="flex items-end gap-2">
-          <Button
-            type="button"
-            color={layoutVariant === "grid" ? "primary" : "inherit"}
-            variant={layoutVariant === "grid" ? "solid" : "outline"}
-            className="h-11 flex-1"
-            onClick={() => onLayoutVariantChange("grid")}
-          >
-            Grid
-          </Button>
-          <Button
-            type="button"
-            color={layoutVariant === "list" ? "primary" : "inherit"}
-            variant={layoutVariant === "list" ? "solid" : "outline"}
-            className="h-11 flex-1"
-            onClick={() => onLayoutVariantChange("list")}
-          >
-            List
-          </Button>
-        </div>
-
-        <div className="flex items-end gap-2">
-          <Button
-            type="button"
-            color="inherit"
-            variant="outline"
-            className="h-11 flex-1"
-            onClick={onResetFilters}
-          >
-            Reset
-          </Button>
-          <Button
-            type="button"
-            color="primary"
-            variant="solid"
-            className="h-11 flex-1"
-            onClick={onApplyFilters}
-          >
-            Apply
-          </Button>
-        </div>
+      <div className="col-span-1 grid min-w-0 grid-cols-1 gap-2 md:grid-cols-3 md:gap-4 lg:col-span-3 lg:grid-cols-3 lg:gap-6">
+        <Button
+          type="button"
+          color="primary"
+          variant="solid"
+          className="h-11 w-full rounded-lg"
+          disabled={disabled}
+          onClick={onAdvanceSearch}
+          iconStart={<SlidersHorizontal className="size-4" aria-hidden />}
+        >
+          Advance Search
+        </Button>
+        <Button
+          type="button"
+          color="inherit"
+          variant="outline"
+          className="h-11 w-full rounded-lg"
+          disabled={disabled}
+          onClick={onResetSearch}
+          iconStart={<RotateCcw className="size-4" aria-hidden />}
+        >
+          Reset Search
+        </Button>
+        <Button
+          type="button"
+          color="secondary"
+          variant="outline"
+          className="h-11 w-full rounded-lg"
+          disabled={disabled}
+          onClick={onSaveSearch}
+          iconStart={<Bookmark className="size-4" aria-hidden />}
+        >
+          Save Search
+        </Button>
       </div>
     </section>
   );

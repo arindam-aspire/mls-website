@@ -29,7 +29,7 @@ Dynamic segment `[locale]` must be one of `en`, `ar`, `es`, `fr`.
 - `/[locale]/recently-viewed`
 - `/[locale]/inquiries`
 
-Reserved folders (no `page.tsx` yet): `propert-details/`, `property-list/`.
+Reserved folders (no `page.tsx` yet): none under `(property)/`.
 
 ## Auth modal
 

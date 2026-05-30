@@ -1,71 +1,73 @@
 # File Overview
 
-Route-level screen component composing feature UI.
+Route-level property details screen. Renders `PropertyView` from `@abdoun/abdoun-library`; all logic lives in `usePropertyDetails`.
 
 **Source:** `src/features/property/screens/PropertyDetailsScreen.tsx`
 
 # Responsibilities
 
-- Route-level screen component composing feature UI.
+- Compose `PropertyView` with data and handlers from `usePropertyDetails`.
+- Show `UpcomingFeatureModal` for unreleased favourite and agent email actions.
+- Show a not-found panel when fetch fails or returns no data.
 
 # Imports
 
-_No notable imports._
+- `PropertyView` from `@abdoun/abdoun-library`
+- `UpcomingFeatureModal` from `@/src/components/common/UpcomingFeatureModal`
+- `usePropertyDetails` from `../hooks/usePropertyDetails`
 
 # Exports
 
-_See source exports._
+- `PropertyDetailsScreen` (default)
 
 # State Management
 
-_No significant state; presentational or config module._
+_All state in `usePropertyDetails`._
 
 # API Usage
 
-_N/A unless extended._
+Indirect via `usePropertyDetails` → `GET /properties/:id`.
 
 # Navigation
 
-_No direct navigation._
+- Route: `/en/propert-details/<id>` via [propert-details/[id]/page.md](../../../../app/[locale]/(property)/propert-details/[id]/page.md)
 
 # Props / Parameters
 
-- See component/handler props in source (TypeScript interfaces).
+| Prop | Type | Purpose |
+| --- | --- | --- |
+| `propertyId` | `string` | Property id from URL `[id]` segment |
 
 # Actions / Inputs
 
-## Inputs
-
-_No explicit inputs detected._
-
-## Actions
-
-_No explicit actions detected._
-
-## Validations
-
-_No explicit validations detected._
-
-## Show/Hide Controls
-
-_No explicit show/hide controls detected._
+| User action | Handler |
+| --- | --- |
+| Tab change | `tabs.onTabChange` → updates `?tab=` in URL |
+| Favourite | `onClickFavourite` → upcoming modal |
+| Agent email | `onClickAgentEmail` → upcoming modal |
 
 # UI Details
 
-- **Theme:** semantic tokens (`bg-page`, `bg-surface`, `text-text`, `text-muted`, `bg-primary`, `border-secondary/15`).
-- **Light/dark:** via `ThemeProvider` / `html.light` | `html.dark`.
-- **Radius:** `rounded-lg` controls; `rounded-xl` cards/modals/popovers; `rounded-full` avatars/pills.
-- **Responsive:** mobile-first (`sm:`, `md:`, `lg:`).
+- **Theme:** semantic tokens on error panel; library uses app CSS variables
+- **Radius:** `rounded-xl` on error article
+- **Responsive:** mobile-first via `PropertyView` and error copy scaling
+- **Light/dark:** via `ThemeProvider` and `globals.css`
 
 # Flow Description
 
-See source in `src/features/property/screens/PropertyDetailsScreen.tsx` for step-by-step behavior aligned with [application.md](../../application.md) (path relative may vary).
+1. Page passes `propertyId` from URL.
+2. Hook fetches property details.
+3. Loading: `PropertyView` skeleton via `isLoading`.
+4. Error / missing data: not-found article.
+5. Success: `PropertyView` with tabs, agent/owner blocks, and feature catalog.
 
 # Dependencies
 
-- Parent feature or route that imports this file.
-- See **Imports** for direct module dependencies.
+- [../hooks/usePropertyDetails.md](../hooks/usePropertyDetails.md)
+- [../../../components/common/UpcomingFeatureModal.md](../../../components/common/UpcomingFeatureModal.md)
+- [../../../../app/[locale]/(property)/propert-details/[id]/page.md](../../../../app/[locale]/(property)/propert-details/[id]/page.md)
 
 # Notes
 
-- Keep in sync when `src/features/property/screens/PropertyDetailsScreen.tsx` changes.
+- `applicationKey` is `"abdoun_web"` (library branding).
+- Feature catalog is loaded from `GET /features?is_active=true` and mapped for `PropertyView.features`.

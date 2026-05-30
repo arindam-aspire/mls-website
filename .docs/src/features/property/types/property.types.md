@@ -1,22 +1,29 @@
 # File Overview
 
-TypeScript types for the property list API (`GET /properties`) and the `Property` entity.
+TypeScript types for property list and detail APIs, aligned with `@abdoun/abdoun-library` `PropertyView` shapes where applicable.
 
 **Source:** `src/features/property/types/property.types.ts`
 
 # Responsibilities
 
 - Define query params for listing properties (`PropertyListParams`).
-- Define the standard API wrapper (`PropertyListResponse`).
+- Define list and detail API wrappers (`PropertyListResponse`, `PropertyDetailsResponse`).
+- Export `PropertyDetails` and `PropertyFeatureDefinition` (inferred from `PropertyView` props).
+- Define feature catalog API types (`FeatureCatalogItem`, `FeatureCatalogResponse`).
 
 # Imports
 
-_No notable imports._
+- `PropertyView` from `@abdoun/abdoun-library` (type-only)
 
 # Exports
 
 - `PropertyListParams`
 - `PropertyListResponse`
+- `PropertyDetails`
+- `PropertyFeatureDefinition`
+- `PropertyDetailsResponse`
+- `FeatureCatalogItem`
+- `FeatureCatalogResponse`
 
 # State Management
 
@@ -26,9 +33,13 @@ _N/A — type-only module._
 
 | Type | Endpoint | Method |
 | --- | --- | --- |
-| `PropertyListResponse` | `/properties` (`propertyEndpoints.PROPERTY_LIST`) | GET (planned) |
+| `PropertyListResponse` | `/properties` | GET |
+| `PropertyDetailsResponse` | `/properties/:id` | GET |
+| `FeatureCatalogResponse` | `/features?is_active=true` | GET |
 
-Request query shape: `PropertyListParams` (`page`, `pageSize`, `category`, `status`).
+Request query shape: `PropertyListParams` — required: `page`, `pageSize`, `category`, `status`; optional: `sort`, `type`, `location`, `budgetMin`, `budgetMax`, `furnitureStatus`, `bedrooms`, `bathrooms`, `parking`, `propertyAge`, `minArea`, `maxArea`, `amenities`.
+
+URL-synced filters: all `PropertyListParams` fields (see [property.types.md](./property.types.md)).
 
 # Navigation
 
@@ -42,6 +53,19 @@ _N/A._
 | `PropertyListParams.pageSize` | Page size |
 | `PropertyListParams.category` | Category filter |
 | `PropertyListParams.status` | Status filter |
+| `PropertyListParams.sort?` | Sort key (e.g. `newest`, `price_asc`, `price_desc`) |
+| `PropertyListParams.type?` | Property type filter |
+| `PropertyListParams.location?` | Location filter |
+| `PropertyListParams.budgetMin?` | Minimum budget |
+| `PropertyListParams.budgetMax?` | Maximum budget |
+| `PropertyListParams.furnitureStatus?` | Furnishing filter |
+| `PropertyListParams.bedrooms?` | Bedroom count |
+| `PropertyListParams.bathrooms?` | Bathroom count |
+| `PropertyListParams.parking?` | Parking count |
+| `PropertyListParams.propertyAge?` | Property age filter |
+| `PropertyListParams.minArea?` | Minimum area |
+| `PropertyListParams.maxArea?` | Maximum area |
+| `PropertyListParams.amenities?` | Amenities filter |
 
 # Actions / Inputs
 

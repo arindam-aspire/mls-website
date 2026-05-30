@@ -6,7 +6,7 @@ UI building blocks for property feature screens.
 
 | File | Role |
 | --- | --- |
-| [PropertyListFilters.md](./PropertyListFilters.md) | Reusable filter bar for property list search controls |
+| [PropertyListFilters.md](./PropertyListFilters.md) | Buy/Rent, category, type filter bar |
 
 ## Notes
 

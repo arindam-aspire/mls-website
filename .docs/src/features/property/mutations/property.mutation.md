@@ -1,13 +1,13 @@
 # File Overview
 
-React Query mutation hook for loading property lists on-demand.
+React Query mutation hooks for loading property lists and details on-demand.
 
 **Source:** `src/features/property/mutations/property.mutation.ts`
 
 # Responsibilities
 
-- Expose `useGetPropertyList` hook.
-- Call `getPropertyList` service through TanStack Query mutation lifecycle.
+- Expose `useGetPropertyList` and `useGetPropertyDetails` hooks.
+- Call property services through TanStack Query mutation lifecycle.
 - Show toast feedback on API failure.
 
 # Imports
@@ -15,11 +15,13 @@ React Query mutation hook for loading property lists on-demand.
 - `useMutation` from `@tanstack/react-query`
 - `ApiError` from `@/src/apis/core/error.normalizer`
 - `useToast` from `@/src/hooks/useToast`
-- `getPropertyList` from `../services/property.service`
+- `getPropertyDetails`, `getPropertyList` from `../services/property.service`
 
 # Exports
 
 - `useGetPropertyList`
+- `useGetPropertyDetails`
+- `useGetPropertyFeatureCatalog`
 
 # State Management
 
@@ -30,6 +32,8 @@ React Query mutation hook for loading property lists on-demand.
 | Hook | Service | Endpoint |
 | --- | --- | --- |
 | `useGetPropertyList` | `getPropertyList(params)` | `GET /properties` |
+| `useGetPropertyDetails` | `getPropertyDetails(id)` | `GET /properties/:id` |
+| `useGetPropertyFeatureCatalog` | `getPropertyFeatureCatalog()` | `GET /features?is_active=true` |
 
 # Navigation
 

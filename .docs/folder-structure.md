@@ -45,6 +45,9 @@ mls_website/
 │   │           │   └── page.md
 │   │           ├── property-list/
 │   │           │   └── page.md
+│   │           ├── propert-details/
+│   │           │   └── [id]/
+│   │           │       └── page.md
 │   │           ├── recently-viewed/
 │   │           │   └── page.md
 │   │           └── saved-searches/
@@ -95,6 +98,14 @@ mls_website/
 │       │       ├── components/
 │       │       │   ├── README.md
 │       │       │   └── PropertyListFilters.md
+│       │       ├── hooks/
+│       │       │   ├── README.md
+│       │       │   ├── usePropertyDetails.md
+│       │       │   └── usePropertyList.md
+│       │       ├── mapper/
+│       │       │   ├── README.md
+│       │       │   ├── propertyFeatures.mapper.md
+│       │       │   └── propertyList.mapper.md
 │       │       ├── mutations/
 │       │       │   ├── README.md
 │       │       │   └── property.mutation.md
@@ -156,6 +167,8 @@ mls_website/
 │   │       ├── listing/
 │   │       │   └── page.tsx
 │   │       ├── propert-details/
+│   │       │   └── [id]/
+│   │       │       └── page.tsx
 │   │       ├── property-list/
 │   │       │   └── page.tsx
 │   │       ├── recently-viewed/
@@ -202,6 +215,7 @@ mls_website/
 │   │   ├── common/
 │   │   │   ├── ComingSoonCard.tsx
 │   │   │   ├── ConfirmModal.tsx
+│   │   │   └── UpcomingFeatureModal.tsx
 │   │   │   └── PasswordStrengthIndicator.tsx
 │   │   └── ui/
 │   │       ├── fieldVariants.ts
@@ -333,6 +347,11 @@ mls_website/
 │   │       ├── components/
 │   │       │   └── PropertyListFilters.tsx
 │   │       ├── hooks/
+│   │       │   ├── usePropertyDetails.ts
+│   │       │   └── usePropertyList.ts
+│   │       ├── mapper/
+│   │       │   ├── propertyFeatures.mapper.ts
+│   │       │   └── propertyList.mapper.ts
 │   │       ├── mutations/
 │   │       │   └── property.mutation.ts
 │   │       ├── services/

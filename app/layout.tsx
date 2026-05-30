@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/src/providers/ThemeProvider";
 import QueryProvider from "@/src/providers/QueryProvider";
 import ToastProvider from "@/src/providers/ToastProvider";
 import "./globals.css";
+
 import { NavigationInitializer } from "@/src/initializers/NavigationInitializer";
 
 const geistSans = Geist({

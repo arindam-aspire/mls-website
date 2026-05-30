@@ -9,8 +9,8 @@ Screens mounted by `app/[locale]/(property)/*/page.tsx`.
 | [SavedSearchesScreen.md](./SavedSearchesScreen.md) | `/en/saved-searches` | Coming Soon |
 | [RecentlyViewedScreen.md](./RecentlyViewedScreen.md) | `/en/recently-viewed` | Coming Soon |
 | [InquiriesScreen.md](./InquiriesScreen.md) | `/en/inquiries` | Coming Soon |
-| [PropertyListScreen.md](./PropertyListScreen.md) | (planned) | Stub |
-| [PropertyDetailsScreen.md](./PropertyDetailsScreen.md) | (planned) | Stub |
+| [PropertyListScreen.md](./PropertyListScreen.md) | `/en/property-list` | `PropertyCardList` |
+| [PropertyDetailsScreen.md](./PropertyDetailsScreen.md) | `/en/propert-details/:id` | `PropertyView` |
 
 ## Conventions
 

@@ -1,0 +1,137 @@
+---
+description: Separate logic (hooks) from UI (components); enforce section order in hooks and components
+globs:
+  - "**/*.tsx"
+  - "**/use*.ts"
+  - "**/hooks/**/*.ts"
+alwaysApply: true
+---
+
+# Components & Hooks Architecture
+
+## Core Principle
+
+**Hooks = Logic & Data**  
+**Components = UI & Display**
+
+### Hooks are responsible for
+
+- Data fetching
+- State management
+- Business logic
+- Side effects
+- Event handlers
+- Data transformation
+
+### Components are responsible for
+
+- Rendering UI
+- Layout and styling
+- Composing child components
+- Receiving data via props
+- Triggering callbacks
+
+**Components should not contain business logic.**
+
+## Golden Rule
+
+| If code determines… | Put it in… |
+| --- | --- |
+| **WHAT** happens | Hook |
+| **HOW** it appears | Component |
+
+---
+
+## Custom Hooks
+
+Hooks = Logic & Data. Follow this section order. **Do not reorder** unless there is a strong technical reason.
+
+```ts
+export function useFeature() {
+  // 1. Router & navigation
+
+  // 2. UI utilities
+
+  // 3. Global state (Zustand / Redux / Context)
+
+  // 4. Local state
+
+  // 5. Data fetching / queries
+
+  // 6. Derived / memoized values
+
+  // 7. Callbacks
+
+  // 8. Refs
+
+  // 9. Effects (always last)
+
+  // 10. Return values
+}
+```
+
+**Return values must always be the final section of a custom hook.**
+
+---
+
+## React Components
+
+Components = UI & Display. Follow this section order.
+
+```tsx
+export function FeatureScreen() {
+  // 1. Custom hooks (logic lives here — one or more useFeature hooks)
+
+  // 2. Early returns (loading / error / empty guards) — optional
+
+  // 3. JSX (always last)
+}
+```
+
+### Component rules
+
+- **Never** place JSX before hooks.
+- **Never** place event handlers after JSX.
+- **Keep all hooks grouped at the top** of the component (no hooks after conditional returns unless using the early-return pattern consistently).
+- **JSX must always be the final section** of a component.
+- Extract fetching, store updates, sorting, pagination, and mapping into a custom hook when the screen grows beyond simple display.
+
+### Hook rules
+
+- **Never** place `useEffect` before state, memoized values, or callbacks.
+- Prefer colocated hooks under `src/features/<feature>/hooks/` (e.g. `usePropertyList.ts`).
+
+---
+
+## Examples
+
+```tsx
+// ❌ BAD — business logic and handlers inline in the component
+export function PropertyListScreen() {
+  const [page, setPage] = useState(1);
+  const { data } = useQuery({ ... });
+  const onPageChange = (p: number) => { setPage(p); refetch(); };
+  return <PropertyCardList pagination={{ onPageChange }} />;
+}
+
+// ✅ GOOD — hook owns logic; component owns layout
+export function PropertyListScreen() {
+  const {
+    propertyList,
+    pagination,
+    toolbar,
+    isLoading,
+    onPageChange,
+    onSortChange,
+  } = usePropertyList();
+
+  return (
+    <PropertyCardList
+      isLoading={isLoading}
+      data={{ items: propertyList }}
+      pagination={pagination}
+      toolbar={toolbar}
+    />
+  );
+}
+```

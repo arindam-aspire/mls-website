@@ -1,22 +1,26 @@
 # File Overview
 
-API service for listing properties.
+API service for listing and fetching a single property.
 
 **Source:** `src/features/property/services/property.service.ts`
 
 # Responsibilities
 
 - Call `GET /properties` with query params from `PropertyListParams`.
+- Call `GET /properties/:id` for a single property record.
+- Call `GET /features?is_active=true` for the feature/amenity catalog.
 
 # Imports
 
 - `apiClient` from `@/src/apis/clients/api.client`
 - `propertyEndpoints` from `@/src/apis/endpoints/propertyEndpoints`
-- `PropertyListParams`, `PropertyListResponse` from `../types/property.types`
+- `PropertyDetailsResponse`, `PropertyListParams`, `PropertyListResponse` from `../types/property.types`
 
 # Exports
 
 - `getPropertyList`
+- `getPropertyDetails`
+- `getPropertyFeatureCatalog`
 
 # State Management
 
@@ -26,7 +30,9 @@ _N/A — stateless service._
 
 | Function | Method | Path | Auth |
 | --- | --- | --- | --- |
-| `getPropertyList` | GET | `/properties?…` | yes (`apiClient` default) |
+| `getPropertyList` | GET | `/properties?…` | no (`auth: false`) |
+| `getPropertyDetails` | GET | `/properties/:id` | no (`auth: false`) |
+| `getPropertyFeatureCatalog` | GET | `/features?is_active=true` | no (`auth: false`) |
 
 Query string built by `propertyEndpoints.PROPERTY_LIST(params)` (`page`, `pageSize`, `category`, `status`).
 
@@ -39,6 +45,7 @@ _N/A._
 | Parameter | Type | Purpose |
 | --- | --- | --- |
 | `params` | `PropertyListParams` | List filters and pagination |
+| `id` | `string` | Property id for detail fetch |
 
 # Actions / Inputs
 

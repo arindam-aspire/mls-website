@@ -7,11 +7,12 @@ User property areas: listings, favourites, saved searches, recently viewed, inqu
 ```
 property/
   screens/     *Screen.tsx — wired from app/[locale]/(property)/*
-  mutations/   property.mutation.ts — React Query mutation hook
-  services/    property.service.ts — GET /properties
+  hooks/       usePropertyList.ts, usePropertyDetails.ts — list/detail logic
+  mutations/   property.mutation.ts — React Query mutation hooks
+  services/    property.service.ts — GET /properties, GET /properties/:id
   store/       property.store.ts — list params/response state
-  components/  PropertyListFilters.tsx — property list filters UI
-  hooks/       (reserved)
+  mapper/      propertyList.mapper.ts, propertyFeatures.mapper.ts — API → view models
+  components/  PropertyListFilters.tsx — list filter bar (status, category, type)
   types/       property.types.ts — list API shapes
 ```
 
@@ -25,17 +26,19 @@ property/
 | `/en/recently-viewed` | `RecentlyViewedScreen` |
 | `/en/inquiries` | `InquiriesScreen` |
 
-Planned (folders exist, no `page.tsx` yet): property list, property details.
+Dynamic detail route: `/en/propert-details/:id` → `PropertyDetailsScreen`.
 
 ## Status
 
-Most routed screens use [ComingSoonCard](../../components/common/ComingSoonCard.md). `PropertyListScreen` and `PropertyDetailsScreen` are stubs for future search/detail flows.
+Most routed screens use [ComingSoonCard](../../components/common/ComingSoonCard.md). `PropertyListScreen` and `PropertyDetailsScreen` use `@abdoun/abdoun-library` list/detail components.
 
 ## API
 
 | Constant | Path |
 | --- | --- |
 | `PROPERTY_LIST` | `/properties` |
+| `PROPERTY_DETAILS` | `/properties/:id` |
+| `FEATURE_CATALOG` | `/features?is_active=true` |
 
 Types: [types/README.md](./types/README.md). Service: [services/README.md](./services/README.md) (`getPropertyList` via `apiClient`).
 
@@ -43,7 +46,9 @@ Types: [types/README.md](./types/README.md). Service: [services/README.md](./ser
 
 - [screens/README.md](./screens/README.md)
 - [components/README.md](./components/README.md)
+- [hooks/README.md](./hooks/README.md)
 - [mutations/README.md](./mutations/README.md)
+- [mapper/README.md](./mapper/README.md)
 - [services/README.md](./services/README.md)
 - [store/README.md](./store/README.md)
 - [types/README.md](./types/README.md)

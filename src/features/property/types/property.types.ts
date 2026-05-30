@@ -1,3 +1,14 @@
+import type { ComponentProps } from "react";
+import type { PropertyView } from "@abdoun/abdoun-library";
+
+type PropertyViewProps = ComponentProps<typeof PropertyView>;
+
+export type PropertyDetails = NonNullable<PropertyViewProps["propertyDetails"]>;
+
+export type PropertyFeatureDefinition = NonNullable<
+  PropertyViewProps["features"]
+>[number];
+
 // ── Property list (GET /properties) ─────────────────────────────────────────
 
 export type PropertyListParams = {
@@ -5,6 +16,19 @@ export type PropertyListParams = {
   pageSize: number;
   category: string;
   status: string;
+  sort?: string;
+  type?: string;
+  location?: string;
+  budgetMin?: number;
+  budgetMax?: number;
+  furnitureStatus?: string;
+  bedrooms?: number;
+  bathrooms?: number;
+  parking?: number;
+  propertyAge?: string;
+  minArea?: number;
+  maxArea?: number;
+  amenities?: string;
 };
 
 export interface PaginationMeta {
@@ -183,3 +207,56 @@ export interface OwnerDocument {
   url: string;
   file_name?: string;
 }
+
+// ── Property details (GET /properties/:id) ──────────────────────────────────
+
+export type PropertyDetailsResponse = {
+  success: boolean;
+  message: string | null;
+  data?: PropertyDetails | null;
+  error: unknown;
+  meta?: Record<string, unknown>;
+};
+
+// ── Feature catalog (GET /features) ─────────────────────────────────────────
+
+export type FeatureGroup = "FEATURE" | "AMENITY";
+
+export type FeatureCatalogCategory = {
+  id: number;
+  name: string;
+  slug: string;
+};
+
+export type FeatureCatalogPropertyType = {
+  id: number;
+  category_id: number;
+  name: string;
+  slug: string;
+};
+
+export type FeatureCatalogItem = {
+  id: number;
+  name: string;
+  slug: string;
+  category_id: number | null;
+  property_type_id: number | null;
+  feature_group: FeatureGroup;
+  display_order: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+  category: FeatureCatalogCategory | null;
+  property_type: FeatureCatalogPropertyType | null;
+};
+
+export type FeatureCatalogResponse = {
+  success: boolean;
+  message: string | null;
+  data?: {
+    items?: FeatureCatalogItem[];
+    total?: number;
+  } | null;
+  error: unknown;
+  meta?: Record<string, unknown>;
+};

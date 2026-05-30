@@ -190,17 +190,12 @@ All paths below are **without** locale; prepend `/<locale>` (e.g. `/en/listing`)
 | `/dashboard` | `(main)/dashboard/page.tsx` | `DashboardScreen` (Coming Soon) |
 | `/my-profile` | `(main)/my-profile/page.tsx` | `ProfileScreen` (Coming Soon) |
 | `/listing` | `(property)/listing/page.tsx` | `ListingPropertyScreen` (Coming Soon) |
-| `/property-list` | `(property)/property-list/page.tsx` | `PropertyListScreen` (Coming Soon) |
+| `/property-list` | `(property)/property-list/page.tsx` | `PropertyListScreen` (`PropertyCardList`) |
+| `/propert-details/:id` | `(property)/propert-details/[id]/page.tsx` | `PropertyDetailsScreen` (`PropertyView`) |
 | `/favourites` | `(property)/favourites/page.tsx` | `FavouritePropertyScreen` (Coming Soon) |
 | `/saved-searches` | `(property)/saved-searches/page.tsx` | `SavedSearchesScreen` (Coming Soon) |
 | `/recently-viewed` | `(property)/recently-viewed/page.tsx` | `RecentlyViewedScreen` (Coming Soon) |
 | `/inquiries` | `(property)/inquiries/page.tsx` | `InquiriesScreen` (Coming Soon) |
-
-### Reserved / planned (folders in tree, no `page.tsx` yet)
-
-| Folder under `(property)/` | Intended use |
-| --- | --- |
-| `propert-details/` | Property detail page |
 
 ### Header navigation (not yet implemented as routes)
 
@@ -349,7 +344,7 @@ Reserved; not wired to routes yet.
 | Screen | Status |
 | --- | --- |
 | `PropertyListScreen` | Stub |
-| `PropertyDetailsScreen` | Stub |
+| `PropertyDetailsScreen` | Property detail (`PropertyView`, `/propert-details/:id`) |
 | `ListingPropertyScreen` | Coming Soon |
 | `FavouritePropertyScreen` | Coming Soon |
 | `SavedSearchesScreen` | Coming Soon |
@@ -580,6 +575,7 @@ Shared field styles: `fieldVariants.ts`.
 | --- | --- | --- |
 | `ComingSoonCard` | `common/ComingSoonCard.tsx` | Placeholder pages (MLS-styled: serif title, eyebrow, accent bar) |
 | `ConfirmModal` | `common/ConfirmModal.tsx` | Confirm/cancel dialog (logout, etc.) |
+| `UpcomingFeatureModal` | `common/UpcomingFeatureModal.tsx` | Modal for upcoming feature actions (Advance/Save Search, etc.) |
 | `PasswordStrengthIndicator` | `common/PasswordStrengthIndicator.tsx` | Sign-up password strength |
 
 ### Coming Soon pages (current)

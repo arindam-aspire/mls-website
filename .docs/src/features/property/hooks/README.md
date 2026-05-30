@@ -1,0 +1,23 @@
+# Property hooks (`src/features/property/hooks/`)
+
+Custom hooks that own property feature logic: fetching, store sync, handlers, and derived list data.
+
+## Files
+
+| File | Purpose |
+| --- | --- |
+| [usePropertyList.md](./usePropertyList.md) | Property list screen logic (URL params, store, fetch mutation) |
+| [usePropertyDetails.md](./usePropertyDetails.md) | Property details screen logic (fetch by id, tabs, handlers) |
+
+## Conventions
+
+- Follow [components-hooks-architecture](../../../../.cursor/rules/components-hooks-architecture.mdc): hooks = logic, screens = UI.
+- One hook per screen or cohesive flow (`use*.ts`, camelCase).
+- Screens import hooks; hooks import services, store, and mutations — not presentational components.
+
+## Related
+
+- [../screens/PropertyListScreen.md](../screens/PropertyListScreen.md)
+- [../screens/PropertyDetailsScreen.md](../screens/PropertyDetailsScreen.md)
+- [../store/property.store.md](../store/property.store.md)
+- [../mutations/property.mutation.md](../mutations/property.mutation.md)
