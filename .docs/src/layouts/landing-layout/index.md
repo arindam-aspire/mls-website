@@ -12,7 +12,7 @@ Landing layout entry component.
 # Imports
 
 - `AuthModal` from `src/features/auth/components/AuthModal`
-- `LandingHeader`, `LandingMain`, `LandingFooter` from `src/layouts/landing-layout`
+- `LandingHeader`, `LandingMain`, `LandingFooter`, `LandingBottomTabBar` from `src/layouts/landing-layout`
 
 # Exports
 

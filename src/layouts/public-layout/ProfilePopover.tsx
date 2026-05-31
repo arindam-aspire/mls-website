@@ -4,7 +4,7 @@ import { ConfirmModal } from "@/src/components/common/ConfirmModal";
 import { UpcomingFeatureModal } from "@/src/components/common/UpcomingFeatureModal";
 import { Avatar } from "@/src/components/ui/avatar";
 import { Button } from "@/src/components/ui/button";
-import { IconButton } from "@/src/components/ui/icon-button";
+import { PublicNotificationsButton } from "./PublicNotificationsButton";
 import { Link as UiLink } from "@/src/components/ui/link";
 import {
   Popover,
@@ -76,16 +76,7 @@ export function ProfilePopover({ user }: ProfilePopoverProps) {
 
   return (
     <>
-      <IconButton
-        icon={<Bell className="size-5" aria-hidden />}
-        aria-label={t("notifications")}
-        color="primary"
-        variant="solid"
-        isRounded={true}
-        size="md"
-        className="rounded-full"
-        onClick={() => setIsUpcomingFeatureModalOpen(true)}
-      />
+      <PublicNotificationsButton onClick={() => setIsUpcomingFeatureModalOpen(true)} />
 
       <Popover className="relative flex items-center">
         <PopoverButton className="!rounded-full !p-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40">

@@ -6,14 +6,14 @@ Project source module.
 
 # Responsibilities
 
-- Project source module.
+- Composes header, auth modal, main, footer, and mobile bottom tab bar (mirrors landing layout shell).
 
 # Imports
 
 - `import { AuthModal } from "@/src/features/auth/components/AuthModal"`
 - `import { PublicFooter } from "./PublicFooter"`
 - `import { PublicHeader } from "./PublicHeader"`
-- `import { PublicMain } from "./PublicMain"`
+- `import { PublicBottomTabBar } from "./PublicBottomTabBar"`
 
 # Exports
 

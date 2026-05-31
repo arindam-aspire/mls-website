@@ -17,7 +17,8 @@ export function PublicMain({
     <main
       className={cn(
         "flex flex-1 flex-col overflow-visible px-6 py-4",
-        isPropertyListScreen && "pb-4 pt-0 sm:pb-6",
+        "max-md:pb-[calc(4.25rem+env(safe-area-inset-bottom,0px))]",
+        isPropertyListScreen && "pt-0 sm:pb-6",
       )}
     >
       {isPropertyListScreen ? (

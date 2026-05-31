@@ -1,131 +1,30 @@
 "use client";
 
-import { CloseButton, useClose } from "@headlessui/react";
 import Image from "next/image";
-import { Menu, X } from "lucide-react";
+import { Bell, Menu } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { cn } from "@/src/lib/cn";
-import { Avatar } from "@/src/components/ui/avatar";
 import { Button } from "@/src/components/ui/button";
 import { Skeleton } from "@/src/components/ui/skeleton";
-import {
-  Popover,
-  PopoverBackdrop,
-  PopoverButton,
-  PopoverContent,
-  PopoverPanel,
-} from "@/src/components/ui/popover";
-import { Select } from "@/src/components/ui/select";
+import { UpcomingFeatureModal } from "@/src/components/common/UpcomingFeatureModal";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { AUTH_VIEW } from "@/src/features/auth/authViews";
 import { Link, usePathname, useRouter } from "@/src/i18n/navigation";
 import type { AppLocale } from "@/src/i18n/routing";
 import mlsLogoDark from "@/src/assets/images/MLS_Dark_Logo.png";
 import mlsLogoLight from "@/src/assets/images/MLS_Light_Logo.png";
-import { LandingHeaderThemeButton } from "./LandingHeaderThemeButton";
 import { LandingDesktopNav } from "./LandingDesktopNav";
 import { LandingDesktopActions } from "./LandingDesktopActions";
+import { LandingMobileMenu } from "./LandingMobileMenu";
+import { LandingNotificationsButton } from "./LandingNotificationsButton";
 import {
-  navBrandClasses,
-  navMenuItemClasses,
-  themeToggleLabelClasses,
-} from "@/src/lib/typography";
-
-const LOCALE_OPTIONS: { value: AppLocale; label: string }[] = [
-  { value: "en", label: "En" },
-  { value: "ar", label: "Ar" },
-  { value: "es", label: "Sp" },
-  { value: "fr", label: "Fr" },
-];
-
-const NAV_ITEMS = [
-  { path: "/buy", labelKey: "navBuy" },
-  { path: "/rent", labelKey: "navRent" },
-  { path: "/off-plan", labelKey: "navOffPlan" },
-  { path: "/sell", labelKey: "navSell" },
-  { path: "/about-us", labelKey: "navAboutUs" },
-] as const;
-
-const mobileNavLinkClass = cn(
-  "w-full rounded-lg px-4 py-3.5 text-start text-text transition-colors hover:bg-surface focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary/40",
-  navMenuItemClasses,
-);
-
-interface MobileMenuProps {
-  onNavigate: (path: string) => void;
-  onLocaleChange: (locale: string) => void;
-  locale: AppLocale;
-  navLabel: string;
-  languageLabel: string;
-  closeMenuLabel: string;
-}
-
-function MobileMenu({
-  onNavigate,
-  onLocaleChange,
-  locale,
-  navLabel,
-  languageLabel,
-  closeMenuLabel,
-}: MobileMenuProps) {
-  const t = useTranslations("common");
-  const close = useClose();
-
-  return (
-    <PopoverContent className="flex min-h-0 flex-1 flex-col p-0">
-      <div className="flex items-center justify-between border-b border-secondary/15 px-4 py-4 sm:px-6">
-        <span className={navBrandClasses}>{navLabel}</span>
-        <CloseButton
-          type="button"
-          aria-label={closeMenuLabel}
-          className="inline-flex size-11 items-center justify-center rounded-lg text-text transition-colors hover:bg-surface focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary/40"
-        >
-          <X className="size-6" aria-hidden />
-        </CloseButton>
-      </div>
-
-      <nav
-        aria-label={navLabel}
-        className="flex flex-1 flex-col gap-1 overflow-y-auto px-4 py-4 sm:px-6 sm:py-6"
-      >
-        {NAV_ITEMS.map(({ path, labelKey }) => (
-          <button
-            key={path}
-            type="button"
-            onClick={() => {
-              onNavigate(path);
-              close();
-            }}
-            className={mobileNavLinkClass}
-          >
-            {t(labelKey)}
-          </button>
-        ))}
-      </nav>
-
-      <div className="flex items-center justify-between border-t border-secondary/15 px-4 py-4 sm:px-6 sm:py-5">
-        <span className={cn("font-medium text-text", themeToggleLabelClasses)}>{t("theme")}</span>
-        <LandingHeaderThemeButton overHero={false} />
-      </div>
-
-      <div className="border-t border-secondary/15 px-4 py-4 sm:px-6 sm:py-5">
-        <Select
-          aria-label={languageLabel}
-          options={LOCALE_OPTIONS}
-          value={locale}
-          onChange={(nextLocale) => {
-            onLocaleChange(nextLocale);
-            close();
-          }}
-          variant="outline"
-          size="md"
-          fullWidth
-        />
-      </div>
-    </PopoverContent>
-  );
-}
+  landingMobileHeaderIconButtonClass,
+  landingMobileHeaderIconClass,
+  landingMobileHeaderContainerClass,
+  landingMobileLogoImageClass,
+  landingMobileLogoLinkClass,
+} from "./landingMobileHeaderStyles";
 
 export function LandingHeader() {
   const { user, isLoadingUser } = useAuthStore();
@@ -134,6 +33,8 @@ export function LandingHeader() {
   const router = useRouter();
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
+  const [isUpcomingFeatureModalOpen, setIsUpcomingFeatureModalOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -158,78 +59,114 @@ export function LandingHeader() {
     router.replace(pathname, { locale: nextLocale as AppLocale });
   };
 
-  const menuTriggerClass = cn(
-    "size-11 shrink-0 p-0 hover:bg-page",
-    overHero && "!bg-transparent !text-white hover:!bg-white/15",
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false);
+  };
+
+  const mobileHeaderIconButtonClass = cn(
+    landingMobileHeaderIconButtonClass,
+    overHero
+      ? "!bg-transparent !text-white hover:!bg-white/15 focus-visible:ring-white/40"
+      : "!bg-transparent text-text hover:bg-page",
+  );
+
+  const menuTriggerClass = mobileHeaderIconButtonClass;
+
+  const mobileSignInButtonClass = cn(
+    "!h-9 sm:!h-11",
+    "inline-flex min-w-0 max-w-[min(100%,9rem)] shrink items-center justify-center truncate sm:max-w-[12rem] sm:px-4 sm:text-sm sm:tracking-tight",
+    overHero && "sm:shadow-md",
   );
 
   return (
-    <header
-      className={cn(
-        "sticky top-0 z-50 h-16 w-full transition-colors duration-300 sm:h-20",
-        overHero
-          ? "bg-page/20 backdrop-blur-[2px]"
-          : "border-b border-secondary/10 bg-page/90 backdrop-blur-md",
-      )}
-    >
-      <div className="container mx-auto grid h-full w-full grid-cols-3 items-center gap-2 px-4 md:grid-cols-[1fr_auto_1fr] md:gap-0 md:px-6">
-        <Link href="/" className="col-start-1 justify-self-start">
+    <>
+      <header
+        className={cn(
+          "sticky top-0 z-50 h-16 w-full transition-colors duration-300 sm:h-20",
+          overHero
+            ? "bg-page/20 backdrop-blur-[2px]"
+            : "border-b border-secondary/10 bg-page/90 backdrop-blur-md",
+        )}
+      >
+        <div
+          className={cn(
+            landingMobileHeaderContainerClass,
+            "flex h-full w-full items-center justify-between gap-2 sm:gap-3 md:grid md:grid-cols-[1fr_auto_1fr] md:items-center md:justify-normal md:gap-0 md:px-6",
+          )}
+        >
+        <Link
+          href="/"
+          className={cn(
+            landingMobileLogoLinkClass,
+            "md:col-start-1 md:max-w-none md:justify-self-start",
+          )}
+        >
           <Image
             src={logoSrc}
             alt={t("brand")}
-            className="w-auto h-20 transition-opacity duration-300"
+            className={cn(landingMobileLogoImageClass, "md:h-20")}
             priority
           />
         </Link>
 
         <LandingDesktopNav overHero={overHero} />
 
-        {isLoadingUser ? (
-          <Skeleton variant="circular" className="col-start-2 size-9 justify-self-center md:hidden" />
-        ) : user ? (
-          <Avatar
-            src={user.profile_picture_url}
-            name={user.full_name}
-            size="sm"
-            className="col-start-2 justify-self-center md:hidden"
-          />
-        ) : (
-          <Button
+        <div className="flex h-full shrink-0 items-center gap-2 self-center md:hidden">
+          {isLoadingUser ? (
+            <Skeleton
+              variant="circular"
+              className="size-8 shrink-0 sm:size-11"
+            />
+          ) : user ? (
+            <LandingNotificationsButton
+              overHero={overHero}
+              onClick={() => setIsUpcomingFeatureModalOpen(true)}
+            />
+          ) : (
+            <Button
+              type="button"
+              color="primary"
+              variant="solid"
+              size="sm"
+              className={mobileSignInButtonClass}
+              onClick={openChooseAccount}
+            >
+              {t("signInSignUp")}
+            </Button>
+          )}
+
+          <button
             type="button"
-            color="primary"
-            variant="solid"
-            size="sm"
-            className="col-start-2 max-w-[min(100%,11rem)] justify-self-center truncate md:hidden"
-            onClick={openChooseAccount}
+            aria-label={t("openMenu")}
+            aria-expanded={mobileMenuOpen}
+            className={cn(
+              "inline-flex shrink-0 focus:outline-none focus-visible:ring-2",
+              menuTriggerClass,
+            )}
+            onClick={() => setMobileMenuOpen(true)}
           >
-            {t("signInSignUp")}
-          </Button>
-        )}
+            <Menu className={landingMobileHeaderIconClass} aria-hidden />
+          </button>
+        </div>
 
         <LandingDesktopActions overHero={overHero} />
-
-        <Popover className="col-start-3 justify-self-end md:hidden">
-          <PopoverButton
-            aria-label={t("openMenu")}
-            className={menuTriggerClass}
-          >
-            <Menu className="size-6" aria-hidden />
-          </PopoverButton>
-
-          <PopoverBackdrop className="z-[90] bg-black/40" />
-
-          <PopoverPanel fullScreen className="p-0">
-            <MobileMenu
-              onNavigate={(path) => router.push(path)}
-              onLocaleChange={handleLocaleChange}
-              locale={locale}
-              navLabel={t("mainNav")}
-              languageLabel={t("language")}
-              closeMenuLabel={t("closeMenu")}
-            />
-          </PopoverPanel>
-        </Popover>
       </div>
-    </header>
+      </header>
+
+      <LandingMobileMenu
+        open={mobileMenuOpen}
+        onNavigate={(path) => router.push(path)}
+        onLocaleChange={handleLocaleChange}
+        onClose={closeMobileMenu}
+        locale={locale}
+        closeMenuLabel={t("closeMenu")}
+      />
+
+      <UpcomingFeatureModal
+        open={isUpcomingFeatureModalOpen}
+        onClose={() => setIsUpcomingFeatureModalOpen(false)}
+        icon={<Bell className="size-7" aria-hidden />}
+      />
+    </>
   );
 }

@@ -1,86 +1,43 @@
 # File Overview
 
-Project source module.
+Public header module for the default app shell.
 
-**Source:** `src/layouts/public-layout/PublicHeader.tsx` (Client Component)
+**Source:** `src/layouts/public-layout/PublicHeader.tsx`
 
 # Responsibilities
 
-- Project source module.
-- Keep header content constrained with a centered container wrapper.
-
-# Imports
-
-- `import { Avatar } from "@/src/components/ui/avatar"`
-- `import { Button } from "@/src/components/ui/button"`
-- `import { Skeleton } from "@/src/components/ui/skeleton"`
-- `import { Select } from "@/src/components/ui/select"`
-- `import { AUTH_VIEW } from "@/src/features/auth/authViews"`
-- `import { useAuthStore } from "@/src/features/auth/store/auth.store"`
-- `import { Link, usePathname, useRouter } from "@/src/i18n/navigation"`
-- `import type { AppLocale } from "@/src/i18n/routing"`
-- `import mlsLogoLight from "@/src/assets/images/MLS_Light_Logo.png"`
-- `import { PublicHeaderThemeButton } from "./PublicHeaderThemeButton"`
-- `import { DesktopNav } from "./DesktopNav"`
-- `import { DesktopActions } from "./DesktopActions"`
-
-# Exports
-
-- `PublicHeader`
+- Sticky header with logo, desktop nav/actions, mobile sign-in or notifications + hamburger.
+- Render [PublicMobileMenu.md](./PublicMobileMenu.md) outside `<header>` (drawer portaled, no blur trap).
+- Upcoming-feature modal for mobile notifications bell.
 
 # State Management
 
-- **Zustand** `useAuthStore`
-
-# API Usage
-
-_N/A unless extended._
+- Local: `mobileMenuOpen`, `isUpcomingFeatureModalOpen`
+- Global: `useAuthStore` — `user`, `isLoadingUser`, `openAuth`
 
 # Navigation
 
-- Use **`Link`**, **`useRouter`**, **`redirect`** from `@/src/i18n/navigation` for locale-prefixed paths (e.g. `/en/listing`).
-
-# Props / Parameters
-
-- See component/handler props in source (TypeScript interfaces).
+- Mobile drawer: `onNavigate` → `router.push`
+- Locale: `router.replace(pathname, { locale })`
 
 # Actions / Inputs
 
-## Inputs
-
-_No explicit inputs detected._
-
-## Actions
-
-- Close popover/menu
-- Navigate and close popover/menu
-
-## Validations
-
-_No explicit validations detected._
-
-## Show/Hide Controls
-
-_No explicit show/hide controls detected._
+| Area | Items | Action |
+| --- | --- | --- |
+| Mobile (guest) | Sign-in + menu | Auth modal, open drawer |
+| Mobile (logged in) | Notifications + menu | Upcoming modal, open drawer |
+| Desktop | `DesktopNav`, `DesktopActions` | Unchanged |
 
 # UI Details
 
-- **Theme:** semantic tokens (`bg-page`, `bg-surface`, `text-text`, `text-muted`, `bg-primary`, `border-secondary/15`).
-- **Light/dark:** via `ThemeProvider` / `html.light` | `html.dark`.
-- **Radius:** `rounded-lg` controls; `rounded-xl` cards/modals/popovers; `rounded-full` avatars/pills.
-- **Responsive:** mobile-first (`sm:`, `md:`, `lg:`).
-- **Mobile menu stacking:** Uses Headless UI `Dialog` (portaled to `document.body`) at `z-[120]` instead of a nested `Popover`, so the drawer covers sticky page chrome such as property list filters. Property list filter bar uses `z-30` (below header and mobile menu).
-
-# Flow Description
-
-See source in `src/layouts/public-layout/PublicHeader.tsx` for step-by-step behavior aligned with [application.md](../../application.md) (path relative may vary).
+- Mobile: `flex justify-between` — logo left, actions + menu right (`gap-2`).
+- `md+`: `grid-cols-[1fr_auto_1fr]` like landing header (without hero/overHero styling).
+- Shared sizing: `publicMobileHeaderStyles.ts`.
 
 # Dependencies
 
-- Parent feature or route that imports this file.
-- See **Imports** for direct module dependencies.
+- `DesktopNav`, `DesktopActions`, `PublicMobileMenu`, `PublicNotificationsButton`
 
 # Notes
 
-- Landing-specific hero/scroll styling was moved to `src/layouts/landing-layout/LandingHeader.tsx`.
-- Keep in sync when `src/layouts/public-layout/PublicHeader.tsx` changes.
+- Hero/scroll styling remains landing-only (`LandingHeader`).

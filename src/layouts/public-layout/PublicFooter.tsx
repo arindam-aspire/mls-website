@@ -58,7 +58,7 @@ export async function PublicFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t-4 border-primary bg-inherit-color text-white">
+    <footer className="border-t-4 border-primary bg-inherit-color text-white max-md:pb-[calc(4.25rem+env(safe-area-inset-bottom,0px))]">
       <div className="container mx-auto w-full px-6">
         <div className="flex flex-col gap-6 py-4 sm:flex-row sm:items-center sm:justify-between">
           <Link href="/" className="inline-flex shrink-0">

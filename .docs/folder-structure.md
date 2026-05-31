@@ -133,14 +133,21 @@ mls_website/
 │       │   ├── landing-layout/
 │       │   │   ├── README.md
 │       │   │   ├── index.md
+│       │   │   ├── LandingBottomTabBar.md
 │       │   │   ├── LandingDesktopActions.md
 │       │   │   ├── LandingDesktopNav.md
 │       │   │   ├── LandingFooter.md
 │       │   │   ├── LandingHeader.md
 │       │   │   ├── LandingHeaderThemeButton.md
+│       │   │   ├── LandingMobileMenu.md
 │       │   │   ├── LandingMain.md
+│       │   │   ├── LandingNotificationsButton.md
 │       │   │   └── LandingProfilePopover.md
 │       │   └── public-layout/
+│       │       ├── PublicBottomTabBar.md
+│       │       ├── PublicHeader.md
+│       │       ├── PublicMobileMenu.md
+│       │       ├── PublicNotificationsButton.md
 │       │       └── README.md
 │       ├── lib/
 │       ├── messages/
@@ -422,12 +429,16 @@ mls_website/
 │   ├── layouts/
 │   │   ├── landing-layout/
 │   │   │   ├── index.tsx
+│   │   │   ├── landingMobileHeaderStyles.ts
+│   │   │   ├── LandingBottomTabBar.tsx
 │   │   │   ├── LandingDesktopActions.tsx
 │   │   │   ├── LandingDesktopNav.tsx
 │   │   │   ├── LandingFooter.tsx
 │   │   │   ├── LandingHeader.tsx
 │   │   │   ├── LandingHeaderThemeButton.tsx
+│   │   │   ├── LandingMobileMenu.tsx
 │   │   │   ├── LandingMain.tsx
+│   │   │   ├── LandingNotificationsButton.tsx
 │   │   │   └── LandingProfilePopover.tsx
 │   │   ├── protected-layout/
 │   │   └── public-layout/
@@ -435,10 +446,14 @@ mls_website/
 │   │       ├── DesktopActions.tsx
 │   │       ├── DesktopNav.tsx
 │   │       ├── ProfilePopover.tsx
+│   │       ├── publicMobileHeaderStyles.ts
+│   │       ├── PublicBottomTabBar.tsx
 │   │       ├── PublicFooter.tsx
 │   │       ├── PublicHeader.tsx
 │   │       ├── PublicHeaderThemeButton.tsx
-│   │       └── PublicMain.tsx
+│   │       ├── PublicMain.tsx
+│   │       ├── PublicMobileMenu.tsx
+│   │       └── PublicNotificationsButton.tsx
 │   ├── messages/
 │   │   ├── ar/
 │   │   │   ├── auth.json

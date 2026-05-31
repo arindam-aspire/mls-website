@@ -4,6 +4,8 @@ import { PublicFooter } from "./PublicFooter";
 import { PublicHeader } from "./PublicHeader";
 import { PublicMain } from "./PublicMain";
 
+import { PublicBottomTabBar } from "./PublicBottomTabBar";
+
 interface PublicLayoutProps {
   children: React.ReactNode;
 }
@@ -18,6 +20,7 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
       </Suspense>
       <PublicMain>{children}</PublicMain>
       <PublicFooter />
+      <PublicBottomTabBar />
     </div>
   );
 }

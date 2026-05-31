@@ -4,7 +4,7 @@ import { ConfirmModal } from "@/src/components/common/ConfirmModal";
 import { UpcomingFeatureModal } from "@/src/components/common/UpcomingFeatureModal";
 import { Avatar } from "@/src/components/ui/avatar";
 import { Button } from "@/src/components/ui/button";
-import { IconButton } from "@/src/components/ui/icon-button";
+import { LandingNotificationsButton } from "./LandingNotificationsButton";
 import { Link as UiLink } from "@/src/components/ui/link";
 import {
   Popover,
@@ -77,16 +77,8 @@ export function LandingProfilePopover({ user, overHero }: LandingProfilePopoverP
 
   return (
     <>
-      <IconButton
-        icon={<Bell className="size-5" aria-hidden />}
-        aria-label={t("notifications")}
-        color="primary"
-        variant="solid"
-        isRounded={true}
-        size="md"
-        className={cn(
-          overHero && "!bg-surface !text-inherit hover:!bg-surface/80 rounded-full",
-        )}
+      <LandingNotificationsButton
+        overHero={overHero}
         onClick={() => setIsUpcomingFeatureModalOpen(true)}
       />
 

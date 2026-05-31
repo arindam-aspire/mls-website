@@ -3,6 +3,7 @@ import { AuthModal } from "@/src/features/auth/components/AuthModal";
 import { LandingFooter } from "./LandingFooter";
 import { LandingHeader } from "./LandingHeader";
 import { LandingMain } from "./LandingMain";
+import { LandingBottomTabBar } from "./LandingBottomTabBar";
 
 interface LandingLayoutProps {
   children: React.ReactNode;
@@ -17,6 +18,7 @@ export default function LandingLayout({ children }: LandingLayoutProps) {
       </Suspense>
       <LandingMain>{children}</LandingMain>
       <LandingFooter />
+      <LandingBottomTabBar />
     </div>
   );
 }

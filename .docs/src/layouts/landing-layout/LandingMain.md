@@ -8,6 +8,7 @@ Landing main content wrapper for landing routes.
 
 - Render the main content area for landing routes.
 - Apply landing-specific top offset and edge-to-edge content when pathname is `/`.
+- On viewports below `md`, add bottom padding so content clears [LandingBottomTabBar](./LandingBottomTabBar.md).
 
 # Imports
 

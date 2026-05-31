@@ -21,4 +21,4 @@ Landing footer module for landing layout composition.
 
 # Notes
 
-- This file is now fully implemented in `landing-layout` (no re-export).
+- On viewports below `md`, extra bottom padding clears the fixed [LandingBottomTabBar](./LandingBottomTabBar.md).
