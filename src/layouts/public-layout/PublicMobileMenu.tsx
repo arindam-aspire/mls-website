@@ -124,21 +124,15 @@ function useMobileMenuSections(
   onClose: () => void,
   onNavigate: (path: string) => void,
   onLocaleChange: (locale: string) => void,
+  onOpenUpcomingFeature: (icon: ReactNode) => void,
 ) {
   const user = useAuthStore((state) => state.user);
   const { theme, setTheme } = useTheme();
   const [isLanguageOpen, setIsLanguageOpen] = useState(false);
   const [isThemeOpen, setIsThemeOpen] = useState(false);
-  const [isUpcomingFeatureOpen, setIsUpcomingFeatureOpen] = useState(false);
-  const [upcomingFeatureIcon, setUpcomingFeatureIcon] = useState<ReactNode>(null);
 
   const openAuth = () => {
     useAuthStore.getState().openAuth(AUTH_VIEW.chooseAccount);
-    onClose();
-  };
-
-  const openForgotPassword = () => {
-    useAuthStore.getState().openAuth(AUTH_VIEW.forgotPassword);
     onClose();
   };
 
@@ -158,21 +152,12 @@ function useMobileMenuSections(
   };
 
   const openUpcomingFeature = (icon: ReactNode) => {
-    withAuth(() => {
-      setUpcomingFeatureIcon(icon);
-      setIsUpcomingFeatureOpen(true);
-    });
-  };
-
-  const closeUpcomingFeature = () => {
-    setIsUpcomingFeatureOpen(false);
-    setUpcomingFeatureIcon(null);
+    withAuth(() => onOpenUpcomingFeature(icon));
   };
 
   const handleLocaleSelect = (nextLocale: AppLocale) => {
     onLocaleChange(nextLocale);
     setIsLanguageOpen(false);
-    onClose();
   };
 
   const handleThemeSelect = (mode: ThemeMode) => {
@@ -185,18 +170,14 @@ function useMobileMenuSections(
     theme,
     isLanguageOpen,
     isThemeOpen,
-    isUpcomingFeatureOpen,
-    upcomingFeatureIcon,
     handleNavigate,
     openUpcomingFeature,
-    closeUpcomingFeature,
     openLanguagePicker: () => setIsLanguageOpen(true),
     closeLanguagePicker: () => setIsLanguageOpen(false),
     handleLocaleSelect,
     openThemePicker: () => setIsThemeOpen(true),
     closeThemePicker: () => setIsThemeOpen(false),
     handleThemeSelect,
-    handleChangePassword: () => withAuth(openForgotPassword),
   };
 }
 
@@ -316,6 +297,7 @@ interface MenuContentProps {
   onNavigate: (path: string) => void;
   onLocaleChange: (locale: string) => void;
   onLogoutPress: () => void;
+  onOpenUpcomingFeature: (icon: ReactNode) => void;
 }
 
 function MenuContent({
@@ -325,9 +307,15 @@ function MenuContent({
   onNavigate,
   onLocaleChange,
   onLogoutPress,
+  onOpenUpcomingFeature,
 }: MenuContentProps) {
   const t = useTranslations("common");
-  const sections = useMobileMenuSections(onClose, onNavigate, onLocaleChange);
+  const sections = useMobileMenuSections(
+    onClose,
+    onNavigate,
+    onLocaleChange,
+    onOpenUpcomingFeature,
+  );
   const account = useMobileMenuAccountFooter(onClose, onNavigate, onLogoutPress);
 
   const ThemeStatusIcon = sections.theme === "light" ? Sun : Moon;
@@ -392,7 +380,9 @@ function MenuContent({
                   icon={Lock}
                   label={t("changePassword")}
                   showDivider={false}
-                  onClick={sections.handleChangePassword}
+                  onClick={() =>
+                    sections.openUpcomingFeature(<Lock className="size-7" aria-hidden />)
+                  }
                 />
               </MenuSection>
             ) : null}
@@ -563,12 +553,6 @@ function MenuContent({
           })}
         </div>
       </PickerSheet>
-
-      <UpcomingFeatureModal
-        open={sections.isUpcomingFeatureOpen}
-        onClose={sections.closeUpcomingFeature}
-        icon={sections.upcomingFeatureIcon}
-      />
     </div>
   );
 }
@@ -596,6 +580,8 @@ export function PublicMobileMenu({
   const intlLocale = useLocale();
   const isRtl = isRtlLocale(intlLocale);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [isUpcomingFeatureOpen, setIsUpcomingFeatureOpen] = useState(false);
+  const [upcomingFeatureIcon, setUpcomingFeatureIcon] = useState<ReactNode>(null);
   const { mutate: logout, isPending: isLoggingOut, isSuccess: isLoggedOut } = useLogout();
 
   useEffect(() => {
@@ -607,6 +593,17 @@ export function PublicMobileMenu({
   const handleLogoutPress = () => {
     onClose();
     setShowLogoutConfirm(true);
+  };
+
+  const handleOpenUpcomingFeature = (icon: ReactNode) => {
+    onClose();
+    setUpcomingFeatureIcon(icon);
+    setIsUpcomingFeatureOpen(true);
+  };
+
+  const closeUpcomingFeature = () => {
+    setIsUpcomingFeatureOpen(false);
+    setUpcomingFeatureIcon(null);
   };
 
   return (
@@ -624,12 +621,19 @@ export function PublicMobileMenu({
                   onNavigate={onNavigate}
                   onLocaleChange={onLocaleChange}
                   onLogoutPress={handleLogoutPress}
+                  onOpenUpcomingFeature={handleOpenUpcomingFeature}
                 />
               </DialogPanel>
             </div>
           </div>
         </div>
       </Dialog>
+
+      <UpcomingFeatureModal
+        open={isUpcomingFeatureOpen}
+        onClose={closeUpcomingFeature}
+        icon={upcomingFeatureIcon}
+      />
 
       <ConfirmModal
         open={showLogoutConfirm}

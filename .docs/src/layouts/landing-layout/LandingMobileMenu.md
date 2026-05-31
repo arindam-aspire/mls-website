@@ -45,7 +45,7 @@ Rendered from [LandingHeader.md](./LandingHeader.md) with `open` / `onClose` sta
 
 | Section | Items | Action |
 | --- | --- | --- |
-| Account | Profile, Agency, Notifications, Change password | Navigate / modal / auth |
+| Account | Profile, Agency, Notifications, Change password | Navigate / upcoming feature modal |
 | General | Language, Theme | Open picker sheets |
 | Preferences | Favourites, Listings, Saved searches, Recently viewed | Navigate |
 | Footer | Profile or Sign in, Logout icon | Profile nav / auth; LogOut closes drawer then opens confirm modal |
