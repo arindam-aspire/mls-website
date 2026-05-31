@@ -7,8 +7,9 @@ Sign-in, sign-up, OTP, forgot/reset password, and agency flows via a **URL-drive
 ```
 authViews.ts          View constants, URL builders, resolvers
 maskContact.ts        Email/phone masking for OTP UI
+hooks/                Feature hooks (screens, forms, portal, shared utils)
 components/           Forms + AuthModal shell
-screens/              One screen per auth view
+screens/              One screen per auth view (UI-only; logic in hooks/)
 mutations/            React Query hooks (login, logout, OTP, …)
 services/             HTTP calls → authEndpoints
 store/                Zustand session + flow state
@@ -47,6 +48,7 @@ Query keys: `auth`, `from`, `otp-flow`, `otp-email`, `otp-phone`, `otp-phone-cou
 
 | Folder | README |
 | --- | --- |
+| [hooks/](./hooks/) | Screen hooks (`useSignInScreen`, …), `useChooseAccountForm`, `useAuthPortal`, `authScreen.utils` |
 | [components/](./components/README.md) | Modal, forms, cards |
 | [screens/](./screens/README.md) | Per-view screen wrappers |
 | [mutations/](./mutations/README.md) | `useSignInWithPassword`, `useLogout`, … |

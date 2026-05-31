@@ -72,6 +72,8 @@ mls_website/
 │       │   │   ├── README.md
 │       │   │   ├── components/
 │       │   │   │   └── README.md
+│       │   │   ├── hooks/
+│       │   │   │   └── README.md
 │       │   │   ├── mutations/
 │       │   │   ├── screens/
 │       │   │   │   └── README.md
@@ -80,6 +82,7 @@ mls_website/
 │       │   │   └── types/
 │       │   │       ├── README.md
 │       │   │       ├── auth.types.md
+│       │   │       ├── chooseAccount.types.md
 │       │   │       ├── forgotPassword.types.md
 │       │   │       ├── index.md
 │       │   │       ├── logout.types.md
@@ -301,6 +304,7 @@ mls_website/
 │   │   │   │   ├── AuthModalHeader.tsx
 │   │   │   │   ├── AccountTypeCard.tsx
 │   │   │   │   ├── ChooseAccountForm.tsx
+│   │   │   │   ├── OtpVerificationTitle.tsx
 │   │   │   │   ├── SocialAuthForm.tsx
 │   │   │   │   ├── ForgotPasswordForm.tsx
 │   │   │   │   ├── OTPVerificationForm.tsx
@@ -309,7 +313,22 @@ mls_website/
 │   │   │   │   ├── SignInWithOTPForm.tsx
 │   │   │   │   └── SignUpForm.tsx
 │   │   │   ├── hooks/
-│   │   │   │   └── useAuthPortal.ts
+│   │   │   │   ├── authScreen.utils.ts
+│   │   │   │   ├── useAccountChooseScreen.ts
+│   │   │   │   ├── useAgencyEmailSignInScreen.ts
+│   │   │   │   ├── useAgencyRegistrationScreen.ts
+│   │   │   │   ├── useAgencySignInScreen.ts
+│   │   │   │   ├── useAuthPortal.ts
+│   │   │   │   ├── useChooseAccountForm.ts
+│   │   │   │   ├── useConfirmSignUpScreen.ts
+│   │   │   │   ├── useForgotPasswordScreen.ts
+│   │   │   │   ├── useOTPVerificationScreen.ts
+│   │   │   │   ├── useResetPasswordScreen.ts
+│   │   │   │   ├── useSignInScreen.ts
+│   │   │   │   ├── useSignInWithOTPScreen.ts
+│   │   │   │   ├── useSocialRegistrationScreen.ts
+│   │   │   │   ├── useSocialSignInScreen.ts
+│   │   │   │   └── useUserRegistrationScreen.ts
 │   │   │   ├── mutations/
 │   │   │   │   └── auth.mutation.ts
 │   │   │   ├── screens/
@@ -332,6 +351,7 @@ mls_website/
 │   │   │   │   └── auth.store.ts
 │   │   │   └── types/
 │   │   │       ├── auth.types.ts
+│   │   │       ├── chooseAccount.types.ts
 │   │   │       ├── forgotPassword.types.ts
 │   │   │       ├── index.ts
 │   │   │       ├── logout.types.ts

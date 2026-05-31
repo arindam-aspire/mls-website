@@ -291,7 +291,8 @@ Reserved; not wired to routes yet.
 | Area | Location |
 | --- | --- |
 | Views & query helpers | `authViews.ts` |
-| Types | `types/` — `signUp`, `signIn`, `signInOtp`, `forgotPassword`, `user`, `logout` modules; barrel `index.ts` / `auth.types.ts` |
+| Types | `types/` — `signUp`, `signIn`, `signInOtp`, `forgotPassword`, `chooseAccount`, `user`, `logout` modules; barrel `index.ts` / `auth.types.ts` |
+| Hooks | `hooks/` — one `use*Screen` per screen; `useChooseAccountForm`; `useAuthPortal`; `authScreen.utils.ts` |
 | Store | `store/auth.store.ts` |
 | Service | `services/auth.service.ts` |
 | Mutations | `mutations/auth.mutation.ts` |
@@ -315,7 +316,9 @@ Reserved; not wired to routes yet.
 | `OTPVerificationScreen` | `otp-verify` |
 | `ConfirmSignUpScreen` | `confirm-sign-up` |
 
-**Forms / UI:** `SignInForm`, `SignUpForm`, `SignInWithOTPForm`, `OTPVerificationForm`, `ForgotPasswordForm`, `ResetPasswordForm`, `ChooseAccountForm`, `AccountTypeCard`, `SocialAuthForm`, `AgencyAuthForm`, `AgencySignUpForm`, `AuthModalHeader`.
+**Forms / UI:** `SignInForm`, `SignUpForm`, `SignInWithOTPForm`, `OTPVerificationForm`, `ForgotPasswordForm`, `ResetPasswordForm`, `ChooseAccountForm`, `AccountTypeCard`, `SocialAuthForm`, `AgencyAuthForm`, `AgencySignUpForm`, `AuthModalHeader`, `OtpVerificationTitle`.
+
+**Screens** compose modal UI only; business logic lives in matching hooks under `hooks/` (see [hooks/README.md](./src/features/auth/hooks/README.md)).
 
 **Account types:** `user`, `owner`, `agency` (and `agent` in resolver — limited support).
 

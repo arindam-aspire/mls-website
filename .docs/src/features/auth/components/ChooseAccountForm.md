@@ -1,80 +1,80 @@
 # File Overview
 
-Feature or shared UI component.
+Presentational form for choosing account type and sign-in vs sign-up mode in the auth modal. Logic lives in `useChooseAccountForm`.
 
 **Source:** `src/features/auth/components/ChooseAccountForm.tsx` (Client Component)
 
 # Responsibilities
 
-- Feature or shared UI component.
+- Render mode toggle (`ToggleButton`) and account type cards (`AccountTypeCard`).
+- Show social sign-in info note.
+- Re-export choose-account types from `types/chooseAccount.types` for backward compatibility.
 
 # Imports
 
-- `import { ToggleButton } from "@/src/components/ui"`
-- `import { cn } from "@/src/lib/cn"`
-- `import { usePathname, useRouter } from "@/src/i18n/navigation"`
-- `import { AUTH_QUERY_KEY, resolveAccountTypeAuthView } from "../authViews"`
-- `import { AccountTypeCard } from "./AccountTypeCard"`
+- `ToggleButton` from `@/src/components/ui`
+- `useChooseAccountForm` from `../hooks/useChooseAccountForm`
+- `AccountTypeCard`
+- Types from `../types/chooseAccount.types`
 
 # Exports
 
 - `ChooseAccountForm`
-- `CHOOSE_ACCOUNT_TYPES`
-- `ChooseAccountMode`
-- `ChooseAccountType`
+- Re-exports: `ChooseAccountMode`, `ChooseAccountType`, `CHOOSE_ACCOUNT_TYPES`
 
 # State Management
 
-_No significant state; presentational or config module._
+_Controlled `mode` from parent; navigation in hook._
 
 # API Usage
 
-_N/A unless extended._
+_N/A._
 
 # Navigation
 
-- Use **`Link`**, **`useRouter`**, **`redirect`** from `@/src/i18n/navigation` for locale-prefixed paths (e.g. `/en/listing`).
-- Auth modal: query `?auth=<view>` on current pathname (see `authViews.ts`).
+- Account type selection via `useChooseAccountForm` → `buildAuthModalUrl`.
 
 # Props / Parameters
 
-- See component/handler props in source (TypeScript interfaces).
+| Prop | Type | Purpose |
+| --- | --- | --- |
+| `mode` | `ChooseAccountMode` | Current toggle value |
+| `onModeChange` | `(mode) => void` | Toggle change handler |
+| `onAccountTypeSelect?` | `(type) => void` | Optional callback after select |
+| `className?` | `string` | Root wrapper classes |
 
 # Actions / Inputs
 
 ## Inputs
 
-_No explicit inputs detected._
+- **Sign In / Sign Up toggle** — controlled by `mode` / `onModeChange`.
 
 ## Actions
 
-_No explicit actions detected._
-
-## Validations
-
-_No explicit validations detected._
+- **Account type card click** — `onAccountTypeSelect` from hook.
 
 ## Show/Hide Controls
 
-- **Sign In / Sign Up toggle** — switches `mode` between `signin` and `signup`.
-- **Agent card** — disabled when `mode === "signup"`. On Sign In, navigates to agency sign-in with `portal=agent`.
+- **Agent card** — `disabled` when `mode === "signup"`.
+- **Agent sign-in** — navigates with `portal=agent` (hook).
 
 # UI Details
 
-- **Theme:** semantic tokens (`bg-page`, `bg-surface`, `text-text`, `text-muted`, `bg-primary`, `border-secondary/15`).
-- **Light/dark:** via `ThemeProvider` / `html.light` | `html.dark`.
-- **Radius:** `rounded-lg` controls; `rounded-xl` cards/modals/popovers; `rounded-full` avatars/pills.
-- **Responsive:** mobile-first (`sm:`, `md:`, `lg:`).
+- Info note: `rounded-xl`, `border-secondary/15`, `bg-primary-light`.
+- Toggle: full width, primary ghost, rounded pill items.
 
 # Flow Description
 
-See source in `src/features/auth/components/ChooseAccountForm.tsx` for step-by-step behavior aligned with [application.md](../../application.md) (path relative may vary).
+1. Hook returns account types, toggle items, labels, and select handler.
+2. User changes mode → parent updates via `onModeChange`.
+3. User clicks card → hook resolves view and replaces URL.
 
 # Dependencies
 
-- Parent feature or route that imports this file.
-- See **Imports** for direct module dependencies.
+- [useChooseAccountForm.md](../hooks/useChooseAccountForm.md)
+- [chooseAccount.types.md](../types/chooseAccount.types.md)
+- [AccountTypeCard.md](./AccountTypeCard.md)
 
 # Notes
 
-- Keep in sync when `src/features/auth/components/ChooseAccountForm.tsx` changes.
+- Types moved to `chooseAccount.types.ts`; component re-exports preserve existing import paths.

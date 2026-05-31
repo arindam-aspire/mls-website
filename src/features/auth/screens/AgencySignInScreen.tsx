@@ -7,12 +7,6 @@ import {
   ModalFooter,
   ModalPanel,
 } from "@/src/components/ui";
-import { useTranslations } from "next-intl";
-import { usePathname, useRouter } from "@/src/i18n/navigation";
-import { AUTH_VIEW, buildAuthModalUrl } from "@/src/features/auth/authViews";
-import { AgencyAuthForm } from "../components/AgencyAuthForm";
-import { AuthModalHeader } from "../components/AuthModalHeader";
-import { useIsAgentSignInPortal } from "../hooks/useAuthPortal";
 import { Shield } from "lucide-react";
 import { cn } from "@/src/lib/cn";
 import {
@@ -22,21 +16,22 @@ import {
   captionTextClasses,
   authBadgeClasses,
 } from "@/src/lib/typography";
+import { AgencyAuthForm } from "../components/AgencyAuthForm";
+import { AuthModalHeader } from "../components/AuthModalHeader";
+import { useAgencySignInScreen } from "../hooks/useAgencySignInScreen";
 
 export function AgencySignInScreen() {
-  const t = useTranslations("auth");
-  const tCommon = useTranslations("common");
-  const router = useRouter();
-  const pathname = usePathname();
-  const isAgent = useIsAgentSignInPortal();
-
-  const openAuthView = (view: (typeof AUTH_VIEW)[keyof typeof AUTH_VIEW]) => {
-    router.replace(
-      buildAuthModalUrl(pathname, view, {
-        returnView: AUTH_VIEW.agencySignIn,
-      }),
-    );
-  };
+  const {
+    portalBadgeText,
+    title,
+    subtitle,
+    isAgent,
+    agencyNoAccountText,
+    agencyCreateAccountText,
+    onAgencySignUpClick,
+    termsText,
+    privacyText,
+  } = useAgencySignInScreen();
 
   return (
     <ModalPanel size="md">
@@ -52,15 +47,11 @@ export function AgencySignInScreen() {
             )}
           >
             <Shield className="size-4 shrink-0" aria-hidden />
-            <span>{isAgent ? t("agentPortalBadge") : t("agencyPortalBadge")}</span>
+            <span>{portalBadgeText}</span>
           </div>
           <div className="space-y-1 text-center">
-            <h2 className={headingAuthClasses}>
-              {t("chooseAccountSignInTitle")}
-            </h2>
-            <p className={cn(bodyTextClasses, "text-muted")}>
-              {isAgent ? t("agentSignInSubtitle") : t("agencySignInSubtitle")}
-            </p>
+            <h2 className={headingAuthClasses}>{title}</h2>
+            <p className={cn(bodyTextClasses, "text-muted")}>{subtitle}</p>
           </div>
         </div>
         <AgencyAuthForm />
@@ -70,45 +61,33 @@ export function AgencySignInScreen() {
           {!isAgent && (
             <>
               <p className={cn(bodyLargeTextClasses, "text-center text-muted")}>
-                {t("agencySignInNoAccount")}
+                {agencyNoAccountText}
               </p>
               <div className="flex justify-center">
                 <Link
                   color="primary"
                   size="lg"
                   className="text-center font-semibold"
-                  onClick={() => openAuthView(AUTH_VIEW.agencySignUp)}
+                  onClick={onAgencySignUpClick}
                 >
-                  {t("agencyCreateAccount")}
+                  {agencyCreateAccountText}
                 </Link>
               </div>
             </>
           )}
           <div className={cn("flex flex-wrap items-center justify-center gap-x-2 gap-y-1 pt-1 text-muted", captionTextClasses)}>
-              <Link
-                color="muted"
-                variant="subtle"
-                size="sm"
-                className="font-normal"
-                alwaysUnderline={false}
-              >
-                {t("termsOfService")}
-              </Link>
-              <span className="text-muted/60" aria-hidden>
-                •
-              </span>
-              <Link
-                color="muted"
-                variant="subtle"
-                size="sm"
-                className="font-normal"
-                alwaysUnderline={false}
-              >
-                {tCommon("privacyPolicy")}
-              </Link>
-            </div>
+            <Link color="muted" variant="subtle" size="sm" className="font-normal" alwaysUnderline={false}>
+              {termsText}
+            </Link>
+            <span className="text-muted/60" aria-hidden>
+              •
+            </span>
+            <Link color="muted" variant="subtle" size="sm" className="font-normal" alwaysUnderline={false}>
+              {privacyText}
+            </Link>
           </div>
-        </ModalFooter>
+        </div>
+      </ModalFooter>
     </ModalPanel>
   );
 }

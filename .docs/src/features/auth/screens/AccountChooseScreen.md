@@ -1,18 +1,21 @@
 # File Overview
 
-Route-level screen component composing feature UI.
+Route-level screen for the choose-account auth modal view. UI-only shell: modal layout, header, form, and footer links.
 
 **Source:** `src/features/auth/screens/AccountChooseScreen.tsx` (Client Component)
 
 # Responsibilities
 
-- Route-level screen component composing feature UI.
+- Render auth modal panel for account type selection (choose-account view).
+- Compose `AuthModalHeader`, `ChooseAccountForm`, and footer legal/create-account links.
+- Delegate all logic to `useAccountChooseScreen`.
 
 # Imports
 
-- `import { usePathname, useRouter } from "@/src/i18n/navigation"`
-- `import { AuthModalHeader } from "../components/AuthModalHeader"`
-- `import { ChooseAccountForm, type ChooseAccountMode } from "../components/ChooseAccountForm"`
+- Modal UI from `@/src/components/ui`
+- Typography helpers from `@/src/lib/typography`
+- `AuthModalHeader`, `ChooseAccountForm`
+- `useAccountChooseScreen` from `../hooks/useAccountChooseScreen`
 
 # Exports
 
@@ -20,56 +23,55 @@ Route-level screen component composing feature UI.
 
 # State Management
 
-- **React** `useState`
+_None in component — see `useAccountChooseScreen`._
 
 # API Usage
 
-_N/A unless extended._
+_N/A._
 
 # Navigation
 
-- Use **`Link`**, **`useRouter`**, **`redirect`** from `@/src/i18n/navigation` for locale-prefixed paths (e.g. `/en/listing`).
-- Auth modal: query `?auth=<view>` on current pathname (see `authViews.ts`).
+- Footer create-account link via `onCreateAccountClick` from hook.
+- Account type navigation handled in `useChooseAccountForm`.
 
 # Props / Parameters
 
-- See component/handler props in source (TypeScript interfaces).
+_No props._
 
 # Actions / Inputs
 
 ## Inputs
 
-_No explicit inputs detected._
+- Sign In / Sign Up toggle — via `ChooseAccountForm` (`mode` / `onModeChange` from hook).
 
 ## Actions
 
-_No explicit actions detected._
-
-## Validations
-
-_No explicit validations detected._
+- **Create account** — footer link calls `onCreateAccountClick`.
+- **Account type cards** — handled by `ChooseAccountForm` + `useChooseAccountForm`.
 
 ## Show/Hide Controls
 
-- **Sign In / Sign Up toggle** — local `mode` state passed to `ChooseAccountForm`; Sign Up disables the agent account type card.
+- **Agent card** — disabled when `mode === "signup"` (in `ChooseAccountForm`).
 
 # UI Details
 
-- **Theme:** semantic tokens (`bg-page`, `bg-surface`, `text-text`, `text-muted`, `bg-primary`, `border-secondary/15`).
-- **Light/dark:** via `ThemeProvider` / `html.light` | `html.dark`.
-- **Radius:** `rounded-lg` controls; `rounded-xl` cards/modals/popovers; `rounded-full` avatars/pills.
-- **Responsive:** mobile-first (`sm:`, `md:`, `lg:`).
-- Uses **`Modal`** from UI kit (`rounded-xl`).
+- **Theme:** semantic tokens; footer `bg-primary-light` / `dark:bg-page`.
+- **Radius:** modal `rounded-xl`; controls `rounded-lg`.
+- **Responsive:** mobile-first padding on header, form, footer.
 
 # Flow Description
 
-See source in `src/features/auth/screens/AccountChooseScreen.tsx` for step-by-step behavior aligned with [application.md](../../application.md) (path relative may vary).
+1. `useAccountChooseScreen()` provides copy, mode, and handlers.
+2. User toggles sign-in/sign-up → title updates.
+3. User selects account type → form hook navigates to target auth view.
+4. User may click footer create-account → social sign-up view.
 
 # Dependencies
 
-- Parent feature or route that imports this file.
-- See **Imports** for direct module dependencies.
+- [useAccountChooseScreen.md](../hooks/useAccountChooseScreen.md)
+- [ChooseAccountForm.md](../components/ChooseAccountForm.md)
+- [AuthModal](../components/AuthModal.tsx) — mounts this screen for `choose-account` view
 
 # Notes
 
-- Keep in sync when `src/features/auth/screens/AccountChooseScreen.tsx` changes.
+- Follows components-hooks architecture: single custom hook at top, JSX last.

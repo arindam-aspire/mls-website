@@ -1,31 +1,15 @@
 "use client";
 
-import {
-  Building2,
-  Headphones,
-  Info,
-  KeyRound,
-  User,
-} from "lucide-react";
-import { useMemo } from "react";
+import { Info } from "lucide-react";
 import { ToggleButton } from "@/src/components/ui";
-import { useTranslations } from "next-intl";
 import { cn } from "@/src/lib/cn";
 import { bodyTextClasses } from "@/src/lib/typography";
-import { usePathname, useRouter } from "@/src/i18n/navigation";
-import { AUTH_VIEW, buildAuthModalUrl, resolveAccountTypeAuthView } from "../authViews";
+import { useChooseAccountForm } from "../hooks/useChooseAccountForm";
+import type { ChooseAccountMode, ChooseAccountType } from "../types/chooseAccount.types";
 import { AccountTypeCard } from "./AccountTypeCard";
 
-export type ChooseAccountMode = "signin" | "signup";
-
-export const CHOOSE_ACCOUNT_TYPES = [
-  "agency",
-  "owner",
-  "user",
-  "agent",
-] as const;
-
-export type ChooseAccountType = (typeof CHOOSE_ACCOUNT_TYPES)[number];
+export type { ChooseAccountMode, ChooseAccountType } from "../types/chooseAccount.types";
+export { CHOOSE_ACCOUNT_TYPES } from "../types/chooseAccount.types";
 
 type ChooseAccountFormProps = {
   mode: ChooseAccountMode;
@@ -40,58 +24,13 @@ export function ChooseAccountForm({
   onAccountTypeSelect,
   className,
 }: ChooseAccountFormProps) {
-  const t = useTranslations("auth");
-  const router = useRouter();
-  const pathname = usePathname();
-
-  const handleAccountTypeSelect = (type: ChooseAccountType) => {
-    const view = resolveAccountTypeAuthView(type, mode);
-    if (view != null) {
-      router.replace(
-        buildAuthModalUrl(pathname, view, {
-          returnView: AUTH_VIEW.chooseAccount,
-          portal: type === "agent" && mode === "signin" ? "agent" : undefined,
-        }),
-      );
-    }
-    onAccountTypeSelect?.(type);
-  };
-
-  const accountTypes = useMemo(
-    () =>
-      [
-        {
-          type: "agency" as const,
-          icon: Building2,
-          title: t("accountTypeAgencyTitle"),
-          description: t("accountTypeAgencyDescription"),
-        },
-        {
-          type: "owner" as const,
-          icon: KeyRound,
-          title: t("accountTypeOwnerTitle"),
-          description: t("accountTypeOwnerDescription"),
-        },
-        {
-          type: "user" as const,
-          icon: User,
-          title: t("accountTypeUserTitle"),
-          description: t("accountTypeUserDescription"),
-        },
-        {
-          type: "agent" as const,
-          icon: Headphones,
-          title: t("accountTypeAgentTitle"),
-          description: t("accountTypeAgentDescription"),
-        },
-      ] satisfies {
-        type: ChooseAccountType;
-        icon: typeof Building2;
-        title: string;
-        description: string;
-      }[],
-    [t],
-  );
+  const {
+    accountTypes,
+    modeToggleItems,
+    modeToggleLabel,
+    socialSignInNote,
+    onAccountTypeSelect: handleAccountTypeSelect,
+  } = useChooseAccountForm({ mode, onAccountTypeSelect });
 
   return (
     <div className={cn("flex flex-col gap-6 px-4 sm:px-6 pb-4 sm:pb-6", className)}>
@@ -104,11 +43,8 @@ export function ChooseAccountForm({
           value={mode}
           variant="ghost"
           onChange={onModeChange}
-          aria-label={t("chooseAccountModeLabel")}
-          items={[
-            { value: "signin", label: t("signIn") },
-            { value: "signup", label: t("signUp") },
-          ]}
+          aria-label={modeToggleLabel}
+          items={modeToggleItems}
         />
       </div>
       <div className="flex flex-col gap-3">
@@ -131,11 +67,10 @@ export function ChooseAccountForm({
             aria-hidden
           />
           <p className={cn(bodyTextClasses, "leading-relaxed text-primary-dark")}>
-            {t("chooseAccountSocialSignInNote")}
+            {socialSignInNote}
           </p>
         </div>
       </div>
     </div>
   );
 }
-

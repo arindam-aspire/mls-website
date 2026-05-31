@@ -22,9 +22,8 @@ One screen component per **auth view** (`AUTH_VIEW` in `authViews.ts`). Rendered
 
 ## Responsibilities
 
-- Layout auth sub-flow UI and wire forms to mutations.
-- Navigate between views using `buildAuthModalUrl` / router query updates.
-- Pass account type (`user` | `owner` | `agency`) where needed.
+- **UI only:** modal layout, headers, footers, form composition.
+- Logic (navigation, mutations, effects, copy) lives in matching hooks under [`../hooks/`](../hooks/README.md) (`useSignInScreen`, `useForgotPasswordScreen`, etc.).
 
 ## Not routed directly
 

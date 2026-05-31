@@ -6,6 +6,7 @@ TypeScript definitions for auth API payloads, responses, and form values. Split 
 
 | File | Contents |
 | --- | --- |
+| [chooseAccount.types.md](./chooseAccount.types.md) | Choose-account mode and account type unions |
 | [signUp.types.md](./signUp.types.md) | Sign-up and confirm-sign-up |
 | [signIn.types.md](./signIn.types.md) | Password sign-in, `SignInTokens` |
 | [signInOtp.types.md](./signInOtp.types.md) | OTP request/verify |
