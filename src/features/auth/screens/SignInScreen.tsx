@@ -21,27 +21,26 @@ import { useSignInScreen } from "../hooks/useSignInScreen";
 
 type SignInScreenProps = {
   type: SocialAccountType;
-  onSighinSuccess: () => void;
 };
 
-export function SignInScreen({ type, onSighinSuccess }: SignInScreenProps) {
+export function SignInScreen({ type }: SignInScreenProps) {
   const {
     title,
     subtitle,
-    signInReturnView,
     onClickSignIn,
     isLoading,
+    showBack,
     onBack,
     noAccountText,
     createAccountText,
     onCreateAccountClick,
     termsText,
     privacyText,
-  } = useSignInScreen({ type, onSighinSuccess });
+  } = useSignInScreen({ type });
 
   return (
     <ModalPanel size="md">
-      <AuthModalHeader showBack onBack={onBack} />
+      <AuthModalHeader showBack={showBack} onBack={onBack} />
       <ModalCloseButton />
       <ModalContent className="!py-0 sm:!py-0">
         <div className="space-y-1 px-4 !pb-4 text-center sm:px-6">
@@ -49,11 +48,7 @@ export function SignInScreen({ type, onSighinSuccess }: SignInScreenProps) {
           <p className={cn(bodyTextClasses, "text-muted")}>{subtitle}</p>
         </div>
         <div className="px-4 pb-4 sm:px-6 sm:pb-6">
-          <SignInForm
-            signInReturnView={signInReturnView}
-            onClickSignIn={onClickSignIn}
-            isLoading={isLoading}
-          />
+          <SignInForm onClickSignIn={onClickSignIn} isLoading={isLoading} />
         </div>
       </ModalContent>
       <ModalFooter className="!block rounded-b-xl border-t-0 bg-primary-light !px-4 !pt-4 !pb-4 dark:bg-page sm:!gap-3 sm:!px-6 sm:!pb-6">

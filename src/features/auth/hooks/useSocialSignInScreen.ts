@@ -2,9 +2,12 @@
 
 import { useCallback, useState } from "react";
 import { useTranslations } from "next-intl";
-import { usePathname, useRouter } from "@/src/i18n/navigation";
-import { AUTH_QUERY_KEY, AUTH_VIEW, type AuthView } from "../authViews";
+import {
+  resolveSocialSignUpViewForAccountType,
+} from "../authViews";
 import type { SocialAccountType } from "../components/SocialAuthForm";
+import { useAuthStore } from "../store/auth.store";
+import { useAuthModalNavigation } from "./useAuthPortal";
 import { useAuthScreenLegalFooter } from "./authScreen.utils";
 
 type UseSocialSignInScreenParams = {
@@ -12,21 +15,11 @@ type UseSocialSignInScreenParams = {
 };
 
 export function useSocialSignInScreen({ type }: UseSocialSignInScreenParams) {
-  const router = useRouter();
-  const pathname = usePathname();
   const t = useTranslations("auth");
   const { termsText, privacyText } = useAuthScreenLegalFooter();
+  const navigate = useAuthStore((state) => state.navigate);
+  const { onBack, canGoBack } = useAuthModalNavigation();
   const [isUpcomingFeatureModalOpen, setIsUpcomingFeatureModalOpen] = useState(false);
-
-  const signUpView =
-    type === "user" ? AUTH_VIEW.userSocialSignUp : AUTH_VIEW.ownerSocialSignUp;
-
-  const openAuthView = useCallback(
-    (view: AuthView) => {
-      router.replace(`${pathname}?${AUTH_QUERY_KEY}=${view}`);
-    },
-    [pathname, router],
-  );
 
   const onSocialProviderClick = useCallback(() => {
     setIsUpcomingFeatureModalOpen(true);
@@ -37,14 +30,16 @@ export function useSocialSignInScreen({ type }: UseSocialSignInScreenParams) {
   }, []);
 
   const onCreateAccountClick = useCallback(() => {
-    openAuthView(signUpView);
-  }, [openAuthView, signUpView]);
+    navigate(resolveSocialSignUpViewForAccountType(type));
+  }, [navigate, type]);
 
   return {
     title: t("chooseAccountSignInTitle"),
     subtitle: t("socialSignInWelcome"),
     accountType: type,
     onSocialProviderClick,
+    showBack: canGoBack,
+    onBack,
     noAccountText: t("socialSignInNoAccount"),
     createAccountText: t("chooseAccountCreateAccount"),
     onCreateAccountClick,

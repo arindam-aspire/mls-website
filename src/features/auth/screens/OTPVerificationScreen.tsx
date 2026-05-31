@@ -9,8 +9,6 @@ import {
 } from "@/src/components/ui";
 import { cn } from "@/src/lib/cn";
 import {
-  headingAuthClasses,
-  bodyTextClasses,
   bodyLargeTextClasses,
   captionTextClasses,
 } from "@/src/lib/typography";
@@ -19,13 +17,7 @@ import { OtpVerificationTitle } from "../components/OtpVerificationTitle";
 import { OTPVerificationForm } from "../components/OTPVerificationForm";
 import { useOTPVerificationScreen } from "../hooks/useOTPVerificationScreen";
 
-type OTPVerificationScreenProps = {
-  onSighinSuccess: () => void;
-};
-
-export function OTPVerificationScreen({
-  onSighinSuccess,
-}: OTPVerificationScreenProps) {
+export function OTPVerificationScreen() {
   const {
     contactEmail,
     contactPhone,
@@ -36,6 +28,7 @@ export function OTPVerificationScreen({
     onResend,
     isLoading,
     isResending,
+    showBack,
     onBack,
     showAgencyCreateAccount,
     showUserCreateAccount,
@@ -46,11 +39,11 @@ export function OTPVerificationScreen({
     onCreateAccountClick,
     termsText,
     privacyText,
-  } = useOTPVerificationScreen({ onSighinSuccess });
+  } = useOTPVerificationScreen();
 
   return (
     <ModalPanel size="md">
-      <AuthModalHeader showBack onBack={onBack} />
+      <AuthModalHeader showBack={showBack} onBack={onBack} />
       <ModalCloseButton />
       <ModalContent className="!py-0 sm:!py-0">
         <OtpVerificationTitle

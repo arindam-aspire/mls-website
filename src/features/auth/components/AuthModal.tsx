@@ -1,18 +1,14 @@
 "use client";
 
+import { useEffect } from "react";
 import {
   Modal,
   ModalBackdrop,
   ModalContainer,
 } from "@/src/components/ui";
-import { usePathname, useRouter } from "@/src/i18n/navigation";
-import { useSearchParams } from "next/navigation";
-import {
-  AUTH_QUERY_KEY,
-  AUTH_VIEW,
-  CHOOSE_ACCOUNT_QUERY_KEY,
-  VALID_AUTH_VIEWS,
-} from "../authViews";
+import { AUTH_VIEW, type AuthView } from "../authViews";
+import { readAuthModalSession } from "../store/authModalStorage";
+import { useAuthStore } from "../store/auth.store";
 import { AgencyEmailSignInScreen } from "../screens/AgencyEmailSignInScreen";
 import { AgencyRegistrationScreen } from "../screens/AgencyRegistrationScreen";
 import { AgencySignInScreen } from "../screens/AgencySignInScreen";
@@ -27,61 +23,40 @@ import { SocialSignInScreen } from "../screens/SocialSignInScreen";
 import { UserRegistrationScreen } from "../screens/UserRegistrationScreen";
 import { ConfirmSignUpScreen } from "../screens/ConfirmSignUpScreen";
 
+export { AUTH_VIEW, type AuthView } from "../authViews";
 export {
-  AUTH_QUERY_KEY,
-  AUTH_PORTAL_QUERY_KEY,
-  AUTH_RETURN_VIEW_QUERY_KEY,
-  AUTH_VIEW,
-  buildAuthModalUrl,
-  CHOOSE_ACCOUNT_QUERY_KEY,
-  isAgentAuthPortal,
-  parseAuthPortal,
   resolveAccountTypeAuthView,
   resolveEmailSignInView,
   resolveEmailSignUpView,
   resolveSignInRoleFromAuthContext,
-  readSignInOtpSessionFromSearchParams,
-  resolveSignInOtpSession,
-  type AuthPortalContext,
-  type AuthView,
 } from "../authViews";
 
-function renderAuthView(view: string | null, onSighinSuccess: () => void) {
-  switch (view) {
+function renderAuthView(screen: AuthView) {
+  switch (screen) {
     case AUTH_VIEW.chooseAccount:
       return <AccountChooseScreen />;
     case AUTH_VIEW.userSocialSignIn:
+      return <SocialSignInScreen type="user" />;
     case AUTH_VIEW.ownerSocialSignIn:
-      return (
-        <SocialSignInScreen
-          type={view === AUTH_VIEW.userSocialSignIn ? "user" : "owner"}
-        />
-      );
+      return <SocialSignInScreen type="owner" />;
     case AUTH_VIEW.userSocialSignUp:
+      return <SocialRegistrationScreen type="user" />;
     case AUTH_VIEW.ownerSocialSignUp:
-      return (
-        <SocialRegistrationScreen
-          type={view === AUTH_VIEW.userSocialSignUp ? "user" : "owner"}
-        />
-      );
+      return <SocialRegistrationScreen type="owner" />;
     case AUTH_VIEW.userSignIn:
+      return <SignInScreen type="user" />;
     case AUTH_VIEW.ownerSignIn:
-      return (
-        <SignInScreen type={view === AUTH_VIEW.userSignIn ? "user" : "owner"} onSighinSuccess={onSighinSuccess} />
-      );
+      return <SignInScreen type="owner" />;
     case AUTH_VIEW.userSignUp:
+      return <UserRegistrationScreen type="user" />;
     case AUTH_VIEW.ownerSignUp:
-      return (
-        <UserRegistrationScreen
-          type={view === AUTH_VIEW.userSignUp ? "user" : "owner"}
-        />
-      );
+      return <UserRegistrationScreen type="owner" />;
     case AUTH_VIEW.agencySignIn:
       return <AgencySignInScreen />;
     case AUTH_VIEW.agencySignUp:
       return <AgencyRegistrationScreen />;
     case AUTH_VIEW.agencyEmailSignIn:
-      return <AgencyEmailSignInScreen onSighinSuccess={onSighinSuccess} />;
+      return <AgencyEmailSignInScreen />;
     case AUTH_VIEW.forgotPassword:
       return <ForgotPasswordScreen />;
     case AUTH_VIEW.resetPassword:
@@ -89,7 +64,7 @@ function renderAuthView(view: string | null, onSighinSuccess: () => void) {
     case AUTH_VIEW.signInOtp:
       return <SignInWithOTPScreen />;
     case AUTH_VIEW.otpVerify:
-      return <OTPVerificationScreen onSighinSuccess={onSighinSuccess} />;
+      return <OTPVerificationScreen />;
     case AUTH_VIEW.confirmSignUp:
       return <ConfirmSignUpScreen />;
     default:
@@ -98,30 +73,26 @@ function renderAuthView(view: string | null, onSighinSuccess: () => void) {
 }
 
 export function AuthModal() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const pathname = usePathname();
+  const isOpen = useAuthStore((state) => state.isOpen);
+  const screenStack = useAuthStore((state) => state.screenStack);
+  const closeAuth = useAuthStore((state) => state.closeAuth);
+  const activeScreen = screenStack[screenStack.length - 1] ?? null;
+  const content = activeScreen != null ? renderAuthView(activeScreen) : null;
 
-  const hasChooseAccount = searchParams.has(CHOOSE_ACCOUNT_QUERY_KEY);
-  const authView = searchParams.get(AUTH_QUERY_KEY);
-  const activeView = hasChooseAccount ? AUTH_VIEW.chooseAccount : authView;
-  const isOpen = activeView != null && VALID_AUTH_VIEWS.has(activeView);
-  const onSighinSuccess = () => {
-   closeModal();
-  };
-  const content = renderAuthView(activeView, onSighinSuccess);
+  // Restore persisted modal state after mount so SSR/first paint stay closed (no hydration mismatch).
+  useEffect(() => {
+    const session = readAuthModalSession();
+    if (session.isOpen) {
+      useAuthStore.setState(session);
+    }
+  }, []);
 
-
-  const closeModal = () => {
-    router.replace(pathname);
-  };
-
-  if (content == null) {
+  if (!isOpen || content == null) {
     return null;
   }
 
   return (
-    <Modal open={isOpen} onClose={closeModal}>
+    <Modal open={isOpen} onClose={closeAuth}>
       <ModalBackdrop />
       <ModalContainer>{content}</ModalContainer>
     </Modal>

@@ -2,16 +2,7 @@
 
 import { useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { usePathname, useRouter } from "@/src/i18n/navigation";
-import { useSearchParams } from "next/navigation";
-import {
-  AUTH_OTP_EMAIL_QUERY_KEY,
-  AUTH_RETURN_VIEW_QUERY_KEY,
-  AUTH_VIEW,
-  buildAuthModalUrl,
-  resolveSignInViewFromSignUpReturnView,
-  type AuthView,
-} from "../authViews";
+import { AUTH_VIEW, resolveSignInViewFromSignUpReturnView } from "../authViews";
 import {
   useAgencySignUp,
   useConfirmSignUp,
@@ -19,31 +10,36 @@ import {
 } from "../mutations/auth.mutation";
 import { useToast } from "@/src/hooks/useToast";
 import { useAuthStore } from "../store/auth.store";
-import { resolveAuthReturnView, useAuthScreenLegalFooter } from "./authScreen.utils";
+import { useAuthModalNavigation } from "./useAuthPortal";
+import { useAuthScreenLegalFooter } from "./authScreen.utils";
 
 export function useConfirmSignUpScreen() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
   const t = useTranslations("auth");
   const { termsText, privacyText } = useAuthScreenLegalFooter();
+  const pop = useAuthStore((state) => state.pop);
+  const navigate = useAuthStore((state) => state.navigate);
+  const screenStack = useAuthStore((state) => state.screenStack);
+  const { canGoBack } = useAuthModalNavigation();
+  const pendingSignUp = useAuthStore((state) => state.pendingSignUp);
+  const pendingAgencySignUp = useAuthStore((state) => state.pendingAgencySignUp);
+  const pendingEmail = useAuthStore((state) => state.pendingEmail);
+  const clearPendingSignUp = useAuthStore((state) => state.clearPendingSignUp);
+  const clearPendingAgencySignUp = useAuthStore((state) => state.clearPendingAgencySignUp);
   const toast = useToast();
 
-  const pendingSignUp = useAuthStore((s) => s.pendingSignUp);
-  const pendingAgencySignUp = useAuthStore((s) => s.pendingAgencySignUp);
-  const clearPendingSignUp = useAuthStore((s) => s.clearPendingSignUp);
-  const clearPendingAgencySignUp = useAuthStore((s) => s.clearPendingAgencySignUp);
-
-  const returnView = resolveAuthReturnView(
-    searchParams.get(AUTH_RETURN_VIEW_QUERY_KEY),
-    AUTH_VIEW.userSignUp,
-  );
-  const isAgencyConfirm = returnView === AUTH_VIEW.agencySignUp;
+  const isAgencyConfirm =
+    pendingAgencySignUp != null ||
+    screenStack.includes(AUTH_VIEW.agencySignUp);
+  const registrationView = isAgencyConfirm
+    ? AUTH_VIEW.agencySignUp
+    : screenStack.includes(AUTH_VIEW.ownerSignUp)
+      ? AUTH_VIEW.ownerSignUp
+      : AUTH_VIEW.userSignUp;
+  const signInViewFromSignUp = resolveSignInViewFromSignUpReturnView(registrationView);
   const contactEmail =
-    searchParams.get(AUTH_OTP_EMAIL_QUERY_KEY)?.trim() ||
+    pendingEmail?.trim() ||
     (isAgencyConfirm ? pendingAgencySignUp?.email : pendingSignUp?.email);
   const contactPhone = isAgencyConfirm ? undefined : pendingSignUp?.phone_number;
-  const signInView = resolveSignInViewFromSignUpReturnView(returnView);
 
   const { mutate: confirmSignUpMutate, isPending: isVerifying } =
     useConfirmSignUp();
@@ -55,22 +51,11 @@ export function useConfirmSignUpScreen() {
     ? isResendingAgencySignUp
     : isResendingUserSignUp;
 
-  const clearPendingRegistration = useCallback(() => {
+  const onBack = useCallback(() => {
     clearPendingSignUp();
     clearPendingAgencySignUp();
-  }, [clearPendingAgencySignUp, clearPendingSignUp]);
-
-  const openAuthView = useCallback(
-    (view: AuthView) => {
-      router.replace(buildAuthModalUrl(pathname, view));
-    },
-    [pathname, router],
-  );
-
-  const onBack = useCallback(() => {
-    clearPendingRegistration();
-    openAuthView(returnView);
-  }, [clearPendingRegistration, openAuthView, returnView]);
+    pop();
+  }, [clearPendingAgencySignUp, clearPendingSignUp, pop]);
 
   const onSubmit = useCallback(
     (code: string) => {
@@ -88,19 +73,20 @@ export function useConfirmSignUpScreen() {
         },
         {
           onSuccess: () => {
-            clearPendingRegistration();
-            router.replace(buildAuthModalUrl(pathname, signInView));
+            clearPendingSignUp();
+            clearPendingAgencySignUp();
+            navigate(signInViewFromSignUp);
           },
         },
       );
     },
     [
-      clearPendingRegistration,
+      clearPendingAgencySignUp,
+      clearPendingSignUp,
       confirmSignUpMutate,
       contactEmail,
-      pathname,
-      router,
-      signInView,
+      navigate,
+      signInViewFromSignUp,
       toast,
     ],
   );
@@ -143,8 +129,8 @@ export function useConfirmSignUpScreen() {
   ]);
 
   const onSignInClick = useCallback(() => {
-    openAuthView(signInView);
-  }, [openAuthView, signInView]);
+    navigate(signInViewFromSignUp);
+  }, [navigate, signInViewFromSignUp]);
 
   return {
     title: t("confirmSignUpTitle"),
@@ -155,6 +141,7 @@ export function useConfirmSignUpScreen() {
     onResend,
     isLoading: isVerifying,
     isResending,
+    showBack: canGoBack,
     onBack,
     hasAccountText: isAgencyConfirm
       ? t("agencySignUpHasAccount")

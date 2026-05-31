@@ -1,64 +1,37 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
-import { usePathname, useRouter } from "@/src/i18n/navigation";
-import { useSearchParams } from "next/navigation";
-import {
-  AUTH_RETURN_VIEW_QUERY_KEY,
-  AUTH_VIEW,
-  buildAuthModalUrl,
-  isAgencyAuthView,
-  resolveAuthSignUpView,
-  resolveSignInRoleFromAuthContext,
-  type AuthView,
-} from "../authViews";
+import { AUTH_VIEW, resolveSignInRoleFromAuthContext } from "../authViews";
 import type { SignInOtpMethod, SignInWithOTPFormValues } from "../components/SignInWithOTPForm";
 import { useSignInWithOtpRequest } from "../mutations/auth.mutation";
 import { useAuthStore } from "../store/auth.store";
+import { useAuthModalNavigation } from "./useAuthPortal";
+import { useAuthFlowContext, useAuthScreenLegalFooter } from "./authScreen.utils";
 import { useToast } from "@/src/hooks/useToast";
-import { useAuthPortal, useIsAgentSignInPortal } from "./useAuthPortal";
-import { resolveAuthReturnView, useAuthScreenLegalFooter } from "./authScreen.utils";
 
 export function useSignInWithOTPScreen() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
   const t = useTranslations("auth");
   const { termsText, privacyText } = useAuthScreenLegalFooter();
-  const toast = useToast();
-
-  const returnView = resolveAuthReturnView(
-    searchParams.get(AUTH_RETURN_VIEW_QUERY_KEY),
-    AUTH_VIEW.userSignIn,
-  );
-  const signUpView = resolveAuthSignUpView(returnView);
-  const isAgency = isAgencyAuthView(returnView);
-  const portal = useAuthPortal();
-  const isAgent = useIsAgentSignInPortal();
+  const navigate = useAuthStore((state) => state.navigate);
+  const { onBack, canGoBack } = useAuthModalNavigation();
+  const setOtpFlow = useAuthStore((state) => state.setOtpFlow);
+  const setPendingEmail = useAuthStore((state) => state.setPendingEmail);
+  const otpSession = useAuthStore((state) => state.otpSession);
+  const agentPortal = useAuthStore((state) => state.agentPortal);
+  const {
+    contextView,
+    isAgency,
+    isAgent,
+    signUpView,
+  } = useAuthFlowContext();
   const showAgencyCreateAccount = isAgency && !isAgent;
   const showUserCreateAccount = !showAgencyCreateAccount && !isAgency;
-  const signInRole = resolveSignInRoleFromAuthContext(returnView, portal);
+  const signInRole = resolveSignInRoleFromAuthContext(contextView, agentPortal);
+  const toast = useToast();
 
   const { mutate: requestOtp, isPending, isSuccess } = useSignInWithOtpRequest();
-  const pendingOtpSession = useAuthStore((state) => state.pendingOtpSession);
   const lastEmailRef = useRef<string | null>(null);
-
-  const portalOptions = useMemo(
-    () => (portal ? { portal } : undefined),
-    [portal],
-  );
-
-  const openAuthView = useCallback(
-    (view: AuthView) => {
-      router.replace(buildAuthModalUrl(pathname, view, portalOptions));
-    },
-    [pathname, portalOptions, router],
-  );
-
-  const onBack = useCallback(() => {
-    openAuthView(returnView);
-  }, [openAuthView, returnView]);
 
   const onSubmit = useCallback(
     (values: SignInWithOTPFormValues, method: SignInOtpMethod) => {
@@ -71,48 +44,39 @@ export function useSignInWithOTPScreen() {
       }
 
       lastEmailRef.current = values.email;
+      setPendingEmail(values.email);
       requestOtp({ username: values.email, role: signInRole });
     },
-    [requestOtp, signInRole, toast],
+    [requestOtp, setPendingEmail, signInRole, toast],
   );
 
-  const onAgencyCreateAccountClick = useCallback(() => {
-    openAuthView(signUpView);
-  }, [openAuthView, signUpView]);
-
-  const onUserCreateAccountClick = useCallback(() => {
-    openAuthView(signUpView);
-  }, [openAuthView, signUpView]);
+  const onCreateAccountClick = useCallback(() => {
+    navigate(signUpView);
+  }, [navigate, signUpView]);
 
   useEffect(() => {
-    if (isSuccess && lastEmailRef.current && pendingOtpSession?.session) {
-      router.replace(
-        buildAuthModalUrl(pathname, AUTH_VIEW.otpVerify, {
-          otpFlow: "signin",
-          returnView,
-          contactEmail: lastEmailRef.current,
-          portal: portal ?? undefined,
-          otpSession: pendingOtpSession.session,
-          otpCode: pendingOtpSession.otp,
-        }),
-      );
+    if (isSuccess && lastEmailRef.current && otpSession) {
+      setOtpFlow("signin");
+      setPendingEmail(lastEmailRef.current);
+      navigate(AUTH_VIEW.otpVerify);
     }
-  }, [isSuccess, pendingOtpSession, pathname, portal, returnView, router]);
+  }, [isSuccess, otpSession, navigate, setOtpFlow, setPendingEmail]);
 
   return {
     title: t("chooseAccountSignInTitle"),
     subtitle: t("forgotPasswordSubtitle"),
     onSubmit,
     isLoading: isPending,
+    showBack: canGoBack,
     onBack,
     showAgencyCreateAccount,
     showUserCreateAccount,
     agencyNoAccountText: t("agencySignInNoAccount"),
     agencyCreateAccountText: t("agencyCreateAccount"),
-    onAgencyCreateAccountClick,
+    onAgencyCreateAccountClick: onCreateAccountClick,
     userNoAccountText: t("chooseAccountNoAccount"),
     userCreateAccountText: t("chooseAccountCreateAccount"),
-    onUserCreateAccountClick,
+    onUserCreateAccountClick: onCreateAccountClick,
     termsText,
     privacyText,
   };

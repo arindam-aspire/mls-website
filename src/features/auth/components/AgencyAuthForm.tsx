@@ -5,12 +5,9 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/src/components/ui";
 import { cn } from "@/src/lib/cn";
 import { authFormOverlineClasses, bodyTextClasses } from "@/src/lib/typography";
-import { usePathname, useRouter } from "@/src/i18n/navigation";
-import {
-  AUTH_VIEW,
-  buildAuthModalUrl,
-} from "../authViews";
-import { useAuthPortal } from "../hooks/useAuthPortal";
+import { AUTH_VIEW } from "../authViews";
+import { useAuthStore } from "../store/auth.store";
+import { useIsAgentSignInPortal } from "../hooks/useAuthPortal";
 
 type AgencyAuthFormProps = {
   className?: string;
@@ -18,16 +15,8 @@ type AgencyAuthFormProps = {
 
 export function AgencyAuthForm({ className }: AgencyAuthFormProps) {
   const t = useTranslations("auth");
-  const router = useRouter();
-  const pathname = usePathname();
-  const portal = useAuthPortal();
-  const isAgent = portal === "agent";
-
-  const openAuthView = (view: (typeof AUTH_VIEW)[keyof typeof AUTH_VIEW]) => {
-    router.replace(
-      buildAuthModalUrl(pathname, view, portal ? { portal } : undefined),
-    );
-  };
+  const navigate = useAuthStore((state) => state.navigate);
+  const isAgent = useIsAgentSignInPortal();
 
   return (
     <div
@@ -58,7 +47,7 @@ export function AgencyAuthForm({ className }: AgencyAuthFormProps) {
           fullWidth
           className="font-semibold"
           iconStart={<Mail className="size-5" aria-hidden />}
-          onClick={() => openAuthView(AUTH_VIEW.agencyEmailSignIn)}
+          onClick={() => navigate(AUTH_VIEW.agencyEmailSignIn)}
         >
           {t("agencyLoginWithEmailPassword")}
         </Button>
@@ -79,14 +68,7 @@ export function AgencyAuthForm({ className }: AgencyAuthFormProps) {
           fullWidth
           className="font-semibold"
           iconStart={<Clock className="size-5" aria-hidden />}
-          onClick={() =>
-            router.replace(
-              buildAuthModalUrl(pathname, AUTH_VIEW.signInOtp, {
-                returnView: AUTH_VIEW.agencySignIn,
-                portal: portal ?? undefined,
-              }),
-            )
-          }
+          onClick={() => navigate(AUTH_VIEW.signInOtp)}
         >
           {t("loginWithOneTimeCode")}
         </Button>
@@ -94,4 +76,3 @@ export function AgencyAuthForm({ className }: AgencyAuthFormProps) {
     </div>
   );
 }
-

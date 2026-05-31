@@ -1,6 +1,7 @@
 "use client";
 
 import { ConfirmModal } from "@/src/components/common/ConfirmModal";
+import { UpcomingFeatureModal } from "@/src/components/common/UpcomingFeatureModal";
 import { Avatar } from "@/src/components/ui/avatar";
 import { Button } from "@/src/components/ui/button";
 import { IconButton } from "@/src/components/ui/icon-button";
@@ -65,6 +66,7 @@ export function LandingProfilePopover({ user, overHero }: LandingProfilePopoverP
   const t = useTranslations("common");
   const router = useRouter();
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [isUpcomingFeatureModalOpen, setIsUpcomingFeatureModalOpen] = useState(false);
   const { mutate: logout, isPending: isLoggingOut, isSuccess: isLoggedOut } = useLogout();
 
   useEffect(() => {
@@ -85,6 +87,7 @@ export function LandingProfilePopover({ user, overHero }: LandingProfilePopoverP
         className={cn(
           overHero && "!bg-surface !text-inherit hover:!bg-surface/80 rounded-full",
         )}
+        onClick={() => setIsUpcomingFeatureModalOpen(true)}
       />
 
       <Popover className="relative flex items-center">
@@ -143,6 +146,12 @@ export function LandingProfilePopover({ user, overHero }: LandingProfilePopoverP
         loadingLabel={t("signingOut")}
         confirmIcon={<LogOut className="size-4" aria-hidden />}
         cancelLabel={t("logoutCancel")}
+      />
+
+      <UpcomingFeatureModal
+        open={isUpcomingFeatureModalOpen}
+        onClose={() => setIsUpcomingFeatureModalOpen(false)}
+        icon={<Bell className="size-7" aria-hidden />}
       />
     </>
   );

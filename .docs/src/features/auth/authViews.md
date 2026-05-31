@@ -1,77 +1,48 @@
 # File Overview
 
-Project source module.
+Auth modal **view identifiers** and **resolver helpers**. Constants in `AUTH_VIEW` are used as stack entries in `useAuthStore.screenStack`. This module no longer builds URLs or reads query params.
 
 **Source:** `src/features/auth/authViews.ts`
 
 # Responsibilities
 
-- Project source module.
+- Define `AUTH_VIEW` string constants and `AuthView` type.
+- Provide resolvers mapping account type / mode to the correct view (email, social, agency).
+- Export `VALID_AUTH_VIEWS` set and `AuthOtpFlow` type.
+- Helper functions for inferring context from stack or view (agency checks, sign-in after reset, etc.).
 
 # Imports
 
-_No notable imports._
+- `SignInRole` from `./types/signIn.types`
 
 # Exports
 
-- `buildAuthModalUrl`
-- `resolveAccountTypeAuthView`
-- `resolveEmailSignInView`
-- `resolveEmailSignUpView`
-- `resolveSignInRoleFromAuthContext`
-- `resolveSignInViewAfterPasswordReset` — maps forgot/reset flow `from` to email sign-in view after password reset
-- `resolveAuthSignUpView`
-- `isAuthView`
-- `AUTH_QUERY_KEY`
-- `AUTH_RETURN_VIEW_QUERY_KEY`
-- `AUTH_OTP_FLOW_QUERY_KEY`
-- `AUTH_OTP_EMAIL_QUERY_KEY`
-- `AUTH_OTP_PHONE_QUERY_KEY`
-- `AUTH_OTP_PHONE_COUNTRY_QUERY_KEY`
-- `AUTH_PORTAL_QUERY_KEY` — `portal=agency|agent` on agency sign-in flows
-- `AUTH_OTP_SESSION_QUERY_KEY`, `AUTH_OTP_CODE_QUERY_KEY` — sign-in OTP session handoff in URL
-- `parseAuthPortal`, `isAgentAuthPortal`, `AuthPortalContext`
-- `readSignInOtpSessionFromSearchParams`, `resolveSignInOtpSession`
-- `AUTH_VIEW`
-- `VALID_AUTH_VIEWS`
-- `AuthOtpFlow`
-- `AuthModalUrlOptions`
-- `AuthView`
-- `EmailAccountType`
+- `AUTH_VIEW`, `AuthView`, `VALID_AUTH_VIEWS`, `AuthOtpFlow`
+- `resolveAccountTypeAuthView`, `resolveEmailSignInView`, `resolveEmailSignUpView`
+- `resolveSignInRoleFromAuthContext`, `resolveSignInViewFromSignUpReturnView`
+- `resolveSignInViewAfterPasswordReset`, `resolveAuthSignUpView`
+- `resolveSocialSignInViewForAccountType`, `resolveSocialSignUpViewForAccountType`
+- `isAuthView`, `isAgencyAuthView`, `EmailAccountType`
 
 # State Management
 
-_N/A — no local/global state in this module._
+_N/A — pure constants and functions._
 
 # API Usage
 
-_N/A unless extended._
+_N/A._
 
 # Navigation
 
-- Auth modal: query `?auth=<view>` on current pathname (see `authViews.ts`).
+Views are pushed onto `screenStack` via `useAuthStore.push(openAuth)`. No URL params.
 
 # Props / Parameters
 
-_N/A — non-component module._
+Resolver functions take account type, mode, or `AuthView` — see source.
 
 # Actions / Inputs
 
-## Inputs
-
-_No explicit inputs detected._
-
-## Actions
-
-_No explicit actions detected._
-
-## Validations
-
-_No explicit validations detected._
-
-## Show/Hide Controls
-
-_No explicit show/hide controls detected._
+_N/A._
 
 # UI Details
 
@@ -79,13 +50,16 @@ _N/A._
 
 # Flow Description
 
-See source in `src/features/auth/authViews.ts` for step-by-step behavior aligned with [application.md](../../application.md) (path relative may vary).
+1. Screen hooks import `AUTH_VIEW` and resolvers.
+2. User picks account type → `resolveAccountTypeAuthView(type, mode)` → `push(result)`.
+3. After sign-up confirm → `resolveSignInViewFromSignUpReturnView(registrationView)` → `push(signInView)`.
 
 # Dependencies
 
-- Parent feature or route that imports this file.
-- See **Imports** for direct module dependencies.
+- All auth hooks and forms that navigate between views
+- `authStack.utils.ts` for stack-based context
 
 # Notes
 
-- Keep in sync when `src/features/auth/authViews.ts` changes.
+- Removed: `buildAuthModalUrl`, all `AUTH_*_QUERY_KEY` constants, URL session readers.
+- Agent portal is `useAuthStore.agentPortal`, not a query param.

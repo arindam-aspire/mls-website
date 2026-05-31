@@ -17,8 +17,8 @@ import {
   PopoverPanel,
 } from "@/src/components/ui/popover";
 import { Select } from "@/src/components/ui/select";
-import { AUTH_VIEW } from "@/src/features/auth/authViews";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
+import { AUTH_VIEW } from "@/src/features/auth/authViews";
 import { Link, usePathname, useRouter } from "@/src/i18n/navigation";
 import type { AppLocale } from "@/src/i18n/routing";
 import mlsLogoDark from "@/src/assets/images/MLS_Dark_Logo.png";
@@ -151,7 +151,7 @@ export function LandingHeader() {
   const logoSrc = overHero ? mlsLogoDark : mlsLogoLight;
 
   const openChooseAccount = () => {
-    router.push({ pathname: "/", query: { auth: AUTH_VIEW.chooseAccount } });
+    useAuthStore.getState().openAuth(AUTH_VIEW.chooseAccount);
   };
 
   const handleLocaleChange = (nextLocale: string) => {

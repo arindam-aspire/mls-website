@@ -1,47 +1,14 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import type { AuthView } from "../authViews";
 import {
-  AUTH_VIEW,
-  isAgencyAuthView,
-  isAuthView,
-  type AuthOtpFlow,
-  type AuthView,
+  resolveAuthSignUpView,
+  resolveSignInViewAfterPasswordReset,
+  resolveSignInViewFromSignUpReturnView,
 } from "../authViews";
-
-export function resolveAuthReturnView(
-  from: string | null,
-  fallback: AuthView,
-): AuthView {
-  if (isAuthView(from)) {
-    return from;
-  }
-  return fallback;
-}
-
-export function resolveAuthReturnViewOrNull(from: string | null): AuthView | null {
-  if (isAuthView(from)) {
-    return from;
-  }
-  return null;
-}
-
-export function resolveOtpFlow(value: string | null): AuthOtpFlow {
-  return value === "forgot" ? "forgot" : "signin";
-}
-
-export function resolveOtpBackView(
-  otpFlow: AuthOtpFlow,
-  returnView: AuthView,
-): AuthView {
-  if (otpFlow === "forgot") {
-    return AUTH_VIEW.forgotPassword;
-  }
-  if (isAgencyAuthView(returnView)) {
-    return AUTH_VIEW.agencySignIn;
-  }
-  return AUTH_VIEW.signInOtp;
-}
+import { useAuthStore } from "../store/auth.store";
+import { getAuthContextFromStack, isAgencyContextFromStack } from "./authStack.utils";
 
 export function useAuthScreenLegalFooter() {
   const t = useTranslations("auth");
@@ -51,4 +18,31 @@ export function useAuthScreenLegalFooter() {
     termsText: t("termsOfService"),
     privacyText: tCommon("privacyPolicy"),
   };
+}
+
+export function useAuthFlowContext() {
+  const screenStack = useAuthStore((state) => state.screenStack);
+  const agentPortal = useAuthStore((state) => state.agentPortal);
+
+  const contextView = getAuthContextFromStack(screenStack);
+  const isAgency = isAgencyContextFromStack(screenStack, agentPortal);
+  const isAgent = agentPortal;
+  const signUpView = resolveAuthSignUpView(contextView);
+  const signInViewAfterReset = resolveSignInViewAfterPasswordReset(contextView);
+  const signInViewFromSignUp = resolveSignInViewFromSignUpReturnView(contextView);
+
+  return {
+    contextView,
+    isAgency,
+    isAgent,
+    signUpView,
+    signInViewAfterReset,
+    signInViewFromSignUp,
+  };
+}
+
+export function resolveSignInViewForStack(screenStack: AuthView[]): AuthView {
+  return resolveSignInViewAfterPasswordReset(
+    getAuthContextFromStack(screenStack),
+  );
 }

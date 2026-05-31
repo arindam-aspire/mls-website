@@ -29,13 +29,15 @@ export function AgencySignInScreen() {
     agencyNoAccountText,
     agencyCreateAccountText,
     onAgencySignUpClick,
+    showBack,
+    onBack,
     termsText,
     privacyText,
   } = useAgencySignInScreen();
 
   return (
     <ModalPanel size="md">
-      <AuthModalHeader showBack />
+      <AuthModalHeader showBack={showBack} onBack={onBack} />
       <ModalCloseButton />
       <ModalContent className="!py-0 sm:!py-0">
         <div className="flex flex-col items-center gap-4 px-4 !pb-4 sm:px-6">

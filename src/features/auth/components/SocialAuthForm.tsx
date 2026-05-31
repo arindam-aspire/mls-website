@@ -6,15 +6,13 @@ import type { SVGProps } from "react";
 import { Button, ToggleButton } from "@/src/components/ui";
 import { cn } from "@/src/lib/cn";
 import { authFormOverlineClasses } from "@/src/lib/typography";
-import { usePathname, useRouter } from "@/src/i18n/navigation";
 import {
-  AUTH_QUERY_KEY,
   AUTH_VIEW,
-  buildAuthModalUrl,
   resolveAccountTypeAuthView,
   resolveEmailSignInView,
   resolveEmailSignUpView,
 } from "../authViews";
+import { useAuthStore } from "../store/auth.store";
 
 type BrandIconProps = SVGProps<SVGSVGElement>;
 
@@ -80,8 +78,7 @@ export function SocialAuthForm({
   onSocialProviderClick,
 }: SocialAuthFormProps) {
   const t = useTranslations("auth");
-  const router = useRouter();
-  const pathname = usePathname();
+  const navigate = useAuthStore((state) => state.navigate);
 
   const emailLabel =
     flow === "signin" ? t("loginWithEmail") : t("signUpWithEmail");
@@ -95,12 +92,8 @@ export function SocialAuthForm({
   const handleAccountTypeChange = (type: SocialAccountType) => {
     const view = resolveAccountTypeAuthView(type, flow);
     if (view != null) {
-      router.replace(`${pathname}?${AUTH_QUERY_KEY}=${view}`);
+      navigate(view);
     }
-  };
-
-  const openAuthView = (view: (typeof AUTH_VIEW)[keyof typeof AUTH_VIEW]) => {
-    router.replace(`${pathname}?${AUTH_QUERY_KEY}=${view}`);
   };
 
   return (
@@ -175,9 +168,9 @@ export function SocialAuthForm({
           iconStart={<Mail className="size-5" aria-hidden />}
           onClick={() => {
             if (flow === "signin") {
-              openAuthView(resolveEmailSignInView(accountType));
+              navigate(resolveEmailSignInView(accountType));
             } else {
-              openAuthView(resolveEmailSignUpView(accountType));
+              navigate(resolveEmailSignUpView(accountType));
             }
           }}
         >
@@ -192,15 +185,7 @@ export function SocialAuthForm({
             fullWidth
             className="font-semibold"
             iconStart={<Clock className="size-5" aria-hidden />}
-            onClick={() =>
-              router.replace(
-                buildAuthModalUrl(
-                  pathname,
-                  AUTH_VIEW.signInOtp,
-                  resolveEmailSignInView(accountType),
-                ),
-              )
-            }
+            onClick={() => navigate(AUTH_VIEW.signInOtp)}
           >
             {t("loginWithOneTimeCode")}
           </Button>

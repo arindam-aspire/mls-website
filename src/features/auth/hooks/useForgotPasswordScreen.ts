@@ -2,41 +2,31 @@
 
 import { useCallback, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
-import { usePathname, useRouter } from "@/src/i18n/navigation";
-import { useSearchParams } from "next/navigation";
-import {
-  AUTH_QUERY_KEY,
-  AUTH_RETURN_VIEW_QUERY_KEY,
-  AUTH_VIEW,
-  buildAuthModalUrl,
-} from "../authViews";
+import { AUTH_VIEW } from "../authViews";
 import type { ForgotPasswordMethod } from "../components/ForgotPasswordForm";
 import type { ForgotPasswordFormValues } from "../types/auth.types";
 import { useForgotPassword } from "../mutations/auth.mutation";
 import { useToast } from "@/src/hooks/useToast";
-import { resolveAuthReturnView, useAuthScreenLegalFooter } from "./authScreen.utils";
+import { useAuthStore } from "../store/auth.store";
+import { useAuthModalNavigation } from "./useAuthPortal";
+import { useAuthScreenLegalFooter } from "./authScreen.utils";
 
 export function useForgotPasswordScreen() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
   const t = useTranslations("auth");
   const { termsText, privacyText } = useAuthScreenLegalFooter();
+  const navigate = useAuthStore((state) => state.navigate);
+  const { onBack, canGoBack } = useAuthModalNavigation();
+  const setOtpFlow = useAuthStore((state) => state.setOtpFlow);
+  const setPendingEmail = useAuthStore((state) => state.setPendingEmail);
+  const setPendingPhone = useAuthStore((state) => state.setPendingPhone);
+  const setPendingPhoneCountry = useAuthStore((state) => state.setPendingPhoneCountry);
   const toast = useToast();
-  const returnView = resolveAuthReturnView(
-    searchParams.get(AUTH_RETURN_VIEW_QUERY_KEY),
-    AUTH_VIEW.userSignIn,
-  );
 
   const { mutate: forgotPasswordMutate, isPending, isSuccess } = useForgotPassword();
   const lastSubmitRef = useRef<{
     values: ForgotPasswordFormValues;
     method: ForgotPasswordMethod;
   } | null>(null);
-
-  const onBack = useCallback(() => {
-    router.replace(`${pathname}?${AUTH_QUERY_KEY}=${returnView}`);
-  }, [pathname, returnView, router]);
 
   const onSubmit = useCallback(
     (values: ForgotPasswordFormValues, method: ForgotPasswordMethod) => {
@@ -49,35 +39,36 @@ export function useForgotPasswordScreen() {
       }
 
       lastSubmitRef.current = { values, method };
-      forgotPasswordMutate({
-        email: values.email,
-      });
+      setPendingEmail(values.email);
+      forgotPasswordMutate({ email: values.email });
     },
-    [forgotPasswordMutate, toast],
+    [forgotPasswordMutate, setPendingEmail, toast],
   );
 
   useEffect(() => {
     if (isSuccess && lastSubmitRef.current) {
       const { values, method } = lastSubmitRef.current;
-      router.replace(
-        buildAuthModalUrl(pathname, AUTH_VIEW.otpVerify, {
-          otpFlow: "forgot",
-          returnView,
-          contactEmail: method === "email" ? values.email : undefined,
-          contactPhone:
-            method === "phone" ? values.phoneNationalNumber : undefined,
-          contactPhoneCountry:
-            method === "phone" ? values.phoneCountryCode : undefined,
-        }),
-      );
+      setOtpFlow("forgot");
+      setPendingEmail(method === "email" ? values.email : null);
+      setPendingPhone(method === "phone" ? values.phoneNationalNumber : null);
+      setPendingPhoneCountry(method === "phone" ? values.phoneCountryCode : null);
+      navigate(AUTH_VIEW.otpVerify);
     }
-  }, [isSuccess, pathname, returnView, router]);
+  }, [
+    isSuccess,
+    navigate,
+    setOtpFlow,
+    setPendingEmail,
+    setPendingPhone,
+    setPendingPhoneCountry,
+  ]);
 
   return {
     title: t("forgotPasswordTitle"),
     subtitle: t("forgotPasswordSubtitle"),
     onSubmit,
     isLoading: isPending,
+    showBack: canGoBack,
     onBack,
     hasAccountText: t("socialSignUpHasAccount"),
     signInText: t("socialSignUpLogIn"),

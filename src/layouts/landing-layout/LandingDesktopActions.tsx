@@ -30,7 +30,7 @@ export function LandingDesktopActions({ overHero }: LandingDesktopActionsProps) 
   const { user, isLoadingUser } = useAuthStore();
 
   const openChooseAccount = () => {
-    router.push({ pathname: "/", query: { auth: AUTH_VIEW.chooseAccount } });
+    useAuthStore.getState().openAuth(AUTH_VIEW.chooseAccount);
   };
 
   const handleLocaleChange = (nextLocale: string) => {

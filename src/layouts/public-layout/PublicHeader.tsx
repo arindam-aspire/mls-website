@@ -14,8 +14,8 @@ import { Avatar } from "@/src/components/ui/avatar";
 import { Button } from "@/src/components/ui/button";
 import { Skeleton } from "@/src/components/ui/skeleton";
 import { Select } from "@/src/components/ui/select";
-import { AUTH_VIEW } from "@/src/features/auth/authViews";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
+import { AUTH_VIEW } from "@/src/features/auth/authViews";
 import { Link, usePathname, useRouter } from "@/src/i18n/navigation";
 import type { AppLocale } from "@/src/i18n/routing";
 import mlsLogoLight from "@/src/assets/images/MLS_Light_Logo.png";
@@ -137,7 +137,7 @@ export function PublicHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const openChooseAccount = () => {
-    router.push({ pathname: "/", query: { auth: AUTH_VIEW.chooseAccount } });
+    useAuthStore.getState().openAuth(AUTH_VIEW.chooseAccount);
   };
 
   const handleLocaleChange = (nextLocale: string) => {

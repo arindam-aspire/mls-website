@@ -29,6 +29,7 @@ export function UserRegistrationScreen({ type }: UserRegistrationScreenProps) {
     subtitle,
     onSubmit,
     isLoading,
+    showBack,
     onBack,
     hasAccountText,
     signInText,
@@ -39,7 +40,7 @@ export function UserRegistrationScreen({ type }: UserRegistrationScreenProps) {
 
   return (
     <ModalPanel size="md">
-      <AuthModalHeader showBack onBack={onBack} />
+      <AuthModalHeader showBack={showBack} onBack={onBack} />
       <ModalCloseButton />
       <ModalContent className="!py-0 sm:!py-0">
         <div className="space-y-1 px-4 !pb-4 text-center sm:px-6">

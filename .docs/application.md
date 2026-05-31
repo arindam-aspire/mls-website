@@ -318,7 +318,7 @@ Reserved; not wired to routes yet.
 
 **Forms / UI:** `SignInForm`, `SignUpForm`, `SignInWithOTPForm`, `OTPVerificationForm`, `ForgotPasswordForm`, `ResetPasswordForm`, `ChooseAccountForm`, `AccountTypeCard`, `SocialAuthForm`, `AgencyAuthForm`, `AgencySignUpForm`, `AuthModalHeader`, `OtpVerificationTitle`.
 
-**Screens** compose modal UI only; business logic lives in matching hooks under `hooks/` (see [hooks/README.md](./src/features/auth/hooks/README.md)).
+**Screens** compose modal UI only; business logic lives in matching hooks under `hooks/` (see [hooks/README.md](./src/features/auth/hooks/README.md)). Full screen-switching flow: [auth-screen-flow.md](./src/features/auth/auth-screen-flow.md).
 
 **Account types:** `user`, `owner`, `agency` (and `agent` in resolver — limited support).
 
@@ -386,21 +386,15 @@ Reserved; not wired to routes yet.
 
 ### Opening the auth modal
 
-Query parameter: `?auth=<view>` on any page inside `PublicLayout`.
+Auth modal state is **not** in the URL. `useAuthStore` (Zustand) owns modal visibility, a `screenStack` for navigation, and transient flow data persisted in `sessionStorage` (`auth_transient`).
 
-Optional params (see `authViews.ts`):
+Header / layout CTAs open auth with:
 
-| Key | Purpose |
-| --- | --- |
-| `auth` | Active view (required) |
-| `from` | Return view after flow |
-| `otp-flow` | `signin` \| `forgot` \| `signup` |
-| `otp-email`, `otp-phone`, `otp-phone-country` | OTP context |
-| `choose-account` | Forces choose-account view |
+```ts
+useAuthStore.getState().openAuth(AUTH_VIEW.chooseAccount);
+```
 
-Example: `/?auth=choose-account` or `/?auth=user-sign-in`
-
-Header opens: `router.push({ pathname: "/", query: { auth: AUTH_VIEW.chooseAccount } })`.
+`AuthModal` (in `PublicLayout` / `LandingLayout`) reads `isOpen` and the top of `screenStack` to render the active screen. See `.docs/src/features/auth/auth-screen-flow.md`.
 
 ### Token storage
 
@@ -410,17 +404,26 @@ Header opens: `router.push({ pathname: "/", query: { auth: AUTH_VIEW.chooseAccou
 
 ### Auth store (`auth.store.ts`)
 
+Combines **logged-in session** and **modal flow** state.
+
 | State | Purpose |
 | --- | --- |
 | `user` | Logged-in user profile |
 | `access_token`, `refresh_token` | In-memory mirror of tokens |
 | `isLoadingUser` | Profile fetch loading |
-| `pendingSignUp`, `pendingOtpSession`, `forgotPasswordOtp` | Multi-step flows |
+| `isOpen`, `screenStack` | Modal open + navigation stack |
+| `agentPortal`, `otpFlow` | Agent portal badge; OTP flow kind |
+| `pendingEmail`, `pendingPhone`, `pendingPhoneCountry` | OTP / forgot-password contact |
+| `otpSession`, `otpCode` | OTP session handoff |
+| `pendingSignUp`, `pendingAgencySignUp` | Registration confirm step |
 
 | Actions | Purpose |
 | --- | --- |
-| `setAuth`, `setUser`, `clearAuth` | Session lifecycle |
-| `setPendingOtpSession`, etc. | Flow-specific |
+| `setAuth`, `setUser`, `clearAuth` | Session lifecycle (logout) |
+| `openAuth`, `closeAuth`, `push`, `pop` | Modal navigation |
+| `setPendingEmail`, `setOtpSession`, etc. | Transient flow data (+ sessionStorage) |
+
+Session persistence helpers: `src/features/auth/store/authModalStorage.ts`.
 
 ### Logout
 

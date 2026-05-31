@@ -2,32 +2,21 @@
 
 import { useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { usePathname, useRouter } from "@/src/i18n/navigation";
-import { AUTH_VIEW, buildAuthModalUrl, type AuthView } from "../authViews";
-import { useIsAgentSignInPortal } from "./useAuthPortal";
+import { AUTH_VIEW } from "../authViews";
+import { useAuthStore } from "../store/auth.store";
+import { useAuthModalNavigation, useIsAgentSignInPortal } from "./useAuthPortal";
 import { useAuthScreenLegalFooter } from "./authScreen.utils";
 
 export function useAgencySignInScreen() {
-  const router = useRouter();
-  const pathname = usePathname();
   const t = useTranslations("auth");
   const { termsText, privacyText } = useAuthScreenLegalFooter();
+  const navigate = useAuthStore((state) => state.navigate);
+  const { onBack, canGoBack } = useAuthModalNavigation();
   const isAgent = useIsAgentSignInPortal();
 
-  const openAuthView = useCallback(
-    (view: AuthView) => {
-      router.replace(
-        buildAuthModalUrl(pathname, view, {
-          returnView: AUTH_VIEW.agencySignIn,
-        }),
-      );
-    },
-    [pathname, router],
-  );
-
   const onAgencySignUpClick = useCallback(() => {
-    openAuthView(AUTH_VIEW.agencySignUp);
-  }, [openAuthView]);
+    navigate(AUTH_VIEW.agencySignUp);
+  }, [navigate]);
 
   return {
     portalBadgeText: isAgent ? t("agentPortalBadge") : t("agencyPortalBadge"),
@@ -37,6 +26,8 @@ export function useAgencySignInScreen() {
     agencyNoAccountText: t("agencySignInNoAccount"),
     agencyCreateAccountText: t("agencyCreateAccount"),
     onAgencySignUpClick,
+    showBack: canGoBack,
+    onBack,
     termsText,
     privacyText,
   };

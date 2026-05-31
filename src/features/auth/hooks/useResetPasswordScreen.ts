@@ -1,68 +1,35 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { usePathname, useRouter } from "@/src/i18n/navigation";
-import { useSearchParams } from "next/navigation";
-import {
-  AUTH_OTP_EMAIL_QUERY_KEY,
-  AUTH_OTP_FLOW_QUERY_KEY,
-  AUTH_OTP_PHONE_COUNTRY_QUERY_KEY,
-  AUTH_OTP_PHONE_QUERY_KEY,
-  AUTH_RETURN_VIEW_QUERY_KEY,
-  AUTH_VIEW,
-  buildAuthModalUrl,
-  resolveSignInViewAfterPasswordReset,
-} from "../authViews";
-import { useAuthPortal } from "./useAuthPortal";
 import { useResetPassword } from "../mutations/auth.mutation";
 import { useAuthStore } from "../store/auth.store";
+import { useAuthModalNavigation } from "./useAuthPortal";
+import { useAuthFlowContext, useAuthScreenLegalFooter } from "./authScreen.utils";
 import { useToast } from "@/src/hooks/useToast";
-import {
-  resolveAuthReturnView,
-  resolveOtpFlow,
-  useAuthScreenLegalFooter,
-} from "./authScreen.utils";
 
 export function useResetPasswordScreen() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
   const t = useTranslations("auth");
   const { termsText, privacyText } = useAuthScreenLegalFooter();
+  const navigate = useAuthStore((state) => state.navigate);
+  const { onBack, canGoBack } = useAuthModalNavigation();
+  const pendingEmail = useAuthStore((state) => state.pendingEmail);
+  const otpCode = useAuthStore((state) => state.otpCode);
+  const clearOtpSession = useAuthStore((state) => state.clearOtpSession);
+  const { signInViewAfterReset } = useAuthFlowContext();
   const toast = useToast();
-
-  const returnView = resolveAuthReturnView(
-    searchParams.get(AUTH_RETURN_VIEW_QUERY_KEY),
-    AUTH_VIEW.userSignIn,
-  );
-  const otpFlow = resolveOtpFlow(searchParams.get(AUTH_OTP_FLOW_QUERY_KEY));
-  const contactEmail = searchParams.get(AUTH_OTP_EMAIL_QUERY_KEY) ?? undefined;
-  const contactPhone = searchParams.get(AUTH_OTP_PHONE_QUERY_KEY) ?? undefined;
-  const contactPhoneCountry =
-    searchParams.get(AUTH_OTP_PHONE_COUNTRY_QUERY_KEY) ?? undefined;
-
-  const signInView = resolveSignInViewAfterPasswordReset(returnView);
-  const portal = useAuthPortal();
-  const forgotPasswordOtp = useAuthStore((s) => s.forgotPasswordOtp);
-  const clearForgotPasswordOtp = useAuthStore((s) => s.clearForgotPasswordOtp);
   const { mutate: resetPasswordMutate, isPending } = useResetPassword();
-
-  const portalOptions = useMemo(
-    () => (portal ? { portal } : undefined),
-    [portal],
-  );
 
   const onSubmit = useCallback(
     (newPassword: string) => {
-      if (!contactEmail?.trim()) {
+      if (!pendingEmail?.trim()) {
         toast.info("Unable to reset password", {
           description: "Email address is missing.",
         });
         return;
       }
 
-      if (!forgotPasswordOtp?.trim()) {
+      if (!otpCode?.trim()) {
         toast.info("Unable to reset password", {
           description: "Verification code is missing. Please verify OTP again.",
         });
@@ -71,69 +38,39 @@ export function useResetPasswordScreen() {
 
       resetPasswordMutate(
         {
-          email: contactEmail.trim(),
-          code: forgotPasswordOtp.trim(),
+          email: pendingEmail.trim(),
+          code: otpCode.trim(),
           new_password: newPassword,
         },
         {
           onSuccess: () => {
-            clearForgotPasswordOtp();
-            router.replace(
-              buildAuthModalUrl(pathname, signInView, portalOptions),
-            );
+            clearOtpSession();
+            navigate(signInViewAfterReset);
           },
         },
       );
     },
     [
-      clearForgotPasswordOtp,
-      contactEmail,
-      forgotPasswordOtp,
-      pathname,
-      portalOptions,
+      clearOtpSession,
+      otpCode,
+      pendingEmail,
+      navigate,
       resetPasswordMutate,
-      router,
-      signInView,
+      signInViewAfterReset,
       toast,
     ],
   );
 
-  const onBack = useCallback(() => {
-    if (otpFlow === "forgot") {
-      router.replace(
-        buildAuthModalUrl(pathname, AUTH_VIEW.otpVerify, {
-          returnView,
-          otpFlow: "forgot",
-          contactEmail,
-          contactPhone,
-          contactPhoneCountry,
-        }),
-      );
-      return;
-    }
-
-    router.replace(
-      buildAuthModalUrl(pathname, AUTH_VIEW.signInOtp, returnView),
-    );
-  }, [
-    contactEmail,
-    contactPhone,
-    contactPhoneCountry,
-    otpFlow,
-    pathname,
-    returnView,
-    router,
-  ]);
-
   const onSignInClick = useCallback(() => {
-    router.replace(buildAuthModalUrl(pathname, signInView, portalOptions));
-  }, [pathname, portalOptions, router, signInView]);
+    navigate(signInViewAfterReset);
+  }, [navigate, signInViewAfterReset]);
 
   return {
     title: t("resetPasswordTitle"),
     subtitle: t("resetPasswordSubtitle"),
     onSubmit,
     isLoading: isPending,
+    showBack: canGoBack,
     onBack,
     hasAccountText: t("socialSignUpHasAccount"),
     signInText: t("socialSignUpLogIn"),

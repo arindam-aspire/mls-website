@@ -2,12 +2,15 @@
 
 import { useCallback, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { usePathname, useRouter } from "@/src/i18n/navigation";
-import { AUTH_QUERY_KEY, AUTH_VIEW, buildAuthModalUrl, type AuthView } from "../authViews";
+import {
+  AUTH_VIEW,
+  resolveSocialSignInViewForAccountType,
+} from "../authViews";
 import type { SocialAccountType } from "../components/SocialAuthForm";
 import type { SignUpFormValues } from "../types/auth.types";
 import { useSignUp } from "../mutations/auth.mutation";
 import { useAuthStore } from "../store/auth.store";
+import { useAuthModalNavigation } from "./useAuthPortal";
 import { useAuthScreenLegalFooter } from "./authScreen.utils";
 
 type UseUserRegistrationScreenParams = {
@@ -15,60 +18,42 @@ type UseUserRegistrationScreenParams = {
 };
 
 export function useUserRegistrationScreen({ type }: UseUserRegistrationScreenParams) {
-  const router = useRouter();
-  const pathname = usePathname();
   const t = useTranslations("auth");
   const { termsText, privacyText } = useAuthScreenLegalFooter();
-
-  const socialSignUpView =
-    type === "user" ? AUTH_VIEW.userSocialSignUp : AUTH_VIEW.ownerSocialSignUp;
-  const signInView =
-    type === "user" ? AUTH_VIEW.userSocialSignIn : AUTH_VIEW.ownerSocialSignIn;
+  const navigate = useAuthStore((state) => state.navigate);
+  const { onBack, canGoBack } = useAuthModalNavigation();
+  const setPendingSignUp = useAuthStore((state) => state.setPendingSignUp);
+  const setPendingEmail = useAuthStore((state) => state.setPendingEmail);
+  const pendingSignUp = useAuthStore((state) => state.pendingSignUp);
 
   const { mutate: signUpMutate, isPending, isSuccess } = useSignUp();
-  const setPendingSignUp = useAuthStore((s) => s.setPendingSignUp);
-  const pendingSignUp = useAuthStore((s) => s.pendingSignUp);
-
-  const openAuthView = useCallback(
-    (view: AuthView) => {
-      router.replace(`${pathname}?${AUTH_QUERY_KEY}=${view}`);
-    },
-    [pathname, router],
-  );
-
-  const onBack = useCallback(() => {
-    openAuthView(socialSignUpView);
-  }, [openAuthView, socialSignUpView]);
 
   const onSubmit = useCallback(
     (values: SignUpFormValues) => {
       setPendingSignUp(values);
+      setPendingEmail(values.email);
       signUpMutate(values);
     },
-    [setPendingSignUp, signUpMutate],
+    [setPendingEmail, setPendingSignUp, signUpMutate],
   );
 
   const onSignInClick = useCallback(() => {
-    openAuthView(signInView);
-  }, [openAuthView, signInView]);
+    navigate(resolveSocialSignInViewForAccountType(type));
+  }, [navigate, type]);
 
   useEffect(() => {
     if (isSuccess && pendingSignUp?.email) {
-      const returnView = type === "user" ? AUTH_VIEW.userSignUp : AUTH_VIEW.ownerSignUp;
-      router.replace(
-        buildAuthModalUrl(pathname, AUTH_VIEW.confirmSignUp, {
-          returnView,
-          contactEmail: pendingSignUp.email,
-        }),
-      );
+      setPendingEmail(pendingSignUp.email);
+      navigate(AUTH_VIEW.confirmSignUp);
     }
-  }, [isSuccess, pendingSignUp, pathname, router, type]);
+  }, [isSuccess, pendingSignUp, navigate, setPendingEmail]);
 
   return {
     title: t("signUpFormTitle"),
     subtitle: t("signUpFormSubtitle"),
     onSubmit,
     isLoading: isPending,
+    showBack: canGoBack,
     onBack,
     hasAccountText: t("socialSignUpHasAccount"),
     signInText: t("socialSignUpLogIn"),

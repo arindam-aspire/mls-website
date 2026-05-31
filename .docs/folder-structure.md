@@ -314,6 +314,7 @@ mls_website/
 │   │   │   │   └── SignUpForm.tsx
 │   │   │   ├── hooks/
 │   │   │   │   ├── authScreen.utils.ts
+│   │   │   │   ├── authStack.utils.ts
 │   │   │   │   ├── useAccountChooseScreen.ts
 │   │   │   │   ├── useAgencyEmailSignInScreen.ts
 │   │   │   │   ├── useAgencyRegistrationScreen.ts
@@ -348,7 +349,9 @@ mls_website/
 │   │   │   ├── services/
 │   │   │   │   └── auth.service.ts
 │   │   │   ├── store/
-│   │   │   │   └── auth.store.ts
+│   │   │   │   ├── auth.navigation.ts
+│   │   │   │   ├── auth.store.ts
+│   │   │   │   └── authModalStorage.ts
 │   │   │   └── types/
 │   │   │       ├── auth.types.ts
 │   │   │       ├── chooseAccount.types.ts

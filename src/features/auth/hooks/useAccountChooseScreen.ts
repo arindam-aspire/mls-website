@@ -2,20 +2,15 @@
 
 import { useCallback, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { usePathname, useRouter } from "@/src/i18n/navigation";
-import {
-  AUTH_QUERY_KEY,
-  AUTH_VIEW,
-  type AuthView,
-} from "../authViews";
-import type { ChooseAccountMode } from "../types/chooseAccount.types";
+import { AUTH_VIEW } from "../authViews";
+import { useAuthStore } from "../store/auth.store";
+import { useAuthScreenLegalFooter } from "./authScreen.utils";
 
 export function useAccountChooseScreen() {
-  const router = useRouter();
-  const pathname = usePathname();
   const t = useTranslations("auth");
-  const tCommon = useTranslations("common");
-  const [mode, setMode] = useState<ChooseAccountMode>("signin");
+  const { termsText, privacyText } = useAuthScreenLegalFooter();
+  const navigate = useAuthStore((state) => state.navigate);
+  const [mode, setMode] = useState<"signin" | "signup">("signin");
 
   const title = useMemo(
     () =>
@@ -25,16 +20,9 @@ export function useAccountChooseScreen() {
     [mode, t],
   );
 
-  const openAuthView = useCallback(
-    (view: AuthView) => {
-      router.replace(`${pathname}?${AUTH_QUERY_KEY}=${view}`);
-    },
-    [pathname, router],
-  );
-
   const onCreateAccountClick = useCallback(() => {
-    openAuthView(AUTH_VIEW.userSocialSignUp);
-  }, [openAuthView]);
+    navigate(AUTH_VIEW.userSocialSignUp);
+  }, [navigate]);
 
   return {
     title,
@@ -44,7 +32,7 @@ export function useAccountChooseScreen() {
     noAccountText: t("chooseAccountNoAccount"),
     createAccountText: t("chooseAccountCreateAccount"),
     onCreateAccountClick,
-    termsText: t("termsOfService"),
-    privacyText: tCommon("privacyPolicy"),
+    termsText,
+    privacyText,
   };
 }

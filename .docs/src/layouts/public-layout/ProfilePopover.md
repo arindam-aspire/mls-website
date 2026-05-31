@@ -10,7 +10,7 @@ Project source module.
 
 # Imports
 
-- `import { ConfirmModal } from "@/src/components/common/ConfirmModal"`
+- `import { UpcomingFeatureModal } from "@/src/components/common/UpcomingFeatureModal"`
 - `import { Avatar } from "@/src/components/ui/avatar"`
 - `import { Button } from "@/src/components/ui/button"`
 - `import { IconButton } from "@/src/components/ui/icon-button"`
@@ -47,16 +47,14 @@ _No explicit inputs detected._
 
 ## Actions
 
-- Close popover/menu
-- Navigate and close popover/menu
-
-## Validations
-
-_No explicit validations detected._
+- Notifications bell → opens `UpcomingFeatureModal` (coming soon)
+- Profile menu links → navigate and close popover
+- Sign out → `ConfirmModal` then `useLogout`
 
 ## Show/Hide Controls
 
-_No explicit show/hide controls detected._
+- `isUpcomingFeatureModalOpen` — notifications coming-soon modal
+- `showLogoutConfirm` — logout confirmation modal
 
 # UI Details
 

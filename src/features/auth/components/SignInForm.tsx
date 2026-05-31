@@ -7,28 +7,18 @@ import { Button, Input, Link } from "@/src/components/ui";
 import { useForm } from "@/src/hooks/useForm";
 import { cn } from "@/src/lib/cn";
 import { authFormOverlineClasses, bodyTextClasses } from "@/src/lib/typography";
-import { usePathname, useRouter } from "@/src/i18n/navigation";
-import { AUTH_VIEW, buildAuthModalUrl, type AuthView } from "../authViews";
-import { useAuthPortal } from "../hooks/useAuthPortal";
+import { AUTH_VIEW } from "../authViews";
+import { useAuthStore } from "../store/auth.store";
 import { SignInFormValues } from "../types/auth.types";
 
-
-
 type SignInFormProps = {
-  signInReturnView?: AuthView;
   onClickSignIn: (values: SignInFormValues) => void;
   isLoading: boolean;
 };
 
-export function SignInForm({
-  signInReturnView = AUTH_VIEW.userSignIn,
-  onClickSignIn,
-  isLoading,
-}: SignInFormProps) {
+export function SignInForm({ onClickSignIn, isLoading }: SignInFormProps) {
   const t = useTranslations("auth");
-  const router = useRouter();
-  const pathname = usePathname();
-  const portal = useAuthPortal();
+  const navigate = useAuthStore((state) => state.navigate);
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -58,18 +48,6 @@ export function SignInForm({
       return nextErrors;
     },
   });
-
-  const openAuthView = (
-    view: AuthView,
-    returnView?: AuthView,
-  ) => {
-    router.replace(
-      buildAuthModalUrl(pathname, view, {
-        returnView,
-        portal: portal ?? undefined,
-      }),
-    );
-  };
 
   return (
     <form
@@ -145,9 +123,7 @@ export function SignInForm({
           color="primary"
           size="sm"
           className="shrink-0 font-medium"
-          onClick={() =>
-            openAuthView(AUTH_VIEW.forgotPassword, signInReturnView)
-          }
+          onClick={() => navigate(AUTH_VIEW.forgotPassword)}
         >
           {t("signInForgotPassword")}
         </Link>
@@ -174,9 +150,7 @@ export function SignInForm({
           fullWidth
           className="font-semibold"
           iconStart={<Clock className="size-5" aria-hidden />}
-          onClick={() =>
-            openAuthView(AUTH_VIEW.signInOtp, signInReturnView)
-          }
+          onClick={() => navigate(AUTH_VIEW.signInOtp)}
         >
           {t("loginWithOneTimeCode")}
         </Button>
@@ -184,4 +158,3 @@ export function SignInForm({
     </form>
   );
 }
-

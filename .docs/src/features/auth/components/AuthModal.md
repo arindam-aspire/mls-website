@@ -1,98 +1,73 @@
 # File Overview
 
-Feature or shared UI component.
+Auth modal shell: reads `useAuthStore`, renders the active screen from `screenStack`, closes via `closeAuth`.
 
 **Source:** `src/features/auth/components/AuthModal.tsx` (Client Component)
 
 # Responsibilities
 
-- Feature or shared UI component.
+- Subscribe to `isOpen` and `screenStack` from Zustand.
+- Map top-of-stack `AuthView` to screen component via `renderAuthView`.
+- Re-hydrate modal state from `sessionStorage` on mount (page refresh mid-flow).
+- Wire `Modal` `onClose` to `closeAuth()`.
 
 # Imports
 
-- `import { usePathname, useRouter } from "@/src/i18n/navigation"`
-- `import { AgencyEmailSignInScreen } from "../screens/AgencyEmailSignInScreen"`
-- `import { AgencyRegistrationScreen } from "../screens/AgencyRegistrationScreen"`
-- `import { AgencySignInScreen } from "../screens/AgencySignInScreen"`
-- `import { AccountChooseScreen } from "../screens/AccountChooseScreen"`
-- `import { ForgotPasswordScreen } from "../screens/ForgotPasswordScreen"`
-- `import { ResetPasswordScreen } from "../screens/ResetPasswordScreen"`
-- `import { SignInScreen } from "../screens/SignInScreen"`
-- `import { OTPVerificationScreen } from "../screens/OTPVerificationScreen"`
-- `import { SignInWithOTPScreen } from "../screens/SignInWithOTPScreen"`
-- `import { SocialRegistrationScreen } from "../screens/SocialRegistrationScreen"`
-- `import { SocialSignInScreen } from "../screens/SocialSignInScreen"`
-- `import { UserRegistrationScreen } from "../screens/UserRegistrationScreen"`
-- `import { ConfirmSignUpScreen } from "../screens/ConfirmSignUpScreen"`
+- UI: `Modal`, `ModalBackdrop`, `ModalContainer`
+- `AUTH_VIEW`, `AuthView` from `../authViews`
+- `readAuthModalSession` from `../store/authModalStorage`
+- `useAuthStore` from `../store/auth.store`
+- All auth screen components under `../screens/`
 
 # Exports
 
 - `AuthModal`
-- `AUTH_QUERY_KEY`
-- `AUTH_RETURN_VIEW_QUERY_KEY`
-- `AUTH_VIEW`
-- `buildAuthModalUrl`
-- `CHOOSE_ACCOUNT_QUERY_KEY`
-- `resolveAccountTypeAuthView`
-- `resolveEmailSignInView`
-- `resolveEmailSignUpView`
-- `type AuthView`
+- Re-exports: `AUTH_VIEW`, `AuthView`, resolver helpers from `authViews.ts`
 
 # State Management
 
-_No significant state; presentational or config module._
+- **Zustand** `useAuthStore` — `isOpen`, `screenStack`, `closeAuth`
+- Mount `useEffect` merges persisted session if `isOpen`
 
 # API Usage
 
-_N/A unless extended._
+_N/A — presentation shell._
 
 # Navigation
 
-- Use **`Link`**, **`useRouter`**, **`redirect`** from `@/src/i18n/navigation` for locale-prefixed paths (e.g. `/en/listing`).
-- Auth modal: query `?auth=<view>` on current pathname (see `authViews.ts`).
+No router usage. Screen hooks inside child screens call `push` / `pop` / `closeAuth`.
 
 # Props / Parameters
 
-- See component/handler props in source (TypeScript interfaces).
+No props — global modal mounted in layouts.
 
 # Actions / Inputs
 
-## Inputs
+## User actions
 
-_No explicit inputs detected._
-
-## Actions
-
-_No explicit actions detected._
-
-## Validations
-
-_No explicit validations detected._
-
-## Show/Hide Controls
-
-_No explicit show/hide controls detected._
+- Close modal (backdrop, escape) → `closeAuth()`
+- Back navigation handled inside screens via `AuthModalHeader` + hook `onBack`
 
 # UI Details
 
-- **Theme:** semantic tokens (`bg-page`, `bg-surface`, `text-text`, `text-muted`, `bg-primary`, `border-secondary/15`).
-- **Light/dark:** via `ThemeProvider` / `html.light` | `html.dark`.
-- **Radius:** `rounded-lg` controls; `rounded-xl` cards/modals/popovers; `rounded-full` avatars/pills.
-- **Responsive:** mobile-first (`sm:`, `md:`, `lg:`).
+- **Theme:** semantic tokens via child screens.
 - Uses **`Modal`** from UI kit (`rounded-xl`).
+- **Responsive:** child screens handle layout.
 
 # Flow Description
 
-1. `useSearchParams` reads `auth` query key.
-2. Valid view renders matching auth screen inside `Modal`.
-3. Close clears auth query via locale-aware `useRouter`.
-4. Sign-in success callback closes modal.
+1. Layout renders `<AuthModal />` always (returns `null` when closed).
+2. `activeScreen = screenStack[screenStack.length - 1]`.
+3. `renderAuthView(activeScreen)` returns screen JSX.
+4. On mount, if sessionStorage has `isOpen: true`, `setState` restores stack and transient data.
 
 # Dependencies
 
-- Parent feature or route that imports this file.
-- See **Imports** for direct module dependencies.
+- `PublicLayout`, `LandingLayout`
+- All screens under `screens/`
+- `auth.store.ts`, `authModalStorage.ts`
 
 # Notes
 
-- Keep in sync when `src/features/auth/components/AuthModal.tsx` changes.
+- Does not render `AuthModalHeader` itself — each screen includes header via its hook.
+- No `useSearchParams` or URL query manipulation.

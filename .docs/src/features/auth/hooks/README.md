@@ -25,11 +25,15 @@ Feature hooks own **logic and data** for auth screens and forms. Screens under `
 | Hook | Used by |
 | --- | --- |
 | `useChooseAccountForm` | `ChooseAccountForm` |
-| `useAuthPortal` / `useIsAgentSignInPortal` | Agency/agent flows (URL `portal` query) |
-| `authScreen.utils` | Shared `resolveAuthReturnView`, `resolveOtpFlow`, `useAuthScreenLegalFooter` |
+| `useAuthPortal` / `useIsAgentSignInPortal` | Agency/agent flows (`agentPortal` in store) |
+| `useAuthModalNavigation` | `canGoBack`, `onBack` from `screenStack` |
+| `authScreen.utils` | `useAuthFlowContext`, `useAuthScreenLegalFooter` |
+| `authStack.utils` | `getAuthContextFromStack`, `isAgencyContextFromStack` |
 
 ## Conventions
 
 - Follow hook section order from workspace `components-hooks-architecture` rule.
-- Navigation via `useRouter` / `usePathname` from `@/src/i18n/navigation` and `buildAuthModalUrl` from `authViews.ts`.
-- Mutations from `mutations/auth.mutation.ts`; session flow state from `store/auth.store.ts`.
+- Navigation via `useAuthStore`: `openAuth`, `navigate`, `pop`, `closeAuth` — **no URL query params**.
+- `navigate()` uses `SCREEN_NAV_TYPE` (`auth.navigation.ts`) so toggling account type or sign-in/sign-up does not grow the stack.
+- Transient data via store setters (sessionStorage-backed).
+- Mutations from `mutations/auth.mutation.ts`.

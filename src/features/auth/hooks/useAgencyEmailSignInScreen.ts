@@ -2,45 +2,26 @@
 
 import { useCallback, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { usePathname, useRouter } from "@/src/i18n/navigation";
-import { AUTH_VIEW, buildAuthModalUrl } from "../authViews";
+import { AUTH_VIEW } from "../authViews";
 import { useSignInWithPassword } from "../mutations/auth.mutation";
 import { SignInFormValues, resolveSignInRole } from "../types/auth.types";
-import { useAuthPortal, useIsAgentSignInPortal } from "./useAuthPortal";
+import { useAuthStore } from "../store/auth.store";
+import { useAuthModalNavigation, useIsAgentSignInPortal } from "./useAuthPortal";
 import { useAuthScreenLegalFooter } from "./authScreen.utils";
 
-type UseAgencyEmailSignInScreenParams = {
-  onSighinSuccess: () => void;
-};
-
-export function useAgencyEmailSignInScreen({
-  onSighinSuccess,
-}: UseAgencyEmailSignInScreenParams) {
-  const router = useRouter();
-  const pathname = usePathname();
+export function useAgencyEmailSignInScreen() {
   const t = useTranslations("auth");
   const { termsText, privacyText } = useAuthScreenLegalFooter();
-  const portal = useAuthPortal();
+  const navigate = useAuthStore((state) => state.navigate);
+  const { onBack, canGoBack } = useAuthModalNavigation();
+  const closeAuth = useAuthStore((state) => state.closeAuth);
   const isAgent = useIsAgentSignInPortal();
   const { mutate: signInWithPassword, isPending, isSuccess: isLoginSuccess } =
     useSignInWithPassword();
 
-  const onBack = useCallback(() => {
-    router.replace(
-      buildAuthModalUrl(pathname, AUTH_VIEW.agencySignIn, {
-        portal: portal ?? undefined,
-      }),
-    );
-  }, [pathname, portal, router]);
-
   const onAgencySignUpClick = useCallback(() => {
-    router.replace(
-      buildAuthModalUrl(pathname, AUTH_VIEW.agencySignUp, {
-        returnView: AUTH_VIEW.agencyEmailSignIn,
-        portal: portal ?? undefined,
-      }),
-    );
-  }, [pathname, portal, router]);
+    navigate(AUTH_VIEW.agencySignUp);
+  }, [navigate]);
 
   const onClickSignIn = useCallback(
     (values: SignInFormValues) => {
@@ -54,16 +35,16 @@ export function useAgencyEmailSignInScreen({
 
   useEffect(() => {
     if (isLoginSuccess) {
-      onSighinSuccess();
+      closeAuth();
     }
-  }, [isLoginSuccess, onSighinSuccess]);
+  }, [closeAuth, isLoginSuccess]);
 
   return {
     title: t("signInFormTitle"),
     subtitle: isAgent ? t("agentSignInFormSubtitle") : t("signInFormSubtitle"),
-    signInReturnView: AUTH_VIEW.agencySignIn,
     onClickSignIn,
     isLoading: isPending,
+    showBack: canGoBack,
     onBack,
     isAgent,
     agencyNoAccountText: t("agencySignInNoAccount"),

@@ -2,46 +2,28 @@
 
 import { useCallback, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { usePathname, useRouter } from "@/src/i18n/navigation";
 import {
-  AUTH_QUERY_KEY,
-  AUTH_VIEW,
-  resolveEmailSignInView,
-  type AuthView,
+  resolveSocialSignUpViewForAccountType,
 } from "../authViews";
 import type { SocialAccountType } from "../components/SocialAuthForm";
 import { useSignInWithPassword } from "../mutations/auth.mutation";
 import { SignInFormValues, resolveSignInRole } from "../types/auth.types";
+import { useAuthStore } from "../store/auth.store";
+import { useAuthModalNavigation } from "./useAuthPortal";
 import { useAuthScreenLegalFooter } from "./authScreen.utils";
 
 type UseSignInScreenParams = {
   type: SocialAccountType;
-  onSighinSuccess: () => void;
 };
 
-export function useSignInScreen({ type, onSighinSuccess }: UseSignInScreenParams) {
-  const router = useRouter();
-  const pathname = usePathname();
+export function useSignInScreen({ type }: UseSignInScreenParams) {
   const t = useTranslations("auth");
   const { termsText, privacyText } = useAuthScreenLegalFooter();
+  const navigate = useAuthStore((state) => state.navigate);
+  const { onBack, canGoBack } = useAuthModalNavigation();
+  const closeAuth = useAuthStore((state) => state.closeAuth);
   const { mutate: signInWithPassword, isPending, isSuccess: isLoginSuccess } =
     useSignInWithPassword();
-
-  const socialSignInView =
-    type === "user" ? AUTH_VIEW.userSocialSignIn : AUTH_VIEW.ownerSocialSignIn;
-  const signUpView =
-    type === "user" ? AUTH_VIEW.userSocialSignUp : AUTH_VIEW.ownerSocialSignUp;
-
-  const openAuthView = useCallback(
-    (view: AuthView) => {
-      router.replace(`${pathname}?${AUTH_QUERY_KEY}=${view}`);
-    },
-    [pathname, router],
-  );
-
-  const onBack = useCallback(() => {
-    openAuthView(socialSignInView);
-  }, [openAuthView, socialSignInView]);
 
   const onClickSignIn = useCallback(
     (values: SignInFormValues) => {
@@ -54,21 +36,21 @@ export function useSignInScreen({ type, onSighinSuccess }: UseSignInScreenParams
   );
 
   const onCreateAccountClick = useCallback(() => {
-    openAuthView(signUpView);
-  }, [openAuthView, signUpView]);
+    navigate(resolveSocialSignUpViewForAccountType(type));
+  }, [navigate, type]);
 
   useEffect(() => {
     if (isLoginSuccess) {
-      onSighinSuccess();
+      closeAuth();
     }
-  }, [isLoginSuccess, onSighinSuccess]);
+  }, [closeAuth, isLoginSuccess]);
 
   return {
     title: t("signInFormTitle"),
     subtitle: t("signInFormSubtitle"),
-    signInReturnView: resolveEmailSignInView(type),
     onClickSignIn,
     isLoading: isPending,
+    showBack: canGoBack,
     onBack,
     noAccountText: t("chooseAccountNoAccount"),
     createAccountText: t("chooseAccountCreateAccount"),

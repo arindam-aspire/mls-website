@@ -95,12 +95,14 @@ export const useConfirmSignUp = () => {
 
 export const useSignInWithOtpRequest = () => {
   const toast = useToast();
-  const { setPendingOtpSession } = useAuthStore();
+  const setOtpSession = useAuthStore((state) => state.setOtpSession);
+  const setOtpCode = useAuthStore((state) => state.setOtpCode);
 
   return useMutation({
     mutationFn: signInWithOtpRequest,
     onSuccess: (response: SignInWithOtpResponse) => {
-      setPendingOtpSession(response.data);
+      setOtpSession(response.data.session);
+      setOtpCode(response.data.otp);
       toast.success("OTP Sent Successfully", {
         description: "A verification code has been sent. Please check your inbox.",
       });
@@ -115,14 +117,14 @@ export const useSignInWithOtpRequest = () => {
 
 export const useSignInWithOtpVerify = () => {
   const toast = useToast();
-  const { setAuth, setUser, clearPendingOtpSession } = useAuthStore();
+  const { setAuth, setUser, clearOtpSession } = useAuthStore();
 
   return useMutation({
     mutationFn: signInWithOtpVerify,
     onSuccess: async (response: SignInWithOtpVerifyResponse) => {
       const { access_token, refresh_token } = response.data;
       setAuth(access_token, refresh_token);
-      clearPendingOtpSession();
+      clearOtpSession();
       try {
         await Promise.resolve();
         const userResponse = await getLoggedInUser();

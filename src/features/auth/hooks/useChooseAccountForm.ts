@@ -1,16 +1,16 @@
 "use client";
 
+import { useCallback, useMemo } from "react";
+import { useTranslations } from "next-intl";
+import { AUTH_VIEW, resolveAccountTypeAuthView } from "../authViews";
+import { useAuthStore } from "../store/auth.store";
+import type { ChooseAccountMode, ChooseAccountType } from "../types/chooseAccount.types";
 import {
   Building2,
   Headphones,
   KeyRound,
   User,
 } from "lucide-react";
-import { useCallback, useMemo } from "react";
-import { useTranslations } from "next-intl";
-import { usePathname, useRouter } from "@/src/i18n/navigation";
-import { AUTH_VIEW, buildAuthModalUrl, resolveAccountTypeAuthView } from "../authViews";
-import type { ChooseAccountMode, ChooseAccountType } from "../types/chooseAccount.types";
 
 type UseChooseAccountFormParams = {
   mode: ChooseAccountMode;
@@ -21,9 +21,9 @@ export function useChooseAccountForm({
   mode,
   onAccountTypeSelect,
 }: UseChooseAccountFormParams) {
-  const router = useRouter();
-  const pathname = usePathname();
   const t = useTranslations("auth");
+  const navigate = useAuthStore((state) => state.navigate);
+  const setAgentPortal = useAuthStore((state) => state.setAgentPortal);
 
   const accountTypes = useMemo(
     () =>
@@ -73,16 +73,12 @@ export function useChooseAccountForm({
     (type: ChooseAccountType) => {
       const view = resolveAccountTypeAuthView(type, mode);
       if (view != null) {
-        router.replace(
-          buildAuthModalUrl(pathname, view, {
-            returnView: AUTH_VIEW.chooseAccount,
-            portal: type === "agent" && mode === "signin" ? "agent" : undefined,
-          }),
-        );
+        setAgentPortal(type === "agent" && mode === "signin");
+        navigate(view);
       }
       onAccountTypeSelect?.(type);
     },
-    [mode, onAccountTypeSelect, pathname, router],
+    [mode, onAccountTypeSelect, navigate, setAgentPortal],
   );
 
   return {
