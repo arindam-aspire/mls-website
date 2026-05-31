@@ -24,6 +24,12 @@
 | --- | --- | --- |
 | next-intl | ^4.12.0 | Internationalization (i18n) for Next.js App Router |
 
+## Abdoun UI library
+
+| Package | Version | Purpose |
+| --- | --- | --- |
+| @abdoun/abdoun-library | ^0.1.29 | Shared MLS property UI components (cards, detail view, similar listings) |
+
 ## UI (accessible primitives & icons)
 
 | Package | Version | Purpose |
