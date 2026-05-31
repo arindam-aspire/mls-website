@@ -135,7 +135,9 @@ export function PopoverPanel({
 
   return (
     <HeadlessPopoverPanel
-      {...(fullScreen ? { modal: modalProp ?? true } : { anchor, modal: modalProp })}
+      {...(fullScreen
+        ? { modal: modalProp ?? true, portal: true }
+        : { anchor, modal: modalProp })}
       transition={transition}
       className={mergeHeadlessClassName(
         fullScreen ? panelFullScreenClasses : panelBaseClasses,

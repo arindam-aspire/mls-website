@@ -9,6 +9,7 @@ import { cn } from "@/src/lib/cn";
 import { authFormOverlineClasses, bodyTextClasses } from "@/src/lib/typography";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
 import { AUTH_VIEW, buildAuthModalUrl, type AuthView } from "../authViews";
+import { useAuthPortal } from "../hooks/useAuthPortal";
 import { SignInFormValues } from "../types/auth.types";
 
 
@@ -27,6 +28,7 @@ export function SignInForm({
   const t = useTranslations("auth");
   const router = useRouter();
   const pathname = usePathname();
+  const portal = useAuthPortal();
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -61,7 +63,12 @@ export function SignInForm({
     view: AuthView,
     returnView?: AuthView,
   ) => {
-    router.replace(buildAuthModalUrl(pathname, view, returnView));
+    router.replace(
+      buildAuthModalUrl(pathname, view, {
+        returnView,
+        portal: portal ?? undefined,
+      }),
+    );
   };
 
   return (

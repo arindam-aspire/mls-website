@@ -17,3 +17,17 @@ export type ForgotPasswordResponse = {
   error: unknown;
   meta: Record<string, unknown>;
 };
+
+export type ResetPasswordRequest = {
+  email: string;
+  code: string;
+  new_password: string;
+};
+
+export type ResetPasswordResponse = {
+  success: boolean;
+  message: string;
+  data: unknown;
+  error: unknown;
+  meta: Record<string, unknown>;
+};

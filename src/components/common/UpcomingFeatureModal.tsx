@@ -1,6 +1,8 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { Clock, Hammer } from "lucide-react";
 import { cn } from "@/src/lib/cn";
 import {
@@ -22,6 +24,9 @@ import {
   displayModalTitleClasses,
 } from "@/src/lib/typography";
 import type { ModalSize } from "@/src/components/ui/modal/types";
+
+/** Stacks above auth and other app modals (`z-50`). */
+const elevatedStackClasses = "!z-[100]";
 
 export interface UpcomingFeatureModalProps {
   open: boolean;
@@ -46,10 +51,21 @@ export function UpcomingFeatureModal({
   size = "sm",
   showCloseButton = true,
 }: UpcomingFeatureModalProps) {
-  return (
-    <Modal open={open} onClose={onClose} size={size}>
-      <ModalBackdrop />
-      <ModalContainer>
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const modal = (
+    <Modal
+      open={open}
+      onClose={onClose}
+      size={size}
+      className={elevatedStackClasses}
+    >
+      <ModalBackdrop className={elevatedStackClasses} />
+      <ModalContainer className={elevatedStackClasses}>
         <ModalPanel size={size}>
           {showCloseButton && <ModalCloseButton />}
 
@@ -65,22 +81,22 @@ export function UpcomingFeatureModal({
               </span>
 
               <div className="space-y-1.5">
-                <p className={displayEyebrowClasses}>
-                  {subtitle}
-                </p>
-                <ModalTitle className={cn("text-center", displayModalTitleClasses)}>
+                <p className={displayEyebrowClasses}>{subtitle}</p>
+                <ModalTitle
+                  className={cn("text-center", displayModalTitleClasses)}
+                >
                   {title}
                 </ModalTitle>
-                <ModalDescription className={cn("text-center", displayLeadClasses)}>
+                <ModalDescription
+                  className={cn("text-center", displayLeadClasses)}
+                >
                   {description}
                 </ModalDescription>
               </div>
 
               <div className="flex items-center gap-2 text-muted">
                 <Clock className="size-4" aria-hidden />
-                <span className={displayCaptionClasses}>
-                  Check back soon
-                </span>
+                <span className={displayCaptionClasses}>Check back soon</span>
               </div>
             </div>
           </ModalContent>
@@ -101,4 +117,10 @@ export function UpcomingFeatureModal({
       </ModalContainer>
     </Modal>
   );
+
+  if (!mounted) {
+    return null;
+  }
+
+  return createPortal(modal, document.body);
 }

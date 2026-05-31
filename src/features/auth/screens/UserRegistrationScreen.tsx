@@ -43,6 +43,7 @@ export function UserRegistrationScreen({ type }: UserRegistrationScreenProps) {
 
   const { mutate: signUpMutate, isPending, isSuccess } = useSignUp();
   const setPendingSignUp = useAuthStore((s) => s.setPendingSignUp);
+  const pendingSignUp = useAuthStore((s) => s.pendingSignUp);
 
   const openAuthView = (view: (typeof AUTH_VIEW)[keyof typeof AUTH_VIEW]) => {
     router.replace(`${pathname}?${AUTH_QUERY_KEY}=${view}`);
@@ -54,13 +55,16 @@ export function UserRegistrationScreen({ type }: UserRegistrationScreenProps) {
   };
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isSuccess && pendingSignUp?.email) {
       const returnView = type === "user" ? AUTH_VIEW.userSignUp : AUTH_VIEW.ownerSignUp;
       router.replace(
-        buildAuthModalUrl(pathname, AUTH_VIEW.confirmSignUp, { returnView }),
+        buildAuthModalUrl(pathname, AUTH_VIEW.confirmSignUp, {
+          returnView,
+          contactEmail: pendingSignUp.email,
+        }),
       );
     }
-  }, [isSuccess]);
+  }, [isSuccess, pendingSignUp, pathname, router, type]);
 
   return (
     <ModalPanel size="md">
@@ -72,13 +76,13 @@ export function UserRegistrationScreen({ type }: UserRegistrationScreenProps) {
       />
       <ModalCloseButton />
       <ModalContent className="!py-0 sm:!py-0">
-        <div className="flex flex-col gap-6 px-4 pb-4 sm:px-6 sm:pb-6">
-          <div className="space-y-1 text-center">
+        <div className="space-y-1 px-4 !pb-4 text-center sm:px-6">
             <h2 className={headingAuthClasses}>
               {t("signUpFormTitle")}
             </h2>
             <p className={cn(bodyTextClasses, "text-muted")}>{t("signUpFormSubtitle")}</p>
-          </div>
+        </div>
+        <div className="px-4 pb-4 sm:px-6 sm:pb-6">
           <SignUpForm onSubmit={handleFormSubmit} isLoading={isPending} />
         </div>
       </ModalContent>

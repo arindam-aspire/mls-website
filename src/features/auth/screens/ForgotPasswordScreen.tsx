@@ -87,7 +87,7 @@ export function ForgotPasswordScreen() {
       router.replace(
         buildAuthModalUrl(pathname, AUTH_VIEW.otpVerify, {
           otpFlow: "forgot",
-          returnView: AUTH_VIEW.forgotPassword,
+          returnView,
           contactEmail: method === "email" ? values.email : undefined,
           contactPhone:
             method === "phone" ? values.phoneNationalNumber : undefined,
@@ -96,20 +96,20 @@ export function ForgotPasswordScreen() {
         }),
       );
     }
-  }, [isSuccess]);
+  }, [isSuccess, pathname, returnView, router]);
 
   return (
     <ModalPanel size="md">
       <AuthModalHeader showBack onBack={handleBack} />
       <ModalCloseButton />
       <ModalContent className="!py-0 sm:!py-0">
-        <div className="flex flex-col gap-6 px-4 pb-4 sm:px-6 sm:pb-6">
-          <div className="space-y-1 text-center">
+        <div className="space-y-1 px-4 !pb-4 text-center sm:px-6">
             <h2 className={headingAuthClasses}>
               {t("forgotPasswordTitle")}
             </h2>
             <p className={cn(bodyTextClasses, "text-muted")}>{t("forgotPasswordSubtitle")}</p>
-          </div>
+        </div>
+        <div className="px-4 pb-4 sm:px-6 sm:pb-6">
           <ForgotPasswordForm
             onSubmit={handleFormSubmit}
             isLoading={isPending}

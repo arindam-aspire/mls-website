@@ -470,6 +470,7 @@ From `src/configs/environment.config.ts` → `API_BASE_URL` (env: `NEXT_PUBLIC_A
 | `SIGN_IN_WITH_OTP_VERIFY` | POST | `/auth/login/otp/verify` |
 | `LOGGED_IN_USER` | GET | `/auth/me` |
 | `FORGOT_PASSWORD` | POST | `/auth/forgot-password/request` |
+| `FORGOT_PASSWORD_CONFIRM` | POST | `/auth/forgot-password/confirm` — `{ email, code, new_password }` |
 | `REFRESH` | POST | `/auth/refresh` |
 | `LOGOUT` | POST | `/auth/logout` |
 | `USER_SIGN_UP` | POST | `/auth/signup` |
@@ -580,7 +581,7 @@ Shared field styles: `fieldVariants.ts`.
 | `ComingSoonCard` | `common/ComingSoonCard.tsx` | Placeholder pages (MLS-styled: serif title, eyebrow, accent bar) |
 | `ConfirmModal` | `common/ConfirmModal.tsx` | Confirm/cancel dialog (logout, etc.) |
 | `UpcomingFeatureModal` | `common/UpcomingFeatureModal.tsx` | Modal for upcoming feature actions (Advance/Save Search, etc.) |
-| `PasswordStrengthIndicator` | `common/PasswordStrengthIndicator.tsx` | Sign-up password strength |
+| `PasswordStrengthIndicator` | `common/PasswordStrengthIndicator.tsx` | Sign-up, agency sign-up, and reset-password strength |
 
 ### Coming Soon pages (current)
 

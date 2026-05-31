@@ -3,13 +3,8 @@
 import { useEffect, useState } from "react";
 
 export function useMatchMedia(query: string) {
-  const [matches, setMatches] = useState(() => {
-    if (typeof window === "undefined") {
-      return false;
-    }
-
-    return window.matchMedia(query).matches;
-  });
+  // Always false on server and first client paint to match SSR markup.
+  const [matches, setMatches] = useState(false);
 
   useEffect(() => {
     const media = window.matchMedia(query);

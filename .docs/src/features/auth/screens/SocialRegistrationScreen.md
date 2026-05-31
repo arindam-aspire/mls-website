@@ -10,8 +10,9 @@ Route-level screen component composing feature UI.
 
 # Imports
 
-- `import { usePathname, useRouter } from "@/src/i18n/navigation"`
-- `import { AuthModalHeader } from "../components/AuthModalHeader"`
+- `UpcomingFeatureModal` from `@/src/components/common/UpcomingFeatureModal`
+- `usePathname`, `useRouter` from `@/src/i18n/navigation`
+- `AuthModalHeader`, `SocialAuthForm`
 
 # Exports
 
@@ -19,7 +20,7 @@ Route-level screen component composing feature UI.
 
 # State Management
 
-_No significant state; presentational or config module._
+- **React** `useState` — `isUpcomingFeatureModalOpen` toggles the coming-soon overlay when a social provider button is clicked.
 
 # API Usage
 
@@ -32,25 +33,19 @@ _N/A unless extended._
 
 # Props / Parameters
 
-- See component/handler props in source (TypeScript interfaces).
+- `type: SocialAccountType` — `"user"` | `"owner"` from parent auth routing.
 
 # Actions / Inputs
 
-## Inputs
-
-_No explicit inputs detected._
-
 ## Actions
 
-_No explicit actions detected._
-
-## Validations
-
-_No explicit validations detected._
+- **Google / Facebook / Apple** — opens `UpcomingFeatureModal` (social sign-up not yet available).
+- **Log in** footer link — navigates to the matching social sign-in auth view.
+- **Upcoming feature modal dismiss** — closes the overlay (`Got it` or close button).
 
 ## Show/Hide Controls
 
-_No explicit show/hide controls detected._
+- `isUpcomingFeatureModalOpen` — shows/hides `UpcomingFeatureModal` above the auth modal.
 
 # UI Details
 
@@ -58,11 +53,14 @@ _No explicit show/hide controls detected._
 - **Light/dark:** via `ThemeProvider` / `html.light` | `html.dark`.
 - **Radius:** `rounded-lg` controls; `rounded-xl` cards/modals/popovers; `rounded-full` avatars/pills.
 - **Responsive:** mobile-first (`sm:`, `md:`, `lg:`).
-- Uses **`Modal`** from UI kit (`rounded-xl`).
+- Renders auth **`ModalPanel`** plus **`UpcomingFeatureModal`** (portaled at `z-[100]`) for social provider actions.
 
 # Flow Description
 
-See source in `src/features/auth/screens/SocialRegistrationScreen.tsx` for step-by-step behavior aligned with [application.md](../../application.md) (path relative may vary).
+1. User lands on social registration (`userSocialSignUp` / `ownerSocialSignUp` auth view).
+2. Title/subtitle render; `SocialAuthForm` receives `onSocialProviderClick` to open the coming-soon modal.
+3. Tapping Google, Facebook, or Apple shows `UpcomingFeatureModal` with default copy.
+4. Email sign-up and account-type toggle continue via `SocialAuthForm` as before.
 
 # Dependencies
 

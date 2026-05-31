@@ -45,7 +45,7 @@ export function AccountChooseScreen() {
       <AuthModalHeader />
       <ModalCloseButton />
       <ModalContent className="!py-0 sm:!py-0">
-        <div className="space-y-1 px-4 pt-2 text-center sm:px-6">
+        <div className="space-y-1 px-4 !pb-4 text-center sm:px-6">
           <h2 className={headingAuthClasses}>{title}</h2>
           <p className={cn(bodyTextClasses, "text-muted")}>{t("chooseAccountSubtitle")}</p>
         </div>

@@ -7,10 +7,10 @@ import { cn } from "@/src/lib/cn";
 import { authFormOverlineClasses, bodyTextClasses } from "@/src/lib/typography";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
 import {
-  AUTH_QUERY_KEY,
   AUTH_VIEW,
   buildAuthModalUrl,
 } from "../authViews";
+import { useAuthPortal } from "../hooks/useAuthPortal";
 
 type AgencyAuthFormProps = {
   className?: string;
@@ -20,9 +20,13 @@ export function AgencyAuthForm({ className }: AgencyAuthFormProps) {
   const t = useTranslations("auth");
   const router = useRouter();
   const pathname = usePathname();
+  const portal = useAuthPortal();
+  const isAgent = portal === "agent";
 
   const openAuthView = (view: (typeof AUTH_VIEW)[keyof typeof AUTH_VIEW]) => {
-    router.replace(`${pathname}?${AUTH_QUERY_KEY}=${view}`);
+    router.replace(
+      buildAuthModalUrl(pathname, view, portal ? { portal } : undefined),
+    );
   };
 
   return (
@@ -41,7 +45,7 @@ export function AgencyAuthForm({ className }: AgencyAuthFormProps) {
           aria-hidden
         />
         <p className={cn(bodyTextClasses, "leading-relaxed text-text")}>
-          {t("agencyNoSocialSignInNote")}
+          {isAgent ? t("agentNoSocialSignInNote") : t("agencyNoSocialSignInNote")}
         </p>
       </div>
 
@@ -79,6 +83,7 @@ export function AgencyAuthForm({ className }: AgencyAuthFormProps) {
             router.replace(
               buildAuthModalUrl(pathname, AUTH_VIEW.signInOtp, {
                 returnView: AUTH_VIEW.agencySignIn,
+                portal: portal ?? undefined,
               }),
             )
           }

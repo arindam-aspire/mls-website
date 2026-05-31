@@ -70,12 +70,14 @@ type SocialAuthFormProps = {
   flow: SocialAuthFlow;
   accountType: SocialAccountType;
   className?: string;
+  onSocialProviderClick?: () => void;
 };
 
 export function SocialAuthForm({
   flow,
   accountType,
   className,
+  onSocialProviderClick,
 }: SocialAuthFormProps) {
   const t = useTranslations("auth");
   const router = useRouter();
@@ -126,6 +128,7 @@ export function SocialAuthForm({
           fullWidth
           className="font-semibold"
           iconStart={<GoogleIcon className="size-5" />}
+          onClick={onSocialProviderClick}
         >
           {t("continueWithGoogle")}
         </Button>
@@ -137,6 +140,7 @@ export function SocialAuthForm({
           fullWidth
           className="font-semibold"
           iconStart={<FacebookIcon className="size-5" />}
+          onClick={onSocialProviderClick}
         >
           {facebookLabel}
         </Button>
@@ -148,6 +152,7 @@ export function SocialAuthForm({
           fullWidth
           className="font-semibold"
           iconStart={<AppleIcon className="size-5" />}
+          onClick={onSocialProviderClick}
         >
           {appleLabel}
         </Button>

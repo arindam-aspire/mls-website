@@ -1,5 +1,6 @@
 "use client";
 
+import { UpcomingFeatureModal } from "@/src/components/common/UpcomingFeatureModal";
 import {
   Link,
   ModalCloseButton,
@@ -9,6 +10,7 @@ import {
 } from "@/src/components/ui";
 import { useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
+import { useState } from "react";
 import {
   AUTH_QUERY_KEY,
   AUTH_VIEW,
@@ -35,6 +37,8 @@ export function SocialRegistrationScreen({ type }: SocialRegistrationScreenProps
   const tCommon = useTranslations("common");
   const router = useRouter();
   const pathname = usePathname();
+  const [isUpcomingFeatureModalOpen, setIsUpcomingFeatureModalOpen] =
+    useState(false);
 
   const signInView =
     type === "user" ? AUTH_VIEW.userSocialSignIn : AUTH_VIEW.ownerSocialSignIn;
@@ -44,58 +48,76 @@ export function SocialRegistrationScreen({ type }: SocialRegistrationScreenProps
   };
 
   return (
-    <ModalPanel size="md">
-      <AuthModalHeader showBack />
-      <ModalCloseButton />
-      <ModalContent className="!py-0 sm:!py-0">
-        <div className="space-y-1 px-4 text-center sm:px-6">
-          <h2 className={headingAuthClasses}>
-            {t("chooseAccountSignUpTitle")}
-          </h2>
-          <p className={cn(bodyTextClasses, "text-muted")}>{t("socialSignUpWelcome")}</p>
-        </div>
-        <SocialAuthForm flow="signup" accountType={type} />
-      </ModalContent>
-      <ModalFooter className="!block rounded-b-xl border-t-0 bg-primary-light !px-4 !pt-4 !pb-4 dark:bg-page sm:!gap-3 sm:!px-6 sm:!pb-6">
-        <div className="space-y-2">
-          <p className={cn(bodyLargeTextClasses, "text-center text-muted")}>
-            {t("socialSignUpHasAccount")}
-          </p>
-          <div className="flex justify-center">
-            <Link
-              color="primary"
-              size="lg"
-              className="text-center font-semibold"
-              onClick={() => openAuthView(signInView)}
-            >
-              {t("socialSignUpLogIn")}
-            </Link>
+    <>
+      <ModalPanel size="md">
+        <AuthModalHeader showBack />
+        <ModalCloseButton />
+        <ModalContent className="!py-0 sm:!py-0">
+          <div className="space-y-1 px-4 !pb-4 text-center sm:px-6">
+            <h2 className={headingAuthClasses}>
+              {t("chooseAccountSignUpTitle")}
+            </h2>
+            <p className={cn(bodyTextClasses, "text-muted")}>
+              {t("socialSignUpWelcome")}
+            </p>
           </div>
-          <div className={cn("flex flex-wrap items-center justify-center gap-x-2 gap-y-1 pt-1 text-muted", captionTextClasses)}>
-            <Link
-              color="muted"
-              variant="subtle"
-              size="sm"
-              className="font-normal"
-              alwaysUnderline={false}
+          <SocialAuthForm
+            flow="signup"
+            accountType={type}
+            onSocialProviderClick={() => setIsUpcomingFeatureModalOpen(true)}
+          />
+        </ModalContent>
+        <ModalFooter className="!block rounded-b-xl border-t-0 bg-primary-light !px-4 !pt-4 !pb-4 dark:bg-page sm:!gap-3 sm:!px-6 sm:!pb-6">
+          <div className="space-y-2">
+            <p className={cn(bodyLargeTextClasses, "text-center text-muted")}>
+              {t("socialSignUpHasAccount")}
+            </p>
+            <div className="flex justify-center">
+              <Link
+                color="primary"
+                size="lg"
+                className="text-center font-semibold"
+                onClick={() => openAuthView(signInView)}
+              >
+                {t("socialSignUpLogIn")}
+              </Link>
+            </div>
+            <div
+              className={cn(
+                "flex flex-wrap items-center justify-center gap-x-2 gap-y-1 pt-1 text-muted",
+                captionTextClasses,
+              )}
             >
-              {t("termsOfService")}
-            </Link>
-            <span className="text-muted/60" aria-hidden>
-              •
-            </span>
-            <Link
-              color="muted"
-              variant="subtle"
-              size="sm"
-              className="font-normal"
-              alwaysUnderline={false}
-            >
-              {tCommon("privacyPolicy")}
-            </Link>
+              <Link
+                color="muted"
+                variant="subtle"
+                size="sm"
+                className="font-normal"
+                alwaysUnderline={false}
+              >
+                {t("termsOfService")}
+              </Link>
+              <span className="text-muted/60" aria-hidden>
+                •
+              </span>
+              <Link
+                color="muted"
+                variant="subtle"
+                size="sm"
+                className="font-normal"
+                alwaysUnderline={false}
+              >
+                {tCommon("privacyPolicy")}
+              </Link>
+            </div>
           </div>
-        </div>
-      </ModalFooter>
-    </ModalPanel>
+        </ModalFooter>
+      </ModalPanel>
+
+      <UpcomingFeatureModal
+        open={isUpcomingFeatureModalOpen}
+        onClose={() => setIsUpcomingFeatureModalOpen(false)}
+      />
+    </>
   );
 }

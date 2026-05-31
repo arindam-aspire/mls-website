@@ -11,6 +11,7 @@ Feature or shared UI component.
 # Imports
 
 - `import { Button, Input } from "@/src/components/ui"`
+- `import { PasswordStrengthIndicator } from "@/src/components/common/PasswordStrengthIndicator"`
 - `import { useForm } from "@/src/hooks/useForm"`
 - `import { usePathname, useRouter } from "@/src/i18n/navigation"`
 - `import { AUTH_VIEW, buildAuthModalUrl, type AuthView } from "../authViews"`
@@ -31,12 +32,15 @@ _N/A unless extended._
 
 # Navigation
 
-- Use **`Link`**, **`useRouter`**, **`redirect`** from `@/src/i18n/navigation` for locale-prefixed paths (e.g. `/en/listing`).
-- Auth modal: query `?auth=<view>` on current pathname (see `authViews.ts`).
+- Props: `onSubmit(password)`, `isLoading`.
+- Screen owns API call and redirect; form validates and delegates password on submit.
 
 # Props / Parameters
 
-- See component/handler props in source (TypeScript interfaces).
+| Prop | Purpose |
+| --- | --- |
+| `onSubmit` | Called with validated new password string |
+| `isLoading` | Disables submit while reset mutation is pending |
 
 # Actions / Inputs
 
@@ -68,7 +72,8 @@ _No explicit show/hide controls detected._
 - **Light/dark:** via `ThemeProvider` / `html.light` | `html.dark`.
 - **Radius:** `rounded-lg` controls; `rounded-xl` cards/modals/popovers; `rounded-full` avatars/pills.
 - **Responsive:** mobile-first (`sm:`, `md:`, `lg:`).
-- Uses **`Modal`** from UI kit (`rounded-xl`).
+- **`PasswordStrengthIndicator`** below new-password field (same as user sign-up)
+- Submit button: **`KeyRound`** icon (`size-5`), matching other auth primary actions
 
 # Flow Description
 

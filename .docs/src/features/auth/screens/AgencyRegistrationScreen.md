@@ -25,12 +25,14 @@ _No significant state; presentational or config module._
 
 # API Usage
 
-_N/A unless extended._
+- `useAgencySignUp` → `POST /agency/register` (`multipart/form-data`)
+- Success → `auth=confirm-sign-up&from=agency-sign-up` (email OTP verification)
 
 # Navigation
 
-- Use **`Link`**, **`useRouter`**, **`redirect`** from `@/src/i18n/navigation` for locale-prefixed paths (e.g. `/en/listing`).
-- Auth modal: query `?auth=<view>` on current pathname (see `authViews.ts`).
+- Back uses `from` query via `resolveAgencySignUpBackUrl`:
+  - `from=agency-sign-in` or `from=agency-email-sign-in` → that view
+  - otherwise → account chooser (`?choose-account=true`)
 
 # Props / Parameters
 

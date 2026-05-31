@@ -29,7 +29,7 @@ export function AccountTypeCard({
       onClick={onClick}
       className={cn(
         "flex w-full min-w-0 items-center gap-3 rounded-xl border border-secondary/15 bg-surface p-4 text-start transition-colors",
-        "hover:bg-page focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary/40",
+        "hover:enabled:bg-page focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary/40",
         "disabled:cursor-not-allowed disabled:opacity-50",
         className,
       )}

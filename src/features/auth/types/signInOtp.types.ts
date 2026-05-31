@@ -1,7 +1,8 @@
-import type { SignInTokens } from "./signIn.types";
+import type { SignInRole, SignInTokens } from "./signIn.types";
 
 export type SignInWithOtpRequest = {
   username: string;
+  role: SignInRole;
 };
 
 export type SignInWithOtpResponseData = {
@@ -18,9 +19,10 @@ export type SignInWithOtpResponse = {
 };
 
 export type SignInWithOtpVerifyRequest = {
-  otp: string;
-  email?: string;
-  phone_number?: string;
+  username: string;
+  code: string;
+  session: string;
+  role: SignInRole;
 };
 
 export type SignInWithOtpVerifyResponse = {

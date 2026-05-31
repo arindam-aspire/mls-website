@@ -30,8 +30,9 @@ _N/A unless extended._
 
 # Navigation
 
-- Use **`Link`**, **`useRouter`**, **`redirect`** from `@/src/i18n/navigation` for locale-prefixed paths (e.g. `/en/listing`).
-- Auth modal: query `?auth=<view>` on current pathname (see `authViews.ts`).
+- Opened from sign-in via `?auth=forgot-password&from=<sign-in-view>`.
+- After OTP request success → `otp-verify` with **`from` preserved** (original sign-in view, not `forgot-password`).
+- Back → returns to sign-in view from `from`.
 
 # Props / Parameters
 

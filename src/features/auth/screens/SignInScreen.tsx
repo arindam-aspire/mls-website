@@ -16,7 +16,7 @@ import {
 } from "@/src/features/auth/authViews";
 import { AuthModalHeader } from "../components/AuthModalHeader";
 import { SignInForm } from "../components/SignInForm";
-import { SignInFormValues } from "../types/auth.types";
+import { SignInFormValues, resolveSignInRole } from "../types/auth.types";
 import type { SocialAccountType } from "../components/SocialAuthForm";
 import { useSignInWithPassword } from "../mutations/auth.mutation";
 import { useEffect } from "react";
@@ -50,7 +50,10 @@ export function SignInScreen({ type, onSighinSuccess }: SignInScreenProps) {
   };
 
   const onClickSignIn = (values: SignInFormValues) => {
-    signInWithPassword(values);
+    signInWithPassword({
+      ...values,
+      role: resolveSignInRole(type),
+    });
   };
 
   useEffect(() => {
@@ -69,13 +72,13 @@ export function SignInScreen({ type, onSighinSuccess }: SignInScreenProps) {
       />
       <ModalCloseButton />
       <ModalContent className="!py-0 sm:!py-0">
-        <div className="flex flex-col gap-6 px-4 pb-4 sm:px-6 sm:pb-6">
-          <div className="space-y-1 text-center">
+        <div className="space-y-1 px-4 !pb-4 text-center sm:px-6">
             <h2 className={headingAuthClasses}>
               {t("signInFormTitle")}
             </h2>
             <p className={cn(bodyTextClasses, "text-muted")}>{t("signInFormSubtitle")}</p>
-          </div>
+        </div>
+        <div className="px-4 pb-4 sm:px-6 sm:pb-6">
           <SignInForm signInReturnView={resolveEmailSignInView(type)} onClickSignIn={onClickSignIn} isLoading={isPending} />
         </div>
       </ModalContent>

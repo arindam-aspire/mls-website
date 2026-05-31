@@ -51,7 +51,7 @@ _No explicit validations detected._
 
 ## Show/Hide Controls
 
-_No explicit show/hide controls detected._
+- **Sign In / Sign Up toggle** — local `mode` state passed to `ChooseAccountForm`; Sign Up disables the agent account type card.
 
 # UI Details
 

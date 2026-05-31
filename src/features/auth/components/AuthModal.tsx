@@ -29,13 +29,20 @@ import { ConfirmSignUpScreen } from "../screens/ConfirmSignUpScreen";
 
 export {
   AUTH_QUERY_KEY,
+  AUTH_PORTAL_QUERY_KEY,
   AUTH_RETURN_VIEW_QUERY_KEY,
   AUTH_VIEW,
   buildAuthModalUrl,
   CHOOSE_ACCOUNT_QUERY_KEY,
+  isAgentAuthPortal,
+  parseAuthPortal,
   resolveAccountTypeAuthView,
   resolveEmailSignInView,
   resolveEmailSignUpView,
+  resolveSignInRoleFromAuthContext,
+  readSignInOtpSessionFromSearchParams,
+  resolveSignInOtpSession,
+  type AuthPortalContext,
   type AuthView,
 } from "../authViews";
 
@@ -82,7 +89,7 @@ function renderAuthView(view: string | null, onSighinSuccess: () => void) {
     case AUTH_VIEW.signInOtp:
       return <SignInWithOTPScreen />;
     case AUTH_VIEW.otpVerify:
-      return <OTPVerificationScreen />;
+      return <OTPVerificationScreen onSighinSuccess={onSighinSuccess} />;
     case AUTH_VIEW.confirmSignUp:
       return <ConfirmSignUpScreen />;
     default:

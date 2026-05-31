@@ -25,7 +25,8 @@ _No significant state; presentational or config module._
 
 # API Usage
 
-_N/A unless extended._
+- `useSignInWithPassword` with `role: "admin"` (agency) or `role: "agent"` when `portal=agent`
+- No create-account footer when agent portal
 
 # Navigation
 

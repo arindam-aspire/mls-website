@@ -1,6 +1,6 @@
 import { authClient } from "@/src/apis/clients/api.client";
 import { authEndpoints } from "@/src/apis/endpoints/authEndpoints";
-import type { ConfirmSignUpRequest, ConfirmSignUpResponse, ForgotPasswordRequest, ForgotPasswordResponse, LoggedInUserResponse, LogoutResponse, SignInRequest, SignInResponse, SignInWithOtpRequest, SignInWithOtpResponse, SignInWithOtpVerifyRequest, SignInWithOtpVerifyResponse, SignUpRequest, SignUpResponse } from "../types/auth.types";
+import type { AgencySignUpRequest, AgencySignUpResponse, ConfirmSignUpRequest, ConfirmSignUpResponse, ForgotPasswordRequest, ForgotPasswordResponse, LoggedInUserResponse, LogoutResponse, ResetPasswordRequest, ResetPasswordResponse, SignInRequest, SignInResponse, SignInWithOtpRequest, SignInWithOtpResponse, SignInWithOtpVerifyRequest, SignInWithOtpVerifyResponse, SignUpRequest, SignUpResponse } from "../types/auth.types";
 
 export async function signInWithPassword(data: SignInRequest): Promise<SignInResponse> {
   return authClient.request<SignInResponse>({
@@ -50,6 +50,26 @@ export async function signUp(data: SignUpRequest): Promise<SignUpResponse> {
   });
 }
 
+export async function agencySignUp(
+  data: AgencySignUpRequest,
+): Promise<AgencySignUpResponse> {
+  const formData = new FormData();
+  formData.append("agency_name", data.agency_name);
+  formData.append("agency_trade_name", data.agency_trade_name);
+  formData.append("email", data.email);
+  formData.append("phone", data.phone);
+  formData.append("password", data.password);
+  formData.append("legal_document", data.legal_document);
+
+  return authClient.request<AgencySignUpResponse>({
+    endpoint: authEndpoints.AGENCY_REGISTER,
+    method: "POST",
+    body: formData,
+    isFormData: true,
+    auth: false,
+  });
+}
+
 export async function confirmSignUp(data: ConfirmSignUpRequest): Promise<ConfirmSignUpResponse> {
   return authClient.request<ConfirmSignUpResponse>({
     endpoint: authEndpoints.CONFIRM_SIGN_UP_OTP,
@@ -61,6 +81,16 @@ export async function confirmSignUp(data: ConfirmSignUpRequest): Promise<Confirm
 export async function forgotPassword(data: ForgotPasswordRequest): Promise<ForgotPasswordResponse> {
   return authClient.request<ForgotPasswordResponse>({
     endpoint: authEndpoints.FORGOT_PASSWORD,
+    method: "POST",
+    body: data,
+  });
+}
+
+export async function resetPassword(
+  data: ResetPasswordRequest,
+): Promise<ResetPasswordResponse> {
+  return authClient.request<ResetPasswordResponse>({
+    endpoint: authEndpoints.FORGOT_PASSWORD_CONFIRM,
     method: "POST",
     body: data,
   });

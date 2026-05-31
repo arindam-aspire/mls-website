@@ -7,12 +7,24 @@ Password sign-in form, request, token, and response types.
 # Exports
 
 - `SignInFormValues`, `SignInRequest`, `SignInTokens`, `SignInResponse`
+- `SignInRole`, `SignInAccountType`, `resolveSignInRole(accountType)`
 
 # API Usage
 
 | Type | Flow |
 | --- | --- |
 | `SignInRequest` / `SignInResponse` | `POST` login with password |
+
+## `SignInRequest.role`
+
+Password sign-in sends a `role` field derived from account type via `resolveSignInRole`:
+
+| Account type | `role` value |
+| --- | --- |
+| `agency` | `admin` |
+| `owner` | `owner` |
+| `user` | `registered_user` |
+| `agent` | `agent` |
 
 # Dependencies
 

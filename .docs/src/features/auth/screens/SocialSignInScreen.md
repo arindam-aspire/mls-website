@@ -10,8 +10,9 @@ Route-level screen component composing feature UI.
 
 # Imports
 
-- `import { usePathname, useRouter } from "@/src/i18n/navigation"`
-- `import { AuthModalHeader } from "../components/AuthModalHeader"`
+- `UpcomingFeatureModal` from `@/src/components/common/UpcomingFeatureModal`
+- `usePathname`, `useRouter` from `@/src/i18n/navigation`
+- `AuthModalHeader`, `SocialAuthForm`
 
 # Exports
 
@@ -19,30 +20,18 @@ Route-level screen component composing feature UI.
 
 # State Management
 
-_No significant state; presentational or config module._
-
-# API Usage
-
-_N/A unless extended._
-
-# Navigation
-
-- Use **`Link`**, **`useRouter`**, **`redirect`** from `@/src/i18n/navigation` for locale-prefixed paths (e.g. `/en/listing`).
-- Auth modal: query `?auth=<view>` on current pathname (see `authViews.ts`).
-
-# Props / Parameters
-
-- See component/handler props in source (TypeScript interfaces).
+- **React** `useState` — `isUpcomingFeatureModalOpen` for social provider coming-soon overlay.
 
 # Actions / Inputs
 
-## Inputs
-
-_No explicit inputs detected._
-
 ## Actions
 
-_No explicit actions detected._
+- **Google / Facebook / Apple** — opens portaled `UpcomingFeatureModal`.
+- **Create account** footer link — navigates to matching social sign-up view.
+
+## Show/Hide Controls
+
+- `isUpcomingFeatureModalOpen` — toggles `UpcomingFeatureModal` above the auth modal.
 
 ## Validations
 

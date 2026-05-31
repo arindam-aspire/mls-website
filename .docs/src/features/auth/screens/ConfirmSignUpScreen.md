@@ -27,12 +27,17 @@ Route-level screen component composing feature UI.
 
 # API Usage
 
-_N/A unless extended._
+- `useConfirmSignUp` → `POST /auth/confirm-signup` with `{ email, code }`
+- Resend: `useSignUp` (user/owner) or `useAgencySignUp` (agency) from stored pending registration
+- After verify success → email sign-in view via `resolveSignInViewFromSignUpReturnView(from)` (`user-sign-in`, `owner-sign-in`, or `agency-email-sign-in`)
+- Redirect runs in `confirmSignUpMutate` `onSuccess` **before** clearing pending registration, avoiding a race with a missing-email guard
+- Contact email: `otp-email` query param first, then `pendingSignUp` / `pendingAgencySignUp` from store
 
 # Navigation
 
-- Use **`Link`**, **`useRouter`**, **`redirect`** from `@/src/i18n/navigation` for locale-prefixed paths (e.g. `/en/listing`).
-- Auth modal: query `?auth=<view>` on current pathname (see `authViews.ts`).
+- Reached after successful user, owner, or agency registration (`from=user-sign-up`, `owner-sign-up`, or `agency-sign-up`)
+- Registration screens pass `contactEmail` in URL (`otp-email`) when navigating here
+- Pending email fallback from `pendingSignUp` or `pendingAgencySignUp` in auth store (resend)
 
 # Props / Parameters
 

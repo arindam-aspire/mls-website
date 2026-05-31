@@ -4,10 +4,28 @@ export type SignInFormValues = {
   rememberMe: boolean;
 };
 
+export type SignInRole = "admin" | "owner" | "registered_user" | "agent";
+
+export type SignInAccountType = "user" | "owner" | "agency" | "agent";
+
+export function resolveSignInRole(type: SignInAccountType): SignInRole {
+  switch (type) {
+    case "agency":
+      return "admin";
+    case "owner":
+      return "owner";
+    case "user":
+      return "registered_user";
+    case "agent":
+      return "agent";
+  }
+}
+
 export type SignInRequest = {
   username: string;
   password: string;
   rememberMe: boolean;
+  role: SignInRole;
 };
 
 export type SignInTokens = {

@@ -35,37 +35,25 @@ _N/A unless extended._
 
 # Props / Parameters
 
-- See component/handler props in source (TypeScript interfaces).
+| Prop | Type | Purpose |
+| --- | --- | --- |
+| `flow` | `"signin"` \| `"signup"` | Labels and email/OTP routing |
+| `accountType` | `"user"` \| `"owner"` | Toggle value and auth view resolution |
+| `className` | `string?` | Optional root wrapper classes |
+| `onSocialProviderClick` | `() => void?` | When set, Google/Facebook/Apple buttons call this instead of performing OAuth |
 
 # Actions / Inputs
 
-## Inputs
-
-_No explicit inputs detected._
-
 ## Actions
 
-_No explicit actions detected._
-
-## Validations
-
-_No explicit validations detected._
-
-## Show/Hide Controls
-
-_No explicit show/hide controls detected._
-
-# UI Details
-
-- **Theme:** semantic tokens (`bg-page`, `bg-surface`, `text-text`, `text-muted`, `bg-primary`, `border-secondary/15`).
-- **Light/dark:** via `ThemeProvider` / `html.light` | `html.dark`.
-- **Radius:** `rounded-lg` controls; `rounded-xl` cards/modals/popovers; `rounded-full` avatars/pills.
-- **Responsive:** mobile-first (`sm:`, `md:`, `lg:`).
-- Uses **`Modal`** from UI kit (`rounded-xl`).
+- **Account type toggle** — switches user/owner and updates `?auth=` view.
+- **Google / Facebook / Apple** — invokes `onSocialProviderClick` when provided; otherwise no-op.
+- **Email** — navigates to email sign-in or sign-up view for the active account type.
+- **One-time code** (sign-in only) — navigates to OTP sign-in flow.
 
 # Flow Description
 
-See source in `src/features/auth/components/SocialAuthForm.tsx` for step-by-step behavior aligned with [application.md](../../application.md) (path relative may vary).
+Parent screens pass `onSocialProviderClick` when social OAuth is not yet wired (e.g. `SocialRegistrationScreen` opens `UpcomingFeatureModal`). Email and OTP paths navigate via `authViews` helpers as before.
 
 # Dependencies
 

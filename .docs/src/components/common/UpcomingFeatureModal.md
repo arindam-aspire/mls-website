@@ -55,16 +55,20 @@ _N/A._
 - **Modal panel:** `rounded-xl`, semantic tokens
 - **Copy:** matches [ComingSoonCard](./ComingSoonCard.md) defaults
 - **Button:** `primary` solid, `rounded-lg`
+- **Stacking:** Portals to `document.body` via `createPortal` with `!z-[100]` so the dialog appears above the auth modal and other `z-50` overlays (required when opened from nested auth screens).
 
 # Flow Description
 
 1. Parent sets `open={true}` (any upcoming-feature click).
-2. Modal always shows **Coming Soon** + shared description.
-3. User dismisses → `onClose`.
+2. Modal portals to `document.body` and renders above existing modals.
+3. Modal always shows **Coming Soon** + shared description.
+4. User dismisses → `onClose` (auth modal stays open underneath).
 
 # Dependencies
 
 - [PropertyListScreen](../../features/property/screens/PropertyListScreen.md) — Advance/Save Search, Email, Call, WhatsApp
+- [PropertyDetailsScreen](../../features/property/screens/PropertyDetailsScreen.md)
+- [SocialRegistrationScreen](../../features/auth/screens/SocialRegistrationScreen.md), [SocialSignInScreen](../../features/auth/screens/SocialSignInScreen.md) — social OAuth placeholders
 - UI [Modal](../ui/modal/index.tsx)
 
 # Notes

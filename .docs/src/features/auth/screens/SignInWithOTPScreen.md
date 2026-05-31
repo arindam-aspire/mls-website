@@ -25,7 +25,7 @@ _No significant state; presentational or config module._
 
 # API Usage
 
-_N/A unless extended._
+- On OTP request success, navigates with `otp-session` and `otp-code` in the URL
 
 # Navigation
 

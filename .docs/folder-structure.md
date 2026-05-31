@@ -309,6 +309,7 @@ mls_website/
 │   │   │   │   ├── SignInWithOTPForm.tsx
 │   │   │   │   └── SignUpForm.tsx
 │   │   │   ├── hooks/
+│   │   │   │   └── useAuthPortal.ts
 │   │   │   ├── mutations/
 │   │   │   │   └── auth.mutation.ts
 │   │   │   ├── screens/
@@ -337,6 +338,7 @@ mls_website/
 │   │   │       ├── signIn.types.ts
 │   │   │       ├── signInOtp.types.ts
 │   │   │       ├── signUp.types.ts
+│   │   │       ├── agencySignUp.types.ts
 │   │   │       └── user.types.ts
 │   │   ├── dashboard/
 │   │   │   └── screens/

@@ -18,7 +18,8 @@ _No notable imports._
 - `resolveAccountTypeAuthView`
 - `resolveEmailSignInView`
 - `resolveEmailSignUpView`
-- `isAgencyAuthView`
+- `resolveSignInRoleFromAuthContext`
+- `resolveSignInViewAfterPasswordReset` — maps forgot/reset flow `from` to email sign-in view after password reset
 - `resolveAuthSignUpView`
 - `isAuthView`
 - `AUTH_QUERY_KEY`
@@ -27,7 +28,10 @@ _No notable imports._
 - `AUTH_OTP_EMAIL_QUERY_KEY`
 - `AUTH_OTP_PHONE_QUERY_KEY`
 - `AUTH_OTP_PHONE_COUNTRY_QUERY_KEY`
-- `CHOOSE_ACCOUNT_QUERY_KEY`
+- `AUTH_PORTAL_QUERY_KEY` — `portal=agency|agent` on agency sign-in flows
+- `AUTH_OTP_SESSION_QUERY_KEY`, `AUTH_OTP_CODE_QUERY_KEY` — sign-in OTP session handoff in URL
+- `parseAuthPortal`, `isAgentAuthPortal`, `AuthPortalContext`
+- `readSignInOtpSessionFromSearchParams`, `resolveSignInOtpSession`
 - `AUTH_VIEW`
 - `VALID_AUTH_VIEWS`
 - `AuthOtpFlow`

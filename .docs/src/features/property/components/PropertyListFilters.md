@@ -35,7 +35,7 @@ Filter bar for the property list: primary row (status, category, type, location,
 - **Below `md`:** primary row scrolls horizontally; toggle **`8rem`**, other controls **`9rem`**; advanced filters open in a **bottom sheet** (not inline).
 - **`md`–`lg`:** primary grid unchanged; advanced filters expand inline below the bar.
 - **`lg`+:** eight-column primary row.
-- Root wrapper: `relative isolate z-50` so dropdowns/advanced panel stack above list content (sticky bar on screen uses matching `z-50`).
+- Root wrapper: `relative isolate z-50` so dropdowns/advanced panel stack above list content (sticky bar on screen uses `z-30`).
 
 # Dependencies
 

@@ -13,7 +13,7 @@ Route-level screen component composing feature UI.
 - `import { usePathname, useRouter } from "@/src/i18n/navigation"`
 - `import { AuthModalHeader } from "../components/AuthModalHeader"`
 - `import { SignInForm } from "../components/SignInForm"`
-- `import { SignInFormValues } from "../types/auth.types"`
+- `import { SignInFormValues, resolveSignInRole } from "../types/auth.types"`
 - `import type { SocialAccountType } from "../components/SocialAuthForm"`
 - `import { useSignInWithPassword } from "../mutations/auth.mutation"`
 
@@ -27,7 +27,10 @@ _No significant state; presentational or config module._
 
 # API Usage
 
-_N/A unless extended._
+- `useSignInWithPassword` → `POST` sign-in with password
+- Request body includes form values plus `role` from `resolveSignInRole(type)`:
+  - `user` → `registered_user`
+  - `owner` → `owner`
 
 # Navigation
 

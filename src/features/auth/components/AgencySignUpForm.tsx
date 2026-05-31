@@ -1,6 +1,6 @@
 "use client";
 
-import { CloudUpload, Eye, EyeOff, Lock, Mail } from "lucide-react";
+import { Building2, CloudUpload, Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { useTranslations } from "next-intl";
 import {
   useId,
@@ -10,16 +10,17 @@ import {
   type DragEvent,
 } from "react";
 import { Button, Input, PhoneInput } from "@/src/components/ui";
+import { PasswordStrengthIndicator } from "@/src/components/common/PasswordStrengthIndicator";
 import { cn } from "@/src/lib/cn";
 import { bodyTextClasses, captionTextClasses } from "@/src/lib/typography";
 import { useForm } from "@/src/hooks/useForm";
+import type { AgencySignUpSubmitValues } from "../types/auth.types";
 
 export type AgencySignUpFormValues = {
   agencyName: string;
   tradeName: string;
   email: string;
-  phoneCountryCode: string;
-  phoneNationalNumber: string;
+  phone: string;
   password: string;
 };
 
@@ -36,7 +37,8 @@ const ACCEPTED_LICENSE_TYPES = [
 const ACCEPTED_LICENSE_EXTENSIONS = [".pdf", ".jpg", ".jpeg", ".png"];
 
 type AgencySignUpFormProps = {
-  onSuccess?: () => void;
+  onSubmit: (values: AgencySignUpSubmitValues) => void;
+  isLoading: boolean;
 };
 
 function isAcceptedLicenseFile(file: File): boolean {
@@ -48,7 +50,7 @@ function isAcceptedLicenseFile(file: File): boolean {
   return ACCEPTED_LICENSE_EXTENSIONS.some((ext) => lowerName.endsWith(ext));
 }
 
-export function AgencySignUpForm({ onSuccess }: AgencySignUpFormProps) {
+export function AgencySignUpForm({ onSubmit, isLoading }: AgencySignUpFormProps) {
   const t = useTranslations("auth");
   const uploadInputId = useId();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -56,6 +58,8 @@ export function AgencySignUpForm({ onSuccess }: AgencySignUpFormProps) {
   const [licenseFile, setLicenseFile] = useState<File | null>(null);
   const [licenseError, setLicenseError] = useState<string | undefined>();
   const [isDragOver, setIsDragOver] = useState(false);
+  const [phoneCountryCode, setPhoneCountryCode] = useState("JO");
+  const [phoneNationalNumber, setPhoneNationalNumber] = useState("");
 
   const {
     values,
@@ -72,8 +76,7 @@ export function AgencySignUpForm({ onSuccess }: AgencySignUpFormProps) {
       agencyName: "",
       tradeName: "",
       email: "",
-      phoneCountryCode: "JO",
-      phoneNationalNumber: "",
+      phone: "",
       password: "",
     },
     validate: (formValues) => {
@@ -94,10 +97,10 @@ export function AgencySignUpForm({ onSuccess }: AgencySignUpFormProps) {
         nextErrors.email = t("signUpEmailInvalid");
       }
 
-      if (!formValues.phoneNationalNumber.trim()) {
-        nextErrors.phoneNationalNumber = t("signUpPhoneRequired");
-      } else if (formValues.phoneNationalNumber.replace(/\D/g, "").length < 7) {
-        nextErrors.phoneNationalNumber = t("signUpPhoneInvalid");
+      if (!phoneNationalNumber.trim()) {
+        nextErrors.phone = t("signUpPhoneRequired");
+      } else if (phoneNationalNumber.replace(/\D/g, "").length < 7) {
+        nextErrors.phone = t("signUpPhoneInvalid");
       }
 
       if (!formValues.password) {
@@ -135,34 +138,38 @@ export function AgencySignUpForm({ onSuccess }: AgencySignUpFormProps) {
 
   const applyLicenseFile = (file: File | null) => {
     setLicenseFile(file);
-    if (licenseError) {
-      setLicenseError(validateLicenseFile(file));
-    }
+    setLicenseError(validateLicenseFile(file));
   };
 
   const handlePhoneChange = (payload: {
-    country: { iso2: string };
+    country: { iso2: string; dialCode: string };
     nationalNumber: string;
   }) => {
+    setPhoneCountryCode(payload.country.iso2);
+    setPhoneNationalNumber(payload.nationalNumber);
+
+    const phoneNumber = payload.nationalNumber
+      ? `${payload.country.dialCode}${payload.nationalNumber}`
+      : "";
+
     setValues((prev) => ({
       ...prev,
-      phoneCountryCode: payload.country.iso2,
-      phoneNationalNumber: payload.nationalNumber,
+      phone: phoneNumber,
     }));
 
-    if (touched.phoneNationalNumber) {
+    if (touched.phone) {
       setErrors((prev) => ({
         ...prev,
-        phoneNationalNumber: getPhoneError(payload.nationalNumber),
+        phone: getPhoneError(payload.nationalNumber),
       }));
     }
   };
 
   const handlePhoneBlur = () => {
-    setTouched((prev) => ({ ...prev, phoneNationalNumber: true }));
+    setTouched((prev) => ({ ...prev, phone: true }));
     setErrors((prev) => ({
       ...prev,
-      phoneNationalNumber: getPhoneError(values.phoneNationalNumber),
+      phone: getPhoneError(phoneNationalNumber),
     }));
   };
 
@@ -188,14 +195,25 @@ export function AgencySignUpForm({ onSuccess }: AgencySignUpFormProps) {
     setIsDragOver(false);
   };
 
-  const onFormSubmit = handleSubmit(() => {
+  const onFormSubmit = handleSubmit((formValues) => {
     const fileError = validateLicenseFile(licenseFile);
     if (fileError) {
       setLicenseError(fileError);
       return;
     }
 
-    onSuccess?.();
+    if (licenseFile == null) {
+      return;
+    }
+
+    onSubmit({
+      agencyName: formValues.agencyName.trim(),
+      tradeName: formValues.tradeName.trim(),
+      email: formValues.email.trim(),
+      phone: formValues.phone.trim(),
+      password: formValues.password,
+      legalDocument: licenseFile,
+    });
   });
 
   return (
@@ -247,11 +265,11 @@ export function AgencySignUpForm({ onSuccess }: AgencySignUpFormProps) {
         <PhoneInput
           label={t("agencySignUpPhoneLabel")}
           placeholder={t("signUpPhonePlaceholder")}
-          countryCode={values.phoneCountryCode}
-          nationalNumber={values.phoneNationalNumber}
+          countryCode={phoneCountryCode}
+          nationalNumber={phoneNationalNumber}
           onChange={handlePhoneChange}
           onBlur={handlePhoneBlur}
-          error={errors.phoneNationalNumber}
+          error={errors.phone}
           searchPlaceholder={t("signUpPhoneSearchPlaceholder")}
           emptySearchLabel={t("signUpPhoneNoMatches")}
           showPhoneIcon={false}
@@ -292,6 +310,8 @@ export function AgencySignUpForm({ onSuccess }: AgencySignUpFormProps) {
           }
           isRequired
         />
+
+        <PasswordStrengthIndicator password={values.password} />
 
         <div className="flex flex-col gap-1.5">
           <span className={cn(bodyTextClasses, "font-medium text-text")}>
@@ -361,10 +381,12 @@ export function AgencySignUpForm({ onSuccess }: AgencySignUpFormProps) {
         size="lg"
         fullWidth
         className="font-semibold"
+        isLoading={isLoading}
+        loadingLabel={t("agencySignUpSubmit")}
+        iconStart={<Building2 className="size-5" aria-hidden />}
       >
         {t("agencySignUpSubmit")}
       </Button>
     </form>
   );
 }
-

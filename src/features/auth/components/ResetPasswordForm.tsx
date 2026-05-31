@@ -1,12 +1,11 @@
 "use client";
 
-import { Eye, EyeOff, Lock } from "lucide-react";
+import { Eye, EyeOff, KeyRound, Lock } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button, Input } from "@/src/components/ui";
+import { PasswordStrengthIndicator } from "@/src/components/common/PasswordStrengthIndicator";
 import { useForm } from "@/src/hooks/useForm";
-import { usePathname, useRouter } from "@/src/i18n/navigation";
-import { AUTH_VIEW, buildAuthModalUrl, type AuthView } from "../authViews";
 
 export type ResetPasswordFormValues = {
   password: string;
@@ -17,17 +16,15 @@ const PASSWORD_PATTERN =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,12}$/;
 
 type ResetPasswordFormProps = {
-  returnView?: AuthView;
-  onSuccess?: () => void;
+  onSubmit: (password: string) => void;
+  isLoading?: boolean;
 };
 
 export function ResetPasswordForm({
-  returnView = AUTH_VIEW.userSignIn,
-  onSuccess,
+  onSubmit,
+  isLoading = false,
 }: ResetPasswordFormProps) {
   const t = useTranslations("auth");
-  const router = useRouter();
-  const pathname = usePathname();
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -85,9 +82,8 @@ export function ResetPasswordForm({
   return (
     <form
       noValidate
-      onSubmit={handleSubmit(() => {
-        onSuccess?.();
-        router.replace(buildAuthModalUrl(pathname, returnView));
+      onSubmit={handleSubmit((formValues) => {
+        onSubmit(formValues.password);
       })}
       className="flex flex-col gap-6"
     >
@@ -113,6 +109,8 @@ export function ResetPasswordForm({
           )}
           isRequired
         />
+
+        <PasswordStrengthIndicator password={values.password} />
 
         <Input
           name="confirmPassword"
@@ -142,6 +140,9 @@ export function ResetPasswordForm({
         size="lg"
         fullWidth
         className="font-semibold"
+        isLoading={isLoading}
+        loadingLabel={t("resetPasswordSubmit")}
+        iconStart={<KeyRound className="size-5" aria-hidden />}
       >
         {t("resetPasswordSubmit")}
       </Button>

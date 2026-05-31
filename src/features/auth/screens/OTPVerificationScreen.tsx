@@ -16,19 +16,21 @@ import {
   AUTH_OTP_FLOW_QUERY_KEY,
   AUTH_OTP_PHONE_COUNTRY_QUERY_KEY,
   AUTH_OTP_PHONE_QUERY_KEY,
-  AUTH_QUERY_KEY,
   AUTH_RETURN_VIEW_QUERY_KEY,
   AUTH_VIEW,
   buildAuthModalUrl,
   isAgencyAuthView,
   isAuthView,
   resolveAuthSignUpView,
+  resolveSignInOtpSession,
+  resolveSignInRoleFromAuthContext,
   type AuthOtpFlow,
   type AuthView,
 } from "@/src/features/auth/authViews";
+import { useAuthPortal, useIsAgentSignInPortal } from "../hooks/useAuthPortal";
 import { AuthModalHeader } from "../components/AuthModalHeader";
 import { OTPVerificationForm } from "../components/OTPVerificationForm";
-import { useForgotPassword, useSignInWithOtpVerify } from "../mutations/auth.mutation";
+import { useForgotPassword, useSignInWithOtpRequest, useSignInWithOtpVerify } from "../mutations/auth.mutation";
 import { useAuthStore } from "../store/auth.store";
 import { maskEmail, maskPhone } from "../maskContact";
 import { cn } from "@/src/lib/cn";
@@ -67,10 +69,12 @@ function OtpTitle({
   contactEmail,
   contactPhone,
   contactPhoneCountry = "JO",
+  displayOtp,
 }: {
   contactEmail?: string;
   contactPhone?: string;
   contactPhoneCountry?: string;
+  displayOtp?: string;
 }) {
   const t = useTranslations("auth");
   const maskedEmail = contactEmail?.trim() ? maskEmail(contactEmail) : null;
@@ -92,7 +96,7 @@ function OtpTitle({
   const contactLine = [maskedEmail, maskedPhone].filter(Boolean).join(" | ");
 
   return (
-    <div className="space-y-2 text-center">
+    <div className="space-y-2 px-4 !pb-4 text-center sm:px-6">
       <h2 className={headingAuthClasses}>
         {t("otpVerifyTitle")}
       </h2>
@@ -100,11 +104,25 @@ function OtpTitle({
       {contactLine !== "" && (
         <p className={cn(bodyTextClasses, "font-semibold text-text")}>{contactLine}</p>
       )}
+      {displayOtp != null && displayOtp !== "" && (
+        <div className="pt-2">
+          <p className={cn(bodyTextClasses, "text-muted")}>{t("otpVerifySentCodeLabel")}</p>
+          <p className="mt-1 font-bold tracking-[0.35em] text-primary tabular-nums text-xl sm:text-2xl">
+            {displayOtp}
+          </p>
+        </div>
+      )}
     </div>
   );
 }
 
-export function OTPVerificationScreen() {
+type OTPVerificationScreenProps = {
+  onSighinSuccess: () => void;
+};
+
+export function OTPVerificationScreen({
+  onSighinSuccess,
+}: OTPVerificationScreenProps) {
   const t = useTranslations("auth");
   const tCommon = useTranslations("common");
   const router = useRouter();
@@ -121,17 +139,40 @@ export function OTPVerificationScreen() {
     searchParams.get(AUTH_OTP_PHONE_COUNTRY_QUERY_KEY) ?? undefined;
   const signUpView = resolveAuthSignUpView(returnView);
   const isAgency = isAgencyAuthView(returnView);
+  const portal = useAuthPortal();
+  const isAgent = useIsAgentSignInPortal();
+  const showCreateAccount = isAgency && !isAgent;
+  const signInRole = resolveSignInRoleFromAuthContext(returnView, portal);
+  const { setForgotPasswordOtp, pendingOtpSession } = useAuthStore();
+  const signInOtpSession = resolveSignInOtpSession(
+    searchParams,
+    pendingOtpSession,
+  );
 
   const { mutate: resendOtp, isPending: isResending } = useForgotPassword();
+  const { mutate: resendSignInOtp, isPending: isResendingSignInOtp } =
+    useSignInWithOtpRequest();
   const {
     mutate: verifyOtp,
     isPending: isVerifying,
     isSuccess: isOtpVerifySuccess,
   } = useSignInWithOtpVerify();
-  const { setForgotPasswordOtp } = useAuthStore();
+  const isResendingOtp = otpFlow === "forgot" ? isResending : isResendingSignInOtp;
+
+  const buildSignInOtpVerifyUrl = (otpSession: string, otpCode: string) =>
+    buildAuthModalUrl(pathname, AUTH_VIEW.otpVerify, {
+      otpFlow: "signin",
+      returnView,
+      contactEmail,
+      portal: portal ?? undefined,
+      otpSession,
+      otpCode,
+    });
 
   const openAuthView = (view: AuthView) => {
-    router.replace(`${pathname}?${AUTH_QUERY_KEY}=${view}`);
+    router.replace(
+      buildAuthModalUrl(pathname, view, portal ? { portal } : undefined),
+    );
   };
 
   const handleBack = () => {
@@ -139,11 +180,33 @@ export function OTPVerificationScreen() {
   };
 
   const handleResend = () => {
-    resendOtp({
-      email: contactEmail,
-      phoneCountryCode: contactPhoneCountry,
-      phoneNationalNumber: contactPhone,
-    });
+    if (otpFlow === "forgot") {
+      resendOtp({
+        email: contactEmail,
+        phoneCountryCode: contactPhoneCountry,
+        phoneNationalNumber: contactPhone,
+      });
+      return;
+    }
+
+    if (contactEmail?.trim()) {
+      resendSignInOtp(
+        {
+          username: contactEmail.trim(),
+          role: signInRole,
+        },
+        {
+          onSuccess: (response) => {
+            router.replace(
+              buildSignInOtpVerifyUrl(
+                response.data.session,
+                response.data.otp,
+              ),
+            );
+          },
+        },
+      );
+    }
   };
 
   const handleSubmit = (code: string) => {
@@ -156,38 +219,50 @@ export function OTPVerificationScreen() {
           contactEmail,
           contactPhone,
           contactPhoneCountry,
+          portal: portal ?? undefined,
+        }),
+      );
+      return;
+    }
+
+    if (signInOtpSession?.session == null || !contactEmail?.trim()) {
+      router.replace(
+        buildAuthModalUrl(pathname, AUTH_VIEW.signInOtp, {
+          returnView,
+          portal: portal ?? undefined,
         }),
       );
       return;
     }
 
     verifyOtp({
-      otp: code,
-      email: contactEmail,
-      phone_number: contactPhone,
+      username: contactEmail.trim(),
+      code,
+      session: signInOtpSession.session,
+      role: signInRole,
     });
   };
 
   useEffect(() => {
-    if (isOtpVerifySuccess) {
-      const nextView = isAgency
-        ? AUTH_VIEW.agencyEmailSignIn
-        : AUTH_VIEW.userSignIn;
-      openAuthView(nextView);
+    if (isOtpVerifySuccess && otpFlow === "signin") {
+      onSighinSuccess();
     }
-  }, [isOtpVerifySuccess]);
+  }, [isOtpVerifySuccess, otpFlow, onSighinSuccess]);
 
   return (
     <ModalPanel size="md">
       <AuthModalHeader showBack onBack={handleBack} />
       <ModalCloseButton />
       <ModalContent className="!py-0 sm:!py-0">
-        <div className="flex flex-col gap-6 px-4 pb-4 sm:px-6 sm:pb-6">
-          <OtpTitle
-            contactEmail={contactEmail}
-            contactPhone={contactPhone}
-            contactPhoneCountry={contactPhoneCountry}
-          />
+        <OtpTitle
+          contactEmail={contactEmail}
+          contactPhone={contactPhone}
+          contactPhoneCountry={contactPhoneCountry}
+          displayOtp={
+            otpFlow === "signin" ? signInOtpSession?.otp : undefined
+          }
+        />
+        <div className="px-4 pb-4 sm:px-6 sm:pb-6">
           <OTPVerificationForm
             otpFlow={otpFlow}
             contactEmail={contactEmail}
@@ -196,27 +271,46 @@ export function OTPVerificationScreen() {
             onSubmit={handleSubmit}
             onResend={handleResend}
             isLoading={isVerifying}
-            isResending={isResending}
+            isResending={isResendingOtp}
           />
         </div>
       </ModalContent>
       <ModalFooter className="!block rounded-b-xl border-t-0 bg-primary-light !px-4 !pt-4 !pb-4 dark:bg-page sm:!gap-3 sm:!px-6 sm:!pb-6">
         <div className="space-y-2">
-          <p className={cn(bodyLargeTextClasses, "text-center text-muted")}>
-            {isAgency ? t("agencySignInNoAccount") : t("chooseAccountNoAccount")}
-          </p>
-          <div className="flex justify-center">
-            <Link
-              color="primary"
-              size="lg"
-              className="text-center font-semibold"
-              onClick={() => openAuthView(signUpView)}
-            >
-              {isAgency
-                ? t("agencyCreateAccount")
-                : t("chooseAccountCreateAccount")}
-            </Link>
-          </div>
+          {showCreateAccount && (
+            <>
+              <p className={cn(bodyLargeTextClasses, "text-center text-muted")}>
+                {t("agencySignInNoAccount")}
+              </p>
+              <div className="flex justify-center">
+                <Link
+                  color="primary"
+                  size="lg"
+                  className="text-center font-semibold"
+                  onClick={() => openAuthView(signUpView)}
+                >
+                  {t("agencyCreateAccount")}
+                </Link>
+              </div>
+            </>
+          )}
+          {!showCreateAccount && !isAgency && (
+            <>
+              <p className={cn(bodyLargeTextClasses, "text-center text-muted")}>
+                {t("chooseAccountNoAccount")}
+              </p>
+              <div className="flex justify-center">
+                <Link
+                  color="primary"
+                  size="lg"
+                  className="text-center font-semibold"
+                  onClick={() => openAuthView(signUpView)}
+                >
+                  {t("chooseAccountCreateAccount")}
+                </Link>
+              </div>
+            </>
+          )}
           <div className={cn("flex flex-wrap items-center justify-center gap-x-2 gap-y-1 pt-1 text-muted", captionTextClasses)}>
             <Link
               color="muted"

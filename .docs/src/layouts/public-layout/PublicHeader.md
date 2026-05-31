@@ -69,6 +69,7 @@ _No explicit show/hide controls detected._
 - **Light/dark:** via `ThemeProvider` / `html.light` | `html.dark`.
 - **Radius:** `rounded-lg` controls; `rounded-xl` cards/modals/popovers; `rounded-full` avatars/pills.
 - **Responsive:** mobile-first (`sm:`, `md:`, `lg:`).
+- **Mobile menu stacking:** Uses Headless UI `Dialog` (portaled to `document.body`) at `z-[120]` instead of a nested `Popover`, so the drawer covers sticky page chrome such as property list filters. Property list filter bar uses `z-30` (below header and mobile menu).
 
 # Flow Description
 

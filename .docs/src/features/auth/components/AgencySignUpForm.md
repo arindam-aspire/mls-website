@@ -11,6 +11,7 @@ Feature or shared UI component.
 # Imports
 
 - `import { Button, Input, PhoneInput } from "@/src/components/ui"`
+- `import { PasswordStrengthIndicator } from "@/src/components/common/PasswordStrengthIndicator"`
 - `import { cn } from "@/src/lib/cn"`
 - `import { useForm } from "@/src/hooks/useForm"`
 
@@ -26,11 +27,13 @@ Feature or shared UI component.
 
 # API Usage
 
-_N/A unless extended._
+- Submits via `onSubmit` prop → `POST /agency/register` (handled in screen/mutation)
+- Phone: `{dialCode}{nationalNumber}` (no space) stored in `phone`
+- Document: PDF/JPG/PNG, max **10 MB** (`agencySignUpLicenseTooLarge`)
 
 # Navigation
 
-_No direct navigation._
+- Parent screen sets `from` query for back navigation
 
 # Props / Parameters
 
@@ -80,8 +83,7 @@ _No direct navigation._
 - **Light/dark:** via `ThemeProvider` / `html.light` | `html.dark`.
 - **Radius:** `rounded-lg` controls; `rounded-xl` cards/modals/popovers; `rounded-full` avatars/pills.
 - **Responsive:** mobile-first (`sm:`, `md:`, `lg:`).
-
-# Flow Description
+- **`PasswordStrengthIndicator`** below password field (same as user sign-up)
 
 See source in `src/features/auth/components/AgencySignUpForm.tsx` for step-by-step behavior aligned with [application.md](../../application.md) (path relative may vary).
 

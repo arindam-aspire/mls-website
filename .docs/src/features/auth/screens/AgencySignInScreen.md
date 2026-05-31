@@ -26,7 +26,10 @@ _No significant state; presentational or config module._
 
 # API Usage
 
-_N/A unless extended._
+- Same agency sign-in screens as agency; when `portal=agent`:
+  - Agent badge/subtitle copy
+  - No “Create an Account” footer link
+  - Email sign-in sends `role: "agent"`
 
 # Navigation
 

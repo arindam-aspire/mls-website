@@ -20,11 +20,16 @@ import {
   AUTH_VIEW,
   buildAuthModalUrl,
   isAuthView,
+  resolveSignInViewAfterPasswordReset,
   type AuthOtpFlow,
   type AuthView,
 } from "@/src/features/auth/authViews";
 import { AuthModalHeader } from "../components/AuthModalHeader";
 import { ResetPasswordForm } from "../components/ResetPasswordForm";
+import { useAuthPortal } from "../hooks/useAuthPortal";
+import { useResetPassword } from "../mutations/auth.mutation";
+import { useAuthStore } from "../store/auth.store";
+import { useToast } from "@/src/hooks/useToast";
 import { cn } from "@/src/lib/cn";
 import {
   headingAuthClasses,
@@ -60,6 +65,49 @@ export function ResetPasswordScreen() {
   const contactPhoneCountry =
     searchParams.get(AUTH_OTP_PHONE_COUNTRY_QUERY_KEY) ?? undefined;
 
+  const signInView = resolveSignInViewAfterPasswordReset(returnView);
+  const portal = useAuthPortal();
+  const toast = useToast();
+  const forgotPasswordOtp = useAuthStore((s) => s.forgotPasswordOtp);
+  const clearForgotPasswordOtp = useAuthStore((s) => s.clearForgotPasswordOtp);
+  const { mutate: resetPasswordMutate, isPending } = useResetPassword();
+
+  const handleFormSubmit = (newPassword: string) => {
+    if (!contactEmail?.trim()) {
+      toast.info("Unable to reset password", {
+        description: "Email address is missing.",
+      });
+      return;
+    }
+
+    if (!forgotPasswordOtp?.trim()) {
+      toast.info("Unable to reset password", {
+        description: "Verification code is missing. Please verify OTP again.",
+      });
+      return;
+    }
+
+    resetPasswordMutate(
+      {
+        email: contactEmail.trim(),
+        code: forgotPasswordOtp.trim(),
+        new_password: newPassword,
+      },
+      {
+        onSuccess: () => {
+          clearForgotPasswordOtp();
+          router.replace(
+            buildAuthModalUrl(
+              pathname,
+              signInView,
+              portal ? { portal } : undefined,
+            ),
+          );
+        },
+      },
+    );
+  };
+
   const handleBack = () => {
     if (otpFlow === "forgot") {
       router.replace(
@@ -84,14 +132,17 @@ export function ResetPasswordScreen() {
       <AuthModalHeader showBack onBack={handleBack} />
       <ModalCloseButton />
       <ModalContent className="!py-0 sm:!py-0">
-        <div className="flex flex-col gap-6 px-4 pb-4 sm:px-6 sm:pb-6">
-          <div className="space-y-1 text-center">
+        <div className="space-y-1 px-4 !pb-4 text-center sm:px-6">
             <h2 className={headingAuthClasses}>
               {t("resetPasswordTitle")}
             </h2>
             <p className={cn(bodyTextClasses, "text-muted")}>{t("resetPasswordSubtitle")}</p>
-          </div>
-          <ResetPasswordForm returnView={returnView} />
+        </div>
+        <div className="px-4 pb-4 sm:px-6 sm:pb-6">
+          <ResetPasswordForm
+            onSubmit={handleFormSubmit}
+            isLoading={isPending}
+          />
         </div>
       </ModalContent>
       <ModalFooter className="!block rounded-b-xl border-t-0 bg-primary-light !px-4 !pt-4 !pb-4 dark:bg-page sm:!gap-3 sm:!px-6 sm:!pb-6">
@@ -106,7 +157,11 @@ export function ResetPasswordScreen() {
               className="text-center font-semibold"
               onClick={() =>
                 router.replace(
-                  buildAuthModalUrl(pathname, returnView),
+                  buildAuthModalUrl(
+                    pathname,
+                    signInView,
+                    portal ? { portal } : undefined,
+                  ),
                 )
               }
             >

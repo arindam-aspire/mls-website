@@ -22,8 +22,10 @@ API service functions calling HTTP clients.
 - `signInWithOtpRequest`
 - `signInWithOtpVerify`
 - `signUp`
+- `agencySignUp`
 - `confirmSignUp`
 - `forgotPassword`
+- `resetPassword`
 
 # State Management
 

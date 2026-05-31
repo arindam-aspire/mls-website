@@ -24,12 +24,14 @@ _No significant state; presentational or config module._
 
 # API Usage
 
-_N/A unless extended._
+- `useResetPassword` → `POST /auth/forgot-password/confirm` with `{ email, code, new_password }`
 
 # Navigation
 
-- Use **`Link`**, **`useRouter`**, **`redirect`** from `@/src/i18n/navigation` for locale-prefixed paths (e.g. `/en/listing`).
-- Auth modal: query `?auth=<view>` on current pathname (see `authViews.ts`).
+- Reached after forgot-password OTP verification (`otp-flow=forgot`).
+- Reads email from `otp-email` URL param; OTP code from `forgotPasswordOtp` in auth store.
+- Submits `POST /auth/forgot-password/confirm` via `useResetPassword` with `{ email, code, new_password }`.
+- On success → email sign-in view via `resolveSignInViewAfterPasswordReset`; clears `forgotPasswordOtp`.
 
 # Props / Parameters
 

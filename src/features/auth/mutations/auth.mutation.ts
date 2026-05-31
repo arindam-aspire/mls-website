@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
-import { confirmSignUp, forgotPassword, getLoggedInUser, logout, signInWithOtpRequest, signInWithOtpVerify, signInWithPassword, signUp } from "../services/auth.service";
+import { confirmSignUp, agencySignUp, forgotPassword, getLoggedInUser, logout, resetPassword, signInWithOtpRequest, signInWithOtpVerify, signInWithPassword, signUp } from "../services/auth.service";
 import { useToast } from "@/src/hooks/useToast";
 import { type ApiError } from "@/src/apis/core/error.normalizer";
 import { useAuthStore } from "../store/auth.store";
@@ -64,7 +64,7 @@ export const useSignUp = () => {
     mutationFn: signUp,
     onSuccess: () => {
       toast.success("Account created successfully", {
-        description: "You can now sign in with your credentials.",
+        description: "Check your email for the verification code.",
       });
     },
     onError: (error: ApiError) => {
@@ -115,13 +115,14 @@ export const useSignInWithOtpRequest = () => {
 
 export const useSignInWithOtpVerify = () => {
   const toast = useToast();
-  const { setAuth, setUser } = useAuthStore();
+  const { setAuth, setUser, clearPendingOtpSession } = useAuthStore();
 
   return useMutation({
     mutationFn: signInWithOtpVerify,
     onSuccess: async (response: SignInWithOtpVerifyResponse) => {
       const { access_token, refresh_token } = response.data;
       setAuth(access_token, refresh_token);
+      clearPendingOtpSession();
       try {
         await Promise.resolve();
         const userResponse = await getLoggedInUser();
@@ -140,6 +141,24 @@ export const useSignInWithOtpVerify = () => {
   });
 };
 
+export const useAgencySignUp = () => {
+  const toast = useToast();
+
+  return useMutation({
+    mutationFn: agencySignUp,
+    onSuccess: () => {
+      toast.success("Registration submitted", {
+        description: "Check your email for the verification code.",
+      });
+    },
+    onError: (error: ApiError) => {
+      toast.error("Agency registration failed", {
+        description: error.message,
+      });
+    },
+  });
+};
+
 export const useForgotPassword = () => {
   const toast = useToast();
   return useMutation({
@@ -151,6 +170,24 @@ export const useForgotPassword = () => {
     },
     onError: (error: ApiError) => {
       toast.error("Failed to send OTP", {
+        description: error.message,
+      });
+    },
+  });
+};
+
+export const useResetPassword = () => {
+  const toast = useToast();
+
+  return useMutation({
+    mutationFn: resetPassword,
+    onSuccess: () => {
+      toast.success("Password reset successfully", {
+        description: "You can now sign in with your new password.",
+      });
+    },
+    onError: (error: ApiError) => {
+      toast.error("Password reset failed", {
         description: error.message,
       });
     },

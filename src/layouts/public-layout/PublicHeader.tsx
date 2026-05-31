@@ -1,19 +1,18 @@
 "use client";
 
-import { CloseButton, useClose } from "@headlessui/react";
+import {
+  CloseButton,
+  Dialog,
+  DialogBackdrop,
+  DialogPanel,
+} from "@headlessui/react";
 import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
+import { useState } from "react";
 import { Avatar } from "@/src/components/ui/avatar";
 import { Button } from "@/src/components/ui/button";
 import { Skeleton } from "@/src/components/ui/skeleton";
-import {
-  Popover,
-  PopoverBackdrop,
-  PopoverButton,
-  PopoverContent,
-  PopoverPanel,
-} from "@/src/components/ui/popover";
 import { Select } from "@/src/components/ui/select";
 import { AUTH_VIEW } from "@/src/features/auth/authViews";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
@@ -53,6 +52,7 @@ const mobileNavLinkClass = cn(
 interface MobileMenuProps {
   onNavigate: (path: string) => void;
   onLocaleChange: (locale: string) => void;
+  onClose: () => void;
   locale: AppLocale;
   navLabel: string;
   languageLabel: string;
@@ -62,16 +62,16 @@ interface MobileMenuProps {
 function MobileMenu({
   onNavigate,
   onLocaleChange,
+  onClose,
   locale,
   navLabel,
   languageLabel,
   closeMenuLabel,
 }: MobileMenuProps) {
   const t = useTranslations("common");
-  const close = useClose();
 
   return (
-    <PopoverContent className="flex min-h-0 flex-1 flex-col p-0">
+    <div className="flex min-h-0 flex-1 flex-col p-0">
       <div className="flex items-center justify-between border-b border-secondary/15 px-4 py-4 sm:px-6">
         <span className={navBrandClasses}>{navLabel}</span>
         <CloseButton
@@ -93,7 +93,7 @@ function MobileMenu({
             type="button"
             onClick={() => {
               onNavigate(path);
-              close();
+              onClose();
             }}
             className={mobileNavLinkClass}
           >
@@ -116,14 +116,14 @@ function MobileMenu({
           value={locale}
           onChange={(nextLocale) => {
             onLocaleChange(nextLocale);
-            close();
+            onClose();
           }}
           variant="outline"
           size="md"
           fullWidth
         />
       </div>
-    </PopoverContent>
+    </div>
   );
 }
 
@@ -134,6 +134,7 @@ export function PublicHeader() {
   const router = useRouter();
   const pathname = usePathname();
   const logoSrc = mlsLogoLight;
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const openChooseAccount = () => {
     router.push({ pathname: "/", query: { auth: AUTH_VIEW.chooseAccount } });
@@ -141,6 +142,10 @@ export function PublicHeader() {
 
   const handleLocaleChange = (nextLocale: string) => {
     router.replace(pathname, { locale: nextLocale as AppLocale });
+  };
+
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false);
   };
 
   return (
@@ -152,7 +157,7 @@ export function PublicHeader() {
           <Image
             src={logoSrc}
             alt={t("brand")}
-            className="w-auto h-20 transition-opacity duration-300"
+            className="h-20 w-auto transition-opacity duration-300"
             priority
           />
         </Link>
@@ -160,7 +165,10 @@ export function PublicHeader() {
         <DesktopNav />
 
         {isLoadingUser ? (
-          <Skeleton variant="circular" className="col-start-2 size-9 justify-self-center md:hidden" />
+          <Skeleton
+            variant="circular"
+            className="col-start-2 size-9 justify-self-center md:hidden"
+          />
         ) : user ? (
           <Avatar
             src={user.profile_picture_url}
@@ -183,28 +191,50 @@ export function PublicHeader() {
 
         <DesktopActions />
 
-        <Popover className="col-start-3 justify-self-end md:hidden">
-          <PopoverButton
-            aria-label={t("openMenu")}
-            className="size-11 shrink-0 p-0 hover:bg-page"
-          >
-            <Menu className="size-6" aria-hidden />
-          </PopoverButton>
-
-          <PopoverBackdrop className="z-[90] bg-black/40" />
-
-          <PopoverPanel fullScreen className="p-0">
-            <MobileMenu
-              onNavigate={(path) => router.push(path)}
-              onLocaleChange={handleLocaleChange}
-              locale={locale}
-              navLabel={t("mainNav")}
-              languageLabel={t("language")}
-              closeMenuLabel={t("closeMenu")}
-            />
-          </PopoverPanel>
-        </Popover>
+        <button
+          type="button"
+          aria-label={t("openMenu")}
+          aria-expanded={mobileMenuOpen}
+          className="col-start-3 inline-flex size-11 shrink-0 items-center justify-center justify-self-end rounded-lg text-text transition-colors hover:bg-page focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary/40 md:hidden"
+          onClick={() => setMobileMenuOpen(true)}
+        >
+          <Menu className="size-6" aria-hidden />
+        </button>
       </div>
+
+      <Dialog
+        open={mobileMenuOpen}
+        onClose={closeMobileMenu}
+        transition
+        className="relative z-[120] md:hidden"
+      >
+        <DialogBackdrop
+          transition
+          className={cn(
+            "fixed inset-0 z-[120] bg-black/40 transition-opacity",
+            "data-closed:opacity-0 data-enter:opacity-100 data-leave:opacity-0",
+          )}
+        />
+
+        <DialogPanel
+          transition
+          className={cn(
+            "fixed inset-0 z-[120] flex h-dvh w-full flex-col overflow-y-auto bg-page text-text outline-none",
+            "transition duration-200 ease-out",
+            "data-closed:opacity-0 data-enter:opacity-100 data-leave:opacity-0",
+          )}
+        >
+          <MobileMenu
+            onNavigate={(path) => router.push(path)}
+            onLocaleChange={handleLocaleChange}
+            onClose={closeMobileMenu}
+            locale={locale}
+            navLabel={t("mainNav")}
+            languageLabel={t("language")}
+            closeMenuLabel={t("closeMenu")}
+          />
+        </DialogPanel>
+      </Dialog>
     </header>
   );
 }

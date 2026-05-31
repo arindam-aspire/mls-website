@@ -25,7 +25,7 @@ export default function PropertyListScreen() {
 
   return (
     <>
-      <div className="sticky top-[var(--layout-header-height)] z-50 -mx-6 border-b border-secondary/10 bg-page/95 px-6 py-3 backdrop-blur-md sm:py-4">
+      <div className="sticky top-[var(--layout-header-height)] z-30 -mx-6 border-b border-secondary/10 bg-page/95 px-6 py-3 backdrop-blur-md sm:py-4">
         <div className="container mx-auto w-full min-w-0">
           <PropertyListFilters {...filters} />
         </div>

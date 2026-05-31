@@ -56,7 +56,8 @@ _No explicit validations detected._
 
 ## Show/Hide Controls
 
-_No explicit show/hide controls detected._
+- **Sign In / Sign Up toggle** — switches `mode` between `signin` and `signup`.
+- **Agent card** — disabled when `mode === "signup"`. On Sign In, navigates to agency sign-in with `portal=agent`.
 
 # UI Details
 

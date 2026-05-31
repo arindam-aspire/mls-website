@@ -13,7 +13,7 @@ import { useTranslations } from "next-intl";
 import { cn } from "@/src/lib/cn";
 import { bodyTextClasses } from "@/src/lib/typography";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
-import { AUTH_QUERY_KEY, resolveAccountTypeAuthView } from "../authViews";
+import { AUTH_VIEW, buildAuthModalUrl, resolveAccountTypeAuthView } from "../authViews";
 import { AccountTypeCard } from "./AccountTypeCard";
 
 export type ChooseAccountMode = "signin" | "signup";
@@ -47,7 +47,12 @@ export function ChooseAccountForm({
   const handleAccountTypeSelect = (type: ChooseAccountType) => {
     const view = resolveAccountTypeAuthView(type, mode);
     if (view != null) {
-      router.replace(`${pathname}?${AUTH_QUERY_KEY}=${view}`);
+      router.replace(
+        buildAuthModalUrl(pathname, view, {
+          returnView: AUTH_VIEW.chooseAccount,
+          portal: type === "agent" && mode === "signin" ? "agent" : undefined,
+        }),
+      );
     }
     onAccountTypeSelect?.(type);
   };
@@ -113,6 +118,7 @@ export function ChooseAccountForm({
             icon={item.icon}
             title={item.title}
             description={item.description}
+            disabled={mode === "signup" && item.type === "agent"}
             onClick={() => handleAccountTypeSelect(item.type)}
           />
         ))}
