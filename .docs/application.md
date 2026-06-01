@@ -71,6 +71,8 @@ See [packages.md](./packages.md) for the full dependency table.
 
 ## Getting started
 
+**Private package:** `@abdoun/abdoun-library` is installed from the Azure Artifacts feed configured in root [`.npmrc`](../.npmrc). Authenticate once (Azure DevOps → Artifacts → **abdoun-library** → **Connect to feed** → npm → follow the token steps), or run `npx vsts-npm-auth -config .npmrc` if you use that tool. CI uses `npmAuthenticate@0` in `azure-pipelines.yml`.
+
 ```bash
 npm install
 npm run dev    # http://localhost:3000 → redirects to /en

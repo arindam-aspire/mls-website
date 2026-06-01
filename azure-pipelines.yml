@@ -15,6 +15,11 @@ steps:
     versionSpec: '20.x'
   displayName: 'Install Node.js'
 
+- task: npmAuthenticate@0
+  inputs:
+    workingFile: .npmrc
+  displayName: 'Authenticate npm (Azure Artifacts)'
+
 - script: |
     npm install
     npm run build
