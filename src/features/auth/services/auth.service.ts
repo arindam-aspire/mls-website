@@ -57,7 +57,7 @@ export async function agencySignUp(
   formData.append("agency_name", data.agency_name);
   formData.append("agency_trade_name", data.agency_trade_name);
   formData.append("email", data.email);
-  formData.append("phone", data.phone);
+  formData.append("phone_number", data.phone_number);
   formData.append("password", data.password);
   formData.append("legal_document", data.legal_document);
 

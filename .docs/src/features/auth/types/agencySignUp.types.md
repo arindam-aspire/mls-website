@@ -17,7 +17,7 @@ Agency registration request/response types for `POST /agency/register`.
 | `agency_name` | Agency legal name |
 | `agency_trade_name` | Trade / DBA name |
 | `email` | Agency email |
-| `phone` | `{dialCode}{nationalNumber}` (no space) |
+| `phone_number` | `{dialCode}{nationalNumber}` (no space) |
 | `password` | Account password |
 | `legal_document` | Uploaded PDF/JPG/PNG file (max 10 MB) |
 

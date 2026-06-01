@@ -26,7 +26,7 @@ export function useAgencyRegistrationScreen() {
         agency_name: values.agencyName,
         agency_trade_name: values.tradeName,
         email: values.email,
-        phone: values.phone,
+        phone_number: values.phone,
         password: values.password,
         legal_document: values.legalDocument,
       });

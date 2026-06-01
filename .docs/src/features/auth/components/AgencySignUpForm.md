@@ -28,7 +28,7 @@ Feature or shared UI component.
 # API Usage
 
 - Submits via `onSubmit` prop → `POST /agency/register` (handled in screen/mutation)
-- Phone: `{dialCode}{nationalNumber}` (no space) stored in `phone`
+- Phone: `{dialCode}{nationalNumber}` (no space) stored in form field `phone`; mapped to API `phone_number` on submit
 - Document: PDF/JPG/PNG, max **10 MB** (`agencySignUpLicenseTooLarge`)
 
 # Navigation

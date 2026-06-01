@@ -104,7 +104,7 @@ export function useConfirmSignUpScreen() {
         agency_name: pendingAgencySignUp.agencyName,
         agency_trade_name: pendingAgencySignUp.tradeName,
         email: pendingAgencySignUp.email,
-        phone: pendingAgencySignUp.phone,
+        phone_number: pendingAgencySignUp.phone,
         password: pendingAgencySignUp.password,
         legal_document: pendingAgencySignUp.legalDocument,
       });
