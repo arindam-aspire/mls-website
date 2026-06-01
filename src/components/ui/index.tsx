@@ -83,6 +83,7 @@ export type {
 } from "./link";
 export { LINK_COLORS, LINK_SIZES, LINK_VARIANTS } from "./link";
 export { Input } from "./input";
+export { AutocompleteInput } from "./autocomplete-input";
 export { PhoneInput } from "./phone-input";
 export type { PhoneInputProps } from "./phone-input";
 export {
@@ -131,6 +132,16 @@ export {
 } from "./budget-select";
 export type { InputProps, InputSize, InputVariant } from "./input";
 export { INPUT_SIZES, INPUT_VARIANTS } from "./input";
+export type {
+  AutocompleteInputOption,
+  AutocompleteInputProps,
+  AutocompleteInputSize,
+  AutocompleteInputVariant,
+} from "./autocomplete-input";
+export {
+  AUTOCOMPLETE_INPUT_SIZES,
+  AUTOCOMPLETE_INPUT_VARIANTS,
+} from "./autocomplete-input";
 export type { TextareaProps, TextareaSize, TextareaVariant } from "./textarea";
 export { TEXTAREA_SIZES, TEXTAREA_VARIANTS } from "./textarea";
 export { Toaster } from "./toaster";

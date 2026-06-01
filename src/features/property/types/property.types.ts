@@ -19,6 +19,8 @@ export type PropertyListParams = {
   sort?: string;
   type?: string;
   location?: string;
+  city?: string;
+  locations?: string;
   budgetMin?: number;
   budgetMax?: number;
   furnitureStatus?: string;

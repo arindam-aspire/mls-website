@@ -13,7 +13,7 @@ Route-level screen component composing feature UI.
 
 - `import { DetailsSection } from "@/src/features/landing/components/DetailsSection"`
 - `import { HeroSection } from "@/src/features/landing/components/HeroSection"`
-- `import { useGetPropertyTaxonomy } from "../mutations/landing.mutation"`
+- `import { useGetLocationTaxonomy, useGetPropertyTaxonomy } from "../mutations/landing.mutation"`
 - `import { useTheme } from "@/src/providers/ThemeProvider"`
 - `import { usePropertyStore } from "@/src/features/property/store/property.store"`
 
@@ -23,9 +23,10 @@ Route-level screen component composing feature UI.
 
 # State Management
 
-- Reads taxonomy mutation state from React Query (`useGetPropertyTaxonomy`).
-- Taxonomy persistence to Zustand happens inside the mutation hook `onSuccess`.
-- Reads cached taxonomy from `usePropertyStore` to avoid duplicate API calls on revisit.
+- Reads taxonomy mutation state from React Query (`useGetPropertyTaxonomy`, `useGetLocationTaxonomy`).
+- Taxonomy persistence to Zustand happens inside mutation hooks `onSuccess`.
+- Reads cached taxonomies from `usePropertyStore` to avoid duplicate API calls on revisit.
+- Passes `locationTaxonomy` to `HeroSection` for hero location autocomplete.
 
 # API Usage
 
@@ -47,8 +48,8 @@ _No explicit inputs detected._
 
 ## Actions
 
-- On mount, trigger taxonomy mutation via `mutate()`.
-- API call is skipped when `propertyTaxonomy` already exists in store.
+- On mount, trigger property and location taxonomy mutations via `mutate()` when not cached.
+- API calls are skipped when the corresponding taxonomy already exists in store.
 - Mutation hook handles store persistence and error toast.
 
 ## Validations

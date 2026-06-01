@@ -24,6 +24,8 @@ export const propertyEndpoints = {
     appendOptionalParam(search, "sort", params.sort);
     appendOptionalParam(search, "type", params.type);
     appendOptionalParam(search, "location", params.location);
+    appendOptionalParam(search, "city", params.city);
+    appendOptionalParam(search, "locations", params.locations);
     appendOptionalParam(search, "budgetMin", params.budgetMin);
     appendOptionalParam(search, "budgetMax", params.budgetMax);
     appendOptionalParam(search, "furnitureStatus", params.furnitureStatus);

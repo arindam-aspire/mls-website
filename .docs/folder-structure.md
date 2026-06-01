@@ -239,6 +239,10 @@ mls_website/
 │   │   └── ui/
 │   │       ├── fieldVariants.ts
 │   │       ├── responsiveSizes.ts
+│   │       ├── autocomplete-input/
+│   │       │   ├── highlightLabel.tsx
+│   │       │   ├── index.tsx
+│   │       │   └── types.ts
 │   │       ├── avatar/
 │   │       │   ├── index.tsx
 │   │       │   └── types.ts
@@ -387,8 +391,11 @@ mls_website/
 │   │   │   ├── screens/
 │   │   │   │   └── LandingScreen.tsx
 │   │   │   ├── store/
-│   │   │   └── types/
-│   │   │       └── propertyTaxonomy.types.ts
+│   │   │   ├── types/
+│   │   │   │   ├── locationTaxonomy.types.ts
+│   │   │   │   └── propertyTaxonomy.types.ts
+│   │   │   └── utils/
+│   │   │       └── locationTaxonomy.utils.ts
 │   │   ├── profile/
 │   │   │   └── screens/
 │   │   └── property/

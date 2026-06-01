@@ -5,8 +5,20 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale } from "next-intl";
 import { getPathname, usePathname, useRouter } from "@/src/i18n/navigation";
 import type { AppLocale } from "@/src/i18n/routing";
-import { useGetPropertyTaxonomy } from "@/src/features/landing/mutations/landing.mutation";
+import {
+  useGetLocationTaxonomy,
+  useGetPropertyTaxonomy,
+} from "@/src/features/landing/mutations/landing.mutation";
 import { getPropertyCategories } from "@/src/features/landing/types/propertyTaxonomy.types";
+import {
+  buildLocationSuggestions,
+  encodeLocationOptionValue,
+  filterLocationSuggestions,
+  findLocationSuggestionByLabel,
+  getLocationLabelFromParams,
+  parseLocationOptionValue,
+} from "@/src/features/landing/utils/locationTaxonomy.utils";
+import type { AutocompleteInputOption } from "@/src/components/ui";
 import {
   getInitialBudgetMax,
   getInitialBudgetMin,
@@ -40,6 +52,8 @@ const LIST_PARAM_KEYS = [
   "sort",
   "type",
   "location",
+  "city",
+  "locations",
   "budgetMin",
   "budgetMax",
   "furnitureStatus",
@@ -97,6 +111,8 @@ function parseUrlListParams(searchParams: URLSearchParams): PropertyListParams {
     sort: searchParams.get("sort") || DEFAULT_SORT,
     type: getOptionalString(searchParams.get("type")),
     location: getOptionalString(searchParams.get("location")),
+    city: getOptionalString(searchParams.get("city")),
+    locations: getOptionalString(searchParams.get("locations")),
     budgetMin: parseOptionalNumber(getInitialBudgetMin(searchParams) || null),
     budgetMax: parseOptionalNumber(getInitialBudgetMax(searchParams) || null),
     furnitureStatus: getOptionalString(searchParams.get("furnitureStatus")),
@@ -142,12 +158,22 @@ export function usePropertyList() {
     setPropertyListings,
     setPropertyListParams,
     propertyTaxonomy,
+    locationTaxonomy,
   } = usePropertyStore();
 
   // 4. Local state
   const [layoutVariant, setLayoutVariant] = useState<"grid" | "list">("grid");
-  const [locationDraft, setLocationDraft] = useState(
-    () => listParams.location ?? "",
+  const [locationDraft, setLocationDraft] = useState(() =>
+    getLocationLabelFromParams(
+      listParams.city,
+      listParams.locations,
+      locationTaxonomy ?? undefined,
+    ) || listParams.location || "",
+  );
+  const [selectedLocationValue, setSelectedLocationValue] = useState(() =>
+    listParams.city
+      ? encodeLocationOptionValue(listParams.city, listParams.locations)
+      : "",
   );
   const [budgetMinDraft, setBudgetMinDraft] = useState(
     () =>
@@ -190,6 +216,22 @@ export function usePropertyList() {
 
   const { mutate: getPropertyTaxonomy, isPending: isLoadingTaxonomy } =
     useGetPropertyTaxonomy();
+
+  const { mutate: getLocationTaxonomy } = useGetLocationTaxonomy();
+
+  const locationSuggestions = useMemo(
+    () => buildLocationSuggestions(locationTaxonomy ?? undefined),
+    [locationTaxonomy],
+  );
+
+  const locationOptions = useMemo((): AutocompleteInputOption[] => {
+    return filterLocationSuggestions(locationSuggestions, locationDraft).map(
+      (item) => ({
+        value: item.value,
+        label: item.label,
+      }),
+    );
+  }, [locationDraft, locationSuggestions]);
 
   const fetchProperties = useCallback(
     (params: PropertyListParams) => {
@@ -322,19 +364,80 @@ export function usePropertyList() {
     [updateSearchParams],
   );
 
-  const onLocationChange = useCallback((location: string) => {
-    setLocationDraft(location);
+  const onLocationInputChange = useCallback((nextValue: string) => {
+    setLocationDraft(nextValue);
+    setSelectedLocationValue("");
   }, []);
+
+  const onLocationOptionSelect = useCallback(
+    (option: AutocompleteInputOption) => {
+      const { city, locations } = parseLocationOptionValue(option.value);
+      setLocationDraft(option.label);
+      setSelectedLocationValue(option.value);
+      updateSearchParams({
+        city,
+        locations: locations ?? "",
+        location: "",
+        page: 1,
+      });
+    },
+    [updateSearchParams],
+  );
 
   const onLocationCommit = useCallback(() => {
     const trimmedLocation = locationDraft.trim();
+
+    if (!trimmedLocation) {
+      if (!listParams.city && !listParams.locations && !listParams.location) {
+        return;
+      }
+
+      updateSearchParams({
+        city: "",
+        locations: "",
+        location: "",
+        page: 1,
+      });
+      setSelectedLocationValue("");
+      return;
+    }
+
+    const matched = findLocationSuggestionByLabel(
+      locationSuggestions,
+      trimmedLocation,
+    );
+
+    if (matched) {
+      const { city, locations } = parseLocationOptionValue(matched.value);
+      setSelectedLocationValue(matched.value);
+      updateSearchParams({
+        city,
+        locations: locations ?? "",
+        location: "",
+        page: 1,
+      });
+      return;
+    }
 
     if ((listParams.location ?? "") === trimmedLocation) {
       return;
     }
 
-    updateSearchParams({ location: trimmedLocation, page: 1 });
-  }, [listParams.location, locationDraft, updateSearchParams]);
+    updateSearchParams({
+      location: trimmedLocation,
+      city: "",
+      locations: "",
+      page: 1,
+    });
+    setSelectedLocationValue("");
+  }, [
+    listParams.locations,
+    listParams.city,
+    listParams.location,
+    locationDraft,
+    locationSuggestions,
+    updateSearchParams,
+  ]);
 
   const onBudgetCommit = useCallback(() => {
     updateSearchParams({
@@ -540,7 +643,10 @@ export function usePropertyList() {
       typeOptions,
       onTypeChange,
       location: locationDraft,
-      onLocationChange,
+      locationValue: selectedLocationValue,
+      locationOptions,
+      onLocationInputChange,
+      onLocationOptionSelect,
       onLocationCommit,
       budgetMin: budgetMinDraft,
       budgetMax: budgetMaxDraft,
@@ -583,6 +689,7 @@ export function usePropertyList() {
       isLoadingTaxonomy,
       listParams,
       locationDraft,
+      locationOptions,
       maxAreaDraft,
       minAreaDraft,
       onAmenityChange,
@@ -591,8 +698,9 @@ export function usePropertyList() {
       onBudgetCommit,
       onBudgetReset,
       onCategoryChange,
-      onLocationChange,
       onLocationCommit,
+      onLocationInputChange,
+      onLocationOptionSelect,
       onMaxAreaChange,
       onMaxAreaCommit,
       onMinAreaChange,
@@ -605,6 +713,7 @@ export function usePropertyList() {
       openUpcomingFeature,
       propertyTaxonomy,
       selectedAmenities,
+      selectedLocationValue,
       typeOptions,
     ],
   );
@@ -684,14 +793,32 @@ export function usePropertyList() {
 
   // 9. Effects
   useEffect(() => {
-    setLocationDraft(listParams.location ?? "");
-  }, [listParams.location]);
+    const label =
+      getLocationLabelFromParams(
+        listParams.city,
+        listParams.locations,
+        locationTaxonomy ?? undefined,
+      ) || listParams.location || "";
+
+    setLocationDraft(label);
+    setSelectedLocationValue(
+      listParams.city
+        ? encodeLocationOptionValue(listParams.city, listParams.locations)
+        : "",
+    );
+  }, [listParams.locations, listParams.city, listParams.location, locationTaxonomy]);
 
   useEffect(() => {
     if (propertyTaxonomy == null) {
       getPropertyTaxonomy();
     }
   }, [getPropertyTaxonomy, propertyTaxonomy]);
+
+  useEffect(() => {
+    if (locationTaxonomy == null) {
+      getLocationTaxonomy();
+    }
+  }, [getLocationTaxonomy, locationTaxonomy]);
 
   useEffect(() => {
     fetchProperties(listParams);

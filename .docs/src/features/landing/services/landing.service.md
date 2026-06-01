@@ -17,6 +17,7 @@ API service functions calling HTTP clients.
 # Exports
 
 - `getPropertyTaxonomy`
+- `getLocationTaxonomy`
 
 # State Management
 

@@ -8,14 +8,14 @@ Home page experience: full-screen hero with property taxonomy search, and market
 landing/
   screens/LandingScreen.tsx     Orchestrates hero + details
   components/                   HeroSection, HeroSearchBar, DetailsSection
-  mutations/landing.mutation.ts useGetPropertyTaxonomy
+  mutations/landing.mutation.ts useGetPropertyTaxonomy, useGetLocationTaxonomy
   services/landing.service.ts   GET /property-taxonomy
   types/propertyTaxonomy.types.ts
 ```
 
 ## Data flow
 
-1. `LandingScreen` calls `useGetPropertyTaxonomy().mutate()`.
+1. `LandingScreen` calls `useGetPropertyTaxonomy().mutate()` and `useGetLocationTaxonomy().mutate()` when not cached in `usePropertyStore`.
 2. Mutation → `landing.service` → `publicEndpoints.CATEGORY_PROPERTY_LIST`.
 3. On success, taxonomy is persisted in `property.store`.
 4. Taxonomy passed to `HeroSection` / `HeroSearchBar` for filters.

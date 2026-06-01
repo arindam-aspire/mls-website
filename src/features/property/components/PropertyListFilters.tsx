@@ -2,10 +2,11 @@
 
 import { BudgetField } from "@/src/components/search";
 import {
+  AutocompleteInput,
   Button,
-  Input,
   SelectDropdown,
   ToggleButton,
+  type AutocompleteInputOption,
   type SelectDropdownOption,
   type ToggleButtonItem,
 } from "@/src/components/ui";
@@ -34,7 +35,10 @@ export type PropertyListFiltersProps = {
   typeOptions: SelectDropdownOption[];
   onTypeChange: (value: string) => void;
   location: string;
-  onLocationChange: (value: string) => void;
+  locationValue?: string;
+  locationOptions: AutocompleteInputOption[];
+  onLocationInputChange: (value: string) => void;
+  onLocationOptionSelect: (option: AutocompleteInputOption) => void;
   onLocationCommit: () => void;
   budgetMin: string;
   budgetMax: string;
@@ -87,7 +91,10 @@ export function PropertyListFilters({
   typeOptions,
   onTypeChange,
   location,
-  onLocationChange,
+  locationValue,
+  locationOptions,
+  onLocationInputChange,
+  onLocationOptionSelect,
   onLocationCommit,
   budgetMin,
   budgetMax,
@@ -180,12 +187,15 @@ export function PropertyListFilters({
             variant="outline"
           />
 
-          <Input
+          <AutocompleteInput
             className={cn(mobileScrollItemClassName, "md:col-span-1")}
             aria-label={locationAriaLabel}
             placeholder={locationPlaceholder}
-            value={location}
-            onChange={(event) => onLocationChange(event.target.value)}
+            inputValue={location}
+            value={locationValue}
+            options={locationOptions}
+            onInputChange={onLocationInputChange}
+            onOptionSelect={onLocationOptionSelect}
             onBlur={onLocationCommit}
             onKeyDown={(event) => {
               if (event.key === "Enter") {
@@ -195,6 +205,8 @@ export function PropertyListFilters({
             iconEnd={<MapPin className="size-4" aria-hidden />}
             variant="outline"
             disabled={disabled}
+            minCharsToShow={1}
+            emptyMessage="No locations found"
           />
 
           <BudgetField

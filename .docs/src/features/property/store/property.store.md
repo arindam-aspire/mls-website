@@ -8,13 +8,14 @@ Zustand store for property list parameters and fetched list response cache.
 
 - Hold active list filters/pagination in `propertyListParams`.
 - Hold fetched list response in `propertyListings`.
-- Hold landing taxonomy response in `propertyTaxonomy` for cross-feature reuse.
+- Hold landing taxonomy responses in `propertyTaxonomy` and `locationTaxonomy` for cross-feature reuse.
 - Provide update and reset actions for list state.
 
 # Imports
 
 - `create` from `zustand`
 - `PropertyTaxonomyResponse` from `src/features/landing/types/propertyTaxonomy.types`
+- `LocationTaxonomyResponse` from `src/features/landing/types/locationTaxonomy.types`
 - `PropertyListParams`, `PropertyListings` from `../types/property.types`
 
 # Exports
@@ -48,6 +49,7 @@ _No explicit inputs detected._
 - `setPropertyListParams`
 - `setPropertyListings`
 - `setPropertyTaxonomy`
+- `setLocationTaxonomy`
 - `resetPropertyList`
 
 ## Validations

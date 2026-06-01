@@ -1,4 +1,4 @@
-import type { FocusEvent, ReactNode } from "react";
+import type { FocusEvent, KeyboardEvent, ReactNode } from "react";
 
 export const AUTOCOMPLETE_INPUT_VARIANTS = ["outline", "ghost", "clear"] as const;
 
@@ -27,8 +27,12 @@ export interface AutocompleteInputProps {
   isRequired?: boolean;
   value?: string;
   defaultValue?: string;
+  inputValue?: string;
+  onInputChange?: (value: string) => void;
   onChange?: (value: string) => void;
+  onOptionSelect?: (option: AutocompleteInputOption) => void;
   onBlur?: (event: FocusEvent<HTMLInputElement>) => void;
+  onKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void;
   fullWidth?: boolean;
   wrapperClassName?: string;
   inputClassName?: string;
@@ -39,5 +43,11 @@ export interface AutocompleteInputProps {
   name?: string;
   disabled?: boolean;
   autoFocus?: boolean;
+  iconStart?: ReactNode;
+  iconEnd?: ReactNode;
+  iconClassName?: string;
+  emptyMessage?: string;
+  maxOptions?: number;
+  minCharsToShow?: number;
   "aria-label"?: string;
 }

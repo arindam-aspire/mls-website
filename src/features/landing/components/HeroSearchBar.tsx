@@ -1,18 +1,25 @@
 "use client";
 
 import {
+  AutocompleteInput,
   Button,
   Card,
-  Input,
   SELECT_DROPDOWN_EMPTY_VALUE,
   SelectDropdown,
   Skeleton,
+  type AutocompleteInputOption,
 } from "@/src/components/ui";
 import { ButtonGroup } from "@/src/components/ui/button-group";
+import type { LocationTaxonomyResponse } from "@/src/features/landing/types/locationTaxonomy.types";
 import {
   getPropertyCategories,
   type PropertyTaxonomyResponse,
 } from "@/src/features/landing/types/propertyTaxonomy.types";
+import {
+  buildLocationSuggestions,
+  filterLocationSuggestions,
+  parseLocationOptionValue,
+} from "@/src/features/landing/utils/locationTaxonomy.utils";
 import { useRouter } from "@/src/i18n/navigation";
 import { cn } from "@/src/lib/cn";
 import { bodyTextClasses } from "@/src/lib/typography";
@@ -25,7 +32,7 @@ const searchBarWrapperClass =
   "flex w-full min-w-0 max-w-4xl flex-col items-stretch text-start md:items-start";
 
 const searchCardClass = cn(
-  "w-full min-w-0 !border-0 max-md:shadow-none",
+  "w-full min-w-0 overflow-visible !border-0 max-md:shadow-none",
   "rounded-xl !rounded-t-none px-4 py-3",
   "md:!rounded-full md:!rounded-tl-none md:px-6 md:py-4",
 );
@@ -50,6 +57,7 @@ type HeroSearchBarProps = {
   theme: string;
   isLoading: boolean;
   propertyTaxonomy?: PropertyTaxonomyResponse;
+  locationTaxonomy?: LocationTaxonomyResponse;
 };
 
 function HeroSearchBarSkeleton({
@@ -84,6 +92,7 @@ export function HeroSearchBar({
   theme,
   isLoading,
   propertyTaxonomy,
+  locationTaxonomy,
 }: HeroSearchBarProps) {
   const router = useRouter();
   const categories = useMemo(
@@ -91,12 +100,29 @@ export function HeroSearchBar({
     [propertyTaxonomy],
   );
 
+  const locationSuggestions = useMemo(
+    () => buildLocationSuggestions(locationTaxonomy),
+    [locationTaxonomy],
+  );
+
   const [propertyType, setPropertyType] = useState("");
   const [subtype, setSubtype] = useState(SELECT_DROPDOWN_EMPTY_VALUE);
   const [listingType, setListingType] = useState<(typeof LISTING_TYPES)[number]>(
     LISTING_TYPES[0],
   );
-  const [location, setLocation] = useState("");
+  const [locationQuery, setLocationQuery] = useState("");
+  const [selectedLocationValue, setSelectedLocationValue] = useState("");
+  const [cityName, setCityName] = useState<string | undefined>();
+  const [locationName, setLocationName] = useState<string | undefined>();
+
+  const locationOptions = useMemo((): AutocompleteInputOption[] => {
+    return filterLocationSuggestions(locationSuggestions, locationQuery).map(
+      (item) => ({
+        value: item.value,
+        label: item.label,
+      }),
+    );
+  }, [locationQuery, locationSuggestions]);
 
   useEffect(() => {
     if (categories.length === 0) {
@@ -142,13 +168,42 @@ export function HeroSearchBar({
     }
   };
 
+  const handleLocationOptionSelect = (option: AutocompleteInputOption) => {
+    const { city, locations } = parseLocationOptionValue(option.value);
+    setLocationQuery(option.label);
+    setSelectedLocationValue(option.value);
+    setCityName(city);
+    setLocationName(locations);
+  };
+
+  const handleLocationInputChange = (value: string) => {
+    setLocationQuery(value);
+    setSelectedLocationValue("");
+    setCityName(undefined);
+    setLocationName(undefined);
+  };
+
   const handleSearch = () => {
+    const query: Record<string, string> = {
+      status: listingType,
+      category: activePropertyType,
+    };
+
+    if (subtype !== SELECT_DROPDOWN_EMPTY_VALUE) {
+      query.type = subtype;
+    }
+
+    if (cityName) {
+      query.city = cityName;
+    }
+
+    if (locationName) {
+      query.locations = locationName;
+    }
+
     router.push({
       pathname: "/property-list",
-      query: {
-        status: listingType,
-        category: activePropertyType,
-      },
+      query,
     });
   };
 
@@ -217,14 +272,20 @@ export function HeroSearchBar({
             options={subtypeOptions}
             variant="ghost"
           />
-          <Input
-            wrapperClassName="min-w-0"
+          <AutocompleteInput
+            wrapperClassName="min-w-0 w-full"
+            className="min-w-0 w-full"
             aria-label={t("heroLocationPlaceholder")}
             placeholder={t("heroLocationPlaceholder")}
-            value={location}
-            onChange={(event) => setLocation(event.target.value)}
+            inputValue={locationQuery}
+            value={selectedLocationValue}
+            options={locationOptions}
+            onInputChange={handleLocationInputChange}
+            onOptionSelect={handleLocationOptionSelect}
             iconEnd={<MapPin />}
             variant="ghost"
+            minCharsToShow={1}
+            emptyMessage="No locations found"
           />
           <Button
             type="button"

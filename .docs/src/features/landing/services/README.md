@@ -4,4 +4,4 @@
 | --- | --- |
 | [landing.service.md](./landing.service.md) | Fetches property taxonomy from public API |
 
-Endpoint: `GET /property-taxonomy` via `authClient` (unauthenticated). See [publicEndpoints](../../apis/endpoints/publicEndpoints.md).
+Endpoints: `GET /property-taxonomy`, `GET /location-taxonomy` via `authClient` (unauthenticated). See [publicEndpoints](../../apis/endpoints/publicEndpoints.md).

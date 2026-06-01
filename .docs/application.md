@@ -487,12 +487,13 @@ From `src/configs/environment.config.ts` → `API_BASE_URL` (env: `NEXT_PUBLIC_A
 | Constant | Path |
 | --- | --- |
 | `CATEGORY_PROPERTY_LIST` | `/property-taxonomy` |
+| `LOCATION_TAXONOMY` | `/location-taxonomy` |
 
 **Property** (`propertyEndpoints.ts`):
 
 | Constant | Path |
 | --- | --- |
-| `PROPERTY_LIST` | `/properties` |
+| `PROPERTY_LIST` | `/properties` — query may include `city`, `locations` (names from location taxonomy), plus existing filters |
 
 Types: `src/features/property/types/property.types.ts` (`Property`, `PropertyListResponse`, …).
 

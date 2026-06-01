@@ -1,4 +1,5 @@
 import heroImage from "@/src/assets/images/MLS_Home_Image.png";
+import type { LocationTaxonomyResponse } from "@/src/features/landing/types/locationTaxonomy.types";
 import type { PropertyTaxonomyResponse } from "@/src/features/landing/types/propertyTaxonomy.types";
 import { cn } from "@/src/lib/cn";
 import {
@@ -13,6 +14,7 @@ type HeroSectionProps = {
   theme: string;
   isLoading: boolean;
   propertyTaxonomy?: PropertyTaxonomyResponse;
+  locationTaxonomy?: LocationTaxonomyResponse;
 };
 
 export function HeroSection({
@@ -20,6 +22,7 @@ export function HeroSection({
   theme,
   isLoading,
   propertyTaxonomy,
+  locationTaxonomy,
 }: HeroSectionProps) {
   return (
     <section
@@ -52,7 +55,13 @@ export function HeroSection({
         </p>
 
         <div className="w-full min-w-0">
-          <HeroSearchBar t={t} theme={theme} isLoading={isLoading} propertyTaxonomy={propertyTaxonomy} />
+          <HeroSearchBar
+            t={t}
+            theme={theme}
+            isLoading={isLoading}
+            propertyTaxonomy={propertyTaxonomy}
+            locationTaxonomy={locationTaxonomy}
+          />
         </div>
       </div>
     </section>

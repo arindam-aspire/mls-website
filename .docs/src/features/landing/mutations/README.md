@@ -2,6 +2,6 @@
 
 | File | Export |
 | --- | --- |
-| [landing.mutation.md](./landing.mutation.md) | `useGetPropertyTaxonomy` — TanStack mutation for property taxonomy |
+| [landing.mutation.md](./landing.mutation.md) | `useGetPropertyTaxonomy`, `useGetLocationTaxonomy` — TanStack mutations for taxonomies |
 
 Calls [landing.service](../services/landing.service.md). Used by `LandingScreen`.
