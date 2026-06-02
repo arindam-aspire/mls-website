@@ -1,10 +1,10 @@
 # Route group `(main)` — `app/[locale]/(main)/`
 
-Primary public routes with `PublicLayout`. Group name does **not** appear in the URL.
+Primary authenticated-main routes with `ProtectedLayout`. Group name does **not** appear in the URL.
 
 ## Layout
 
-[layout.md](./layout.md) → `PublicLayout` (header, auth modal, footer).
+[layout.md](./layout.md) → `ProtectedLayout` (protected shell scaffolding).
 
 ## Pages
 
@@ -17,7 +17,7 @@ Primary public routes with `PublicLayout`. Group name does **not** appear in the
 
 ```
 /en/*
-  layout.tsx (PublicLayout)
+  layout.tsx (ProtectedLayout)
   dashboard/page.tsx
   my-profile/page.tsx
 ```

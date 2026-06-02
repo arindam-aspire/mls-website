@@ -186,7 +186,7 @@ Route groups `(landing)`, `(main)`, `(property)`, `(auth)`, `(public)` do **not*
 | Group | Layout | Purpose |
 | --- | --- | --- |
 | `(landing)` | `LandingLayout` | Locale root landing page |
-| `(main)` | `PublicLayout` | Home, dashboard, my-profile |
+| `(main)` | `ProtectedLayout` | Home, dashboard, my-profile |
 | `(property)` | `PublicLayout` | User property-related pages |
 | `(auth)` | *(empty — reserved)* | Future auth routes |
 | `(public)` | *(empty — reserved)* | Future public routes |
@@ -207,6 +207,7 @@ All paths below are **without** locale; prepend `/<locale>` (e.g. `/en/listing`)
 | `/saved-searches` | `(property)/saved-searches/page.tsx` | `SavedSearchesScreen` (Coming Soon) |
 | `/recently-viewed` | `(property)/recently-viewed/page.tsx` | `RecentlyViewedScreen` (Coming Soon) |
 | `/inquiries` | `(property)/inquiries/page.tsx` | `InquiriesScreen` (Coming Soon) |
+| `/unauthorized` | `unauthorized.tsx` | `UnauthorizedScreen` |
 
 ### Header navigation (not yet implemented as routes)
 
@@ -226,6 +227,7 @@ Defined in `DesktopNav` / mobile menu — `router.push` only:
 | --- | --- | --- |
 | `/[...rest]` | `[locale]/[...rest]/page.tsx` | Catch-all |
 | 404 | `[locale]/not-found.tsx` | `NotFoundScreen` |
+| 401 | `[locale]/unauthorized.tsx` | `UnauthorizedScreen` |
 
 ### Profile popover → routes
 
@@ -259,7 +261,7 @@ Uses `UiLink` + `router.push(path)` and `useClose()` to dismiss the popover.
 
 ### Public layout — `src/layouts/public-layout/`
 
-Used by `(main)` and `(property)` route groups.
+Used by `(property)` route group.
 
 | File | Role |
 | --- | --- |
@@ -289,7 +291,7 @@ Used by `(landing)` route group.
 
 ### Protected layout — `src/layouts/protected-layout/`
 
-Reserved; not wired to routes yet.
+Used by `(main)` route group.
 
 ---
 
@@ -390,6 +392,14 @@ Reserved; not wired to routes yet.
 | File | Role |
 | --- | --- |
 | `screens/NotFoundScreen.tsx` | 404 page content |
+
+---
+
+### `unauthorized`
+
+| File | Role |
+| --- | --- |
+| `screens/UnauthorizedScreen.tsx` | 401 unauthorized page content |
 
 ---
 

@@ -21,6 +21,7 @@ mls_website/
 │   │   └── [locale]/
 │   │       ├── layout.md
 │   │       ├── not-found.md
+│   │       ├── unauthorized.md
 │   │       ├── [...rest]/
 │   │       │   └── page.md
 │   │       ├── (landing)/
@@ -97,6 +98,7 @@ mls_website/
 │       │   │       ├── README.md
 │       │   │       └── landing.mutation.md
 │       │   ├── not-found/
+│       │   ├── unauthorized/
 │       │   ├── profile/
 │       │   │   ├── README.md
 │       │   │   ├── components/
@@ -170,6 +172,15 @@ mls_website/
 │       │   │   ├── LandingMain.md
 │       │   │   ├── LandingNotificationsButton.md
 │       │   │   └── LandingProfilePopover.md
+│       │   ├── protected-layout/
+│       │   │   ├── README.md
+│       │   │   ├── index.md
+│       │   │   ├── ProtectedDrawer.md
+│       │   │   ├── ProtectedFooter.md
+│       │   │   ├── ProtectedHeader.md
+│       │   │   ├── ProtectedMain.md
+│       │   │   ├── ProtectedMobileMenu.md
+│       │   │   └── ProtectedSidebar.md
 │       │   └── public-layout/
 │       │       ├── PublicBottomTabBar.md
 │       │       ├── PublicHeader.md
@@ -186,6 +197,7 @@ mls_website/
 │   │   ├── [...rest]/
 │   │   │   └── page.tsx
 │   │   ├── not-found.tsx
+│   │   ├── unauthorized.tsx
 │   │   ├── (auth)/
 │   │   ├── (public)/
 │   │   ├── (landing)/
@@ -410,6 +422,9 @@ mls_website/
 │   │   ├── not-found/
 │   │   │   └── screens/
 │   │   │       └── NotFoundScreen.tsx
+│   │   ├── unauthorized/
+│   │   │   └── screens/
+│   │   │       └── UnauthorizedScreen.tsx
 │   │   ├── landing/
 │   │   │   ├── components/
 │   │   │   │   ├── DetailsSection.tsx
@@ -496,6 +511,13 @@ mls_website/
 │   │   │   ├── LandingNotificationsButton.tsx
 │   │   │   └── LandingProfilePopover.tsx
 │   │   ├── protected-layout/
+│   │   │   ├── index.tsx
+│   │   │   ├── ProtectedDrawer.tsx
+│   │   │   ├── ProtectedFooter.tsx
+│   │   │   ├── ProtectedHeader.tsx
+│   │   │   ├── ProtectedMain.tsx
+│   │   │   ├── ProtectedMobileMenu.tsx
+│   │   │   └── ProtectedSidebar.tsx
 │   │   └── public-layout/
 │   │       ├── index.tsx
 │   │       ├── DesktopActions.tsx

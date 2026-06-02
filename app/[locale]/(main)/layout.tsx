@@ -1,11 +1,11 @@
-import PublicLayout from "@/src/layouts/public-layout";
+import ProtectedLayout from "@/src/layouts/protected-layout";
 
 export default function MainLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-    return (
-    <PublicLayout> {children} </PublicLayout>
+  return (
+    <ProtectedLayout>{children}</ProtectedLayout>
   );
 }

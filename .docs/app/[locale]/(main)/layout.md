@@ -10,7 +10,7 @@ Next.js layout wrapping child routes with shared shell or i18n providers.
 
 # Imports
 
-- `import PublicLayout from "@/src/layouts/public-layout"`
+- `import ProtectedLayout from "@/src/layouts/protected-layout"`
 
 # Exports
 
@@ -28,6 +28,7 @@ _N/A unless extended._
 # Navigation
 
 - Renders under `app/[locale]/…`; public URLs always include locale prefix.
+- Wraps authenticated-main pages with the protected layout shell.
 
 # Props / Parameters
 

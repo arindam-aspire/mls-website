@@ -27,6 +27,7 @@ src/features/<feature>/
 | `profile` | My profile (placeholder) | [profile/README.md](./profile/README.md) |
 | `dashboard` | Dashboard (placeholder) | [dashboard/README.md](./dashboard/README.md) |
 | `not-found` | 404 content | [not-found/README.md](./not-found/README.md) |
+| `unauthorized` | 401 unauthorized content | [unauthorized/README.md](./unauthorized/README.md) |
 
 ## Routing
 
