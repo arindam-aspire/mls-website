@@ -82,6 +82,7 @@ mls_website/
 │       │   │   └── types/
 │       │   │       ├── README.md
 │       │   │       ├── auth.types.md
+│       │   │       ├── changePassword.types.md
 │       │   │       ├── chooseAccount.types.md
 │       │   │       ├── forgotPassword.types.md
 │       │   │       ├── index.md
@@ -97,6 +98,32 @@ mls_website/
 │       │   │       └── landing.mutation.md
 │       │   ├── not-found/
 │       │   ├── profile/
+│       │   │   ├── README.md
+│       │   │   ├── components/
+│       │   │   │   ├── README.md
+│       │   │   │   └── ChangePasswordForm.md
+│       │   │   ├── hooks/
+│       │   │   │   ├── README.md
+│       │   │   │   ├── index.md
+│       │   │   │   └── useChangePasswordModal.md
+│       │   │   ├── mutations/
+│       │   │   │   ├── README.md
+│       │   │   │   └── index.md
+│       │   │   ├── screens/
+│       │   │   │   ├── ChangePasswordModal.md
+│       │   │   │   └── index.md
+│       │   │   ├── services/
+│       │   │   │   ├── README.md
+│       │   │   │   └── index.md
+│       │   │   ├── store/
+│       │   │   │   ├── README.md
+│       │   │   │   └── index.md
+│       │   │   ├── types/
+│       │   │   │   ├── README.md
+│       │   │   │   └── index.md
+│       │   │   └── utils/
+│       │   │       ├── README.md
+│       │   │       └── index.md
 │       │   └── property/
 │       │       ├── components/
 │       │       │   ├── README.md
@@ -368,6 +395,7 @@ mls_website/
 │   │   │   │   └── authModalStorage.ts
 │   │   │   └── types/
 │   │   │       ├── auth.types.ts
+│   │   │       ├── changePassword.types.ts
 │   │   │       ├── chooseAccount.types.ts
 │   │   │       ├── forgotPassword.types.ts
 │   │   │       ├── index.ts
@@ -400,7 +428,24 @@ mls_website/
 │   │   │   └── utils/
 │   │   │       └── locationTaxonomy.utils.ts
 │   │   ├── profile/
-│   │   │   └── screens/
+│   │   │   ├── components/
+│   │   │   │   └── ChangePasswordForm.tsx
+│   │   │   ├── hooks/
+│   │   │   │   ├── index.ts
+│   │   │   │   └── useChangePasswordModal.ts
+│   │   │   ├── mutations/
+│   │   │   │   └── index.ts
+│   │   │   ├── screens/
+│   │   │   │   ├── ChangePasswordModal.tsx
+│   │   │   │   └── index.tsx
+│   │   │   ├── services/
+│   │   │   │   └── index.ts
+│   │   │   ├── store/
+│   │   │   │   └── index.ts
+│   │   │   ├── types/
+│   │   │   │   └── index.ts
+│   │   │   └── utils/
+│   │   │       └── index.ts
 │   │   └── property/
 │   │       ├── components/
 │   │       │   ├── PropertyListAdvancedFilters.tsx

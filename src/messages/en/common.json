@@ -28,6 +28,8 @@
   "agencySettings": "Agency Settings",
   "notificationSettings": "Notification Settings",
   "changePassword": "Change Password",
+  "changePasswordDescription": "Update your account password to keep your profile secure.",
+  "changePasswordSuccessDescription": "Your password has been changed successfully.",
   "navBuy": "Buy",
   "navRent": "Rent",
   "navOffPlan": "Off-Plan",

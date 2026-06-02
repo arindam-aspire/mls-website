@@ -6,7 +6,7 @@ Barrel module that re-exports all auth type modules.
 
 # Exports
 
-Re-exports from `signUp.types`, `signIn.types`, `signInOtp.types`, `forgotPassword.types`, `user.types`, `logout.types`.
+Re-exports from `signUp.types`, `signIn.types`, `signInOtp.types`, `forgotPassword.types`, `changePassword.types`, `user.types`, `logout.types`.
 
 # Usage
 

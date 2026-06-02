@@ -23,6 +23,7 @@ _N/A — no local/global state in this module._
 # API Usage
 
 - Path constants only; consumed by feature services.
+- Includes `CHANGE_PASSWORD` mapped to `POST /auth/change-password`.
 
 # Navigation
 

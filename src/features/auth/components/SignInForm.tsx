@@ -32,7 +32,7 @@ export function SignInForm({ onClickSignIn, isLoading }: SignInFormProps) {
     initialValues: {
       username: "",
       password: "",
-      rememberMe: true,
+      rememberMe: false,
     },
     validate: (formValues) => {
       const nextErrors: Partial<Record<keyof SignInFormValues, string>> = {};

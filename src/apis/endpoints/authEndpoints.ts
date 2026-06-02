@@ -5,6 +5,7 @@ export const authEndpoints = {
   LOGGED_IN_USER: "/auth/me",
   FORGOT_PASSWORD: "/auth/forgot-password/request",
   FORGOT_PASSWORD_CONFIRM: "/auth/forgot-password/confirm",
+  CHANGE_PASSWORD: "/auth/change-password",
   REFRESH: "/auth/refresh",
   LOGOUT: "/auth/logout",
 

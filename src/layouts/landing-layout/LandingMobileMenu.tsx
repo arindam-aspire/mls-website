@@ -35,6 +35,7 @@ import { SettingField, SwitchField } from "@/src/components/ui/switch";
 import { AUTH_VIEW } from "@/src/features/auth/authViews";
 import { useLogout } from "@/src/features/auth/mutations/auth.mutation";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
+import { ChangePasswordModal } from "@/src/features/profile/screens/ChangePasswordModal";
 import { Link } from "@/src/i18n/navigation";
 import type { AppLocale } from "@/src/i18n/routing";
 import { isRtlLocale } from "@/src/i18n/routing";
@@ -112,6 +113,7 @@ function useMobileMenuSections(
   onNavigate: (path: string) => void,
   onLocaleChange: (locale: string) => void,
   onOpenUpcomingFeature: (icon: ReactNode) => void,
+  onOpenChangePasswordModal: () => void,
 ) {
   const user = useAuthStore((state) => state.user);
   const { theme, setTheme } = useTheme();
@@ -140,6 +142,10 @@ function useMobileMenuSections(
     withAuth(() => onOpenUpcomingFeature(icon));
   };
 
+  const openChangePasswordModal = () => {
+    withAuth(onOpenChangePasswordModal);
+  };
+
   const handleLocaleChange = (nextLocale: AppLocale) => {
     onLocaleChange(nextLocale);
   };
@@ -153,6 +159,7 @@ function useMobileMenuSections(
     theme,
     handleNavigate,
     openUpcomingFeature,
+    openChangePasswordModal,
     handleLocaleChange,
     handleThemeChange,
   };
@@ -310,6 +317,7 @@ interface MenuContentProps {
   onLocaleChange: (locale: string) => void;
   onLogoutPress: () => void;
   onOpenUpcomingFeature: (icon: ReactNode) => void;
+  onOpenChangePasswordModal: () => void;
 }
 
 function MenuContent({
@@ -320,6 +328,7 @@ function MenuContent({
   onLocaleChange,
   onLogoutPress,
   onOpenUpcomingFeature,
+  onOpenChangePasswordModal,
 }: MenuContentProps) {
   const t = useTranslations("common");
   const sections = useMobileMenuSections(
@@ -327,6 +336,7 @@ function MenuContent({
     onNavigate,
     onLocaleChange,
     onOpenUpcomingFeature,
+    onOpenChangePasswordModal,
   );
   const account = useMobileMenuAccountFooter(onClose, onNavigate, onLogoutPress);
 
@@ -388,9 +398,7 @@ function MenuContent({
                   icon={Lock}
                   label={t("changePassword")}
                   showDivider={false}
-                  onClick={() =>
-                    sections.openUpcomingFeature(<Lock className="size-7" aria-hidden />)
-                  }
+                  onClick={sections.openChangePasswordModal}
                 />
               </MenuSection>
             ) : null}
@@ -526,6 +534,7 @@ export function LandingMobileMenu({
   const isRtl = isRtlLocale(intlLocale);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [isUpcomingFeatureOpen, setIsUpcomingFeatureOpen] = useState(false);
+  const [isOpenChangePasswordModal, setIsOpenChangePasswordModal] = useState(false);
   const [upcomingFeatureIcon, setUpcomingFeatureIcon] = useState<ReactNode>(null);
   const { mutate: logout, isPending: isLoggingOut, isSuccess: isLoggedOut } = useLogout();
 
@@ -551,6 +560,11 @@ export function LandingMobileMenu({
     setUpcomingFeatureIcon(null);
   };
 
+  const handleOpenChangePasswordModal = () => {
+    onClose();
+    setIsOpenChangePasswordModal(true);
+  };
+
   return (
     <>
       <Dialog open={open} onClose={onClose} transition className="relative z-[120] md:hidden">
@@ -567,6 +581,7 @@ export function LandingMobileMenu({
                   onLocaleChange={onLocaleChange}
                   onLogoutPress={handleLogoutPress}
                   onOpenUpcomingFeature={handleOpenUpcomingFeature}
+                  onOpenChangePasswordModal={handleOpenChangePasswordModal}
                 />
               </DialogPanel>
             </div>
@@ -593,6 +608,11 @@ export function LandingMobileMenu({
         loadingLabel={t("signingOut")}
         confirmIcon={<LogOut className="size-4" aria-hidden />}
         cancelLabel={t("logoutCancel")}
+      />
+
+      <ChangePasswordModal
+        isOpenChangePassword={isOpenChangePasswordModal}
+        setIsOpenChangePassword={setIsOpenChangePasswordModal}
       />
     </>
   );

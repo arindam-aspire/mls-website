@@ -14,6 +14,8 @@ Rendered from [LandingHeader.md](./LandingHeader.md) with `open` / `onClose` sta
 - Pinned account footer: profile + logout, or sign-in row.
 - Inline **General → Language**: `SettingField` + compact `SelectDropdown` (En / Ar / Sp / Fr).
 - **Theme** row uses `SwitchField` with Sun/Moon icon, title `common.darkMode`, dynamic subtitle, primary pill switch.
+- Uses local state `isOpenChangePasswordModal` to control profile password modal visibility.
+- On **Change Password** click, opens `ChangePasswordModal` instead of upcoming-feature modal.
 - Upcoming-feature modals (agency, notifications) and logout confirm.
 
 # Exports
@@ -60,8 +62,10 @@ Rendered from [LandingHeader.md](./LandingHeader.md) with `open` / `onClose` sta
 
 - [LandingHeader.md](./LandingHeader.md)
 - `landingMobileHeaderStyles.ts`, `auth.store`, `ThemeProvider`, `useLogout`
+- `src/features/profile/screens/ChangePasswordModal.tsx`
 
 # Notes
 
 - All drawer logic lives in this one file by design.
 - Buy/Rent/Sell/Off-Plan remain in `LandingBottomTabBar`.
+- `ChangePasswordModal` receives `{ isOpenChangePassword, setIsOpenChangePassword }` props from this layout.

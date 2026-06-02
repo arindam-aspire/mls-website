@@ -29,6 +29,7 @@ TanStack React Query mutation hooks.
 - `useSignInWithOtpVerify`
 - `useForgotPassword`
 - `useResetPassword`
+- `useChangePassword`
 
 # State Management
 
@@ -38,6 +39,7 @@ TanStack React Query mutation hooks.
 # API Usage
 
 - `useResetPassword` → `POST /auth/forgot-password/confirm` — success toast, error toast on failure
+- `useChangePassword` → `POST /auth/change-password` (auth required) — success/error toasts; consumer can close modal on success
 
 # Navigation
 

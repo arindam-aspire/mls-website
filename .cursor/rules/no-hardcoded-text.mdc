@@ -1,0 +1,43 @@
+---
+description: Disallow hardcoded user-facing text; use translations from src/messages via next-intl
+globs:
+  - "app/**/*.tsx"
+  - "src/**/*.tsx"
+  - "src/**/*.ts"
+alwaysApply: true
+---
+
+# No hardcoded user-facing text
+
+All user-facing text must come from translation files in `src/messages/` through `next-intl`.
+
+## Rule
+
+- Do **not** hardcode visible UI text in components, screens, layouts, hooks, modals, toasts, validation messages, placeholders, button labels, headings, helper text, or empty states.
+- Use `useTranslations("<namespace>")` in client components and `getTranslations("<namespace>")` in server code.
+- Keep text as i18n keys in `src/messages/<locale>/*.json` (`en`, `ar`, `es`, `fr`) and reference them in code.
+- Prefer existing namespaces (`auth`, `common`, `home`) and add new keys in all locales when needed.
+
+## Examples
+
+```tsx
+// ✅ GOOD
+const t = useTranslations("common");
+<Button>{t("save")}</Button>
+<Input placeholder={t("searchPlaceholder")} />
+
+// ❌ BAD
+<Button>Save</Button>
+<Input placeholder="Search..." />
+```
+
+## Validation and errors
+
+- Validation messages must use translation keys (not hardcoded strings).
+- Toast titles/descriptions and modal copy must use translation keys.
+- Fallback text should also be localized.
+
+## Notes
+
+- Internal-only identifiers are fine to keep as literals (e.g., object keys, enum values, route segments, API fields, test IDs).
+- This rule applies to **user-visible** text only.

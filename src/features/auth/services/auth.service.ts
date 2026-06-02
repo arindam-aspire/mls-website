@@ -1,6 +1,6 @@
 import { authClient } from "@/src/apis/clients/api.client";
 import { authEndpoints } from "@/src/apis/endpoints/authEndpoints";
-import type { AgencySignUpRequest, AgencySignUpResponse, ConfirmSignUpRequest, ConfirmSignUpResponse, ForgotPasswordRequest, ForgotPasswordResponse, LoggedInUserResponse, LogoutResponse, ResetPasswordRequest, ResetPasswordResponse, SignInRequest, SignInResponse, SignInWithOtpRequest, SignInWithOtpResponse, SignInWithOtpVerifyRequest, SignInWithOtpVerifyResponse, SignUpRequest, SignUpResponse } from "../types/auth.types";
+import type { AgencySignUpRequest, AgencySignUpResponse, ChangePasswordRequest, ChangePasswordResponse, ConfirmSignUpRequest, ConfirmSignUpResponse, ForgotPasswordRequest, ForgotPasswordResponse, LoggedInUserResponse, LogoutResponse, ResetPasswordRequest, ResetPasswordResponse, SignInRequest, SignInResponse, SignInWithOtpRequest, SignInWithOtpResponse, SignInWithOtpVerifyRequest, SignInWithOtpVerifyResponse, SignUpRequest, SignUpResponse } from "../types/auth.types";
 
 export async function signInWithPassword(data: SignInRequest): Promise<SignInResponse> {
   return authClient.request<SignInResponse>({
@@ -93,5 +93,16 @@ export async function resetPassword(
     endpoint: authEndpoints.FORGOT_PASSWORD_CONFIRM,
     method: "POST",
     body: data,
+  });
+}
+
+export async function changePassword(
+  data: ChangePasswordRequest,
+): Promise<ChangePasswordResponse> {
+  return authClient.request<ChangePasswordResponse>({
+    endpoint: authEndpoints.CHANGE_PASSWORD,
+    method: "POST",
+    body: data,
+    auth: true,
   });
 }

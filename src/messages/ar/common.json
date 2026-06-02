@@ -28,6 +28,8 @@
   "agencySettings": "إعدادات الوكالة",
   "notificationSettings": "إعدادات الإشعارات",
   "changePassword": "تغيير كلمة المرور",
+  "changePasswordDescription": "قم بتحديث كلمة مرور حسابك للحفاظ على أمان ملفك الشخصي.",
+  "changePasswordSuccessDescription": "تم تغيير كلمة المرور بنجاح.",
   "navBuy": "شراء",
   "navRent": "إيجار",
   "navOffPlan": "على المخطط",

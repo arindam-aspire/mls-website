@@ -28,6 +28,8 @@
   "agencySettings": "Paramètres de l'agence",
   "notificationSettings": "Paramètres de notification",
   "changePassword": "Changer le mot de passe",
+  "changePasswordDescription": "Mettez à jour le mot de passe de votre compte pour sécuriser votre profil.",
+  "changePasswordSuccessDescription": "Votre mot de passe a été changé avec succès.",
   "navBuy": "Acheter",
   "navRent": "Louer",
   "navOffPlan": "Sur plan",

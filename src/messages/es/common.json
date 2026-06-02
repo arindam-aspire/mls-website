@@ -28,6 +28,8 @@
   "agencySettings": "Configuración de agencia",
   "notificationSettings": "Configuración de notificaciones",
   "changePassword": "Cambiar contraseña",
+  "changePasswordDescription": "Actualiza la contraseña de tu cuenta para mantener seguro tu perfil.",
+  "changePasswordSuccessDescription": "Tu contraseña se ha cambiado correctamente.",
   "navBuy": "Comprar",
   "navRent": "Alquilar",
   "navOffPlan": "Sobre plano",

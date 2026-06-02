@@ -455,6 +455,7 @@ Session persistence helpers: `src/features/auth/store/authModalStorage.ts`.
 | `useSignInWithOtpRequest` | Request login OTP |
 | `useSignInWithOtpVerify` | Verify login OTP |
 | `useForgotPassword` | Forgot password request |
+| `useChangePassword` | Authenticated password change (`/auth/change-password`) |
 
 ---
 
@@ -488,6 +489,7 @@ From `src/configs/environment.config.ts` → `API_BASE_URL` (env: `NEXT_PUBLIC_A
 | `LOGGED_IN_USER` | GET | `/auth/me` |
 | `FORGOT_PASSWORD` | POST | `/auth/forgot-password/request` |
 | `FORGOT_PASSWORD_CONFIRM` | POST | `/auth/forgot-password/confirm` — `{ email, code, new_password }` |
+| `CHANGE_PASSWORD` | POST | `/auth/change-password` — `{ password, previous_password }` (auth required) |
 | `REFRESH` | POST | `/auth/refresh` |
 | `LOGOUT` | POST | `/auth/logout` |
 | `USER_SIGN_UP` | POST | `/auth/signup` |

@@ -6,3 +6,4 @@ export * from "./signInOtp.types";
 export * from "./forgotPassword.types";
 export * from "./user.types";
 export * from "./logout.types";
+export * from "./changePassword.types";

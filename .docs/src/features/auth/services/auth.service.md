@@ -26,6 +26,7 @@ API service functions calling HTTP clients.
 - `confirmSignUp`
 - `forgotPassword`
 - `resetPassword`
+- `changePassword`
 
 # State Management
 
@@ -36,6 +37,7 @@ _No significant state; presentational or config module._
 - Uses `authClient` / `apiClient` from `src/apis/clients/api.client.ts`.
 - Endpoints: `authEndpoints`.
 - Base URL: `API_BASE_URL` from `environment.config.ts`.
+- `changePassword` sends authenticated `POST /auth/change-password` with `{ password, previous_password }`.
 
 # Navigation
 

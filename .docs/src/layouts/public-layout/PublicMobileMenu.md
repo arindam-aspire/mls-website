@@ -10,6 +10,8 @@ Single-file left slide mobile drawer for the public header — same structure as
 - Primary header, Account / General / Preferences sections, account footer.
 - Inline **Language** row: `SettingField` + compact `SelectDropdown` (`w-14`, labels **En / Ar / Sp / Fr**).
 - Inline **Theme** row: `SwitchField` with Sun/Moon icon, “Dark Mode” title + switch-to-dark/light subtitle + pill switch.
+- Uses local state `isOpenChangePasswordModal` to control profile password modal visibility.
+- On **Change Password** click, opens `ChangePasswordModal` instead of the upcoming-feature modal.
 
 # Props / Parameters
 
@@ -26,7 +28,9 @@ Single-file left slide mobile drawer for the public header — same structure as
 
 - [PublicHeader.md](./PublicHeader.md)
 - `publicMobileHeaderStyles.ts`
+- `src/features/profile/screens/ChangePasswordModal.tsx`
 
 # Notes
 
 - Intentionally duplicated from landing drawer (separate layout ownership).
+- `ChangePasswordModal` receives `{ isOpenChangePassword, setIsOpenChangePassword }` props from this layout.

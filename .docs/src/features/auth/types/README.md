@@ -11,6 +11,7 @@ TypeScript definitions for auth API payloads, responses, and form values. Split 
 | [signIn.types.md](./signIn.types.md) | Password sign-in, `SignInTokens` |
 | [signInOtp.types.md](./signInOtp.types.md) | OTP request/verify |
 | [forgotPassword.types.md](./forgotPassword.types.md) | Forgot-password flow |
+| [changePassword.types.md](./changePassword.types.md) | Authenticated change-password payload/response |
 | [user.types.md](./user.types.md) | `LoggedInUser`, `Role`, `Permission` |
 | [logout.types.md](./logout.types.md) | Logout response |
 | [index.md](./index.md) | Barrel re-exports |

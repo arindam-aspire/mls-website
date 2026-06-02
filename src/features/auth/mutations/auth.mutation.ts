@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
-import { confirmSignUp, agencySignUp, forgotPassword, getLoggedInUser, logout, resetPassword, signInWithOtpRequest, signInWithOtpVerify, signInWithPassword, signUp } from "../services/auth.service";
+import { confirmSignUp, agencySignUp, changePassword, forgotPassword, getLoggedInUser, logout, resetPassword, signInWithOtpRequest, signInWithOtpVerify, signInWithPassword, signUp } from "../services/auth.service";
 import { useToast } from "@/src/hooks/useToast";
 import { type ApiError } from "@/src/apis/core/error.normalizer";
 import { useAuthStore } from "../store/auth.store";
@@ -190,6 +190,24 @@ export const useResetPassword = () => {
     },
     onError: (error: ApiError) => {
       toast.error("Password reset failed", {
+        description: error.message,
+      });
+    },
+  });
+};
+
+export const useChangePassword = () => {
+  const toast = useToast();
+
+  return useMutation({
+    mutationFn: changePassword,
+    onSuccess: () => {
+      toast.success("Password updated successfully", {
+        description: "Your password has been changed.",
+      });
+    },
+    onError: (error: ApiError) => {
+      toast.error("Change password failed", {
         description: error.message,
       });
     },
