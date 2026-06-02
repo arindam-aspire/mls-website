@@ -69,4 +69,5 @@ See source in `src/components/ui/button/index.tsx` for step-by-step behavior ali
 
 # Notes
 
+- `suppressHydrationWarning` on the root `HeadlessButton` avoids dev hydration errors when browser extensions inject attributes (e.g. `fdprocessedid`) on `<button>` before React hydrates.
 - Keep in sync when `src/components/ui/button/index.tsx` changes.

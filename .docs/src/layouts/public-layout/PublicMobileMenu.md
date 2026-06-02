@@ -8,7 +8,8 @@ Single-file left slide mobile drawer for the public header — same structure as
 
 - Headless UI slide drawer (`md:hidden`, RTL-aware).
 - Primary header, Account / General / Preferences sections, account footer.
-- Language and theme picker sheets, logout confirm, upcoming-feature modals.
+- Inline **Language** row: `SettingField` + compact `SelectDropdown` (`w-14`, labels **En / Ar / Sp / Fr**).
+- Inline **Theme** row: `SwitchField` with Sun/Moon icon, “Dark Mode” title + switch-to-dark/light subtitle + pill switch.
 
 # Props / Parameters
 

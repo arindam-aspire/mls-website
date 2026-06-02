@@ -71,7 +71,16 @@ See [packages.md](./packages.md) for the full dependency table.
 
 ## Getting started
 
-**Private package:** `@abdoun/abdoun-library` is installed from the Azure Artifacts feed configured in root [`.npmrc`](../.npmrc). Authenticate once (Azure DevOps → Artifacts → **abdoun-library** → **Connect to feed** → npm → follow the token steps), or run `npx vsts-npm-auth -config .npmrc` if you use that tool. CI uses `npmAuthenticate@0` in `azure-pipelines.yml`.
+**Private package:** `@abdoun/abdoun-library` comes from Azure Artifacts (see root [`.npmrc`](../.npmrc)). Public packages still use `registry.npmjs.org`. CI uses `npmAuthenticate@0` in `azure-pipelines.yml`.
+
+**If `npm install` fails with `E401`:** credentials are missing or expired in your **user** npmrc, not in the repo.
+
+1. Remove any old Verdaccio lines from `%USERPROFILE%\.npmrc` (e.g. `registry=http://localhost:4873/` or `//localhost:4873/` tokens).
+2. Azure DevOps → **User settings** → **Personal access tokens** → **New Token** → scope **Packaging → Read**.
+3. Add auth to `%USERPROFILE%\.npmrc` using the template in [`.npmrc.user.example`](../.npmrc.user.example) (base64-encode the PAT only; username `VssSessionToken`).
+4. Or, from the repo root after installing the tool once: `npx vsts-npm-auth -config .npmrc -F` (refreshes tokens in your user npmrc).
+
+Then run `npm install` again.
 
 ```bash
 npm install
@@ -549,7 +558,7 @@ Semantic Tailwind colors — use these, not raw grays:
 
 ### Responsive control sizing
 
-Shared tokens in `src/components/ui/responsiveSizes.ts`: controls use **three viewport steps** — compact default (< 640px), standard (`sm:` ≥ 640px), roomy (`lg:` ≥ 1024px). This is separate from the component `size="sm" | "md" | "lg"` prop.
+Shared tokens in `src/components/ui/responsiveSizes.ts`: controls use **three viewport steps** — moderate default (< 640px), standard (`sm:` ≥ 640px), roomy (`lg:` ≥ 1024px). This is separate from the component `size="sm" | "md" | "lg"` prop.
 
 ### Border radius (project rule)
 

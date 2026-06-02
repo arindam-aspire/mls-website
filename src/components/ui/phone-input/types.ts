@@ -1,11 +1,16 @@
 import type { InputHTMLAttributes, ReactNode } from "react";
 import type { PhoneInputCountry } from "./countries";
 
+export const PHONE_INPUT_VARIANTS = ["outline", "ghost"] as const;
+
+export type PhoneInputVariant = (typeof PHONE_INPUT_VARIANTS)[number];
+
 export interface PhoneInputProps
   extends Omit<
     InputHTMLAttributes<HTMLInputElement>,
     "size" | "value" | "defaultValue" | "onChange" | "type"
   > {
+  variant?: PhoneInputVariant;
   label?: ReactNode;
   labelClassName?: string;
   error?: string;
@@ -27,6 +32,7 @@ export interface PhoneInputProps
   searchPlaceholder?: string;
   emptySearchLabel?: string;
   showPhoneIcon?: boolean;
+  /** Optional override for the country selector wrapper (prefer `variant`). */
   countrySegmentClassName?: string;
   dir?: "ltr" | "rtl";
 }

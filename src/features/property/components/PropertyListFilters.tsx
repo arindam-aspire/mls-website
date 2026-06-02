@@ -17,7 +17,10 @@ import { useEffect, useState } from "react";
 import { cn } from "@/src/lib/cn";
 import { PropertyListAdvancedFilters } from "./PropertyListAdvancedFilters";
 
-/** Fixed widths for controls in the horizontal scroll row below `md`. */
+/** Horizontal filter row below `md`; scrollbar hidden on small viewports. */
+const mobileFiltersScrollRowClassName =
+  "flex w-full min-w-0 gap-2 overflow-x-auto overscroll-x-contain [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-1 md:gap-4 md:overflow-visible lg:grid-cols-8 lg:gap-6";
+
 const mobileToggleScrollItemClassName =
   "w-[8rem] min-w-[8rem] max-w-[8rem] shrink-0 md:max-w-none md:min-w-0 md:w-full";
 
@@ -147,9 +150,9 @@ export function PropertyListFilters({
   }, [hasAdvancedFilters]);
 
   return (
-    <div className="relative isolate z-50 flex w-full min-w-0 flex-col gap-3 md:gap-4">
+    <div className="relative isolate z-70 flex w-full min-w-0 flex-col gap-3 md:gap-4">
       <section
-        className="flex w-full min-w-0 gap-2 overflow-x-auto overscroll-x-contain [scrollbar-width:thin] md:grid md:grid-cols-1 md:gap-4 md:overflow-visible lg:grid-cols-8 lg:gap-6"
+        className={mobileFiltersScrollRowClassName}
         aria-label="Property search filters"
       >
         <div className="contents md:col-span-1 md:grid md:min-w-0 md:grid-cols-4 md:items-center md:gap-4 lg:col-span-5 lg:grid-cols-5 lg:gap-6">

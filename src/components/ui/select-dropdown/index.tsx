@@ -63,7 +63,7 @@ const triggerVariantClasses: Record<SelectDropdownVariant, string> = {
 };
 
 const panelClasses = cn(
-  "z-[100] max-h-64 min-w-64 w-(--button-width) overflow-auto rounded-2xl border border-secondary-light/80 bg-surface shadow-xl ring-1 ring-black/5",
+  "z-[130] max-h-64 w-(--button-width) min-w-(--button-width) max-w-(--button-width) overflow-auto rounded-2xl border border-secondary-light/80 bg-surface shadow-xl ring-1 ring-black/5",
   dropdownPanelSizeClasses,
   "[scrollbar-width:thin] focus:outline-none",
 );
@@ -91,6 +91,7 @@ export function SelectDropdown({
   variant = "outline",
   size = "md",
   placeholder,
+  includePlaceholderOption = true,
   label,
   labelClassName,
   error,
@@ -110,6 +111,7 @@ export function SelectDropdown({
   id: idProp,
   disabled = false,
   autoFocus = false,
+  listboxModal = true,
   "aria-label": ariaLabel,
 }: SelectDropdownProps) {
   const locale = useLocale();
@@ -126,8 +128,11 @@ export function SelectDropdown({
       .join(" ") || undefined;
 
   const allOptions = useMemo(
-    () => buildOptions(placeholder, options),
-    [placeholder, options],
+    () =>
+      includePlaceholderOption
+        ? buildOptions(placeholder, options)
+        : options,
+    [includePlaceholderOption, placeholder, options],
   );
 
   const [uncontrolledValue, setUncontrolledValue] = useState(
@@ -216,6 +221,8 @@ export function SelectDropdown({
 
           <ListboxOptions
             anchor={isRtl ? "bottom end" : "bottom start"}
+            modal={listboxModal}
+            portal
             transition
             className={cn(panelClasses, "[--anchor-gap:0.5rem]", panelClassName)}
           >

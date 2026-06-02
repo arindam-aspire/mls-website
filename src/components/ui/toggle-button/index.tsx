@@ -10,9 +10,11 @@ import {
 } from "react";
 import { cn } from "@/src/lib/cn";
 import {
-  toggleContainerSizeClasses,
+  toggleBorderedTrackInsetClasses,
   toggleIconSizeClasses,
   toggleSegmentSizeClasses,
+  toggleShellSizeClasses,
+  toggleTrackInsetClasses,
 } from "../responsiveSizes";
 import type {
   ToggleButtonColor,
@@ -165,7 +167,11 @@ const inactiveLabelVariantClasses: Record<
   },
 };
 
-const containerSizeClasses = toggleContainerSizeClasses;
+const shellSizeClasses = toggleShellSizeClasses;
+
+const trackInsetClasses = toggleTrackInsetClasses;
+
+const borderedTrackInsetClasses = toggleBorderedTrackInsetClasses;
 
 const segmentSizeClasses = toggleSegmentSizeClasses;
 
@@ -204,6 +210,7 @@ export function ToggleButton<T extends string = string>({
   id,
 }: ToggleButtonProps<T>) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
   const segmentRefs = useRef<(HTMLElement | null)[]>([]);
   const [indicator, setIndicator] = useState({
     width: 0,
@@ -223,29 +230,29 @@ export function ToggleButton<T extends string = string>({
   );
 
   const updateIndicator = useCallback(() => {
-    const container = containerRef.current;
+    const track = trackRef.current;
     const segment = segmentRefs.current[activeIndex];
-    if (!container || !segment) {
+    if (!track || !segment) {
       return;
     }
-    const containerRect = container.getBoundingClientRect();
+    const trackRect = track.getBoundingClientRect();
     const segmentRect = segment.getBoundingClientRect();
     setIndicator({
-      left: segmentRect.left - containerRect.left,
+      left: segmentRect.left - trackRect.left,
       width: segmentRect.width,
-      top: segmentRect.top - containerRect.top,
+      top: segmentRect.top - trackRect.top,
       height: segmentRect.height,
     });
   }, [activeIndex]);
 
   useLayoutEffect(() => {
     updateIndicator();
-    const container = containerRef.current;
-    if (!container) {
+    const track = trackRef.current;
+    if (!track) {
       return;
     }
     const observer = new ResizeObserver(updateIndicator);
-    observer.observe(container);
+    observer.observe(track);
     window.addEventListener("resize", updateIndicator);
     return () => {
       observer.disconnect();
@@ -269,6 +276,10 @@ export function ToggleButton<T extends string = string>({
 
   const roundedContainer = isRounded ? "rounded-full" : "rounded-lg";
   const roundedSlide = isRounded ? "rounded-full" : "rounded-md";
+  const usesBorderedTrack = variant === "solid" || variant === "outline";
+  const trackPaddingClasses = usesBorderedTrack
+    ? borderedTrackInsetClasses[size]
+    : trackInsetClasses[size];
 
   return (
     <div
@@ -277,65 +288,73 @@ export function ToggleButton<T extends string = string>({
       aria-label={ariaLabel}
       ref={containerRef}
       className={cn(
-        "relative inline-flex",
+        "inline-flex min-h-0 overflow-hidden",
         roundedContainer,
-        containerSizeClasses[size],
+        shellSizeClasses[size],
         containerVariantClasses[color][variant],
-        fullWidth && "flex w-full",
+        fullWidth && "w-full",
         className,
       )}
     >
-      <span
-        aria-hidden
+      <div
+        ref={trackRef}
         className={cn(
-          "pointer-events-none absolute z-0 transition-[left,width,top,height] duration-300 ease-out",
-          roundedSlide,
-          slideVariantClasses[color][variant],
+          "relative flex min-h-0 w-full flex-1 items-stretch",
+          trackPaddingClasses,
         )}
-        style={{
-          left: indicator.left,
-          width: indicator.width,
-          top: indicator.top,
-          height: indicator.height,
-          opacity: indicator.width > 0 ? 1 : 0,
-        }}
-      />
-      {items.map((item, index) => {
-        const isSelected = selectedValue === item.value;
-        const isItemDisabled = disabled || item.disabled;
+      >
+        <span
+          aria-hidden
+          className={cn(
+            "pointer-events-none absolute z-0 transition-[left,width,top,height] duration-300 ease-out",
+            roundedSlide,
+            slideVariantClasses[color][variant],
+          )}
+          style={{
+            left: indicator.left,
+            width: indicator.width,
+            top: indicator.top,
+            height: indicator.height,
+            opacity: indicator.width > 0 ? 1 : 0,
+          }}
+        />
+        {items.map((item, index) => {
+          const isSelected = selectedValue === item.value;
+          const isItemDisabled = disabled || item.disabled;
 
-        return (
-          <HeadlessButton
-            key={String(item.value)}
-            ref={(node) => {
-              segmentRefs.current[index] = node;
-            }}
-            type="button"
-            disabled={isItemDisabled}
-            aria-pressed={isSelected}
-            aria-disabled={isItemDisabled || undefined}
-            onClick={(event) => handleItemClick(item, event)}
-            className={cn(
-              "relative z-10 inline-flex min-w-0 flex-1 items-center justify-center font-medium transition-colors",
-              "focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary/40 focus-visible:ring-offset-1",
-              "data-disabled:cursor-not-allowed data-disabled:opacity-50",
-              segmentSizeClasses[size],
-              isSelected
-                ? activeLabelVariantClasses[color][variant]
-                : inactiveLabelVariantClasses[color][variant],
-              roundedSlide,
-            )}
-          >
-            {item.iconStart != null && (
-              <ToggleButtonIcon icon={item.iconStart} size={size} />
-            )}
-            <span className="truncate">{item.label}</span>
-            {item.iconEnd != null && (
-              <ToggleButtonIcon icon={item.iconEnd} size={size} />
-            )}
-          </HeadlessButton>
-        );
-      })}
+          return (
+            <HeadlessButton
+              suppressHydrationWarning
+              key={String(item.value)}
+              ref={(node) => {
+                segmentRefs.current[index] = node;
+              }}
+              type="button"
+              disabled={isItemDisabled}
+              aria-pressed={isSelected}
+              aria-disabled={isItemDisabled || undefined}
+              onClick={(event) => handleItemClick(item, event)}
+              className={cn(
+                "relative z-10 inline-flex min-h-0 min-w-0 flex-1 items-center justify-center bg-transparent font-medium transition-colors",
+                "focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary/40 focus-visible:ring-offset-1",
+                "data-disabled:cursor-not-allowed data-disabled:opacity-50",
+                segmentSizeClasses[size],
+                isSelected
+                  ? activeLabelVariantClasses[color][variant]
+                  : inactiveLabelVariantClasses[color][variant],
+              )}
+            >
+              {item.iconStart != null && (
+                <ToggleButtonIcon icon={item.iconStart} size={size} />
+              )}
+              <span className="truncate">{item.label}</span>
+              {item.iconEnd != null && (
+                <ToggleButtonIcon icon={item.iconEnd} size={size} />
+              )}
+            </HeadlessButton>
+          );
+        })}
+      </div>
     </div>
   );
 }

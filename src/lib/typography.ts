@@ -2,23 +2,23 @@ export type TypographySizeTier = "sm" | "md" | "lg";
 
 /** Control/body text inside buttons, inputs, selects, toggles. */
 export const controlTextClasses: Record<TypographySizeTier, string> = {
-  sm: "text-[11px] leading-none sm:text-sm sm:leading-normal",
-  md: "text-xs leading-none sm:text-sm sm:leading-normal",
-  lg: "text-xs leading-none sm:text-base sm:leading-normal",
+  sm: "text-xs leading-none sm:text-sm sm:leading-normal",
+  md: "text-xs leading-none sm:text-sm sm:leading-normal lg:text-base",
+  lg: "text-sm leading-none sm:text-base sm:leading-normal",
 };
 
 export const fieldLabelSizeClasses =
-  "mb-1 block text-[11px] font-medium text-text sm:mb-1.5 sm:text-sm";
+  "mb-1 block text-xs font-medium text-text sm:mb-1.5 sm:text-sm";
 
 export const fieldErrorSizeClasses =
-  "mt-1 text-[11px] text-danger sm:mt-1.5 sm:text-sm";
+  "mt-1 text-xs text-danger sm:mt-1.5 sm:text-sm";
 
 export const fieldHintSizeClasses =
-  "mt-1 text-[11px] text-muted sm:mt-1.5 sm:text-sm";
+  "mt-1 text-xs text-muted sm:mt-1.5 sm:text-sm";
 
-export const textDropdownOptionClasses = "text-[11px] leading-5 sm:text-sm";
+export const textDropdownOptionClasses = "text-xs leading-5 sm:text-sm lg:text-base";
 
-export const textDropdownPanelClasses = "text-[11px] leading-5 sm:text-sm";
+export const textDropdownPanelClasses = "text-xs leading-5 sm:text-sm lg:text-base";
 
 export const bodyTextClasses = "text-xs sm:text-sm";
 
@@ -76,9 +76,9 @@ export const footerTextClasses = bodySmallTextClasses;
 export const footerHeadingClasses = bodyTextClasses;
 
 export const avatarTextClasses: Record<TypographySizeTier, string> = {
-  sm: "text-[11px] sm:text-xs",
-  md: "text-xs sm:text-sm",
-  lg: "text-sm sm:text-base",
+  sm: "text-xs sm:text-sm",
+  md: "text-xs sm:text-sm lg:text-base",
+  lg: "text-sm sm:text-base lg:text-lg",
 };
 
 export const overlineLabelClasses =
@@ -139,11 +139,11 @@ export const landingHeroTaglineClasses =
   "text-sm font-medium uppercase tracking-[0.22em] sm:text-base";
 
 export const avatarSizeTextClasses = {
-  xs: "text-[11px] sm:text-xs",
-  sm: "text-xs sm:text-sm",
-  md: "text-sm sm:text-base",
-  lg: "text-base sm:text-lg",
-  xl: "text-lg sm:text-xl",
+  xs: "text-xs sm:text-sm",
+  sm: "text-xs sm:text-sm lg:text-base",
+  md: "text-sm sm:text-base lg:text-lg",
+  lg: "text-base sm:text-lg lg:text-xl",
+  xl: "text-lg sm:text-xl lg:text-2xl",
 } as const;
 
 export const authBadgeClasses = "text-xs font-semibold sm:text-sm";

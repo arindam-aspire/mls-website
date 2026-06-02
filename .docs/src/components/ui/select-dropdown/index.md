@@ -34,7 +34,14 @@ _No direct navigation._
 
 # Props / Parameters
 
-- See component/handler props in source (TypeScript interfaces).
+| Prop | Type | Default | Purpose |
+| --- | --- | --- | --- |
+| `options` | `SelectDropdownOption[]` | — | Selectable values |
+| `placeholder` | `string` | — | Trigger text when no value; also first list option when `includePlaceholderOption` is true |
+| `includePlaceholderOption` | `boolean` | `true` | When `false`, omit empty placeholder from the dropdown list (use when value is always set, e.g. mobile drawer language) |
+| `value` / `onChange` | `string` | — | Controlled selection |
+| `fullWidth` | `boolean` | `true` | Set `false` for compact trailing controls in settings rows |
+| `listboxModal` | `boolean` | `true` | Pass `false` inside dialogs/drawers so the panel stacks above chrome without scroll-lock conflicts |
 
 # Actions / Inputs
 
@@ -60,7 +67,8 @@ _No explicit show/hide controls detected._
 - **Light/dark:** via `ThemeProvider` / `html.light` | `html.dark`.
 - **Radius:** `rounded-lg` controls; `rounded-xl` cards/modals/popovers; `rounded-full` avatars/pills.
 - **Responsive:** mobile-first (`sm:`, `md:`, `lg:`).
-- **Options panel stacking:** `ListboxOptions` is portaled (Headless UI `anchor`) and uses `z-[100]` so options stay above modals (`z-50`) and bottom-sheet dialogs (`z-[80]`), e.g. the `PropertyListAdvancedFilters` mobile sheet. Only the toaster (`z-[9999]`) sits above it.
+- **Options panel width:** matches the trigger via Headless UI `--button-width` (`w/min/max-w-(--button-width)`). Pass `panelClassName` only when a wider minimum is needed.
+- **Options panel stacking:** portaled (`anchor` + `portal`), `z-[130]` (above mobile drawer `z-[120]`). Use `listboxModal={false}` inside drawers.
 
 # Flow Description
 
@@ -68,8 +76,8 @@ See source in `src/components/ui/select-dropdown/index.tsx` for step-by-step beh
 
 # Dependencies
 
-- Parent feature or route that imports this file.
-- See **Imports** for direct module dependencies.
+- [PublicMobileMenu.md](../../../layouts/public-layout/PublicMobileMenu.md), [LandingMobileMenu.md](../../../layouts/landing-layout/LandingMobileMenu.md) — language row in mobile drawers.
+- Filter bars ([PropertyListFilters.md](../../../features/property/components/PropertyListFilters.md), [HeroSearchBar.md](../../../features/landing/components/HeroSearchBar.md)).
 
 # Notes
 

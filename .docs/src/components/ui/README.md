@@ -22,12 +22,13 @@ Headless UI–based design system for MLS. Exported from [index.md](./index.md).
 | [select/](./select/index.md) | `Select` |
 | [select-dropdown/](./select-dropdown/index.md) | `SelectDropdown` |
 | [skeleton/](./skeleton/index.md) | `Skeleton`, `SkeletonText` |
+| [switch/](./switch/index.md) | `Switch`, `SettingField`, `SwitchField` |
 | [toaster/](./toaster/index.md) | `Toaster`, toast icons |
 
 ## Shared styles
 
 - [fieldVariants.md](./fieldVariants.md) — shared input/field class variants.
-- [responsiveSizes.md](./responsiveSizes.md) — mobile-first compact sizing (`sm:` restores full scale) for controls.
+- [responsiveSizes.md](./responsiveSizes.md) — mobile-first moderate sizing (`sm:` full scale, `lg:` roomier).
 
 ## Types
 

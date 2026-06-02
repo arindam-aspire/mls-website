@@ -57,8 +57,9 @@ _No explicit show/hide controls detected._
 
 - **Theme:** semantic tokens (`bg-page`, `bg-surface`, `text-text`, `text-muted`, `bg-primary`, `border-secondary/15`).
 - **Light/dark:** via `ThemeProvider` / `html.light` | `html.dark`.
-- **Radius:** `rounded-lg` controls; `rounded-xl` cards/modals/popovers; `rounded-full` avatars/pills.
-- **Responsive:** mobile-first (`sm:`, `md:`, `lg:`).
+- **Radius:** outer shell `rounded-lg` (or `rounded-full` when `isRounded`); sliding indicator `rounded-md` / `rounded-full`.
+- **Layout:** two-layer shell — outer border/background (`toggleShellSizeClasses`) + inner padded track (`toggleTrackInsetClasses`; `toggleBorderedTrackInsetClasses` for `solid` / `outline`). Slide indicator positions against the inner track ref. Container uses `overflow-hidden`; segments are `bg-transparent` without their own corner radius (only the slide is rounded).
+- **Responsive:** mobile-first sizing via `responsiveSizes.ts` (`sm:`, `lg:`).
 - **Headless UI** primitives where applicable.
 
 # Flow Description
@@ -72,4 +73,5 @@ See source in `src/components/ui/toggle-button/index.tsx` for step-by-step behav
 
 # Notes
 
+- Each segment `HeadlessButton` uses `suppressHydrationWarning` so extension-injected button attributes do not cause hydration mismatches (e.g. Buy/Rent filters).
 - Keep in sync when `src/components/ui/toggle-button/index.tsx` changes.

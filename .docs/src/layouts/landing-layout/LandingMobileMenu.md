@@ -12,7 +12,8 @@ Rendered from [LandingHeader.md](./LandingHeader.md) with `open` / `onClose` sta
 - Primary header: logo (home) + close.
 - Scrollable sections: **Account**, **General**, **Preferences** (flat list, no cards).
 - Pinned account footer: profile + logout, or sign-in row.
-- Nested picker sheets for language and theme.
+- Inline **General → Language**: `SettingField` + compact `SelectDropdown` (En / Ar / Sp / Fr).
+- **Theme** row uses `SwitchField` with Sun/Moon icon, title `common.darkMode`, dynamic subtitle, primary pill switch.
 - Upcoming-feature modals (agency, notifications) and logout confirm.
 
 # Exports
@@ -37,8 +38,7 @@ Rendered from [LandingHeader.md](./LandingHeader.md) with `open` / `onClose` sta
 | --- | --- |
 | `useMobileMenuSections` | Auth-gated nav, pickers, theme/locale |
 | `useMobileMenuAccountFooter` | Profile footer, logout |
-| `MenuRow` / `MenuSection` | Section UI |
-| `PickerSheet` | Language / theme dialogs |
+| `MenuRow` / `MenuSection` / `MenuLanguageRow` / `MenuThemeRow` | Section UI |
 | `MenuContent` | Drawer body |
 
 # Actions / Inputs
@@ -46,7 +46,7 @@ Rendered from [LandingHeader.md](./LandingHeader.md) with `open` / `onClose` sta
 | Section | Items | Action |
 | --- | --- | --- |
 | Account | Profile, Agency, Notifications, Change password | Navigate / upcoming feature modal |
-| General | Language, Theme | Open picker sheets |
+| General | Language, Theme | Language: `SettingField` + `SelectDropdown`; Theme: `SwitchField` dark-mode row |
 | Preferences | Favourites, Listings, Saved searches, Recently viewed | Navigate |
 | Footer | Profile or Sign in, Logout icon | Profile nav / auth; LogOut closes drawer then opens confirm modal |
 

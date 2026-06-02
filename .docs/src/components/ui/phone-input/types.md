@@ -14,7 +14,7 @@ Feature or shared UI component.
 
 # Exports
 
-_See source exports._
+- `PHONE_INPUT_VARIANTS`, `PhoneInputVariant`, `PhoneInputProps`
 
 # State Management
 

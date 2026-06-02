@@ -3,6 +3,15 @@ export type { AvatarProps, AvatarSize } from "./avatar";
 export { AVATAR_SIZES } from "./avatar/types";
 export { Button } from "./button";
 export { ToggleButton } from "./toggle-button";
+export { Switch, SettingField, SwitchField } from "./switch";
+export type {
+  SettingFieldProps,
+  SwitchColor,
+  SwitchFieldProps,
+  SwitchProps,
+  SwitchSize,
+} from "./switch";
+export { SWITCH_COLORS, SWITCH_SIZES } from "./switch";
 export type {
   ToggleButtonColor,
   ToggleButtonItem,

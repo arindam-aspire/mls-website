@@ -93,7 +93,7 @@ function ToastItem({ toast, onDismiss, styleVariant }: ToastItemProps) {
     <div role="alert" aria-live="assertive" className={wrapperStyles[styleVariant]}>
       <span
         className={cn(
-          "mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg",
+          "mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg sm:h-9 sm:w-9",
           isSolid ? "bg-white/20 text-white" : cn(c.iconBg, c.iconColor),
         )}
       >

@@ -160,7 +160,6 @@ export function SignInWithOTPForm({
             searchPlaceholder={t("signUpPhoneSearchPlaceholder")}
             emptySearchLabel={t("signUpPhoneNoMatches")}
             showPhoneIcon={false}
-            countrySegmentClassName="-ms-3 flex items-center gap-2 rounded-s-[0.7rem] bg-primary-light ps-3 pe-1 dark:bg-page"
             isRequired
           />
         )}

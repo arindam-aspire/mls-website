@@ -4,7 +4,6 @@ import {
   Dialog,
   DialogBackdrop,
   DialogPanel,
-  DialogTitle,
 } from "@headlessui/react";
 import Image from "next/image";
 import {
@@ -31,6 +30,8 @@ import { ConfirmModal } from "@/src/components/common/ConfirmModal";
 import { UpcomingFeatureModal } from "@/src/components/common/UpcomingFeatureModal";
 import { Avatar } from "@/src/components/ui/avatar";
 import { Skeleton } from "@/src/components/ui/skeleton";
+import { SelectDropdown } from "@/src/components/ui/select-dropdown";
+import { SettingField, SwitchField } from "@/src/components/ui/switch";
 import { AUTH_VIEW } from "@/src/features/auth/authViews";
 import { useLogout } from "@/src/features/auth/mutations/auth.mutation";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
@@ -52,18 +53,14 @@ import {
 // --- Constants ---
 
 const MOBILE_MENU_LOCALE_OPTIONS: { value: AppLocale; label: string }[] = [
-  { value: "en", label: "English" },
-  { value: "ar", label: "العربية" },
-  { value: "es", label: "Español" },
-  { value: "fr", label: "Français" },
+  { value: "en", label: "En" },
+  { value: "ar", label: "Ar" },
+  { value: "es", label: "Sp" },
+  { value: "fr", label: "Fr" },
 ];
 
-const MOBILE_MENU_THEME_OPTIONS = [
-  { value: "light" as const, labelKey: "themeLight" },
-  { value: "dark" as const, labelKey: "themeDark" },
-];
-
-const THEME_OPTION_ICONS = { light: Sun, dark: Moon } as const;
+const MOBILE_MENU_LANGUAGE_SELECT_WIDTH_CLASS = "w-14";
+const MOBILE_MENU_LANGUAGE_TRIGGER_CLASS = "px-1.5 gap-0.5";
 
 const DRAWER_DURATION = "duration-700";
 
@@ -108,16 +105,6 @@ const accountFooterClass = cn(
   "border-t border-secondary/15 py-3 sm:py-4",
 );
 
-const pickerPanelClass = cn(
-  "flex w-full max-w-sm flex-col overflow-hidden rounded-xl border border-secondary/15 bg-surface text-text shadow-lg",
-  "transition duration-300 ease-out",
-  "data-closed:translate-y-full data-closed:opacity-0 data-enter:translate-y-0 data-enter:opacity-100 data-leave:translate-y-full data-leave:opacity-0",
-  "sm:data-closed:scale-95 sm:data-closed:translate-y-0",
-);
-
-const pickerBackdropClass =
-  "fixed inset-0 bg-black/40 transition-opacity duration-300 ease-out data-closed:opacity-0 data-enter:opacity-100 data-leave:opacity-0";
-
 // --- Hooks ---
 
 function useMobileMenuSections(
@@ -128,8 +115,6 @@ function useMobileMenuSections(
 ) {
   const user = useAuthStore((state) => state.user);
   const { theme, setTheme } = useTheme();
-  const [isLanguageOpen, setIsLanguageOpen] = useState(false);
-  const [isThemeOpen, setIsThemeOpen] = useState(false);
 
   const openAuth = () => {
     useAuthStore.getState().openAuth(AUTH_VIEW.chooseAccount);
@@ -155,29 +140,21 @@ function useMobileMenuSections(
     withAuth(() => onOpenUpcomingFeature(icon));
   };
 
-  const handleLocaleSelect = (nextLocale: AppLocale) => {
+  const handleLocaleChange = (nextLocale: AppLocale) => {
     onLocaleChange(nextLocale);
-    setIsLanguageOpen(false);
   };
 
-  const handleThemeSelect = (mode: ThemeMode) => {
+  const handleThemeChange = (mode: ThemeMode) => {
     setTheme(mode);
-    setIsThemeOpen(false);
   };
 
   return {
     user,
     theme,
-    isLanguageOpen,
-    isThemeOpen,
     handleNavigate,
     openUpcomingFeature,
-    openLanguagePicker: () => setIsLanguageOpen(true),
-    closeLanguagePicker: () => setIsLanguageOpen(false),
-    handleLocaleSelect,
-    openThemePicker: () => setIsThemeOpen(true),
-    closeThemePicker: () => setIsThemeOpen(false),
-    handleThemeSelect,
+    handleLocaleChange,
+    handleThemeChange,
   };
 }
 
@@ -258,35 +235,70 @@ function MenuSection({ title, children }: { title: string; children: ReactNode }
   );
 }
 
-interface PickerSheetProps {
-  open: boolean;
-  title: string;
-  closeLabel: string;
-  onClose: () => void;
-  children: ReactNode;
+interface MenuLanguageRowProps {
+  value: AppLocale;
+  onChange: (locale: AppLocale) => void;
+  showDivider?: boolean;
 }
 
-function PickerSheet({ open, title, closeLabel, onClose, children }: PickerSheetProps) {
+function MenuLanguageRow({
+  value,
+  onChange,
+  showDivider = true,
+}: MenuLanguageRowProps) {
+  const t = useTranslations("common");
+
   return (
-    <Dialog open={open} onClose={onClose} transition className="relative z-[130]">
-      <DialogBackdrop transition className={pickerBackdropClass} />
-      <div className="fixed inset-0 z-[130] flex items-end justify-center p-4 sm:items-center">
-        <DialogPanel transition className={pickerPanelClass}>
-          <div className="flex items-center justify-between border-b border-secondary/15 px-4 py-3 sm:px-5">
-            <DialogTitle className="text-base font-semibold text-text">{title}</DialogTitle>
-            <button
-              type="button"
-              aria-label={closeLabel}
-              onClick={onClose}
-              className="inline-flex size-10 items-center justify-center rounded-lg text-muted transition-colors hover:bg-page hover:text-text focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary/40"
-            >
-              <X className="size-5" aria-hidden />
-            </button>
-          </div>
-          {children}
-        </DialogPanel>
-      </div>
-    </Dialog>
+    <SettingField
+      className={cn(showDivider && rowDividerClass)}
+      icon={<Globe className="size-5" />}
+      title={t("language")}
+      description={t("languageSwitchDescription")}
+    >
+      <SelectDropdown
+        fullWidth={false}
+        size="sm"
+        variant="outline"
+        placeholder={t("language")}
+        includePlaceholderOption={false}
+        listboxModal={false}
+        options={MOBILE_MENU_LOCALE_OPTIONS}
+        value={value}
+        onChange={(next) => onChange(next as AppLocale)}
+        wrapperClassName={MOBILE_MENU_LANGUAGE_SELECT_WIDTH_CLASS}
+        triggerClassName={MOBILE_MENU_LANGUAGE_TRIGGER_CLASS}
+        aria-label={t("language")}
+      />
+    </SettingField>
+  );
+}
+
+interface MenuThemeRowProps {
+  value: ThemeMode;
+  onChange: (mode: ThemeMode) => void;
+  showDivider?: boolean;
+}
+
+function MenuThemeRow({
+  value,
+  onChange,
+  showDivider = true,
+}: MenuThemeRowProps) {
+  const t = useTranslations("common");
+  const isDark = value === "dark";
+  const ThemeIcon = isDark ? Moon : Sun;
+
+  return (
+    <SwitchField
+      className={cn(showDivider && rowDividerClass)}
+      icon={<ThemeIcon className="size-5" />}
+      title={t("darkMode")}
+      description={t(isDark ? "themeSwitchToLight" : "themeSwitchToDark")}
+      checked={isDark}
+      onChange={(checked) => onChange(checked ? "dark" : "light")}
+      aria-label={t("theme")}
+      color="primary"
+    />
   );
 }
 
@@ -317,10 +329,6 @@ function MenuContent({
     onOpenUpcomingFeature,
   );
   const account = useMobileMenuAccountFooter(onClose, onNavigate, onLogoutPress);
-
-  const ThemeStatusIcon = sections.theme === "light" ? Sun : Moon;
-  const themeTrailingLabel =
-    sections.theme === "light" ? t("themeLight") : t("themeDark");
 
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-page">
@@ -388,18 +396,14 @@ function MenuContent({
             ) : null}
 
             <MenuSection title={t("mobileMenuGeneral")}>
-              <MenuRow
-                icon={Globe}
-                label={t("language")}
-                trailing={locale.toUpperCase()}
-                onClick={sections.openLanguagePicker}
+              <MenuLanguageRow
+                value={locale}
+                onChange={sections.handleLocaleChange}
               />
-              <MenuRow
-                icon={ThemeStatusIcon}
-                label={t("theme")}
-                trailing={themeTrailingLabel}
+              <MenuThemeRow
+                value={sections.theme}
+                onChange={sections.handleThemeChange}
                 showDivider={false}
-                onClick={sections.openThemePicker}
               />
             </MenuSection>
 
@@ -494,65 +498,6 @@ function MenuContent({
           </div>
         </div>
       </div>
-
-      <PickerSheet
-        open={sections.isLanguageOpen}
-        title={t("language")}
-        closeLabel={closeMenuLabel}
-        onClose={sections.closeLanguagePicker}
-      >
-        <div className="flex flex-col" role="listbox" aria-label={t("language")}>
-          {MOBILE_MENU_LOCALE_OPTIONS.map(({ value, label }, index) => {
-            const isActive = locale === value;
-            const isLast = index === MOBILE_MENU_LOCALE_OPTIONS.length - 1;
-            return (
-              <button
-                key={value}
-                type="button"
-                role="option"
-                aria-selected={isActive}
-                onClick={() => sections.handleLocaleSelect(value)}
-                className={cn(rowButtonClass, !isLast && rowDividerClass, isActive && "bg-primary/5")}
-              >
-                <span className={cn(rowLabelClass, "font-semibold")}>{label}</span>
-                <span className="text-xs font-semibold uppercase tracking-wide text-muted">
-                  {value}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </PickerSheet>
-
-      <PickerSheet
-        open={sections.isThemeOpen}
-        title={t("theme")}
-        closeLabel={closeMenuLabel}
-        onClose={sections.closeThemePicker}
-      >
-        <div className="flex flex-col" role="listbox" aria-label={t("theme")}>
-          {MOBILE_MENU_THEME_OPTIONS.map(({ value, labelKey }, index) => {
-            const isActive = sections.theme === value;
-            const isLast = index === MOBILE_MENU_THEME_OPTIONS.length - 1;
-            const OptionIcon = THEME_OPTION_ICONS[value];
-            return (
-              <button
-                key={value}
-                type="button"
-                role="option"
-                aria-selected={isActive}
-                onClick={() => sections.handleThemeSelect(value)}
-                className={cn(rowButtonClass, !isLast && rowDividerClass, isActive && "bg-primary/5")}
-              >
-                <span className={rowIconClass} aria-hidden>
-                  <OptionIcon className="size-5" />
-                </span>
-                <span className={cn(rowLabelClass, "font-semibold")}>{t(labelKey)}</span>
-              </button>
-            );
-          })}
-        </div>
-      </PickerSheet>
     </div>
   );
 }

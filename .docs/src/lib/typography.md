@@ -1,6 +1,6 @@
 # Typography (`src/lib/typography.ts`)
 
-Central text-size tokens for the app. Mobile-first: compact below `sm`, full scale from `sm` up.
+Central text-size tokens for the app. Controls use `text-xs` on small viewports, `text-sm` from `sm` up.
 
 **Source:** `src/lib/typography.ts`
 

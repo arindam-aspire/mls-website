@@ -22,6 +22,8 @@ export interface SelectDropdownProps {
   /** Visual size (sm / md / lg). */
   size?: SelectDropdownSize;
   placeholder: string;
+  /** When false, the placeholder is not listed as a selectable option (value should always be set). Default true. */
+  includePlaceholderOption?: boolean;
   label?: ReactNode;
   labelClassName?: string;
   error?: string;
@@ -41,5 +43,7 @@ export interface SelectDropdownProps {
   name?: string;
   disabled?: boolean;
   autoFocus?: boolean;
+  /** When false, avoids scroll-lock / inert while open (use inside dialogs/drawers). Default true. */
+  listboxModal?: boolean;
   "aria-label"?: string;
 }

@@ -34,6 +34,7 @@ export function LandingDesktopNav({ overHero }: LandingDesktopNavProps) {
         <button
           key={path}
           type="button"
+          suppressHydrationWarning
           onClick={() => router.push(path)}
           className={cn(
             "cursor-pointer transition-colors",

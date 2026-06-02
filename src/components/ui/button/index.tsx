@@ -122,6 +122,7 @@ export function Button({
 
   return (
     <HeadlessButton
+      suppressHydrationWarning
       id={id}
       type={type}
       disabled={isDisabled}

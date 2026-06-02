@@ -21,4 +21,5 @@ Landing desktop navigation module.
 
 # Notes
 
+- Nav `<button>` elements use `suppressHydrationWarning` because password-manager / autofill extensions often add `fdprocessedid` on the client; the landing **Buy** link is a common trigger when `overHero` styles apply.
 - This file is now fully implemented in `landing-layout` (no re-export).
