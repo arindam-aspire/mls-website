@@ -1,13 +1,14 @@
 "use client";
 
+import { Home, SearchX } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/src/components/ui/button";
 import { useRouter } from "@/src/i18n/navigation";
 import { cn } from "@/src/lib/cn";
 import {
-  notFoundBodyClasses,
-  notFoundCodeClasses,
-  notFoundTitleClasses,
+  comingSoonBodyClasses,
+  comingSoonTitleClasses,
+  displayEyebrowClasses,
 } from "@/src/lib/typography";
 
 export function NotFoundScreen() {
@@ -15,33 +16,51 @@ export function NotFoundScreen() {
   const router = useRouter();
 
   return (
-    <section className="flex flex-1 flex-col items-center justify-center px-6 py-16 text-center sm:py-20">
-      <p className={notFoundCodeClasses}>
-        {t("code")}
-      </p>
-      <span
-        className="mt-3 block h-0.5 w-14 bg-secondary"
-        aria-hidden
-      />
+    <section
+      className="w-full bg-surface px-4 py-20 sm:px-6 sm:py-28 lg:py-32"
+      aria-labelledby="not-found-title"
+    >
+      <div className="mx-auto flex max-w-2xl flex-col items-center text-center">
+        <span className="inline-flex size-16 items-center justify-center rounded-full border border-dashed border-danger/30 bg-danger/10 text-danger sm:size-20">
+          <SearchX className="size-7 sm:size-9" aria-hidden />
+        </span>
 
-      <h1 className={cn("mt-8", notFoundTitleClasses)}>
-        {t("title")}
-      </h1>
+        <p className={cn("mt-6", displayEyebrowClasses, "text-secondary")}>
+          {t("eyebrow")}
+        </p>
+        <span
+          className="mt-3 block h-0.5 w-14 bg-secondary-dark"
+          aria-hidden
+        />
 
-      <p className={cn("mt-6 max-w-md text-muted", notFoundBodyClasses)}>
-        {t("description")}
-      </p>
+        <h1
+          id="not-found-title"
+          className={cn("mt-8 sm:mt-10", comingSoonTitleClasses)}
+        >
+          {t("title")}
+        </h1>
 
-      <Button
-        type="button"
-        color="primary"
-        variant="solid"
-        size="md"
-        className="mt-10"
-        onClick={() => router.push("/")}
-      >
-        {t("backHome")}
-      </Button>
+        <p
+          className={cn(
+            "mt-6 max-w-md text-muted sm:mt-8",
+            comingSoonBodyClasses,
+          )}
+        >
+          {t("description")}
+        </p>
+
+        <Button
+          type="button"
+          color="primary"
+          variant="solid"
+          size="md"
+          iconStart={<Home aria-hidden />}
+          className="mt-8 shrink-0 sm:mt-10"
+          onClick={() => router.push("/")}
+        >
+          {t("backHome")}
+        </Button>
+      </div>
     </section>
   );
 }

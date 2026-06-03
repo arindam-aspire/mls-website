@@ -21,9 +21,13 @@ mls_website/
 │   │   └── [locale]/
 │   │       ├── layout.md
 │   │       ├── not-found.md
-│   │       ├── unauthorized.md
 │   │       ├── [...rest]/
 │   │       │   └── page.md
+│   │       ├── (system)/
+│   │       │   ├── README.md
+│   │       │   ├── layout.md
+│   │       │   └── unauthorized/
+│   │       │       └── page.md
 │   │       ├── (landing)/
 │   │       │   ├── README.md
 │   │       │   ├── layout.md
@@ -97,6 +101,10 @@ mls_website/
 │       │   │   └── mutations/
 │       │   │       ├── README.md
 │       │   │       └── landing.mutation.md
+│       │   ├── loading/
+│       │   │   ├── README.md
+│       │   │   └── screens/
+│       │   │       └── index.md
 │       │   ├── not-found/
 │       │   ├── unauthorized/
 │       │   ├── profile/
@@ -188,6 +196,11 @@ mls_website/
 │       │       ├── PublicNotificationsButton.md
 │       │       └── README.md
 │       ├── lib/
+│       │   └── auth/
+│       │       ├── README.md
+│       │       ├── authorize.md
+│       │       ├── permissions.md
+│       │       └── roles.md
 │       ├── messages/
 │       ├── providers/
 │       └── utils/
@@ -197,9 +210,12 @@ mls_website/
 │   │   ├── [...rest]/
 │   │   │   └── page.tsx
 │   │   ├── not-found.tsx
-│   │   ├── unauthorized.tsx
 │   │   ├── (auth)/
 │   │   ├── (public)/
+│   │   ├── (system)/
+│   │   │   ├── layout.tsx
+│   │   │   └── unauthorized/
+│   │   │       └── page.tsx
 │   │   ├── (landing)/
 │   │   │   ├── layout.tsx
 │   │   │   └── page.tsx
@@ -344,6 +360,10 @@ mls_website/
 │   ├── configs/
 │   │   └── environment.config.ts
 │   ├── lib/
+│   │   ├── auth/
+│   │   │   ├── authorize.ts
+│   │   │   ├── permissions.ts
+│   │   │   └── roles.ts
 │   │   ├── cn.ts
 │   │   └── typography.ts
 │   ├── features/
@@ -419,6 +439,9 @@ mls_website/
 │   │   │       └── user.types.ts
 │   │   ├── dashboard/
 │   │   │   └── screens/
+│   │   ├── loading/
+│   │   │   └── screens/
+│   │   │       └── index.tsx
 │   │   ├── not-found/
 │   │   │   └── screens/
 │   │   │       └── NotFoundScreen.tsx
@@ -536,21 +559,29 @@ mls_website/
 │   │   │   ├── auth.json
 │   │   │   ├── common.json
 │   │   │   ├── home.json
+│   │   │   ├── notFound.json
+│   │   │   ├── unauthorized.json
 │   │   │   └── index.ts
 │   │   ├── en/
 │   │   │   ├── auth.json
 │   │   │   ├── common.json
 │   │   │   ├── home.json
+│   │   │   ├── notFound.json
+│   │   │   ├── unauthorized.json
 │   │   │   └── index.ts
 │   │   ├── es/
 │   │   │   ├── auth.json
 │   │   │   ├── common.json
 │   │   │   ├── home.json
+│   │   │   ├── notFound.json
+│   │   │   ├── unauthorized.json
 │   │   │   └── index.ts
 │   │   └── fr/
 │   │       ├── auth.json
 │   │       ├── common.json
 │   │       ├── home.json
+│   │       ├── notFound.json
+│   │       ├── unauthorized.json
 │   │       └── index.ts
 │   ├── providers/
 │   │   ├── AuthProvider.tsx

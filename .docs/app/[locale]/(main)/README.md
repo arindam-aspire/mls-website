@@ -8,10 +8,12 @@ Primary authenticated-main routes with `ProtectedLayout`. Group name does **not*
 
 ## Pages
 
-| File | URL | Screen |
-| --- | --- | --- |
-| [dashboard/page.md](./dashboard/page.md) | `/en/dashboard` | `DashboardScreen` |
-| [my-profile/page.md](./my-profile/page.md) | `/en/my-profile` | `ProfileScreen` |
+| File | URL | Screen | Guard |
+| --- | --- | --- | --- |
+| [dashboard/page.md](./dashboard/page.md) | `/en/dashboard` | `DashboardScreen` | `useAuthorize("DASHBOARD")` |
+| [my-profile/page.md](./my-profile/page.md) | `/en/my-profile` | `ProfileScreen` | `useAuthorize("PROFILE")` |
+
+Both pages are **client components** that return `null` until `user` is available. `proxy.ts` also requires an `access_token` cookie for these paths.
 
 ## Architecture
 

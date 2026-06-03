@@ -1,75 +1,37 @@
 # File Overview
 
-Next.js App Router page for route segment `[locale]/[...rest]`. Thin wrapper that renders a feature screen.
+Catch-all route under `[locale]` for unknown path segments.
 
 **Source:** `app/[locale]/[...rest]/page.tsx`
 
 # Responsibilities
 
-- Next.js App Router page for route segment `[locale]/[...rest]`. Thin wrapper that renders a feature screen.
+- Match any unmatched locale-prefixed path.
+- Call `notFound()` so Next.js renders `app/[locale]/not-found.tsx` → `NotFoundScreen`.
 
 # Imports
 
-_No notable imports._
+- `notFound` from `next/navigation`
 
 # Exports
 
-- `CatchAllPage`
-- `default`
-
-# State Management
-
-_No significant state; presentational or config module._
-
-# API Usage
-
-_N/A unless extended._
+- `default` (calls `notFound()`)
 
 # Navigation
 
-- Renders under `app/[locale]/…`; public URLs always include locale prefix.
-
-# Props / Parameters
-
-- See component/handler props in source (TypeScript interfaces).
-
-# Actions / Inputs
-
-## Inputs
-
-_No explicit inputs detected._
-
-## Actions
-
-_No explicit actions detected._
-
-## Validations
-
-_No explicit validations detected._
-
-## Show/Hide Controls
-
-_No explicit show/hide controls detected._
-
-# UI Details
-
-- **Theme:** semantic tokens (`bg-page`, `bg-surface`, `text-text`, `text-muted`, `bg-primary`, `border-secondary/15`).
-- **Light/dark:** via `ThemeProvider` / `html.light` | `html.dark`.
-- **Radius:** `rounded-lg` controls; `rounded-xl` cards/modals/popovers; `rounded-full` avatars/pills.
-- **Responsive:** mobile-first (`sm:`, `md:`, `lg:`).
+- Example: `/en/unknown-path` triggers 404 flow with locale intact.
 
 # Flow Description
 
-1. Next.js resolves locale-prefixed URL.
-2. Layout chain provides i18n + `PublicLayout` where applicable.
-3. Page default export renders the feature screen.
-4. Next.js App Router page for route segment `[locale]/[...rest]`. Thin wrapper that renders a feature screen.
+1. Request hits `[...rest]` segment.
+2. Page invokes `notFound()`.
+3. Locale `not-found.tsx` renders `NotFoundScreen` inside layout chain.
 
 # Dependencies
 
-- Parent feature or route that imports this file.
-- See **Imports** for direct module dependencies.
+- `app/[locale]/not-found.tsx`
+- `src/features/not-found/screens/NotFoundScreen.tsx`
 
 # Notes
 
-- Keep in sync when `app/[locale]/[...rest]/page.tsx` changes.
+- Does not render a dedicated screen component directly.

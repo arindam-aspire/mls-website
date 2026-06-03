@@ -1,0 +1,7 @@
+{
+  "code": "401",
+  "eyebrow": "401 — Access denied",
+  "title": "Unauthorized",
+  "description": "You do not have permission to view this page. Sign in with a different account or return home.",
+  "backHome": "Back to home"
+}

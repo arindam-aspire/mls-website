@@ -6,9 +6,7 @@ import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { getLoggedInUser } from "@/src/features/auth/services/auth.service";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const user = useAuthStore((s) => s.user);
-  const setUser = useAuthStore((s) => s.setUser);
-  const setIsLoadingUser = useAuthStore((s) => s.setIsLoadingUser);
+  const {user, setUser, setIsLoadingUser} = useAuthStore();
 
   useEffect(() => {
     const accessToken = tokenStore.getAccessToken();

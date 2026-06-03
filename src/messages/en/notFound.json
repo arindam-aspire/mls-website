@@ -1,5 +1,6 @@
 {
   "code": "404",
+  "eyebrow": "404 — Not found",
   "title": "Page not found",
   "description": "The page you are looking for does not exist or may have been moved.",
   "backHome": "Back to home"

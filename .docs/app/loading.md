@@ -1,73 +1,47 @@
 # File Overview
 
-Project source module.
+Root App Router `loading.tsx` — thin re-export of the loading feature screen.
 
 **Source:** `app/loading.tsx`
 
 # Responsibilities
 
-- Project source module.
+- Satisfy Next.js root `loading` boundary.
+- Delegate UI to `src/features/loading/screens/index.tsx`.
 
 # Imports
 
-- `import mlsLogoDark from "@/src/assets/images/MLS_Dark_Logo.png"`
-- `import mlsLogoLight from "@/src/assets/images/MLS_Light_Logo.png"`
+- `import LoadingScreen from "@/src/features/loading/screens"`
 
 # Exports
 
-- `Loading`
-- `default`
+- `Loading` (default, async server component wrapper)
 
 # State Management
 
-_No significant state; presentational or config module._
+_No client state._
 
 # API Usage
 
-_N/A unless extended._
+_N/A._
 
 # Navigation
 
-- Renders under `app/[locale]/…`; public URLs always include locale prefix.
-
-# Props / Parameters
-
-- See component/handler props in source (TypeScript interfaces).
-
-# Actions / Inputs
-
-## Inputs
-
-_No explicit inputs detected._
-
-## Actions
-
-_No explicit actions detected._
-
-## Validations
-
-_No explicit validations detected._
-
-## Show/Hide Controls
-
-_No explicit show/hide controls detected._
+_N/A — global loading overlay, not a route._
 
 # UI Details
 
-- **Theme:** semantic tokens (`bg-page`, `bg-surface`, `text-text`, `text-muted`, `bg-primary`, `border-secondary/15`).
-- **Light/dark:** via `ThemeProvider` / `html.light` | `html.dark`.
-- **Radius:** `rounded-lg` controls; `rounded-xl` cards/modals/popovers; `rounded-full` avatars/pills.
-- **Responsive:** mobile-first (`sm:`, `md:`, `lg:`).
+See [loading/screens/index.md](../src/features/loading/screens/index.md): full-screen `bg-page`, MLS logos, `common.loading` / `common.brand` copy, animated dots and progress bar.
 
 # Flow Description
 
-See source in `app/loading.tsx` for step-by-step behavior aligned with [application.md](../../application.md) (path relative may vary).
+1. Next.js shows this UI while a segment is loading.
+2. `LoadingScreen` server component renders branded overlay.
 
 # Dependencies
 
-- Parent feature or route that imports this file.
-- See **Imports** for direct module dependencies.
+- `src/features/loading/screens/index.tsx`
 
 # Notes
 
-- Keep in sync when `app/loading.tsx` changes.
+- Implementation lives in the `loading` feature; this file stays a one-line re-export.

@@ -16,9 +16,10 @@ Per-locale translation JSON aggregated by `index.ts` for next-intl.
 | JSON | Namespace | Typical use |
 | --- | --- | --- |
 | `auth.json` | `auth` | Auth modal, forms |
-| `common.json` | `common` | Header, footer, loading, profile |
+| `common.json` | `common` | Header, footer, loading, profile menu, `backHome` |
 | `home.json` | `home` | Landing / hero |
-| `notFound.json` | `notFound` | 404 page |
+| `notFound.json` | `notFound` | 404 page (`code`, `eyebrow`, `title`, `description`, `backHome`) |
+| `unauthorized.json` | `unauthorized` | 401 page (`code`, `eyebrow`, `title`, `description`, `backHome`) |
 
 ## Barrel
 
@@ -26,7 +27,7 @@ Each locale exports:
 
 ```ts
 // src/messages/en/index.ts
-export default { auth, common, home, notFound };
+export default { auth, common, home, notFound, unauthorized };
 ```
 
 Loaded in [i18n/request.md](../i18n/request.md).
@@ -34,7 +35,8 @@ Loaded in [i18n/request.md](../i18n/request.md).
 ## Usage
 
 ```tsx
-const t = useTranslations("common");
+const t = useTranslations("notFound");
+const u = useTranslations("unauthorized");
 ```
 
 ## Docs

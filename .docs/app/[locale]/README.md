@@ -18,8 +18,8 @@ Dynamic segment `[locale]` must be one of `en`, `ar`, `es`, `fr`.
 
 ### `(main)` — [main documentation](./(main)/README.md)
 
-- `/[locale]/dashboard` — dashboard (Coming Soon)
-- `/[locale]/my-profile` — profile (Coming Soon)
+- `/[locale]/dashboard` — dashboard (`useAuthorize("DASHBOARD")`, Coming Soon screen)
+- `/[locale]/my-profile` — profile (`useAuthorize("PROFILE")`, Coming Soon screen)
 
 ### `(property)` — [property documentation](./(property)/README.md)
 
@@ -30,6 +30,11 @@ Dynamic segment `[locale]` must be one of `en`, `ar`, `es`, `fr`.
 - `/[locale]/inquiries`
 
 Reserved folders (no `page.tsx` yet): none under `(property)/`.
+
+### `(system)` — [system documentation](./(system)/README.md)
+
+- Layout: `PublicLayout` via `(system)/layout.tsx`
+- `/[locale]/unauthorized` — 401 unauthorized (`UnauthorizedScreen`)
 
 ## Auth modal
 

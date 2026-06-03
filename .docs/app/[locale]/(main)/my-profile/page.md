@@ -1,16 +1,19 @@
 # File Overview
 
-Next.js App Router page for route segment `[locale]/my-profile`. Thin wrapper that renders a feature screen.
+Next.js App Router page for route segment `[locale]/my-profile`. Client wrapper that enforces authorization before rendering the profile screen.
 
 **Source:** `app/[locale]/(main)/my-profile/page.tsx`
 
 # Responsibilities
 
-- Next.js App Router page for route segment `[locale]/my-profile`. Thin wrapper that renders a feature screen.
+- Next.js App Router page for route segment `[locale]/my-profile`.
+- Client wrapper that calls `useAuthorize("PROFILE")` before rendering `ProfileScreen`.
+- Returns `null` while `user` is absent so protected content does not flash before redirects.
 
 # Imports
 
 - `import ProfileScreen from "@/src/features/profile/screens"`
+- `import { useAuthorize } from "@/src/lib/auth/authorize"`
 
 # Exports
 
@@ -19,7 +22,7 @@ Next.js App Router page for route segment `[locale]/my-profile`. Thin wrapper th
 
 # State Management
 
-_No significant state; presentational or config module._
+Uses `useAuthorize("PROFILE")` — reads `user` / `isLoadingUser` from `useAuthStore` and runs redirect side effects.
 
 # API Usage
 
@@ -27,49 +30,52 @@ _N/A unless extended._
 
 # Navigation
 
-- Renders under `app/[locale]/…`; public URLs always include locale prefix.
+- Public URL: `/en/my-profile` (and other locales).
+- Unauthenticated → `router.replace("/")`.
+- Missing `PROFILE` permission → `router.replace("/unauthorized")`.
+- Allowed roles per `permissions.ts`: agency, agent, owner, user (`registered_user`).
 
 # Props / Parameters
 
-- See component/handler props in source (TypeScript interfaces).
+- No props.
 
 # Actions / Inputs
 
 ## Inputs
 
-_No explicit inputs detected._
+Authorization key: `"PROFILE"` (`PermissionKey`).
 
 ## Actions
 
-_No explicit actions detected._
+- Redirect side effects inside `useAuthorize`.
 
 ## Validations
 
-_No explicit validations detected._
+_No form validations._
 
 ## Show/Hide Controls
 
-_No explicit show/hide controls detected._
+- Page returns `null` until `user` is available.
 
 # UI Details
 
-- **Theme:** semantic tokens (`bg-page`, `bg-surface`, `text-text`, `text-muted`, `bg-primary`, `border-secondary/15`).
-- **Light/dark:** via `ThemeProvider` / `html.light` | `html.dark`.
-- **Radius:** `rounded-lg` controls; `rounded-xl` cards/modals/popovers; `rounded-full` avatars/pills.
-- **Responsive:** mobile-first (`sm:`, `md:`, `lg:`).
+- Renders `ProfileScreen` (Coming Soon card) inside `ProtectedLayout` when authorized.
 
 # Flow Description
 
 1. Next.js resolves locale-prefixed URL.
-2. Layout chain provides i18n + `PublicLayout` where applicable.
-3. Page default export renders the feature screen.
-4. Next.js App Router page for route segment `[locale]/my-profile`. Thin wrapper that renders a feature screen.
+2. `(main)/layout.tsx` applies `ProtectedLayout`.
+3. `proxy.ts` may redirect to `/` if `access_token` cookie is missing.
+4. `useAuthorize("PROFILE")` waits for `isLoadingUser`, then checks roles against `PERMISSIONS.PROFILE`.
+5. On failure, locale-aware redirect to `/` or `/unauthorized`.
+6. On success, render `ProfileScreen`.
 
 # Dependencies
 
-- Parent feature or route that imports this file.
-- See **Imports** for direct module dependencies.
+- `src/lib/auth/authorize.ts`, `src/lib/auth/permissions.ts`
+- `src/features/profile/screens/index.tsx`
+- `app/[locale]/(main)/layout.tsx` (`ProtectedLayout`)
 
 # Notes
 
-- Keep in sync when `app/[locale]/(main)/my-profile/page.tsx` changes.
+- Client-only page (`"use client"`).

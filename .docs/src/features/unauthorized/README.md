@@ -1,17 +1,27 @@
 # Unauthorized feature (`src/features/unauthorized/`)
 
-Unauthorized-access screen module used by the locale route `app/[locale]/unauthorized.tsx`.
+401 unauthorized screen used by `app/[locale]/(system)/unauthorized/page.tsx` and `useAuthorize` redirects.
 
 ## Files
 
 | Path | Role |
 | --- | --- |
-| [screens/UnauthorizedScreen.md](./screens/UnauthorizedScreen.md) | 401-style unauthorized UI with back-home action |
+| [screens/UnauthorizedScreen.md](./screens/UnauthorizedScreen.md) | Translated 401 UI (ComingSoon-style layout) + back-home button |
 
 ## Route
 
-- `/en/unauthorized` (and other locales via `/[locale]/unauthorized`) renders this feature screen inside `PublicLayout`.
+- `/en/unauthorized` (and other locales) → `(system)/unauthorized/page.tsx` inside `PublicLayout`.
 
-## Notes
+## i18n
 
-- This feature mirrors the `not-found` feature pattern: route file stays thin and delegates page UI to a `*Screen` component.
+Namespace: `unauthorized` in `src/messages/<locale>/unauthorized.json`.
+
+## UI
+
+- Same layout pattern as `ComingSoonCard` and `NotFoundScreen`.
+- Icon: `ShieldAlert` with **tertiary** tokens (`bg-tertiary-light/50`, `text-tertiary-dark`, `border-tertiary-dark/30`).
+- Eyebrow: `text-secondary` override on `displayEyebrowClasses`.
+
+## Auth integration
+
+`useAuthorize` calls `router.replace("/unauthorized")` when the signed-in user lacks the required `PERMISSIONS` role.

@@ -1,72 +1,70 @@
 # File Overview
 
-Route-level screen component composing feature UI.
+`src/features/not-found/screens/NotFoundScreen.tsx` is the client-side 404 not-found page UI for locale routes.
 
-**Source:** `src/features/not-found/screens/NotFoundScreen.tsx` (Client Component)
+## Responsibilities
 
-# Responsibilities
+- Present a clear not-found state using the same visual pattern as `UnauthorizedScreen` / `ComingSoonCard`.
+- Provide a primary CTA that returns users to locale home.
+- Load all user-facing copy from the `notFound` message namespace.
 
-- Route-level screen component composing feature UI.
+## Imports
 
-# Imports
+- `SearchX`, `Home` from `lucide-react`
+- `useTranslations` from `next-intl` (`notFound` namespace)
+- `Button` from `@/src/components/ui/button`
+- `useRouter` from `@/src/i18n/navigation`
+- `cn` from `@/src/lib/cn`
+- `comingSoonTitleClasses`, `comingSoonBodyClasses`, `displayEyebrowClasses` from `@/src/lib/typography`
 
-- `import { Button } from "@/src/components/ui/button"`
-- `import { useRouter } from "@/src/i18n/navigation"`
-
-# Exports
+## Exports
 
 - `NotFoundScreen`
 
-# State Management
+## State Management
 
-_No significant state; presentational or config module._
+- No local state.
 
-# API Usage
+## API Usage
 
-_N/A unless extended._
+- No API calls.
 
-# Navigation
+## Navigation
 
-- Use **`Link`**, **`useRouter`**, **`redirect`** from `@/src/i18n/navigation` for locale-prefixed paths (e.g. `/en/listing`).
+- Uses locale-aware `router.push("/")` from `@/src/i18n/navigation` to send users to locale root (for example `/en`).
 
-# Props / Parameters
+## Props / Parameters
 
-- See component/handler props in source (TypeScript interfaces).
+- No props.
 
-# Actions / Inputs
+## Actions / Inputs
 
-## Inputs
+### Actions
 
-_No explicit inputs detected._
+- **Back home** button click: navigates to locale home.
 
-## Actions
+### Inputs / Validation / Toggles
 
-_No explicit actions detected._
+- No form inputs, validations, or show/hide toggles.
 
-## Validations
+## UI Details
 
-_No explicit validations detected._
+- Matches `ComingSoonCard` / `UnauthorizedScreen` layout: `bg-surface` section, `max-w-2xl` centered column, dashed circular icon badge (`bg-danger/10`, `text-danger`, `border-danger/30`), `displayEyebrowClasses` eyebrow with `text-secondary`, `bg-secondary-dark` divider, `comingSoonTitleClasses` / `comingSoonBodyClasses` for title and body.
+- CTA: primary solid `Button` with `iconStart` `Home` icon at `mt-8 sm:mt-10`.
+- **Theme:** semantic tokens only; works in light and dark.
 
-## Show/Hide Controls
+## Flow Description
 
-_No explicit show/hide controls detected._
+1. Page mounts on not-found route (`not-found.tsx` or catch-all).
+2. Screen displays icon, eyebrow, title, and description.
+3. User clicks back home to navigate to locale root.
 
-# UI Details
+## Dependencies
 
-- **Theme:** semantic tokens (`bg-page`, `bg-surface`, `text-text`, `text-muted`, `bg-primary`, `border-secondary/15`).
-- **Light/dark:** via `ThemeProvider` / `html.light` | `html.dark`.
-- **Radius:** `rounded-lg` controls; `rounded-xl` cards/modals/popovers; `rounded-full` avatars/pills.
-- **Responsive:** mobile-first (`sm:`, `md:`, `lg:`).
+- Route entries: `app/[locale]/not-found.tsx`, `app/[locale]/[...rest]/page.tsx`
+- Messages: `src/messages/<locale>/notFound.json`
+- Design reference: `src/components/common/ComingSoonCard.tsx`, `UnauthorizedScreen`
 
-# Flow Description
-
-See source in `src/features/not-found/screens/NotFoundScreen.tsx` for step-by-step behavior aligned with [application.md](../../application.md) (path relative may vary).
-
-# Dependencies
-
-- Parent feature or route that imports this file.
-- See **Imports** for direct module dependencies.
-
-# Notes
+## Notes
 
 - Keep in sync when `src/features/not-found/screens/NotFoundScreen.tsx` changes.

@@ -6,7 +6,7 @@
 
 | Path | Role |
 | --- | --- |
-| [screens/NotFoundScreen.md](./screens/NotFoundScreen.md) | Translated 404 UI + “Back home” button |
+| [screens/NotFoundScreen.md](./screens/NotFoundScreen.md) | Translated 404 UI (ComingSoon-style layout) + back-home button |
 
 ## Routes
 
@@ -15,4 +15,10 @@
 
 ## i18n
 
-Namespace: `notFound` in `src/messages/*/notFound.json`.
+Namespace: `notFound` in `src/messages/<locale>/notFound.json` (`eyebrow`, `title`, `description`, `backHome`).
+
+## UI
+
+- Matches `ComingSoonCard` / `UnauthorizedScreen` structure: surface section, dashed icon circle, eyebrow, divider, serif title, lead body, primary CTA.
+- Icon: `SearchX` with **danger** tokens (`bg-danger/10`, `text-danger`, `border-danger/30`).
+- Eyebrow uses `displayEyebrowClasses` + `text-secondary`.

@@ -1,5 +1,6 @@
 {
   "code": "404",
+  "eyebrow": "404 — No encontrado",
   "title": "Página no encontrada",
   "description": "La página que buscas no existe o puede haber sido movida.",
   "backHome": "Volver al inicio"

@@ -1,33 +1,52 @@
 "use client";
 
-import { ShieldAlert } from "lucide-react";
+import { Home, ShieldAlert } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/src/components/ui/button";
 import { useRouter } from "@/src/i18n/navigation";
 import { cn } from "@/src/lib/cn";
 import {
-  notFoundBodyClasses,
-  notFoundCodeClasses,
-  notFoundTitleClasses,
+  comingSoonBodyClasses,
+  comingSoonTitleClasses,
+  displayEyebrowClasses,
 } from "@/src/lib/typography";
 
 export function UnauthorizedScreen() {
-  const t = useTranslations("common");
+  const t = useTranslations("unauthorized");
   const router = useRouter();
 
   return (
-    <section className="flex flex-1 items-center justify-center px-4 py-16 sm:px-6 sm:py-20">
-      <div className="w-full max-w-xl rounded-xl border border-secondary/15 bg-surface p-6 text-center shadow-sm sm:p-8">
-        <div className="mx-auto inline-flex size-14 items-center justify-center rounded-xl bg-danger/15 text-danger">
-          <ShieldAlert className="size-7" aria-hidden />
-        </div>
+    <section
+      className="w-full bg-surface px-4 py-20 sm:px-6 sm:py-28 lg:py-32"
+      aria-labelledby="unauthorized-title"
+    >
+      <div className="mx-auto flex max-w-2xl flex-col items-center text-center">
+        <span className="inline-flex size-16 items-center justify-center rounded-full border border-dashed border-tertiary-dark/30 bg-tertiary-light/50 text-tertiary-dark sm:size-20">
+          <ShieldAlert className="size-7 sm:size-9" aria-hidden />
+        </span>
 
-        <p className={cn("mt-5", notFoundCodeClasses)}>401</p>
-        <span className="mt-3 block h-0.5 w-14 bg-secondary mx-auto" aria-hidden />
+        <p className={cn("mt-6", displayEyebrowClasses, "text-secondary")}>
+          {t("eyebrow")}
+        </p>
+        <span
+          className="mt-3 block h-0.5 w-14 bg-secondary-dark"
+          aria-hidden
+        />
 
-        <h1 className={cn("mt-7", notFoundTitleClasses)}>Unauthorized</h1>
-        <p className={cn("mx-auto mt-4 max-w-md text-muted", notFoundBodyClasses)}>
-          You do not have permission to access this page.
+        <h1
+          id="unauthorized-title"
+          className={cn("mt-8 sm:mt-10", comingSoonTitleClasses)}
+        >
+          {t("title")}
+        </h1>
+
+        <p
+          className={cn(
+            "mt-6 max-w-md text-muted sm:mt-8",
+            comingSoonBodyClasses,
+          )}
+        >
+          {t("description")}
         </p>
 
         <Button
@@ -35,7 +54,8 @@ export function UnauthorizedScreen() {
           color="primary"
           variant="solid"
           size="md"
-          className="mt-8"
+          iconStart={<Home aria-hidden />}
+          className="mt-8 shrink-0 sm:mt-10"
           onClick={() => router.push("/")}
         >
           {t("backHome")}

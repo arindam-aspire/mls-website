@@ -1,71 +1,30 @@
 # File Overview
 
-Locale message namespace barrel.
+English locale message namespace barrel for next-intl.
 
 **Source:** `src/messages/en/index.ts`
 
 # Responsibilities
 
-- Locale message namespace barrel.
+- Import JSON namespaces and export a single `messages` object for `en`.
 
 # Imports
 
-- `import auth from "./auth.json"`
-- `import common from "./common.json"`
-- `import home from "./home.json"`
-- `import notFound from "./notFound.json"`
+- `auth.json` → `auth`
+- `common.json` → `common`
+- `home.json` → `home`
+- `notFound.json` → `notFound`
+- `unauthorized.json` → `unauthorized`
 
 # Exports
 
-- `default`
-
-# State Management
-
-_No significant state; presentational or config module._
-
-# API Usage
-
-_N/A unless extended._
-
-# Navigation
-
-_No direct navigation._
-
-# Props / Parameters
-
-_N/A — non-component module._
-
-# Actions / Inputs
-
-## Inputs
-
-_No explicit inputs detected._
-
-## Actions
-
-_No explicit actions detected._
-
-## Validations
-
-_No explicit validations detected._
-
-## Show/Hide Controls
-
-_No explicit show/hide controls detected._
-
-# UI Details
-
-_N/A._
-
-# Flow Description
-
-See source in `src/messages/en/index.ts` for step-by-step behavior aligned with [application.md](../../application.md) (path relative may vary).
+- `default` — `{ auth, common, home, notFound, unauthorized }`
 
 # Dependencies
 
-- Parent feature or route that imports this file.
-- See **Imports** for direct module dependencies.
+- Loaded by `src/i18n/request.ts` for locale `en`.
+- Mirrored by `ar/index.ts`, `es/index.ts`, `fr/index.ts`.
 
 # Notes
 
-- Keep in sync when `src/messages/en/index.ts` changes.
+- Add a new JSON file here and in every other locale when introducing a namespace.

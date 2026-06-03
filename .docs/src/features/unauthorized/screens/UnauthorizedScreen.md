@@ -4,18 +4,18 @@
 
 ## Responsibilities
 
-- Present a clear unauthorized state with status code, title, and supporting text.
-- Provide a CTA button that returns users to locale home.
-- Reuse shared typography utilities to keep visual parity with `NotFoundScreen`.
+- Present a clear unauthorized state using the same visual pattern as `ComingSoonCard`.
+- Provide a primary CTA that returns users to locale home.
+- Load all user-facing copy from the `unauthorized` message namespace.
 
 ## Imports
 
-- `ShieldAlert` icon from `lucide-react`
-- `useTranslations` from `next-intl`
+- `Home`, `ShieldAlert` from `lucide-react`
+- `useTranslations` from `next-intl` (`unauthorized` namespace)
 - `Button` from `@/src/components/ui/button`
 - `useRouter` from `@/src/i18n/navigation`
 - `cn` from `@/src/lib/cn`
-- `notFoundCodeClasses`, `notFoundTitleClasses`, `notFoundBodyClasses` from `@/src/lib/typography`
+- `comingSoonTitleClasses`, `comingSoonBodyClasses`, `displayEyebrowClasses` from `@/src/lib/typography`
 
 ## Exports
 
@@ -41,7 +41,7 @@
 
 ### Actions
 
-- `Back Home` button click: navigates to locale home.
+- **Back home** button click: navigates to locale home.
 
 ### Inputs / Validation / Toggles
 
@@ -49,22 +49,23 @@
 
 ## UI Details
 
-- Surface container uses `bg-surface`, `border-secondary/15`, `rounded-xl`.
-- Icon badge uses `bg-danger/15` + `text-danger` for warning emphasis.
-- Text styling uses semantic tokens (`text-muted`) and shared typography classes.
-- Mobile-first spacing with `sm:` enhancements.
+- Matches `ComingSoonCard` layout: `bg-surface` section, `max-w-2xl` centered column, dashed circular icon badge (`bg-tertiary-light/50`, `text-tertiary-dark`, `border-tertiary-dark/30`), `displayEyebrowClasses` eyebrow with `text-secondary` override, `bg-secondary-dark` divider, `comingSoonTitleClasses` / `comingSoonBodyClasses` for title and body.
+- CTA: primary solid `Button` with `Home` icon (`rounded-lg`, `gap-2` via button styles) at `mt-8 sm:mt-10` (same slot as ComingSoon footer row).
+- **Theme:** semantic tokens only; works in light and dark.
 
 ## Flow Description
 
 1. Page mounts on unauthorized route.
-2. Screen displays status icon, code `401`, title, and message.
-3. User can click `Back Home` to navigate to locale root.
+2. Screen displays icon, eyebrow (includes status code in copy), title, and description.
+3. User clicks back home to navigate to locale root.
 
 ## Dependencies
 
-- Route entry: `app/[locale]/unauthorized.tsx`
-- Layout wrapper: `src/layouts/public-layout/index.tsx`
+- Route entry: `app/[locale]/(system)/unauthorized/page.tsx`
+- Messages: `src/messages/<locale>/unauthorized.json`
+- Design reference: `src/components/common/ComingSoonCard.tsx`
+- Layout: `PublicLayout` via `(system)` layout
 
 ## Notes
 
-- This screen follows the same route-to-screen decomposition used by `not-found`.
+- `code` remains in message files for optional use; eyebrow strings include `401` for display.

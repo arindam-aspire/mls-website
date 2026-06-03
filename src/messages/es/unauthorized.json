@@ -1,0 +1,7 @@
+{
+  "code": "401",
+  "eyebrow": "401 — Acceso denegado",
+  "title": "No autorizado",
+  "description": "No tienes permiso para ver esta página. Inicia sesión con otra cuenta o vuelve al inicio.",
+  "backHome": "Volver al inicio"
+}

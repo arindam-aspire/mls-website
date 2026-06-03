@@ -110,12 +110,13 @@ src/
   hooks/                Shared React hooks
   i18n/                 next-intl routing & navigation
   initializers/         App bootstrapping (navigation ref)
-  layouts/              public-layout, protected-layout (placeholder)
+  layouts/              public-layout, protected-layout
+  lib/auth/             Roles, permissions map, useAuthorize hook
   messages/             Translation JSON per locale
   providers/            React context providers
   types/                Shared TypeScript types
   utils/                Helpers (navigation, …)
-proxy.ts                next-intl middleware (locale routing)
+proxy.ts                next-intl + cookie guard for protected paths
 ```
 
 **Data flow (typical feature):**
@@ -149,8 +150,10 @@ proxy.ts                next-intl middleware (locale routing)
 | File | Namespace (typical use) |
 | --- | --- |
 | `auth.json` | Auth modal, forms |
-| `common.json` | Header, footer, profile menu, nav |
+| `common.json` | Header, footer, profile menu, nav, `backHome` |
 | `home.json` | Landing / hero |
+| `notFound.json` | 404 page (`eyebrow`, `title`, `description`, `backHome`) |
+| `unauthorized.json` | 401 page (`eyebrow`, `title`, `description`, `backHome`) |
 | `index.ts` | Re-exports namespaces |
 
 **Usage in components:**
@@ -190,6 +193,7 @@ Route groups `(landing)`, `(main)`, `(property)`, `(auth)`, `(public)` do **not*
 | `(property)` | `PublicLayout` | User property-related pages |
 | `(auth)` | *(empty — reserved)* | Future auth routes |
 | `(public)` | *(empty — reserved)* | Future public routes |
+| `(system)` | `PublicLayout` on unauthorized | Unauthorized / system pages |
 
 ### Implemented pages
 
@@ -198,8 +202,8 @@ All paths below are **without** locale; prepend `/<locale>` (e.g. `/en/listing`)
 | URL path | App route file | Screen / component |
 | --- | --- | --- |
 | `/` | `(landing)/page.tsx` | `LandingScreen` |
-| `/dashboard` | `(main)/dashboard/page.tsx` | `DashboardScreen` (Coming Soon) |
-| `/my-profile` | `(main)/my-profile/page.tsx` | `ProfileScreen` (Coming Soon) |
+| `/dashboard` | `(main)/dashboard/page.tsx` | `DashboardScreen` — guarded by `useAuthorize("DASHBOARD")` |
+| `/my-profile` | `(main)/my-profile/page.tsx` | `ProfileScreen` — guarded by `useAuthorize("PROFILE")` |
 | `/listing` | `(property)/listing/page.tsx` | `ListingPropertyScreen` (Coming Soon) |
 | `/property-list` | `(property)/property-list/page.tsx` | `PropertyListScreen` (`PropertyCardList`) |
 | `/propert-details/:id` | `(property)/propert-details/[id]/page.tsx` | `PropertyDetailsScreen` (`PropertyView`) |
@@ -207,7 +211,7 @@ All paths below are **without** locale; prepend `/<locale>` (e.g. `/en/listing`)
 | `/saved-searches` | `(property)/saved-searches/page.tsx` | `SavedSearchesScreen` (Coming Soon) |
 | `/recently-viewed` | `(property)/recently-viewed/page.tsx` | `RecentlyViewedScreen` (Coming Soon) |
 | `/inquiries` | `(property)/inquiries/page.tsx` | `InquiriesScreen` (Coming Soon) |
-| `/unauthorized` | `unauthorized.tsx` | `UnauthorizedScreen` |
+| `/unauthorized` | `(system)/unauthorized/page.tsx` | `UnauthorizedScreen` |
 
 ### Header navigation (not yet implemented as routes)
 
@@ -227,7 +231,7 @@ Defined in `DesktopNav` / mobile menu — `router.push` only:
 | --- | --- | --- |
 | `/[...rest]` | `[locale]/[...rest]/page.tsx` | Catch-all |
 | 404 | `[locale]/not-found.tsx` | `NotFoundScreen` |
-| 401 | `[locale]/unauthorized.tsx` | `UnauthorizedScreen` |
+| 401 | `[locale]/(system)/unauthorized/page.tsx` | `UnauthorizedScreen` |
 
 ### Profile popover → routes
 
@@ -391,7 +395,7 @@ Used by `(main)` route group.
 
 | File | Role |
 | --- | --- |
-| `screens/NotFoundScreen.tsx` | 404 page content |
+| `screens/NotFoundScreen.tsx` | 404 UI (ComingSoon-style layout, `SearchX` icon, danger badge, `notFound` i18n) |
 
 ---
 
@@ -399,7 +403,15 @@ Used by `(main)` route group.
 
 | File | Role |
 | --- | --- |
-| `screens/UnauthorizedScreen.tsx` | 401 unauthorized page content |
+| `screens/UnauthorizedScreen.tsx` | 401 UI (ComingSoon-style layout, `ShieldAlert` icon, tertiary badge, `unauthorized` i18n) |
+
+---
+
+### `loading`
+
+| File | Role |
+| --- | --- |
+| `screens/index.tsx` | Root App Router loading screen (re-exported by `app/loading.tsx`) |
 
 ---
 
@@ -453,6 +465,30 @@ Session persistence helpers: `src/features/auth/store/authModalStorage.ts`.
 3. `navigateTo(\`/${locale}\`)` via `navigation.utils` (Next.js router registered in `NavigationInitializer`)
 
 **Note:** `ProfilePopover` unmounts when `user` is cleared; do not rely on effects in that component for post-logout navigation.
+
+### Client route guards (`src/lib/auth/`)
+
+| Module | Role |
+| --- | --- |
+| `roles.ts` | `UserRole` enum — API names: `admin`, `agent`, `owner`, `registered_user` |
+| `permissions.ts` | `PERMISSIONS` map: `PROFILE`, `DASHBOARD` → allowed roles |
+| `authorize.ts` | `useAuthorize(permission)` — client hook used by `(main)` pages |
+
+**`PERMISSIONS` (current):**
+
+| Key | Allowed roles |
+| --- | --- |
+| `PROFILE` | agency, agent, owner, user |
+| `DASHBOARD` | agency, agent, owner |
+
+**`useAuthorize` behavior:**
+
+1. Waits while `isLoadingUser` is true (`AuthProvider` hydrating `/auth/me`).
+2. No `user` → `router.replace("/")`.
+3. User lacks permission → `router.replace("/unauthorized")`.
+4. Returns `{ user }` for guarded pages; pages typically `if (!user) return null`.
+
+**Protected pages:** `app/[locale]/(main)/dashboard/page.tsx`, `app/[locale]/(main)/my-profile/page.tsx`.
 
 ### React Query mutations (`auth.mutation.ts`)
 
@@ -677,9 +713,18 @@ Enforced via `.cursor/rules/`:
 
 ---
 
-## Middleware
+## Middleware (`proxy.ts`)
 
-`proxy.ts` — next-intl middleware for locale detection/routing (matcher excludes `api`, `_next`, static files).
+Exports `proxy` (Next.js 16 middleware entry). Flow:
+
+1. Run **next-intl** middleware (`createMiddleware(routing)`).
+2. Strip locale prefix from pathname and check **protected routes**: `/dashboard`, `/my-profile`.
+3. If protected and no `access_token` cookie → redirect to `/` (same origin).
+4. Otherwise return the i18n response.
+
+Matcher excludes `api`, `_next`, `_vercel`, and static files with extensions.
+
+**Note:** Client `useAuthorize` still enforces role permissions; middleware only checks for a session cookie on protected paths.
 
 ---
 
