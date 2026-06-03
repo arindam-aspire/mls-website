@@ -1,14 +1,14 @@
 # File Overview
 
-Client hook for the profile screen: localized labels, change-password, edit (upcoming), and upload-photo (upcoming) modal state.
+Client hook for the profile screen: localized labels, change-password modal state, and separate edit email/phone modal state.
 
 **Source:** `src/features/profile/hooks/useProfileScreen.ts`
 
 # Responsibilities
 
 - Provide `pageTitle`, `pageSubtitle`, and button labels via `profile` / `common` i18n.
-- Build `myProfileCard.fields`: email and phone only (`kind`, `verified` flags); email via `maskEmail(..., { visibleLocalChars: 2 })`; phone via `maskStoredPhoneNumber` (e.g. `+962 7***4567`); labels via `profile.verified` / `profile.notVerified`.
-- Own change-password, edit-profile, and upload-photo modal state; `onEdit` opens `EditProfileModal`.
+- Build `myProfileCard` props (personal info fields, avatar, role).
+- Own `isChangePasswordOpen`, `isEditEmailOpen`, `isEditPhoneOpen`.
 
 # Exports
 
@@ -19,12 +19,16 @@ Client hook for the profile screen: localized labels, change-password, edit (upc
 | State | Purpose |
 | --- | --- |
 | `isChangePasswordOpen` | `ChangePasswordModal` visibility |
+| `isEditEmailOpen` | `EditEmailModal` visibility |
+| `isEditPhoneOpen` | `EditPhoneModal` visibility |
 
 # Actions / Inputs
 
 | Action | Handler |
 | --- | --- |
 | Change password | `openChangePassword()` |
+| Edit email | `openEditEmail()` |
+| Edit phone | `openEditPhone()` |
 
 # Dependencies
 

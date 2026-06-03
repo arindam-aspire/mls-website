@@ -48,9 +48,6 @@ export function ConfirmSignUpScreen() {
         </div>
         <div className="px-4 pb-4 sm:px-6 sm:pb-6">
           <OTPVerificationForm
-            otpFlow="signup"
-            contactEmail={contactEmail}
-            contactPhone={contactPhone}
             onSubmit={onSubmit}
             onResend={onResend}
             isLoading={isLoading}

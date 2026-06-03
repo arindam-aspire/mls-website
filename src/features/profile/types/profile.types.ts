@@ -1,9 +1,14 @@
-export type EditProfileFormValues = {
+import type { ChangeEvent, RefObject } from "react";
+
+export type EditEmailFormValues = {
   email: string;
+};
+
+export type EditPhoneFormValues = {
   phone_number: string;
 };
 
-export type ProfileInfoFieldKind = "default" | "email" | "phone";
+export type ProfileInfoFieldKind = "name" | "role" | "email" | "phone";
 
 export type ProfileInfoField = {
   label: string;
@@ -11,6 +16,8 @@ export type ProfileInfoField = {
   kind?: ProfileInfoFieldKind;
   /** Omit when verification badge should not render (e.g. phone not provided). */
   verified?: boolean;
+  editLabel?: string;
+  onEdit?: () => void;
 };
 
 export type MyProfileCardUser = {
@@ -21,17 +28,25 @@ export type MyProfileCardUser = {
   is_phone_verified: boolean;
 };
 
+export type ProfileAvatarUploadBindings = {
+  fileInputRef: RefObject<HTMLInputElement | null>;
+  onUploadClick: () => void;
+  onFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  onRemoveClick: () => void;
+  isUploading: boolean;
+  isRemoving: boolean;
+  uploadingLabel: string;
+  removingLabel: string;
+};
+
 export type MyProfileCardProps = {
   user: MyProfileCardUser;
-  roleLabel: string;
   sectionTitle: string;
   fields: ProfileInfoField[];
   uploadPhotoLabel: string;
-  onUploadProfilePhoto: () => void;
-  editLabel: string;
-  onEdit: () => void;
-  removeImageLabel?: string;
-  onRemoveProfilePhoto?: () => void;
+  photoHint: string;
+  avatarUpload: ProfileAvatarUploadBindings;
+  removeImageLabel: string;
   verifiedLabel: string;
   notVerifiedLabel: string;
 };

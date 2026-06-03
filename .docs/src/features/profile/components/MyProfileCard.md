@@ -6,7 +6,8 @@ Profile summary card: avatar, name, role, and read-only personal information fie
 
 # Responsibilities
 
-- Display user identity (avatar, name, role) and compact action buttons below the role: **Edit** (`profile.edit`, secondary ghost); **Remove image** (danger ghost, only when `profile_picture_url` is set).
+- Centered **ProfileAvatarUpload** (large avatar, camera + delete pill buttons, `profilePhotoHint` below).
+- **Personal information** lists full name, account type (role), email, and phone (masked where applicable).
 - Render personal information from `fields` prop — **email and phone only** (system contact fields); each row uses `Mail` / `Phone` icons plus verification badge (**Verified** / **Not verified**) from `user.is_email_verified` / `user.is_phone_verified`.
 
 # Props / Parameters

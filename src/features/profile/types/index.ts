@@ -1,5 +1,6 @@
 export type {
-  EditProfileFormValues,
+  EditEmailFormValues,
+  EditPhoneFormValues,
   MyProfileCardProps,
   MyProfileCardUser,
   ProfileInfoField,

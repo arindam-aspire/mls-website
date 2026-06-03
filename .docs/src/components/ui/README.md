@@ -13,6 +13,7 @@ Headless UI–based design system for MLS. Exported from [index.md](./index.md).
 | [card/](./card/index.md) | `Card`, `CardHeader`, … |
 | [icon-button/](./icon-button/index.md) | `IconButton` |
 | [toggle-button/](./toggle-button/index.md) | `ToggleButton` |
+| [otp-verification/](./otp-verification/README.md) | `OtpVerificationForm`, `OtpVerificationTitle`, label hooks |
 | [modal/](./modal/index.md) | `Modal`, `ModalPanel`, … |
 | [popover/](./popover/index.md) | `Popover`, `PopoverButton`, `PopoverPanel` |
 | [link/](./link/index.md) | `Link` (styled button) |

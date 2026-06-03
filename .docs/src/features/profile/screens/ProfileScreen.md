@@ -1,6 +1,6 @@
 # File Overview
 
-Route-level profile screen: toolbar, profile card, change-password modal, edit-profile modal, and photo coming-soon modals.
+Route-level profile screen: toolbar, profile card, change-password modal, separate edit email/phone modals, and avatar upload.
 
 **Source:** `src/features/profile/screens/ProfileScreen.tsx`
 
@@ -8,19 +8,20 @@ Route-level profile screen: toolbar, profile card, change-password modal, edit-p
 
 - Compose `ProfilePageToolbar` and `MyProfileCard` with data from `useProfileScreen`.
 - Open `ChangePasswordModal` on change-password action.
-- Open `EditProfileModal` when the card **Edit** button is pressed.
-- Open `UpcomingFeatureModal` for upload/remove photo placeholders.
+- Open `EditEmailModal` / `EditPhoneModal` from per-field edit actions on the card.
+- Render `ProfileAvatarUpload` with upload/remove handlers from `useProfileAvatarUpload`.
 
 # Flow Description
 
 1. Toolbar shows page title/subtitle and **Change Password**.
 2. **Change Password** → `ChangePasswordModal`.
-3. Card **Edit** → `EditProfileModal` (email + phone).
-4. Avatar camera → upload photo coming soon.
-5. **Remove image** (when photo exists) → remove photo coming soon.
+3. Card email row **Edit** → `EditEmailModal` (request OTP → confirm).
+4. Card phone row **Edit** → `EditPhoneModal` (request OTP → confirm).
+5. Avatar camera → presigned upload flow; remove → `DELETE /auth/me/profile-picture`.
 
 # Dependencies
 
 - [useProfileScreen.md](../hooks/useProfileScreen.md)
-- [EditProfileModal.md](./EditProfileModal.md)
+- [EditEmailModal.md](./EditEmailModal.md)
+- [EditPhoneModal.md](./EditPhoneModal.md)
 - [ChangePasswordModal.md](./ChangePasswordModal.md)

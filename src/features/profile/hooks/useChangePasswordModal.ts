@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import type { Dispatch, SetStateAction } from "react";
+import { useCallback, type Dispatch, type SetStateAction } from "react";
 import { useChangePassword } from "@/src/features/auth/mutations/auth.mutation";
 import { useToast } from "@/src/hooks/useToast";
 import type { ChangePasswordFormValues } from "../components/ChangePasswordForm";
@@ -13,46 +13,37 @@ type UseChangePasswordModalParams = {
 export function useChangePasswordModal({
   setIsOpenChangePassword,
 }: UseChangePasswordModalParams) {
-  // 1. Router & navigation
-
   // 2. UI utilities
   const t = useTranslations("common");
   const toast = useToast();
 
-  // 3. Global state (Zustand / Redux / Context)
-
-  // 4. Local state
-
   // 5. Data fetching / queries
   const { mutate: changePassword, isPending } = useChangePassword();
 
-  // 6. Derived / memoized values
-
   // 7. Callbacks
-  const closeModal = () => {
+  const closeModal = useCallback(() => {
     setIsOpenChangePassword(false);
-  };
+  }, [setIsOpenChangePassword]);
 
-  const handleSubmit = (values: ChangePasswordFormValues) => {
-    changePassword(
-      {
-        password: values.newPassword,
-        previous_password: values.currentPassword,
-      },
-      {
-        onSuccess: () => {
-          toast.success(t("changePassword"), {
-            description: t("changePasswordSuccessDescription"),
-          });
-          setIsOpenChangePassword(false);
+  const handleSubmit = useCallback(
+    (values: ChangePasswordFormValues) => {
+      changePassword(
+        {
+          password: values.newPassword,
+          previous_password: values.currentPassword,
         },
-      },
-    );
-  };
-
-  // 8. Refs
-
-  // 9. Effects (always last)
+        {
+          onSuccess: () => {
+            toast.success(t("changePassword"), {
+              description: t("changePasswordSuccessDescription"),
+            });
+            setIsOpenChangePassword(false);
+          },
+        },
+      );
+    },
+    [changePassword, setIsOpenChangePassword, t, toast],
+  );
 
   // 10. Return values
   return {

@@ -5,20 +5,20 @@ import {
   useOtpVerificationFormLabels,
 } from "@/src/components/ui/otp-verification";
 
-type OTPVerificationFormProps = {
+type ProfileOtpVerificationFormProps = {
   onSubmit: (code: string) => void;
   onResend: () => void;
   isLoading: boolean;
   isResending: boolean;
 };
 
-export function OTPVerificationForm({
+export function ProfileOtpVerificationForm({
   onSubmit,
   onResend,
   isLoading,
   isResending,
-}: OTPVerificationFormProps) {
-  const labels = useOtpVerificationFormLabels("auth");
+}: ProfileOtpVerificationFormProps) {
+  const labels = useOtpVerificationFormLabels("profile");
 
   return (
     <OtpVerificationForm

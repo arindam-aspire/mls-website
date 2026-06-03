@@ -134,6 +134,7 @@
   --color-info: var(--info);
   /* "inherit-color" — bg-inherit/text-inherit are reserved CSS keywords */
   --color-inherit-color: var(--inherit);
+  --color-inherit-color-15: color-mix(in srgb, var(--inherit) 15%, var(--page));
   /* Hero on photo — white text over background image */
   --color-hero-on-image: var(--white);
   --color-background: var(--page);

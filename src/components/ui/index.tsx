@@ -160,6 +160,18 @@ export {
 } from "./autocomplete-input";
 export type { TextareaProps, TextareaSize, TextareaVariant } from "./textarea";
 export { TEXTAREA_SIZES, TEXTAREA_VARIANTS } from "./textarea";
+export {
+  OtpVerificationForm,
+  OtpVerificationTitle,
+  useOtpVerificationFormLabels,
+  useOtpVerificationTitleLabels,
+} from "./otp-verification";
+export type {
+  OtpVerificationFormLabels,
+  OtpVerificationFormProps,
+  OtpVerificationTitleLabels,
+  OtpVerificationTitleProps,
+} from "./otp-verification";
 export { Toaster } from "./toaster";
 export type { ToasterProps } from "./toaster";
 export { CloseIcon, ToastIcon } from "./toaster/ToastIcons";

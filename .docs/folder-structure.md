@@ -319,6 +319,12 @@ mls_website/
 │   │   └── ui/
 │   │       ├── fieldVariants.ts
 │   │       ├── responsiveSizes.ts
+│   │       ├── otp-verification/
+│   │       │   ├── index.ts
+│   │       │   ├── OtpVerificationForm.tsx
+│   │       │   ├── OtpVerificationTitle.tsx
+│   │       │   ├── types.ts
+│   │       │   └── useOtpVerificationLabels.ts
 │   │       ├── autocomplete-input/
 │   │       │   ├── highlightLabel.tsx
 │   │       │   ├── index.tsx
@@ -496,23 +502,32 @@ mls_website/
 │   │   │   └── utils/
 │   │   │       └── locationTaxonomy.utils.ts
 │   │   ├── profile/
+│   │   │   ├── constants/
+│   │   │   │   └── profileEditModal.constants.ts
 │   │   │   ├── components/
 │   │   │   │   ├── ChangePasswordForm.tsx
-│   │   │   │   ├── EditProfileForm.tsx
+│   │   │   │   ├── EditEmailForm.tsx
+│   │   │   │   ├── EditPhoneForm.tsx
+│   │   │   │   ├── ProfileEditContactModalTitle.tsx
 │   │   │   │   ├── MyProfileCard.tsx
 │   │   │   │   ├── ProfileAvatarUpload.tsx
+│   │   │   │   ├── ProfileOtpVerificationForm.tsx
+│   │   │   │   ├── ProfileOtpVerificationTitle.tsx
 │   │   │   │   └── ProfilePageToolbar.tsx
 │   │   │   ├── hooks/
 │   │   │   │   ├── index.ts
 │   │   │   │   ├── useChangePasswordModal.ts
-│   │   │   │   ├── useEditProfileModal.ts
+│   │   │   │   ├── useEditEmailModal.ts
+│   │   │   │   ├── useEditPhoneModal.ts
+│   │   │   │   ├── useProfileAvatarUpload.ts
 │   │   │   │   └── useProfileScreen.ts
 │   │   │   ├── mutations/
 │   │   │   │   ├── index.ts
 │   │   │   │   └── profile.mutation.ts
 │   │   │   ├── screens/
 │   │   │   │   ├── ChangePasswordModal.tsx
-│   │   │   │   ├── EditProfileModal.tsx
+│   │   │   │   ├── EditEmailModal.tsx
+│   │   │   │   ├── EditPhoneModal.tsx
 │   │   │   │   └── ProfileScreen.tsx
 │   │   │   ├── services/
 │   │   │   │   ├── index.ts
@@ -525,7 +540,10 @@ mls_website/
 │   │   │   │   └── profile.types.ts
 │   │   │   └── utils/
 │   │   │       ├── index.ts
-│   │   │       └── parseStoredPhoneNumber.ts
+│   │   │       ├── formatPhoneNumberE164.ts
+│   │   │       ├── parseStoredPhoneNumber.ts
+│   │   │       ├── profileOtp.utils.ts
+│   │   │       └── validateProfileImageFile.ts
 │   │   └── property/
 │   │       ├── components/
 │   │       │   ├── PropertyListAdvancedFilters.tsx

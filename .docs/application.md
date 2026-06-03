@@ -380,8 +380,11 @@ Used by `(main)` route group.
 
 | File | Role |
 | --- | --- |
-| `screens/ProfileScreen.tsx` | `ProfileScreen` — toolbar, profile card, change password, edit profile modal |
-| `screens/EditProfileModal.tsx` | Edit email and phone (`PATCH /auth/me`) |
+| `screens/ProfileScreen.tsx` | `ProfileScreen` — toolbar, profile card, change password, separate edit email/phone modals |
+| `services/profile.service.ts` | `PATCH /auth/me/profile/request` + `POST /auth/me/profile/verify` (email/phone OTP); `POST` / `DELETE /auth/me/profile-picture`; `PATCH /auth/me` (legacy combined update) |
+| `hooks/useProfileAvatarUpload.ts` | File picker, validation, `useUploadProfilePicture` |
+| `screens/EditEmailModal.tsx` | Two-step email change: request OTP → confirm |
+| `screens/EditPhoneModal.tsx` | Two-step phone change: request OTP → confirm (E.164 `phone_number`) |
 
 ---
 

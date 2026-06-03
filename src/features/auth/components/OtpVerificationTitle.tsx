@@ -1,8 +1,10 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import {
+  OtpVerificationTitle as OtpVerificationTitleUi,
+  useOtpVerificationTitleLabels,
+} from "@/src/components/ui/otp-verification";
 import { cn } from "@/src/lib/cn";
-import { bodyTextClasses, headingAuthClasses } from "@/src/lib/typography";
 import { maskEmail, maskPhone } from "../maskContact";
 
 type OtpVerificationTitleProps = {
@@ -18,7 +20,6 @@ export function OtpVerificationTitle({
   contactPhoneCountry = "JO",
   displayOtp,
 }: OtpVerificationTitleProps) {
-  const t = useTranslations("auth");
   const maskedEmail = contactEmail?.trim() ? maskEmail(contactEmail) : null;
   const maskedPhone = contactPhone?.trim()
     ? maskPhone(contactPhone, contactPhoneCountry)
@@ -26,32 +27,24 @@ export function OtpVerificationTitle({
   const hasEmail = maskedEmail != null;
   const hasPhone = maskedPhone != null;
 
-  const subtitle =
+  const subtitleKey =
     hasEmail && hasPhone
-      ? t("otpVerifySubtitleBoth")
+      ? "otpVerifySubtitleBoth"
       : hasEmail
-        ? t("otpVerifySubtitleEmail")
+        ? "otpVerifySubtitleEmail"
         : hasPhone
-          ? t("otpVerifySubtitlePhone")
-          : t("otpVerifySubtitle");
+          ? "otpVerifySubtitlePhone"
+          : "otpVerifySubtitle";
 
+  const labels = useOtpVerificationTitleLabels("auth", subtitleKey);
   const contactLine = [maskedEmail, maskedPhone].filter(Boolean).join(" | ");
 
   return (
-    <div className="space-y-2 px-4 !pb-4 text-center sm:px-6">
-      <h2 className={headingAuthClasses}>{t("otpVerifyTitle")}</h2>
-      <p className={cn(bodyTextClasses, "text-muted")}>{subtitle}</p>
-      {contactLine !== "" && (
-        <p className={cn(bodyTextClasses, "font-semibold text-text")}>{contactLine}</p>
-      )}
-      {displayOtp != null && displayOtp !== "" && (
-        <div className="pt-2">
-          <p className={cn(bodyTextClasses, "text-muted")}>{t("otpVerifySentCodeLabel")}</p>
-          <p className="mt-1 font-bold tracking-[0.35em] text-primary tabular-nums text-xl sm:text-2xl">
-            {displayOtp}
-          </p>
-        </div>
-      )}
-    </div>
+    <OtpVerificationTitleUi
+      labels={labels}
+      contactLine={contactLine}
+      displayOtp={displayOtp}
+      className={cn("px-4 sm:px-6")}
+    />
   );
 }

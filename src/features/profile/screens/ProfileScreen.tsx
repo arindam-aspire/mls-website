@@ -1,11 +1,10 @@
 "use client";
 
-import { Camera, Trash2 } from "lucide-react";
-import { UpcomingFeatureModal } from "@/src/components/common/UpcomingFeatureModal";
 import { MyProfileCard } from "@/src/features/profile/components/MyProfileCard";
 import { ProfilePageToolbar } from "@/src/features/profile/components/ProfilePageToolbar";
 import { ChangePasswordModal } from "@/src/features/profile/screens/ChangePasswordModal";
-import { EditProfileModal } from "@/src/features/profile/screens/EditProfileModal";
+import { EditEmailModal } from "@/src/features/profile/screens/EditEmailModal";
+import { EditPhoneModal } from "@/src/features/profile/screens/EditPhoneModal";
 import { useProfileScreen } from "../hooks/useProfileScreen";
 
 export default function ProfileScreen() {
@@ -14,17 +13,13 @@ export default function ProfileScreen() {
     pageSubtitle,
     changePasswordLabel,
     myProfileCard,
-    uploadPhotoUpcomingModal,
-    removePhotoUpcomingModal,
     isChangePasswordOpen,
     setIsChangePasswordOpen,
     openChangePassword,
-    isEditProfileOpen,
-    setIsEditProfileOpen,
-    closeUploadProfilePhoto,
-    isUploadPhotoUpcomingOpen,
-    closeRemoveProfilePhoto,
-    isRemovePhotoUpcomingOpen,
+    isEditEmailOpen,
+    setIsEditEmailOpen,
+    isEditPhoneOpen,
+    setIsEditPhoneOpen,
   } = useProfileScreen();
 
   return (
@@ -45,30 +40,9 @@ export default function ProfileScreen() {
         setIsOpenChangePassword={setIsChangePasswordOpen}
       />
 
-      <EditProfileModal
-        isOpenEditProfile={isEditProfileOpen}
-        setIsOpenEditProfile={setIsEditProfileOpen}
-      />
+      <EditEmailModal isOpen={isEditEmailOpen} setIsOpen={setIsEditEmailOpen} />
 
-      <UpcomingFeatureModal
-        open={isUploadPhotoUpcomingOpen}
-        onClose={closeUploadProfilePhoto}
-        title={uploadPhotoUpcomingModal.title}
-        subtitle={uploadPhotoUpcomingModal.subtitle}
-        description={uploadPhotoUpcomingModal.description}
-        dismissLabel={uploadPhotoUpcomingModal.dismissLabel}
-        icon={<Camera className="size-7" aria-hidden />}
-      />
-
-      <UpcomingFeatureModal
-        open={isRemovePhotoUpcomingOpen}
-        onClose={closeRemoveProfilePhoto}
-        title={removePhotoUpcomingModal.title}
-        subtitle={removePhotoUpcomingModal.subtitle}
-        description={removePhotoUpcomingModal.description}
-        dismissLabel={removePhotoUpcomingModal.dismissLabel}
-        icon={<Trash2 className="size-7" aria-hidden />}
-      />
+      <EditPhoneModal isOpen={isEditPhoneOpen} setIsOpen={setIsEditPhoneOpen} />
     </>
   );
 }
