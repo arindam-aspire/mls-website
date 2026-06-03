@@ -1,9 +1,17 @@
-export function ProtectedMobileMenu() {
+"use client";
+
+import { useTranslations } from "next-intl";
+import { ProtectedMobileDrawer } from "@/src/layouts/protected-layout/ProtectedMobileDrawer";
+
+export interface ProtectedMobileMenuProps {
+  open: boolean;
+  onClose: () => void;
+}
+
+export function ProtectedMobileMenu({ open, onClose }: ProtectedMobileMenuProps) {
+  const t = useTranslations("common");
+
   return (
-    <div className="border-b border-secondary/15 bg-surface px-4 py-3 lg:hidden">
-      <div className="rounded-lg border border-secondary/15 bg-page px-3 py-2 text-sm text-muted">
-        Protected Mobile Menu Placeholder
-      </div>
-    </div>
+    <ProtectedMobileDrawer open={open} onClose={onClose} closeLabel={t("closeMenu")} />
   );
 }

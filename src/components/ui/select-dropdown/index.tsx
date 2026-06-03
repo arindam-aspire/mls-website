@@ -10,7 +10,7 @@ import {
 } from "@headlessui/react";
 import { ChevronDown } from "lucide-react";
 import { useLocale } from "next-intl";
-import { useId, useMemo, useState } from "react";
+import { useId, useMemo, useState, type ReactNode } from "react";
 import { cn } from "@/src/lib/cn";
 import { isRtlLocale } from "@/src/i18n/routing";
 import {
@@ -76,6 +76,29 @@ const optionBaseClasses = cn(
   "data-disabled:cursor-not-allowed data-disabled:opacity-50",
 );
 
+function TriggerIcon({
+  icon,
+  size,
+  className,
+}: {
+  icon: ReactNode;
+  size: SelectDropdownSize;
+  className?: string;
+}) {
+  return (
+    <span
+      className={cn(
+        "inline-flex shrink-0 text-muted [&>svg]:size-full",
+        iconSizeClasses[size],
+        className,
+      )}
+      aria-hidden
+    >
+      {icon}
+    </span>
+  );
+}
+
 function buildOptions(
   placeholder: string,
   options: SelectDropdownOption[],
@@ -103,7 +126,10 @@ export function SelectDropdown({
   onBlur,
   fullWidth = true,
   wrapperClassName,
+  iconStart,
+  iconClassName,
   triggerClassName,
+  triggerLabelClassName,
   panelClassName,
   optionClassName,
   className,
@@ -202,13 +228,20 @@ export function SelectDropdown({
               triggerClassName,
             )}
           >
+            {iconStart != null && (
+              <TriggerIcon
+                icon={iconStart}
+                size={size}
+                className={iconClassName}
+              />
+            )}
             <span
               className={cn(
                 "min-w-0 flex-1 truncate",
                 isRtl ? "text-end" : "text-left",
                 hasSelection
-                  ? "font-medium text-text"
-                  : "font-normal text-muted",
+                  ? cn("font-medium text-text", triggerLabelClassName)
+                  : cn("font-normal text-muted", triggerLabelClassName),
               )}
             >
               {hasSelection ? selectedOption.label : placeholder}

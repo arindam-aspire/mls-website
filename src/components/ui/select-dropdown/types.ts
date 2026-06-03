@@ -35,7 +35,12 @@ export interface SelectDropdownProps {
   onBlur?: (event: FocusEvent<HTMLButtonElement>) => void;
   fullWidth?: boolean;
   wrapperClassName?: string;
+  /** Leading icon inside the trigger (e.g. globe for language). */
+  iconStart?: ReactNode;
+  iconClassName?: string;
   triggerClassName?: string;
+  /** Classes for the label text inside the trigger (e.g. `font-normal text-text`). */
+  triggerLabelClassName?: string;
   panelClassName?: string;
   optionClassName?: string;
   className?: string;

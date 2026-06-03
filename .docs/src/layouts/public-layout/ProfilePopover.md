@@ -37,7 +37,10 @@ _N/A unless extended._
 
 # Props / Parameters
 
-- See component/handler props in source (TypeScript interfaces).
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `user` | `LoggedInUser` | required | Signed-in user for avatar and menu |
+| `showNotificationsButton` | `boolean` | `true` | When `false`, hide bell (e.g. `ProtectedHeader` provides its own) |
 
 # Actions / Inputs
 

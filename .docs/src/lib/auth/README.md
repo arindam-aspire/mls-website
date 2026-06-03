@@ -9,6 +9,8 @@ Shared client-side authorization helpers: role constants, permission map, and th
 | [roles.md](./roles.md) | `UserRole` enum (API role names) |
 | [permissions.md](./permissions.md) | Permission keys → allowed roles |
 | [authorize.md](./authorize.md) | Client hook `useAuthorize` (auth store + i18n router) |
+| [sidebarAccess.md](./sidebarAccess.md) | `hasProtectedSidebarAccess` (agency/agent sidebar) |
+| [hasPermission.md](./hasPermission.md) | `hasPermission` for nav item visibility |
 
 ## Usage
 

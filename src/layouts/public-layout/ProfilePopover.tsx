@@ -59,9 +59,14 @@ function ProfileMenuItems({ router }: { router: ReturnType<typeof useRouter> }) 
 
 interface ProfilePopoverProps {
   user: LoggedInUser;
+  /** When false, omit the bell button (e.g. protected header renders its own). Default true. */
+  showNotificationsButton?: boolean;
 }
 
-export function ProfilePopover({ user }: ProfilePopoverProps) {
+export function ProfilePopover({
+  user,
+  showNotificationsButton = true,
+}: ProfilePopoverProps) {
   const t = useTranslations("common");
   const router = useRouter();
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -76,7 +81,11 @@ export function ProfilePopover({ user }: ProfilePopoverProps) {
 
   return (
     <>
-      <PublicNotificationsButton onClick={() => setIsUpcomingFeatureModalOpen(true)} />
+      {showNotificationsButton ? (
+        <PublicNotificationsButton
+          onClick={() => setIsUpcomingFeatureModalOpen(true)}
+        />
+      ) : null}
 
       <Popover className="relative flex items-center">
         <PopoverButton className="!rounded-full !p-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40">

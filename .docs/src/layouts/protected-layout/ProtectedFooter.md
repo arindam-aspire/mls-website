@@ -39,8 +39,9 @@
 
 ## UI Details
 
-- Styled as a compact dark footer strip using `bg-inherit-color` + `text-white`.
-- Uses semantic and typography utility classes for consistency and light/dark safety.
+- Styled as a compact dark footer strip: `bg-inherit-color`, `border-t-4 border-primary`, `text-white`.
+- Below `md`: extra bottom padding so content clears `ProtectedBottomTabBar` (same offset as `PublicFooter`).
+- `container mx-auto` for horizontal alignment with public shell.
 - Responsive layout stacks on small screens and becomes left/right aligned from `sm+`.
 
 ## Flow Description

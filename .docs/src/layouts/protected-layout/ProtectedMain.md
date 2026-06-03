@@ -40,6 +40,7 @@
 ## UI Details
 
 - Mobile-first padding (`px-4 py-4`) with larger spacing on `sm+`.
+- Tab bar clearance is handled on `ProtectedFooter` (`max-md` padding), not on main.
 - Semantic token surfaces (`bg-page`, `bg-surface`) with tokenized border.
 - Uses `rounded-xl` for the main content container.
 

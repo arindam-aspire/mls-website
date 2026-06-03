@@ -5,9 +5,7 @@ interface ProtectedMainProps {
 export function ProtectedMain({ children }: ProtectedMainProps) {
   return (
     <main className="flex min-h-0 flex-1 flex-col bg-page px-4 py-4 sm:px-6 sm:py-6">
-      <div className="w-full flex-1 rounded-xl border border-secondary/15 bg-surface p-4 sm:p-6">
-        {children}
-      </div>
+      {children}
     </main>
   );
 }

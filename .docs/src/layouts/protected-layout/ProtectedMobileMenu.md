@@ -1,56 +1,23 @@
 # File Overview
 
-`src/layouts/protected-layout/ProtectedMobileMenu.tsx` is a mobile-only placeholder row for protected menu controls.
+Thin wrapper that opens `ProtectedMobileDrawer` from the protected header menu button.
 
-## Responsibilities
+**Source:** `src/layouts/protected-layout/ProtectedMobileMenu.tsx`
 
-- Reserve mobile menu space below protected header.
-- Provide a placeholder control surface for future navigation/actions.
+# Responsibilities
 
-## Imports
+- Pass `open`, `onClose`, and `closeMenu` label into the drawer.
 
-- No external imports.
+# Flow Description
 
-## Exports
+1. User taps menu in `ProtectedHeader`.
+2. Drawer opens with system settings (language, theme) only.
 
-- `ProtectedMobileMenu`
+# Dependencies
 
-## State Management
+- [ProtectedMobileDrawer.md](./ProtectedMobileDrawer.md)
+- [ProtectedHeader.md](./ProtectedHeader.md)
 
-- No local state yet.
+# Notes
 
-## API Usage
-
-- None.
-
-## Navigation
-
-- No route actions yet.
-
-## Props / Parameters
-
-- No props.
-
-## Actions / Inputs
-
-- No actionable controls yet.
-
-## UI Details
-
-- Visible below `lg`; hidden on desktop.
-- Uses semantic tokens for border, background, and text.
-- Uses `rounded-lg` for placeholder control surface.
-
-## Flow Description
-
-1. On mobile/tablet, render menu strip.
-2. Render placeholder rounded control card.
-3. Hide component on large screens where sidebar is expected.
-
-## Dependencies
-
-- Used by `src/layouts/protected-layout/index.tsx`.
-
-## Notes
-
-- Future version should expose drawer open/close actions and locale-aware links.
+- Does not render `ProtectedSidebarNav` in the drawer for now.

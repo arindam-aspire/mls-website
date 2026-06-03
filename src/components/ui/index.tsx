@@ -92,6 +92,13 @@ export type {
 } from "./link";
 export { LINK_COLORS, LINK_SIZES, LINK_VARIANTS } from "./link";
 export { Input } from "./input";
+export { SearchInput } from "./search-input";
+export type {
+  SearchInputProps,
+  SearchInputSize,
+  SearchInputVariant,
+} from "./search-input";
+export { SEARCH_INPUT_SIZES, SEARCH_INPUT_VARIANTS } from "./search-input";
 export { AutocompleteInput } from "./autocomplete-input";
 export { PhoneInput } from "./phone-input";
 export type { PhoneInputProps } from "./phone-input";

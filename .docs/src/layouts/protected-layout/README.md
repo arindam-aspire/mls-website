@@ -6,20 +6,22 @@ Placeholder folder for authenticated-only route chrome and wrappers that may be 
 
 ## Current Status
 
-- Placeholder components are now scaffolded.
 - Wired to App Router `(main)` route group (`app/[locale]/(main)/layout.tsx`).
-- Intended as a starting point for authenticated shell UX.
+- **`ProtectedHeader`** implemented: responsive mobile bar (logo, notifications, menu) and desktop bar (search, language, theme, notifications, profile).
+- **`ProtectedBottomTabBar`** on mobile (`< md`): Home, Listings, Favourites, Enquiry.
+- **`ProtectedMobileMenu`** drawer wired from header (`< md`); system settings only.
+- **`ProtectedSidebar`** optional from `md+` (agency and agent only).
+- `ProtectedDrawer` remains a placeholder (not mounted).
 
 ## Structure
 
 ```text
 ProtectedLayout (index.tsx)
-├── ProtectedHeader
-├── ProtectedSidebar
-├── ProtectedDrawer
-├── ProtectedMobileMenu
-├── ProtectedMain (children)
-└── ProtectedFooter
+├── ProtectedSidebar (md+, agency/agent only)
+└── column
+    ├── ProtectedHeader
+    ├── ProtectedMain (children)
+    └── ProtectedFooter
 ```
 
 ## Files
@@ -27,10 +29,26 @@ ProtectedLayout (index.tsx)
 | File | Role |
 | --- | --- |
 | [index.md](./index.md) | Protected layout composer |
-| [ProtectedHeader.md](./ProtectedHeader.md) | Sticky protected header placeholder |
-| [ProtectedSidebar.md](./ProtectedSidebar.md) | Desktop sidebar placeholder |
+| [ProtectedHeader.md](./ProtectedHeader.md) | Sticky protected header (responsive mobile + desktop actions) |
+| [ProtectedMobileDrawer.md](./ProtectedMobileDrawer.md) | Mobile off-canvas drawer shell |
+| [ProtectedMobileDrawerSystemOptions.md](./ProtectedMobileDrawerSystemOptions.md) | Drawer body: language + theme |
+| [hooks/useProtectedMobileDrawerSystemOptions.md](./hooks/useProtectedMobileDrawerSystemOptions.md) | Drawer system settings hook |
+| [ProtectedMobileMenu.md](./ProtectedMobileMenu.md) | Header menu → drawer wrapper |
+| [ProtectedBottomTabBar.md](./ProtectedBottomTabBar.md) | Mobile bottom tabs |
+| [protectedBottomTab.config.md](./protectedBottomTab.config.md) | Tab paths and permissions |
+| [hooks/useProtectedBottomTabBar.md](./hooks/useProtectedBottomTabBar.md) | Tab filter + active state |
+| [protectedMobileHeaderStyles.md](./protectedMobileHeaderStyles.md) | Shared mobile header class constants |
+| [ProtectedNotificationsButton.md](./ProtectedNotificationsButton.md) | Header bell icon button with unread dot |
+| [ProtectedThemeButton.md](./ProtectedThemeButton.md) | Header light/dark theme toggle |
+| [ProtectedProfileMenu.md](./ProtectedProfileMenu.md) | Header profile strip + menu |
+| [hooks/useProtectedProfileMenu.md](./hooks/useProtectedProfileMenu.md) | Profile menu hook |
+| [hooks/useProtectedHeader.md](./hooks/useProtectedHeader.md) | Header state and handlers |
+| [ProtectedSidebar.md](./ProtectedSidebar.md) | Optional sidebar rail (`md+`, agency/agent) |
+| [hooks/useProtectedSidebar.md](./hooks/useProtectedSidebar.md) | Sidebar visibility hook |
+| [ProtectedSidebarNav.md](./ProtectedSidebarNav.md) | Sectioned sidebar navigation |
+| [protectedSidebarNav.config.md](./protectedSidebarNav.config.md) | Nav sections/items config |
+| [hooks/useProtectedSidebarNav.md](./hooks/useProtectedSidebarNav.md) | Nav filter + active state |
 | [ProtectedDrawer.md](./ProtectedDrawer.md) | Large-screen drawer placeholder |
-| [ProtectedMobileMenu.md](./ProtectedMobileMenu.md) | Mobile menu strip placeholder |
 | [ProtectedMain.md](./ProtectedMain.md) | Main content wrapper for route children |
 | [ProtectedFooter.md](./ProtectedFooter.md) | Footer placeholder |
 

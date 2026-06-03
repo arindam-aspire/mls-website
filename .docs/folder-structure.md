@@ -182,13 +182,30 @@ mls_website/
 │       │   │   └── LandingProfilePopover.md
 │       │   ├── protected-layout/
 │       │   │   ├── README.md
+│       │   │   ├── hooks/
+│       │   │   │   ├── useProtectedBottomTabBar.md
+│       │   │   │   ├── useProtectedHeader.md
+│       │   │   │   ├── useProtectedMobileDrawerSystemOptions.md
+│       │   │   │   ├── useProtectedProfileMenu.md
+│       │   │   │   ├── useProtectedSidebar.md
+│       │   │   │   └── useProtectedSidebarNav.md
 │       │   │   ├── index.md
+│       │   │   ├── ProtectedBottomTabBar.md
+│       │   │   ├── protectedBottomTab.config.md
 │       │   │   ├── ProtectedDrawer.md
 │       │   │   ├── ProtectedFooter.md
 │       │   │   ├── ProtectedHeader.md
+│       │   │   ├── ProtectedProfileMenu.md
+│       │   │   ├── ProtectedNotificationsButton.md
+│       │   │   ├── ProtectedThemeButton.md
 │       │   │   ├── ProtectedMain.md
+│       │   │   ├── ProtectedMobileDrawer.md
+│       │   │   ├── ProtectedMobileDrawerSystemOptions.md
 │       │   │   ├── ProtectedMobileMenu.md
-│       │   │   └── ProtectedSidebar.md
+│       │   │   ├── protectedMobileHeaderStyles.md
+│       │   │   ├── ProtectedSidebar.md
+│       │   │   ├── ProtectedSidebarNav.md
+│       │   │   └── protectedSidebarNav.config.md
 │       │   └── public-layout/
 │       │       ├── PublicBottomTabBar.md
 │       │       ├── PublicHeader.md
@@ -199,8 +216,10 @@ mls_website/
 │       │   └── auth/
 │       │       ├── README.md
 │       │       ├── authorize.md
+│       │       ├── hasPermission.md
 │       │       ├── permissions.md
-│       │       └── roles.md
+│       │       ├── roles.md
+│       │       └── sidebarAccess.md
 │       ├── messages/
 │       ├── providers/
 │       └── utils/
@@ -341,6 +360,9 @@ mls_website/
 │   │       ├── select-dropdown/
 │   │       │   ├── index.tsx
 │   │       │   └── types.ts
+│   │       ├── search-input/
+│   │       │   ├── index.tsx
+│   │       │   └── types.ts
 │   │       ├── skeleton/
 │   │       │   ├── index.tsx
 │   │       │   └── types.ts
@@ -362,8 +384,10 @@ mls_website/
 │   ├── lib/
 │   │   ├── auth/
 │   │   │   ├── authorize.ts
+│   │   │   ├── hasPermission.ts
 │   │   │   ├── permissions.ts
-│   │   │   └── roles.ts
+│   │   │   ├── roles.ts
+│   │   │   └── sidebarAccess.ts
 │   │   ├── cn.ts
 │   │   └── typography.ts
 │   ├── features/
@@ -534,11 +558,28 @@ mls_website/
 │   │   │   ├── LandingNotificationsButton.tsx
 │   │   │   └── LandingProfilePopover.tsx
 │   │   ├── protected-layout/
+│   │   │   ├── hooks/
+│   │   │   │   ├── useProtectedBottomTabBar.ts
+│   │   │   │   ├── useProtectedHeader.ts
+│   │   │   │   ├── useProtectedMobileDrawerSystemOptions.ts
+│   │   │   │   ├── useProtectedProfileMenu.ts
+│   │   │   │   ├── useProtectedSidebar.ts
+│   │   │   │   └── useProtectedSidebarNav.ts
 │   │   │   ├── index.tsx
+│   │   │   ├── protectedSidebarNav.config.ts
+│   │   │   ├── ProtectedSidebarNav.tsx
+│   │   │   ├── protectedBottomTab.config.ts
+│   │   │   ├── ProtectedBottomTabBar.tsx
 │   │   │   ├── ProtectedDrawer.tsx
 │   │   │   ├── ProtectedFooter.tsx
 │   │   │   ├── ProtectedHeader.tsx
+│   │   │   ├── ProtectedProfileMenu.tsx
+│   │   │   ├── ProtectedNotificationsButton.tsx
+│   │   │   ├── ProtectedThemeButton.tsx
 │   │   │   ├── ProtectedMain.tsx
+│   │   │   ├── protectedMobileHeaderStyles.ts
+│   │   │   ├── ProtectedMobileDrawer.tsx
+│   │   │   ├── ProtectedMobileDrawerSystemOptions.tsx
 │   │   │   ├── ProtectedMobileMenu.tsx
 │   │   │   └── ProtectedSidebar.tsx
 │   │   └── public-layout/

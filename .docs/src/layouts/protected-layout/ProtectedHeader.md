@@ -1,56 +1,45 @@
 # File Overview
 
-`src/layouts/protected-layout/ProtectedHeader.tsx` is a placeholder top bar for authenticated pages.
+Sticky top bar for authenticated `(main)` routes. **`< md`:** logo (left), notifications + menu (right). **`md+`:** language, theme, notifications, profile (right). Property search is on the center bottom tab (`/property-list`).
 
-## Responsibilities
+**Source:** `src/layouts/protected-layout/ProtectedHeader.tsx` (Client Component)
 
-- Render a sticky header region for protected pages.
-- Reserve space for title and header actions.
+# Responsibilities
 
-## Imports
+- Render protected-area header chrome (no search field).
+- Delegate logic to `useProtectedHeader`.
+- Mount `ProtectedMobileMenu` from the mobile menu button.
 
-- No external imports.
+# Imports
 
-## Exports
+- `useProtectedHeader`, `SelectDropdown`, `Skeleton`, `IconButton`, `Link`, `Image`
+- `ProtectedThemeButton`, `ProtectedNotificationsButton`, `ProtectedProfileMenu`, `ProtectedMobileMenu`
+- `protectedMobileHeaderStyles`, `UpcomingFeatureModal`
+
+# Exports
 
 - `ProtectedHeader`
 
-## State Management
+# Actions / Inputs
 
-- No state.
+| Control | Breakpoint | Behavior |
+| --- | --- | --- |
+| Logo link | `< md` | Theme-aware MLS logo → home |
+| Notifications | when signed in | Upcoming-feature modal |
+| Menu | `< md` | Opens mobile drawer (system settings) |
+| Language / theme / profile | `md+` | Desktop actions |
 
-## API Usage
+# UI Details
 
-- None.
+- `protectedMobileHeaderBarClass`: flex `justify-between` on mobile; desktop row `justify-end`.
+- Semantic tokens; theme-aware logo via hook.
 
-## Navigation
+# Dependencies
 
-- No links or router calls yet.
+- [hooks/useProtectedHeader.md](./hooks/useProtectedHeader.md)
+- [ProtectedBottomTabBar.md](./ProtectedBottomTabBar.md) (search tab)
+- [ProtectedMobileMenu.md](./ProtectedMobileMenu.md)
 
-## Props / Parameters
+# Notes
 
-- No props.
-
-## Actions / Inputs
-
-- No user inputs yet.
-
-## UI Details
-
-- Semantic tokens: `bg-page`, `text-text`, `text-muted`, `border-secondary/15`.
-- Responsive sizing: `h-16` then `sm:h-20`; mobile-first paddings.
-- Sticky placement with top offset for persistent page header behavior.
-
-## Flow Description
-
-1. Render header container.
-2. Show left placeholder heading.
-3. Show right placeholder actions text.
-
-## Dependencies
-
-- Used by `src/layouts/protected-layout/index.tsx`.
-
-## Notes
-
-- Intended to host real user/account actions in future implementation.
+- Profile menu is desktop-only in the header; mobile settings live in the drawer.

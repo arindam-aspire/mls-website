@@ -41,6 +41,10 @@ _No direct navigation._
 | `includePlaceholderOption` | `boolean` | `true` | When `false`, omit empty placeholder from the dropdown list (use when value is always set, e.g. mobile drawer language) |
 | `value` / `onChange` | `string` | — | Controlled selection |
 | `fullWidth` | `boolean` | `true` | Set `false` for compact trailing controls in settings rows |
+| `iconStart` | `ReactNode` | — | Leading icon in trigger (e.g. `Globe` for language) |
+| `iconClassName` | `string` | — | Extra classes on icon wrapper |
+| `triggerClassName` | `string` | — | Override trigger surface (e.g. pill chip: `!rounded-full !bg-surface !shadow-sm`) |
+| `triggerLabelClassName` | `string` | — | Override label typography inside trigger |
 | `listboxModal` | `boolean` | `true` | Pass `false` inside dialogs/drawers so the panel stacks above chrome without scroll-lock conflicts |
 
 # Actions / Inputs

@@ -16,7 +16,7 @@ Per-locale translation JSON aggregated by `index.ts` for next-intl.
 | JSON | Namespace | Typical use |
 | --- | --- | --- |
 | `auth.json` | `auth` | Auth modal, forms |
-| `common.json` | `common` | Header, footer, loading, profile menu, `backHome` |
+| `common.json` | `common` | Header, footer, loading, profile menu, search, `backHome` |
 | `home.json` | `home` | Landing / hero |
 | `notFound.json` | `notFound` | 404 page (`code`, `eyebrow`, `title`, `description`, `backHome`) |
 | `unauthorized.json` | `unauthorized` | 401 page (`code`, `eyebrow`, `title`, `description`, `backHome`) |

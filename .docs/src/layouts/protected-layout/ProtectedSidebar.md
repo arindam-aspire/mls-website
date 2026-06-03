@@ -1,56 +1,43 @@
 # File Overview
 
-`src/layouts/protected-layout/ProtectedSidebar.tsx` is a desktop-only sidebar placeholder for protected routes.
+Optional collapsible left rail for **agency** and **agent** users (`md+`).
+
+**Source:** `src/layouts/protected-layout/ProtectedSidebar.tsx` (Client Component)
 
 ## Responsibilities
 
-- Reserve sidebar area for authenticated navigation.
-- Provide a visual container placeholder for future sidebar items.
+- Render only when `hasProtectedSidebarAccess(user)`.
+- Brand link to `/` with theme-aware MLS logo or favicon when collapsed.
+- Collapse toggle straddling the sidebar border.
 
-## Imports
+## Logo behavior
 
-- No external imports.
+| Sidebar state | Asset |
+| --- | --- |
+| Expanded + light theme | `MLS_Light_Logo.png` |
+| Expanded + dark theme | `MLS_Dark_Logo.png` |
+| Collapsed | `favicon.png` (cube icon) |
 
-## Exports
-
-- `ProtectedSidebar`
-
-## State Management
-
-- No state.
-
-## API Usage
-
-- None.
-
-## Navigation
-
-- No routing actions yet.
-
-## Props / Parameters
-
-- No props.
-
-## Actions / Inputs
-
-- No actions yet.
+Resolved in `useProtectedSidebar` via `useTheme()`. `alt` uses `common.brand`.
 
 ## UI Details
 
-- Hidden below `lg` and visible at `lg+`.
-- Semantic tokens ensure light/dark support (`bg-surface`, `bg-page`, `text-muted`).
-- Uses `rounded-xl` for the inner sidebar card placeholder.
-
-## Flow Description
-
-1. On desktop (`lg+`), render left rail.
-2. Render inner placeholder card content.
-3. On smaller screens, component does not render.
+- Logo: centered (`justify-center`); collapsed `size-14`, expanded `h-[4.25rem] sm:h-[4.75rem] lg:h-20`.
+- Toggle: `end-0 translate-x-1/2`, `top-9 lg:top-10`, `z-[51]`; half sits over main content (wrapper `overflow-visible`).
+- Shell: `sticky top-0 z-[50] h-[100vh] max-h-[100vh] self-start overflow-visible` (toggle not clipped; above main column `z-0`).
+- Nav wrapper: `flex-1 min-h-0 overflow-hidden`; `<nav>` scrolls with `overflow-y-auto overscroll-contain`.
+- Layout row uses `items-start` so the sidebar is not flex-stretched past the viewport.
+- Collapsed width `w-28`, aside `px-2`; nav `px-6`. Expanded `w-60` / `lg:w-72`. `border-e` divider; width transition on collapse.
 
 ## Dependencies
 
-- Used by `src/layouts/protected-layout/index.tsx`.
+- [hooks/useProtectedSidebar.md](./hooks/useProtectedSidebar.md)
+- `src/assets/images/MLS_Light_Logo.png`, `MLS_Dark_Logo.png`, `favicon.png`
+
+## Navigation
+
+- [ProtectedSidebarNav.md](./ProtectedSidebarNav.md) — sectioned links below logo.
 
 ## Notes
 
-- Real navigation links and active-state logic are not implemented yet.
+- Add items in `protectedSidebarNav.config.ts`.
