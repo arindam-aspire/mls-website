@@ -14,8 +14,9 @@ Project source module.
 
 # Exports
 
-- `maskEmail`
-- `maskPhone`
+- `maskEmail(email, options?)` — masks local part as `{visible}***{@domain}`; `visibleLocalChars` defaults to `1` (OTP), profile uses `2`.
+- `maskPhone(nationalNumber, countryCode?)` — e.g. `+962 7***4567`.
+- `maskStoredPhoneNumber(phoneNumber, defaultCountryCode?)` — parses dial code from stored value then masks (profile).
 
 # State Management
 

@@ -548,7 +548,7 @@ const FILE_LIST = [
   "src/features/property/screens/InquiriesScreen.tsx",
   // other features
   "src/features/dashboard/screens/index.tsx",
-  "src/features/profile/screens/index.tsx",
+  "src/features/profile/screens/ProfileScreen.tsx",
   "src/features/not-found/screens/NotFoundScreen.tsx",
   // messages
   "src/messages/en/index.ts",

@@ -12,7 +12,7 @@ Next.js App Router page for route segment `[locale]/my-profile`. Client wrapper 
 
 # Imports
 
-- `import ProfileScreen from "@/src/features/profile/screens"`
+- `import ProfileScreen from "@/src/features/profile/screens/ProfileScreen"`
 - `import { useAuthorize } from "@/src/lib/auth/authorize"`
 
 # Exports
@@ -59,7 +59,7 @@ _No form validations._
 
 # UI Details
 
-- Renders `ProfileScreen` (Coming Soon card) inside `ProtectedLayout` when authorized.
+- Renders `ProfileScreen` (toolbar with change password / edit) inside `ProtectedLayout` when authorized.
 
 # Flow Description
 
@@ -73,7 +73,7 @@ _No form validations._
 # Dependencies
 
 - `src/lib/auth/authorize.ts`, `src/lib/auth/permissions.ts`
-- `src/features/profile/screens/index.tsx`
+- `src/features/profile/screens/ProfileScreen.tsx`
 - `app/[locale]/(main)/layout.tsx` (`ProtectedLayout`)
 
 # Notes

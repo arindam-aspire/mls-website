@@ -1,18 +1,21 @@
 # Profile components (`src/features/profile/components/`)
 
-UI components specific to the profile feature.
-
-## Purpose
-
-- Hold presentational profile UI blocks as the feature grows.
-- Keep profile-specific UI separate from shared components in `src/components/`.
-
-## Current status
-
-- Folder scaffolded for upcoming profile UI work.
+Presentational UI for the profile feature.
 
 ## Files
 
 | Path | Role |
 | --- | --- |
-| [ChangePasswordForm.md](./ChangePasswordForm.md) | Form with validation and password visibility toggles |
+| [ProfilePageToolbar.md](./ProfilePageToolbar.md) | Page title, subtitle, change-password button |
+| [MyProfileCard.md](./MyProfileCard.md) | User profile summary card |
+| [EditProfileForm.md](./EditProfileForm.md) | Email + phone form (`EditProfileModal`) |
+| [ProfileAvatarUpload.md](./ProfileAvatarUpload.md) | Rounded avatar with camera upload button |
+| [ChangePasswordForm.md](./ChangePasswordForm.md) | Change-password form (`ChangePasswordModal`) |
+
+## Usage
+
+Import by file path (no barrel `index.ts`).
+
+## Notes
+
+- `ProfileScreen` composes `ProfilePageToolbar`; additional layout components can be added when design continues.

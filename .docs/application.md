@@ -153,6 +153,7 @@ proxy.ts                next-intl + cookie guard for protected paths
 | `common.json` | Header, footer, profile menu, nav, `backHome` |
 | `home.json` | Landing / hero |
 | `notFound.json` | 404 page (`eyebrow`, `title`, `description`, `backHome`) |
+| `profile.json` | Profile page (`pageTitle`, field labels, roles, verification) |
 | `unauthorized.json` | 401 page (`eyebrow`, `title`, `description`, `backHome`) |
 | `index.ts` | Re-exports namespaces |
 
@@ -379,7 +380,8 @@ Used by `(main)` route group.
 
 | File | Role |
 | --- | --- |
-| `screens/index.tsx` | `ProfileScreen` — Coming Soon (“My Profile”) |
+| `screens/ProfileScreen.tsx` | `ProfileScreen` — toolbar, profile card, change password, edit profile modal |
+| `screens/EditProfileModal.tsx` | Edit email and phone (`PATCH /auth/me`) |
 
 ---
 

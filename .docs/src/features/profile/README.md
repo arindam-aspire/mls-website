@@ -20,9 +20,11 @@ profile/
 
 | Path | Role |
 | --- | --- |
-| [screens/index.md](./screens/index.md) | `ProfileScreen` — current Coming Soon route screen |
-| [screens/ChangePasswordModal.md](./screens/ChangePasswordModal.md) | Change-password modal screen component |
-| [components/README.md](./components/README.md) | Profile component folder docs |
+| [hooks/useProfileScreen.md](./hooks/useProfileScreen.md) | Toolbar labels and modal state |
+| [screens/ProfileScreen.md](./screens/ProfileScreen.md) | `ProfileScreen` — toolbar + modals |
+| [components/ProfilePageToolbar.md](./components/ProfilePageToolbar.md) | Page title, subtitle, action buttons |
+| [components/MyProfileCard.md](./components/MyProfileCard.md) | Profile summary card |
+| [components/README.md](./components/README.md) | Profile components index |
 | [components/ChangePasswordForm.md](./components/ChangePasswordForm.md) | Change-password form component |
 | [hooks/README.md](./hooks/README.md) | Profile hooks folder docs |
 | [mutations/README.md](./mutations/README.md) | Profile mutation folder docs |
@@ -37,8 +39,8 @@ profile/
 
 ## Status
 
-- Only the route-level screen is implemented.
-- Remaining folders are intentionally scaffolded to match other feature modules.
+- Page toolbar with title, subtitle, **Change Password**, and **Edit** (upcoming modal).
+- `ChangePasswordForm` used by `ChangePasswordModal`.
 
 ## Future
 

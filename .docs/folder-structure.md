@@ -111,17 +111,21 @@ mls_website/
 │       │   │   ├── README.md
 │       │   │   ├── components/
 │       │   │   │   ├── README.md
-│       │   │   │   └── ChangePasswordForm.md
+│       │   │   │   ├── ChangePasswordForm.md
+│       │   │   │   ├── MyProfileCard.md
+│       │   │   │   ├── ProfileAvatarUpload.md
+│       │   │   │   └── ProfilePageToolbar.md
 │       │   │   ├── hooks/
 │       │   │   │   ├── README.md
 │       │   │   │   ├── index.md
-│       │   │   │   └── useChangePasswordModal.md
+│       │   │   │   ├── useChangePasswordModal.md
+│       │   │   │   └── useProfileScreen.md
 │       │   │   ├── mutations/
 │       │   │   │   ├── README.md
 │       │   │   │   └── index.md
 │       │   │   ├── screens/
 │       │   │   │   ├── ChangePasswordModal.md
-│       │   │   │   └── index.md
+│       │   │   │   └── ProfileScreen.md
 │       │   │   ├── services/
 │       │   │   │   ├── README.md
 │       │   │   │   └── index.md
@@ -130,7 +134,8 @@ mls_website/
 │       │   │   │   └── index.md
 │       │   │   ├── types/
 │       │   │   │   ├── README.md
-│       │   │   │   └── index.md
+│       │   │   │   ├── index.md
+│       │   │   │   └── profile.types.md
 │       │   │   └── utils/
 │       │   │       ├── README.md
 │       │   │       └── index.md
@@ -288,6 +293,7 @@ mls_website/
 │   │   └── endpoints/
 │   │       ├── authEndpoints.ts
 │   │       ├── index.ts
+│   │       ├── profileEndpoints.ts
 │   │       ├── propertyEndpoints.ts
 │   │       └── publicEndpoints.ts
 │   ├── assets/
@@ -491,23 +497,35 @@ mls_website/
 │   │   │       └── locationTaxonomy.utils.ts
 │   │   ├── profile/
 │   │   │   ├── components/
-│   │   │   │   └── ChangePasswordForm.tsx
+│   │   │   │   ├── ChangePasswordForm.tsx
+│   │   │   │   ├── EditProfileForm.tsx
+│   │   │   │   ├── MyProfileCard.tsx
+│   │   │   │   ├── ProfileAvatarUpload.tsx
+│   │   │   │   └── ProfilePageToolbar.tsx
 │   │   │   ├── hooks/
 │   │   │   │   ├── index.ts
-│   │   │   │   └── useChangePasswordModal.ts
+│   │   │   │   ├── useChangePasswordModal.ts
+│   │   │   │   ├── useEditProfileModal.ts
+│   │   │   │   └── useProfileScreen.ts
 │   │   │   ├── mutations/
-│   │   │   │   └── index.ts
+│   │   │   │   ├── index.ts
+│   │   │   │   └── profile.mutation.ts
 │   │   │   ├── screens/
 │   │   │   │   ├── ChangePasswordModal.tsx
-│   │   │   │   └── index.tsx
+│   │   │   │   ├── EditProfileModal.tsx
+│   │   │   │   └── ProfileScreen.tsx
 │   │   │   ├── services/
-│   │   │   │   └── index.ts
+│   │   │   │   ├── index.ts
+│   │   │   │   └── profile.service.ts
 │   │   │   ├── store/
 │   │   │   │   └── index.ts
 │   │   │   ├── types/
-│   │   │   │   └── index.ts
+│   │   │   │   ├── index.ts
+│   │   │   │   ├── profile.api.types.ts
+│   │   │   │   └── profile.types.ts
 │   │   │   └── utils/
-│   │   │       └── index.ts
+│   │   │       ├── index.ts
+│   │   │       └── parseStoredPhoneNumber.ts
 │   │   └── property/
 │   │       ├── components/
 │   │       │   ├── PropertyListAdvancedFilters.tsx
@@ -601,6 +619,7 @@ mls_website/
 │   │   │   ├── common.json
 │   │   │   ├── home.json
 │   │   │   ├── notFound.json
+│   │   │   ├── profile.json
 │   │   │   ├── unauthorized.json
 │   │   │   └── index.ts
 │   │   ├── en/
@@ -608,6 +627,7 @@ mls_website/
 │   │   │   ├── common.json
 │   │   │   ├── home.json
 │   │   │   ├── notFound.json
+│   │   │   ├── profile.json
 │   │   │   ├── unauthorized.json
 │   │   │   └── index.ts
 │   │   ├── es/
@@ -615,6 +635,7 @@ mls_website/
 │   │   │   ├── common.json
 │   │   │   ├── home.json
 │   │   │   ├── notFound.json
+│   │   │   ├── profile.json
 │   │   │   ├── unauthorized.json
 │   │   │   └── index.ts
 │   │   └── fr/
