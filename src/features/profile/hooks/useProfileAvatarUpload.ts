@@ -28,7 +28,7 @@ export function useProfileAvatarUpload() {
   const onUploadClick = useCallback(() => {
     if (isBusy) return;
     fileInputRef.current?.click();
-  }, [isBusy, fileInputRef]);
+  }, [isBusy]);
 
   const onFileChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {

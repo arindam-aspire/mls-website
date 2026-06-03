@@ -42,6 +42,36 @@ export function useEditEmailModal({ isOpen, setIsOpen }: UseEditEmailModalParams
   const { mutate: requestUpdate, isPending: isRequesting } = useRequestProfileUpdate();
   const { mutate: verifyUpdate, isPending: isVerifying } = useVerifyProfileUpdate("email");
 
+  const {
+    values,
+    errors,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    setValues,
+    setErrors,
+    setTouched,
+  } = useForm<EditEmailFormValues>({
+    initialValues: { email: "" },
+    validate: (formValues) => {
+      const trimmed = formValues.email.trim();
+
+      if (!trimmed) {
+        return { email: tAuth("signUpEmailRequired") };
+      }
+      if (!EMAIL_PATTERN.test(trimmed)) {
+        return { email: tAuth("signUpEmailInvalid") };
+      }
+      if (originalEmail && normalizeEmail(trimmed) === originalEmail) {
+        return { email: tProfile("updateEmailSameAsCurrent") };
+      }
+      return {};
+    },
+  });
+
+  // 6. Derived / memoized values
+  const isFormStep = step === "form";
+
   const getEmailValidationError = useCallback(
     (email: string) => {
       const trimmed = email.trim();
@@ -60,25 +90,6 @@ export function useEditEmailModal({ isOpen, setIsOpen }: UseEditEmailModalParams
     [originalEmail, tAuth, tProfile],
   );
 
-  const {
-    values,
-    errors,
-    handleChange,
-    handleBlur,
-    handleSubmit,
-    setValues,
-    setErrors,
-    setTouched,
-  } = useForm<EditEmailFormValues>({
-    initialValues: { email: "" },
-    validate: (formValues) => {
-      const message = getEmailValidationError(formValues.email);
-      return message ? { email: message } : {};
-    },
-  });
-
-  // 6. Derived / memoized values
-  const isFormStep = step === "form";
   const isSubmitDisabled = getEmailValidationError(values.email) !== "";
 
   // 7. Callbacks
