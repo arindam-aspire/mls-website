@@ -1,70 +1,28 @@
 # File Overview
 
-Axios infrastructure (tokens, interceptors, errors).
+POST `/auth/refresh` with deduplicated in-flight refresh. Request body depends on `rememberMe` cookie (API `remember_me_cookie`).
 
 **Source:** `src/apis/core/token.refresh.ts`
 
-# Responsibilities
+# Request body
 
-- Axios infrastructure (tokens, interceptors, errors).
+| `rememberMe` cookie | Body |
+| --- | --- |
+| `"true"` | `{ username }` (+ `withCredentials` for server refresh cookie) |
+| `"false"` | `{ username, refresh_token }` (both required) |
 
-# Imports
+# Flow
 
-- `import { tokenStore } from './token.store'`
-- `import { API_BASE_URL } from '@/src/configs/environment.config'`
+1. `canRefreshSession()` — requires `username`; when `rememberMe` is false, client `refresh_token` is also required.
+2. Build body via `buildRefreshTokenBody`.
+3. POST with `withCredentials: true`.
+4. On success, `parseRefreshPayload` reads wrapped `data` or flat body; `setSessionTokens` updates access and optional client `refresh_token` per `remember_me_cookie`.
+5. On failure, `tokenStore.clearTokens()` and return `false`.
 
 # Exports
 
 - `refreshToken`
 
-# State Management
-
-- **Cookies** via `tokenStore`
-
-# API Usage
-
-- Axios interceptors / refresh against backend auth endpoints.
-- On failure may call `navigateTo('/')`.
-
-# Navigation
-
-_No direct navigation._
-
-# Props / Parameters
-
-_N/A — non-component module._
-
-# Actions / Inputs
-
-## Inputs
-
-_No explicit inputs detected._
-
-## Actions
-
-_No explicit actions detected._
-
-## Validations
-
-_No explicit validations detected._
-
-## Show/Hide Controls
-
-_No explicit show/hide controls detected._
-
-# UI Details
-
-_N/A._
-
-# Flow Description
-
-See source in `src/apis/core/token.refresh.ts` for step-by-step behavior aligned with [application.md](../../application.md) (path relative may vary).
-
 # Dependencies
 
-- Parent feature or route that imports this file.
-- See **Imports** for direct module dependencies.
-
-# Notes
-
-- Keep in sync when `src/apis/core/token.refresh.ts` changes.
+- [token.store.md](./token.store.md)

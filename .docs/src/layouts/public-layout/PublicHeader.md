@@ -30,7 +30,7 @@ Public header module for the default app shell.
 
 # UI Details
 
-- Mobile: `flex justify-between` — logo left, actions + menu right (`gap-2`).
+- Mobile: logo left; notifications (signed in) or sign-in + `IconButton` menu (`inherit`/`outline`, `publicMobileHeaderIconButtonClass`) — aligned with protected mobile header controls (`gap-2 sm:gap-3`).
 - `md+`: `grid-cols-[1fr_auto_1fr]` like landing header (without hero/overHero styling).
 - Shared sizing: `publicMobileHeaderStyles.ts`.
 

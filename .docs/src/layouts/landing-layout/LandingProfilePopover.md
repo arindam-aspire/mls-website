@@ -6,8 +6,7 @@ Landing profile popover module for authenticated desktop header actions.
 
 # Responsibilities
 
-- Render profile popover actions, account links, and logout confirmation flow.
-- Handle profile navigation and logout interactions in landing header context.
+- Delegate to `ProfilePopover` with `overHero` (name/role on `lg+`, avatar, notifications aligned with public/protected headers).
 
 # Imports
 
@@ -21,4 +20,4 @@ Landing profile popover module for authenticated desktop header actions.
 
 # Notes
 
-- This file is now fully implemented in `landing-layout` (no re-export).
+- Wrapper only; behavior lives in [ProfilePopover.md](../public-layout/ProfilePopover.md).

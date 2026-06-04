@@ -1,71 +1,36 @@
 # File Overview
 
-Axios infrastructure (tokens, interceptors, errors).
+Axios request/response interceptors for authenticated clients: Bearer token, `withCredentials`, and 401 refresh retry aligned with `rememberMe` cookie rules.
 
 **Source:** `src/apis/core/axios.interceptor.ts`
 
 # Responsibilities
 
-- Axios infrastructure (tokens, interceptors, errors).
+- Attach `Authorization` when `useAuth()` and session credentials exist.
+- Set `withCredentials: true` on authenticated requests (supports remember-me refresh via cookies).
+- On `401`, attempt `refreshToken()` once, then retry with the new access token.
+- Redirect to `/` when credentials are missing or refresh cannot run.
 
-# Imports
+# Session checks (`tokenStore`)
 
-- `import { tokenStore } from './token.store'`
-- `import { refreshToken } from './token.refresh'`
-- `import { navigateTo } from '@/src/utils/navigation.utils'`
+| `rememberMe` | `hasAuthCredentials()` (send API request) | `canRefreshSession()` (retry after 401) |
+| --- | --- | --- |
+| `true` | Requires `access_token` only | Requires `username` (refresh body `{ username }`) |
+| `false` | Requires `access_token` + `refresh_token` | Requires `username` + `refresh_token` |
+
+# Flow Description
+
+1. **Request:** If `useAuth()` and `!hasAuthCredentials()` → `navigateTo('/')`, reject.
+2. **Request:** Set Bearer access token and `withCredentials: true`.
+3. **Response 401:** If `!canRefreshSession()` → redirect home, reject.
+4. **Response 401:** Call `refreshToken()`; on success, update `Authorization` on `originalRequest` and retry once.
+5. **Refresh failure:** `clearTokens()` (in refresh module) and `navigateTo('/')`.
 
 # Exports
 
 - `applyInterceptors`
 
-# State Management
-
-- **Cookies** via `tokenStore`
-
-# API Usage
-
-- Axios interceptors / refresh against backend auth endpoints.
-- On failure may call `navigateTo('/')`.
-
-# Navigation
-
-- Imperative **`navigateTo`** from `navigation.utils` (non-locale paths; used after logout).
-
-# Props / Parameters
-
-_N/A — non-component module._
-
-# Actions / Inputs
-
-## Inputs
-
-_No explicit inputs detected._
-
-## Actions
-
-_No explicit actions detected._
-
-## Validations
-
-_No explicit validations detected._
-
-## Show/Hide Controls
-
-_No explicit show/hide controls detected._
-
-# UI Details
-
-_N/A._
-
-# Flow Description
-
-See source in `src/apis/core/axios.interceptor.ts` for step-by-step behavior aligned with [application.md](../../application.md) (path relative may vary).
-
 # Dependencies
 
-- Parent feature or route that imports this file.
-- See **Imports** for direct module dependencies.
-
-# Notes
-
-- Keep in sync when `src/apis/core/axios.interceptor.ts` changes.
+- [token.store.md](./token.store.md)
+- [token.refresh.md](./token.refresh.md)

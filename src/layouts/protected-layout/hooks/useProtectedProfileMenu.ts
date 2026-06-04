@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useLogout } from "@/src/features/auth/mutations/auth.mutation";
 import type { LoggedInUser } from "@/src/features/auth/types/auth.types";
+import { resolveProfileRoleLabel } from "@/src/features/auth/utils/resolveProfileRoleLabel";
 import { useRouter } from "@/src/i18n/navigation";
 
 const PROFILE_MENU_ITEMS = [
@@ -16,32 +17,6 @@ const PROFILE_MENU_ITEMS = [
   { labelKey: "myInquiries", path: "/inquiries" },
 ] as const;
 
-/** API `roles[0].name` → auth account type title (Agency, Agent, Owner, User). */
-const ROLE_LABEL_KEYS: Record<
-  string,
-  | "accountTypeAgencyTitle"
-  | "accountTypeAgentTitle"
-  | "accountTypeOwnerTitle"
-  | "accountTypeUserTitle"
-> = {
-  admin: "accountTypeAgencyTitle",
-  agency: "accountTypeAgencyTitle",
-  agent: "accountTypeAgentTitle",
-  owner: "accountTypeOwnerTitle",
-  registered_user: "accountTypeUserTitle",
-};
-
-function resolveRoleLabel(
-  user: LoggedInUser,
-  tAuth: ReturnType<typeof useTranslations<"auth">>,
-): string {
-  const roleName = user.roles?.[0]?.name;
-  if (roleName == null) return "";
-
-  const labelKey = ROLE_LABEL_KEYS[roleName];
-  return labelKey ? tAuth(labelKey) : "";
-}
-
 export function useProtectedProfileMenu(user: LoggedInUser) {
   const t = useTranslations("common");
   const tAuth = useTranslations("auth");
@@ -52,7 +27,7 @@ export function useProtectedProfileMenu(user: LoggedInUser) {
     useLogout();
 
   const roleLabel = useMemo(
-    () => resolveRoleLabel(user, tAuth),
+    () => resolveProfileRoleLabel(user, tAuth),
     [user, tAuth],
   );
 

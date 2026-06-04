@@ -54,7 +54,7 @@ export function ProtectedProfileMenu({ user, className }: ProtectedProfileMenuPr
         )}
       >
         <span
-          className="hidden h-9 w-px shrink-0 bg-secondary/15 sm:block sm:h-10"
+          className="hidden h-9 w-px shrink-0 bg-secondary/15 lg:block lg:h-10"
           aria-hidden
         />
 
@@ -67,7 +67,7 @@ export function ProtectedProfileMenu({ user, className }: ProtectedProfileMenuPr
             )}
             aria-label={t("profile")}
           >
-            <div className="hidden min-w-0 max-w-[8.5rem] flex-col text-end sm:flex md:max-w-[10rem]">
+            <div className="hidden min-w-0 max-w-[10rem] flex-col text-end lg:flex">
               <span
                 className={cn(
                   "truncate font-semibold text-text",

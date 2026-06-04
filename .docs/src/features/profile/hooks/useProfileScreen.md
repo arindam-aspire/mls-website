@@ -9,6 +9,7 @@ Client hook for the profile screen: localized labels, change-password modal stat
 - Provide `pageTitle`, `pageSubtitle`, and button labels via `profile` / `common` i18n.
 - Build `myProfileCard` props (personal info fields, avatar, role).
 - Own `isChangePasswordOpen`, `isEditEmailOpen`, `isEditPhoneOpen`.
+- Expose `isLoading` when `isLoadingUser && !user` for `ProfileScreenSkeleton`.
 
 # Exports
 
@@ -18,6 +19,7 @@ Client hook for the profile screen: localized labels, change-password modal stat
 
 | State | Purpose |
 | --- | --- |
+| `isLoadingUser` (auth store) | Hydration from `GET /auth/me`; drives `isLoading` |
 | `isChangePasswordOpen` | `ChangePasswordModal` visibility |
 | `isEditEmailOpen` | `EditEmailModal` visibility |
 | `isEditPhoneOpen` | `EditPhoneModal` visibility |

@@ -2,6 +2,7 @@
 
 import { MyProfileCard } from "@/src/features/profile/components/MyProfileCard";
 import { ProfilePageToolbar } from "@/src/features/profile/components/ProfilePageToolbar";
+import { ProfileScreenSkeleton } from "@/src/features/profile/components/ProfileScreenSkeleton";
 import { ChangePasswordModal } from "@/src/features/profile/screens/ChangePasswordModal";
 import { EditEmailModal } from "@/src/features/profile/screens/EditEmailModal";
 import { EditPhoneModal } from "@/src/features/profile/screens/EditPhoneModal";
@@ -9,6 +10,7 @@ import { useProfileScreen } from "../hooks/useProfileScreen";
 
 export default function ProfileScreen() {
   const {
+    isLoading,
     pageTitle,
     pageSubtitle,
     changePasswordLabel,
@@ -21,6 +23,10 @@ export default function ProfileScreen() {
     isEditPhoneOpen,
     setIsEditPhoneOpen,
   } = useProfileScreen();
+
+  if (isLoading) {
+    return <ProfileScreenSkeleton />;
+  }
 
   return (
     <>

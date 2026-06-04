@@ -38,7 +38,7 @@ export function LandingDesktopActions({ overHero }: LandingDesktopActionsProps) 
   };
 
   return (
-    <div className="col-start-3 hidden items-center gap-3 justify-self-end md:flex">
+    <div className="col-start-3 hidden items-center gap-2 justify-self-end sm:gap-3 md:flex">
       <LandingHeaderThemeButton overHero={overHero} />
 
       <Select
@@ -50,13 +50,20 @@ export function LandingDesktopActions({ overHero }: LandingDesktopActionsProps) 
         size="md"
         fullWidth={false}
         wrapperClassName="relative z-[60] w-auto min-w-[4.5rem] shrink-0"
-        selectClassName={overHero ? "bg-surface/90 backdrop-blur-sm" : undefined}
+        selectClassName={
+          overHero
+            ? "!border-white/40 !bg-white/20 !text-white data-hover:!bg-white/15"
+            : undefined
+        }
       />
 
       {isLoadingUser ? (
-        <div className="flex items-center gap-3">
-          <Skeleton variant="circular" className="size-11" />
-          <Skeleton variant="circular" className="size-11" />
+        <div className="flex items-center gap-2 sm:gap-3">
+          <Skeleton variant="circular" className="size-9 sm:size-11" />
+          <Skeleton variant="circular" className="size-9 sm:size-11" />
+          <span className="hidden h-9 w-px shrink-0 bg-secondary/15 lg:block lg:h-10" />
+          <Skeleton className="hidden h-9 w-24 rounded-lg lg:block lg:h-10" />
+          <Skeleton variant="circular" className="size-9 sm:size-11" />
         </div>
       ) : user ? (
         <LandingProfilePopover user={user} overHero={overHero} />

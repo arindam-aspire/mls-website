@@ -115,7 +115,7 @@ export function ProtectedHeader() {
               <Skeleton variant="circular" className="size-9 sm:size-11" />
               <Skeleton variant="circular" className="size-9 sm:size-11" />
               <span className="h-9 w-px shrink-0 bg-secondary/15 sm:h-10" />
-              <Skeleton className="h-9 w-20 rounded-lg sm:h-10 sm:w-24" />
+              <Skeleton className="hidden h-9 w-24 rounded-lg lg:block lg:h-10" />
               <Skeleton variant="circular" className="size-9 sm:size-11" />
             </div>
           ) : (

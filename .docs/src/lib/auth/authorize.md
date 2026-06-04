@@ -47,4 +47,6 @@ export function ProtectedScreen() {
 ## Notes
 
 - Client-only (`"use client"`); call from client components or other hooks.
-- Waits for `isLoadingUser` before redirecting so `AuthProvider` can hydrate the user.
+- Waits for `isLoadingUser` before redirecting.
+- If cookies still have auth credentials but `user` is null, waits for `AuthProvider` hydration (avoids redirect to home on refresh).
+- Returns `{ user, isLoadingUser }` for loading UI on guarded pages.

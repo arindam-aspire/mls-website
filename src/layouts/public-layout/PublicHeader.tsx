@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { cn } from "@/src/lib/cn";
 import { Button } from "@/src/components/ui/button";
+import { IconButton } from "@/src/components/ui/icon-button";
 import { Skeleton } from "@/src/components/ui/skeleton";
 import { UpcomingFeatureModal } from "@/src/components/common/UpcomingFeatureModal";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
@@ -48,7 +49,7 @@ export function PublicHeader() {
 
   const mobileHeaderIconButtonClass = cn(
     publicMobileHeaderIconButtonClass,
-    "!bg-transparent text-text hover:bg-page",
+    "!bg-transparent hover:!bg-page",
   );
 
   const mobileSignInButtonClass = cn(
@@ -82,9 +83,12 @@ export function PublicHeader() {
 
           <DesktopNav />
 
-          <div className="flex h-full shrink-0 items-center gap-2 self-center md:hidden">
+          <div className="flex h-full shrink-0 items-center gap-2 self-center sm:gap-3 md:hidden">
             {isLoadingUser ? (
-              <Skeleton variant="circular" className="size-8 shrink-0 sm:size-11" />
+              <>
+                <Skeleton variant="circular" className="size-9 shrink-0 sm:size-11" />
+                <Skeleton variant="circular" className="size-9 shrink-0 sm:size-11" />
+              </>
             ) : user ? (
               <PublicNotificationsButton
                 onClick={() => setIsUpcomingFeatureModalOpen(true)}
@@ -102,18 +106,17 @@ export function PublicHeader() {
               </Button>
             )}
 
-            <button
+            <IconButton
               type="button"
+              icon={<Menu className={publicMobileHeaderIconClass} aria-hidden />}
               aria-label={t("openMenu")}
               aria-expanded={mobileMenuOpen}
-              className={cn(
-                "inline-flex shrink-0 focus:outline-none focus-visible:ring-2",
-                mobileHeaderIconButtonClass,
-              )}
+              color="inherit"
+              variant="outline"
+              size="md"
+              className={mobileHeaderIconButtonClass}
               onClick={() => setMobileMenuOpen(true)}
-            >
-              <Menu className={publicMobileHeaderIconClass} aria-hidden />
-            </button>
+            />
           </div>
 
           <DesktopActions />

@@ -43,7 +43,11 @@ interface AuthStore extends AuthModalPersistedState {
   clearPendingSignUp: () => void;
   clearPendingAgencySignUp: () => void;
   clearOtpSession: () => void;
-  setAuth: (access_token: string, refresh_token: string) => void;
+  setAuth: (
+    access_token: string,
+    refresh_token: string | null,
+    options: { rememberMeCookie: boolean; username: string },
+  ) => void;
   setAccessToken: (access_token: string) => void;
   setRefreshToken: (refresh_token: string) => void;
   setUser: (user: LoggedInUser) => void;
@@ -319,9 +323,13 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     });
   },
 
-  setAuth: (access_token, refresh_token) => {
-    tokenStore.setAccessToken(access_token);
-    tokenStore.setRefreshToken(refresh_token);
+  setAuth: (access_token, refresh_token, options) => {
+    tokenStore.setSessionTokens({
+      accessToken: access_token,
+      refreshToken: refresh_token,
+      rememberMeCookie: options.rememberMeCookie,
+      username: options.username,
+    });
     set({ access_token, refresh_token });
   },
 
@@ -331,7 +339,8 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   },
 
   setRefreshToken: (refresh_token) => {
-    tokenStore.setRefreshToken(refresh_token);
+    const rememberMeCookie = tokenStore.getRememberMe();
+    tokenStore.setRefreshToken(refresh_token, rememberMeCookie);
     set({ refresh_token });
   },
 
@@ -344,8 +353,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   },
 
   clearAuth: () => {
-    tokenStore.removeAccessToken();
-    tokenStore.removeRefreshToken();
+    tokenStore.clearTokens();
     set({ user: null, isLoadingUser: false, access_token: null, refresh_token: null });
   },
 }));

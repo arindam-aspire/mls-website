@@ -30,11 +30,13 @@ export type SignInRequest = {
 
 export type SignInTokens = {
   access_token: string;
-  refresh_token: string;
+  /** Present when `remember_me_cookie` is false; null when server holds refresh via HttpOnly cookie. */
+  refresh_token: string | null;
   id_token: string;
   token_type: string;
   expires_in: number;
   requires_password_set: boolean;
+  /** When true, refresh uses `{}` + credentials; when false, client stores `refresh_token` for refresh body. */
   remember_me_cookie: boolean;
 };
 

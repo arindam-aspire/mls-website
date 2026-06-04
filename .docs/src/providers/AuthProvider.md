@@ -62,9 +62,10 @@ _No explicit show/hide controls detected._
 
 # Flow Description
 
-1. On mount, if cookie access token exists and no user, set loading.
+1. On mount (`useLayoutEffect`, before child effects), if access token cookie exists and no user, set `isLoadingUser` true.
 2. `GET /auth/me` hydrates user into Zustand.
 3. On failure, `clearAuth()`.
+4. Guards like `useAuthorize` must not redirect while step 1–2 is in progress or while `hasAuthCredentials()` is true without a user.
 
 # Dependencies
 

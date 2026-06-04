@@ -41,6 +41,7 @@ _N/A unless extended._
 | --- | --- | --- | --- |
 | `user` | `LoggedInUser` | required | Signed-in user for avatar and menu |
 | `showNotificationsButton` | `boolean` | `true` | When `false`, hide bell (e.g. `ProtectedHeader` provides its own) |
+| `overHero` | `boolean` | `false` | Landing hero: light text/icons on image; hero avatar border treatment |
 
 # Actions / Inputs
 
@@ -63,6 +64,9 @@ _No explicit inputs detected._
 
 - **Theme:** semantic tokens (`bg-page`, `bg-surface`, `text-text`, `text-muted`, `bg-primary`, `border-secondary/15`).
 - **Light/dark:** via `ThemeProvider` / `html.light` | `html.dark`.
+- **Header strip:** matches `ProtectedProfileMenu` — `lg+` shows `full_name` + role (`resolveProfileRoleLabel`); `md` avatar only; vertical divider before profile at `lg+`.
+- **Header avatar:** `size="md"`, `rounded-full !bg-page text-text`; trigger uses transparent `PopoverButton` + `ring-secondary/40` focus.
+- **Popover header:** role subtitle when mapped; else email fallback.
 - **Radius:** `rounded-lg` controls; `rounded-xl` cards/modals/popovers; `rounded-full` avatars/pills.
 - **Responsive:** mobile-first (`sm:`, `md:`, `lg:`).
 - Uses **`Modal`** from UI kit (`rounded-xl`).

@@ -6,7 +6,7 @@ Project source module.
 
 # Responsibilities
 
-- Project source module.
+- Light/dark toggle for desktop public header (`md+`), matching `ProtectedThemeButton` (`inherit`/`outline` rounded `IconButton`, `size-5` Moon/Sun).
 
 # Imports
 

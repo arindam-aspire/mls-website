@@ -8,7 +8,8 @@ Next.js App Router page for route segment `[locale]/my-profile`. Client wrapper 
 
 - Next.js App Router page for route segment `[locale]/my-profile`.
 - Client wrapper that calls `useAuthorize("PROFILE")` before rendering `ProfileScreen`.
-- Returns `null` while `user` is absent so protected content does not flash before redirects.
+- Renders `ProfileScreen` while `isLoadingUser` so the profile skeleton can show during hydration.
+- Returns `null` only when loading finished and `user` is still absent (redirect pending).
 
 # Imports
 
@@ -55,7 +56,8 @@ _No form validations._
 
 ## Show/Hide Controls
 
-- Page returns `null` until `user` is available.
+- Page renders `ProfileScreen` during `isLoadingUser`; screen shows skeleton until `user` is set.
+- Page returns `null` when `!isLoadingUser && !user`.
 
 # UI Details
 
@@ -68,7 +70,8 @@ _No form validations._
 3. `proxy.ts` may redirect to `/` if `access_token` cookie is missing.
 4. `useAuthorize("PROFILE")` waits for `isLoadingUser`, then checks roles against `PERMISSIONS.PROFILE`.
 5. On failure, locale-aware redirect to `/` or `/unauthorized`.
-6. On success, render `ProfileScreen`.
+6. While `isLoadingUser`, render `ProfileScreen` (skeleton inside screen).
+7. On success with `user`, `ProfileScreen` shows toolbar and card.
 
 # Dependencies
 

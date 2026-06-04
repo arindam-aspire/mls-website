@@ -81,7 +81,7 @@ _N/A — store only; mutations update store via setters._
 
 ## Session lifecycle
 
-- `setAuth(access, refresh)` — tokens to cookies + store
+- `setAuth(access, refresh, { rememberMeCookie, username })` — uses `tokenStore.setSessionTokens` from API `remember_me_cookie` + optional `refresh_token`
 - `setUser`, `setIsLoadingUser`
 - `clearAuth()` — logout; clears user/tokens only (not modal)
 

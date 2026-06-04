@@ -34,7 +34,7 @@ export function DesktopActions() {
   };
 
   return (
-    <div className="col-start-3 hidden items-center gap-3 justify-self-end md:flex">
+    <div className="col-start-3 hidden items-center gap-2 justify-self-end sm:gap-3 md:flex">
       <PublicHeaderThemeButton />
 
       <Select
@@ -49,9 +49,12 @@ export function DesktopActions() {
       />
 
       {isLoadingUser ? (
-        <div className="flex items-center gap-3">
-          <Skeleton variant="circular" className="size-11" />
-          <Skeleton variant="circular" className="size-11" />
+        <div className="flex items-center gap-2 sm:gap-3">
+          <Skeleton variant="circular" className="size-9 sm:size-11" />
+          <Skeleton variant="circular" className="size-9 sm:size-11" />
+          <span className="hidden h-9 w-px shrink-0 bg-secondary/15 lg:block lg:h-10" />
+          <Skeleton className="hidden h-9 w-24 rounded-lg lg:block lg:h-10" />
+          <Skeleton variant="circular" className="size-9 sm:size-11" />
         </div>
       ) : user ? (
         <ProfilePopover user={user} />

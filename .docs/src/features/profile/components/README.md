@@ -7,7 +7,10 @@ Presentational UI for the profile feature.
 | Path | Role |
 | --- | --- |
 | [ProfilePageToolbar.md](./ProfilePageToolbar.md) | Page title, subtitle, change-password button |
+| [ProfilePageToolbarSkeleton.md](./ProfilePageToolbarSkeleton.md) | Toolbar loading placeholder |
+| [ProfileScreenSkeleton.md](./ProfileScreenSkeleton.md) | Full profile screen loading layout |
 | [MyProfileCard.md](./MyProfileCard.md) | User profile summary card |
+| [MyProfileCardSkeleton.md](./MyProfileCardSkeleton.md) | Profile card loading placeholder |
 | [EditEmailForm.md](./EditEmailForm.md) | Email form step (`EditEmailModal`) |
 | [EditPhoneForm.md](./EditPhoneForm.md) | Phone form step (`EditPhoneModal`) |
 | [ProfileOtpVerificationForm.md](./ProfileOtpVerificationForm.md) | 6-digit OTP inputs (profile i18n) |

@@ -1,68 +1,32 @@
 # File Overview
 
-Axios infrastructure (tokens, interceptors, errors).
+Cookie read/write for access and refresh tokens plus auth preferences (`rememberMe`, `username`).
 
 **Source:** `src/apis/core/token.store.ts`
 
-# Responsibilities
+# Cookie keys
 
-- Axios infrastructure (tokens, interceptors, errors).
-
-# Imports
-
-_No notable imports._
+| Key | Purpose |
+| --- | --- |
+| `access_token` | Bearer access token (1 day) |
+| `refresh_token` | Client-held refresh token (session cookie) when API `remember_me_cookie` is false; cleared when true |
+| `rememberMe` | Mirrors API `remember_me_cookie`: `"true"` = server HttpOnly refresh, `"false"` = client refresh body |
+| `username` | Sign-in username; sent in refresh body when `rememberMe` is false |
 
 # Exports
 
 - `tokenStore`
 
-# State Management
+# Methods
 
-- **Cookies** via `tokenStore`
-
-# API Usage
-
-_N/A unless extended._
-
-# Navigation
-
-_No direct navigation._
-
-# Props / Parameters
-
-_N/A — non-component module._
-
-# Actions / Inputs
-
-## Inputs
-
-_No explicit inputs detected._
-
-## Actions
-
-_No explicit actions detected._
-
-## Validations
-
-_No explicit validations detected._
-
-## Show/Hide Controls
-
-_No explicit show/hide controls detected._
-
-# UI Details
-
-_N/A._
-
-# Flow Description
-
-See source in `src/apis/core/token.store.ts` for step-by-step behavior aligned with [application.md](../../application.md) (path relative may vary).
+- `setSessionTokens({ accessToken, refreshToken, rememberMeCookie, username })` — login/refresh: stores access; drops or sets client `refresh_token` per `rememberMeCookie`
+- `setAuthPreferences(rememberMe, username)` — set on sign-in success (password or OTP)
+- `getRememberMe()` / `getUsername()` — read for refresh body
+- `hasAuthCredentials()` — gate authenticated axios requests (see [axios.interceptor.md](./axios.interceptor.md))
+- `canRefreshSession()` — gate 401 refresh retry
+- `clearTokens()` — removes all four cookies (logout / refresh failure)
 
 # Dependencies
 
-- Parent feature or route that imports this file.
-- See **Imports** for direct module dependencies.
-
-# Notes
-
-- Keep in sync when `src/apis/core/token.store.ts` changes.
+- [token.refresh.md](./token.refresh.md)
+- [auth.store.md](../../features/auth/store/auth.store.md)

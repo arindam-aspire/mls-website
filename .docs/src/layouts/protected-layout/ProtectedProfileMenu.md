@@ -46,9 +46,9 @@ Protected-header profile control: vertical divider, name + role, avatar trigger,
 
 # UI Details
 
-- **Divider:** `w-px` `bg-secondary/15`, hidden below `sm`.
-- **Trigger (sm+):** `full_name` and role `text-end`; role from mapped API role name (`Agency`, `Agent`, `Owner`, `User`).
-- **Avatar (trigger):** `size="md"`, circular, `!bg-page` / `text-text` for initials fallback; always visible on mobile (name/role hidden below `sm`).
+- **Divider:** `w-px` `bg-secondary/15`, visible from `lg` only (with name/role block).
+- **Trigger (`lg+`):** `full_name` and role `text-end`; hidden on `md` (avatar-only).
+- **Avatar (trigger):** `size="md"`, circular, `!bg-page` / `text-text`; always visible from `md` up in the desktop header bar.
 - **Popover panel:** Header repeats avatar (`!bg-page`, `text-text`) + name; role or email fallback; same menu items as public profile popover.
 - Semantic tokens; light/dark via theme.
 

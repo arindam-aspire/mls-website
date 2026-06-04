@@ -1,6 +1,6 @@
 # File Overview
 
-Primary rounded notifications bell for public mobile header and desktop profile row.
+Outline rounded notifications bell (matches `ProtectedNotificationsButton`): `IconButton` inherit/outline, `size-5` bell, optional danger indicator dot.
 
 **Source:** `src/layouts/public-layout/PublicNotificationsButton.tsx`
 

@@ -113,8 +113,11 @@ mls_website/
 │       │   │   │   ├── README.md
 │       │   │   │   ├── ChangePasswordForm.md
 │       │   │   │   ├── MyProfileCard.md
+│       │   │   │   ├── MyProfileCardSkeleton.md
 │       │   │   │   ├── ProfileAvatarUpload.md
-│       │   │   │   └── ProfilePageToolbar.md
+│       │   │   │   ├── ProfilePageToolbar.md
+│       │   │   │   ├── ProfilePageToolbarSkeleton.md
+│       │   │   │   └── ProfileScreenSkeleton.md
 │       │   │   ├── hooks/
 │       │   │   │   ├── README.md
 │       │   │   │   ├── index.md
@@ -461,6 +464,8 @@ mls_website/
 │   │   │   │   ├── auth.navigation.ts
 │   │   │   │   ├── auth.store.ts
 │   │   │   │   └── authModalStorage.ts
+│   │   │   ├── utils/
+│   │   │   │   └── resolveProfileRoleLabel.ts
 │   │   │   └── types/
 │   │   │       ├── auth.types.ts
 │   │   │       ├── changePassword.types.ts
@@ -512,10 +517,13 @@ mls_website/
 │   │   │   │   ├── ProfileEditContactModalTitle.tsx
 │   │   │   │   ├── ProfileOtpVerificationContact.tsx
 │   │   │   │   ├── MyProfileCard.tsx
+│   │   │   │   ├── MyProfileCardSkeleton.tsx
 │   │   │   │   ├── ProfileAvatarUpload.tsx
 │   │   │   │   ├── ProfileOtpVerificationForm.tsx
 │   │   │   │   ├── ProfileOtpVerificationTitle.tsx
-│   │   │   │   └── ProfilePageToolbar.tsx
+│   │   │   │   ├── ProfilePageToolbar.tsx
+│   │   │   │   ├── ProfilePageToolbarSkeleton.tsx
+│   │   │   │   └── ProfileScreenSkeleton.tsx
 │   │   │   ├── hooks/
 │   │   │   │   ├── index.ts
 │   │   │   │   ├── useChangePasswordModal.ts

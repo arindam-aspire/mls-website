@@ -16,9 +16,12 @@ export const useSignInWithPassword = () => {
 
   return useMutation({
     mutationFn: signInWithPassword,
-    onSuccess: async (response: SignInResponse) => {
-      const { access_token, refresh_token } = response.data;
-      setAuth(access_token, refresh_token);
+    onSuccess: async (response: SignInResponse, variables) => {
+      const { access_token, refresh_token, remember_me_cookie } = response.data;
+      setAuth(access_token, refresh_token, {
+        rememberMeCookie: remember_me_cookie,
+        username: variables.username,
+      });
       try {
         // ✅ Wait for next tick so cookies are set before the request fires
         await Promise.resolve();
@@ -121,9 +124,12 @@ export const useSignInWithOtpVerify = () => {
 
   return useMutation({
     mutationFn: signInWithOtpVerify,
-    onSuccess: async (response: SignInWithOtpVerifyResponse) => {
-      const { access_token, refresh_token } = response.data;
-      setAuth(access_token, refresh_token);
+    onSuccess: async (response: SignInWithOtpVerifyResponse, variables) => {
+      const { access_token, refresh_token, remember_me_cookie } = response.data;
+      setAuth(access_token, refresh_token, {
+        rememberMeCookie: remember_me_cookie,
+        username: variables.username,
+      });
       clearOtpSession();
       try {
         await Promise.resolve();

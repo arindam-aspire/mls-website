@@ -26,6 +26,7 @@ export function useProfileScreen() {
 
   // 3. Global state
   const user = useAuthStore((state) => state.user);
+  const isLoadingUser = useAuthStore((state) => state.isLoadingUser);
 
   // 4. Local state
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
@@ -124,9 +125,12 @@ export function useProfileScreen() {
     [avatarUpload, profileFields, t, user],
   );
 
+  const isLoading = isLoadingUser && !user;
+
   // 10. Return values
   return {
     user,
+    isLoading,
     pageTitle: t("pageTitle"),
     pageSubtitle: t("pageSubtitle"),
     changePasswordLabel: tCommon("changePassword"),

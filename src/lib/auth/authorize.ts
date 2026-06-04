@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { tokenStore } from "@/src/apis/core/token.store";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
 import { PERMISSIONS, type PermissionKey } from "./permissions";
@@ -18,6 +19,9 @@ export function useAuthorize(requiredPermission: PermissionKey) {
   useEffect(() => {
     if (isLoadingUser) return;
 
+    // Tokens exist but user not hydrated yet (e.g. full page refresh).
+    if (!user && tokenStore.hasAuthCredentials()) return;
+
     const signInPath = "/";
     const unauthorizedPath = "/unauthorized";
 
@@ -33,5 +37,5 @@ export function useAuthorize(requiredPermission: PermissionKey) {
     }
   }, [hasAllowedPermission, isLoadingUser, pathname, router, user]);
 
-  return { user };
+  return { user, isLoadingUser };
 }

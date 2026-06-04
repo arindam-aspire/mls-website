@@ -6,7 +6,9 @@ import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { cn } from "@/src/lib/cn";
 import { Button } from "@/src/components/ui/button";
+import { IconButton } from "@/src/components/ui/icon-button";
 import { Skeleton } from "@/src/components/ui/skeleton";
+import { headerOverHeroIconClass } from "@/src/layouts/public-layout/PublicNotificationsButton";
 import { UpcomingFeatureModal } from "@/src/components/common/UpcomingFeatureModal";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { AUTH_VIEW } from "@/src/features/auth/authViews";
@@ -66,11 +68,9 @@ export function LandingHeader() {
   const mobileHeaderIconButtonClass = cn(
     landingMobileHeaderIconButtonClass,
     overHero
-      ? "!bg-transparent !text-white hover:!bg-white/15 focus-visible:ring-white/40"
-      : "!bg-transparent text-text hover:bg-page",
+      ? headerOverHeroIconClass
+      : "!bg-transparent data-hover:!bg-page data-active:!bg-page",
   );
-
-  const menuTriggerClass = mobileHeaderIconButtonClass;
 
   const mobileSignInButtonClass = cn(
     "!h-9 sm:!h-11",
@@ -111,12 +111,12 @@ export function LandingHeader() {
 
         <LandingDesktopNav overHero={overHero} />
 
-        <div className="flex h-full shrink-0 items-center gap-2 self-center md:hidden">
+        <div className="flex h-full shrink-0 items-center gap-2 self-center sm:gap-3 md:hidden">
           {isLoadingUser ? (
-            <Skeleton
-              variant="circular"
-              className="size-8 shrink-0 sm:size-11"
-            />
+            <>
+              <Skeleton variant="circular" className="size-9 shrink-0 sm:size-11" />
+              <Skeleton variant="circular" className="size-9 shrink-0 sm:size-11" />
+            </>
           ) : user ? (
             <LandingNotificationsButton
               overHero={overHero}
@@ -135,18 +135,17 @@ export function LandingHeader() {
             </Button>
           )}
 
-          <button
+          <IconButton
             type="button"
+            icon={<Menu className={landingMobileHeaderIconClass} aria-hidden />}
             aria-label={t("openMenu")}
             aria-expanded={mobileMenuOpen}
-            className={cn(
-              "inline-flex shrink-0 focus:outline-none focus-visible:ring-2",
-              menuTriggerClass,
-            )}
+            color="inherit"
+            variant="outline"
+            size="md"
+            className={mobileHeaderIconButtonClass}
             onClick={() => setMobileMenuOpen(true)}
-          >
-            <Menu className={landingMobileHeaderIconClass} aria-hidden />
-          </button>
+          />
         </div>
 
         <LandingDesktopActions overHero={overHero} />
