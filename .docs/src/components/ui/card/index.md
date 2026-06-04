@@ -57,10 +57,11 @@ _No explicit show/hide controls detected._
 
 # UI Details
 
-- **Theme:** semantic tokens (`bg-page`, `bg-surface`, `text-text`, `text-muted`, `bg-primary`, `border-secondary/15`).
-- **Light/dark:** via `ThemeProvider` / `html.light` | `html.dark`.
-- **Radius:** `rounded-lg` controls; `rounded-xl` cards/modals/popovers; `rounded-full` avatars/pills.
-- **Responsive:** mobile-first (`sm:`, `md:`, `lg:`).
+- **`Card` shell:** `rounded-lg`, `bg-surface`, `text-text`, `border-none`, shadow `0 0.25rem 1.875rem rgba(46, 45, 116, 0.05)` (Tailwind `shadow-[0_0.25rem_1.875rem_rgba(46,45,116,0.05)]`).
+- **`CardFooter`:** top divider `border-t border-secondary/30` (internal separator only).
+- **Theme:** semantic surface/text tokens; light/dark via `ThemeProvider`.
+- **Radius:** `rounded-lg` on `Card`; consumers may override (e.g. `rounded-xl` on profile cards).
+- **Responsive:** `CardHeader` / `CardContent` / `CardFooter` use `p-4` / `md:p-6` padding steps.
 
 # Flow Description
 

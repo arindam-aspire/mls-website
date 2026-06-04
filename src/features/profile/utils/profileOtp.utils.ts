@@ -1,4 +1,4 @@
-import type { ProfileUpdateRequestData } from "../types/profile.api.types";
+import type { ProfileUpdateRequestData } from "../types/profile.types";
 
 export function getProfileUpdateDevOtp(
   data: ProfileUpdateRequestData,

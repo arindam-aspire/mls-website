@@ -20,6 +20,7 @@ Per-locale translation JSON aggregated by `index.ts` for next-intl.
 | `home.json` | `home` | Landing / hero |
 | `notFound.json` | `notFound` | 404 page (`code`, `eyebrow`, `title`, `description`, `backHome`) |
 | `unauthorized.json` | `unauthorized` | 401 page (`code`, `eyebrow`, `title`, `description`, `backHome`) |
+| `profile.json` | `profile` | Profile page, agency card, modals |
 
 ## Barrel
 
@@ -27,7 +28,7 @@ Each locale exports:
 
 ```ts
 // src/messages/en/index.ts
-export default { auth, common, home, notFound, unauthorized };
+export default { auth, common, home, notFound, profile, unauthorized };
 ```
 
 Loaded in [i18n/request.md](../i18n/request.md).

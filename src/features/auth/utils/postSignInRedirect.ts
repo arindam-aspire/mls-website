@@ -63,6 +63,8 @@ export function getDashboardRedirectPathFromSignInRole(
 ): string | null {
   if (signInRole === "admin") {
     return `/${locale}/dashboard`;
+  } else if (signInRole === "agent") {
+    return `/${locale}/dashboard`;
   }
   return getDashboardRedirectPath(locale, signInRole);
 }

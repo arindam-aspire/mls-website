@@ -7,7 +7,8 @@ Route-level profile screen: toolbar, profile card, change-password modal, separa
 # Responsibilities
 
 - While `useProfileScreen().isLoading` (`isLoadingUser && !user`), render `ProfileScreenSkeleton` (toolbar + card placeholders).
-- Compose `ProfilePageToolbar` and `MyProfileCard` with data from `useProfileScreen` when loaded.
+- Compose `ProfilePageToolbar`, `MyProfileCard`, optional `MyProfileCardSkeleton` while agency loads, and `AgencyProfileCard` from `useProfileScreen`.
+- **lg+ layout:** `MyProfileCard` in a sticky aside (`lg:sticky lg:top-24`); agency skeleton/card in a flex main column so the personal card stays pinned while the agency card scrolls.
 - Open `ChangePasswordModal` on change-password action.
 - Open `EditEmailModal` / `EditPhoneModal` from per-field edit actions on the card.
 - Render `ProfileAvatarUpload` with upload/remove handlers from `useProfileAvatarUpload`.
@@ -19,7 +20,9 @@ Route-level profile screen: toolbar, profile card, change-password modal, separa
 3. **Change Password** → `ChangePasswordModal`.
 4. Card email row **Edit** → `EditEmailModal` (request OTP → confirm).
 5. Card phone row **Edit** → `EditPhoneModal` (request OTP → confirm).
-6. Avatar camera → presigned upload flow; remove → `DELETE /auth/me/profile-picture`.
+6. Personal avatar camera → `POST /auth/me/profile-picture` presigned upload; remove → `DELETE /auth/me/profile-picture`.
+7. Agency logo (agency users) → `POST /agency/{agencyId}/logo` presigned upload; remove → `DELETE /agency/{agencyId}/logo`.
+8. **Edit agency** → [EditAgencyModal.md](./EditAgencyModal.md): `PUT /agency/{agencyId}`; optional license file → `POST /agency/{agencyId}/legal-document`.
 
 # Dependencies
 

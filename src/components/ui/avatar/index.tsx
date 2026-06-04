@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { cn } from "@/src/lib/cn";
+import { shouldUnoptimizeImageSrc } from "@/src/lib/shouldUnoptimizeImageSrc";
 import { avatarSizeTextClasses } from "@/src/lib/typography";
 import type { AvatarProps, AvatarSize } from "./types";
 
@@ -52,6 +53,7 @@ export function Avatar({
           alt={alt || name || "Avatar"}
           width={imgSize}
           height={imgSize}
+          unoptimized={shouldUnoptimizeImageSrc(src)}
           className="size-full object-cover"
         />
       </span>

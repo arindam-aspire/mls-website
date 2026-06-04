@@ -85,7 +85,7 @@ export function LandingHeader() {
           "sticky top-0 z-50 h-16 w-full transition-colors duration-300 sm:h-20",
           overHero
             ? "bg-page/20 backdrop-blur-[2px]"
-            : "border-b border-secondary/10 bg-page/90 backdrop-blur-md",
+            : "border-b border-secondary/15 bg-surface backdrop-blur-md",
         )}
       >
         <div

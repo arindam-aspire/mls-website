@@ -8,6 +8,7 @@ import {
   XCircle,
   type LucideIcon,
 } from "lucide-react";
+import { Card, CardContent } from "@/src/components/ui";
 import { IconButton } from "@/src/components/ui/icon-button";
 import { cn } from "@/src/lib/cn";
 import { headingSectionClasses } from "@/src/lib/typography";
@@ -17,6 +18,8 @@ import type {
   ProfileInfoFieldKind,
 } from "../types/profile.types";
 import { ProfileAvatarUpload } from "./ProfileAvatarUpload";
+
+const profileCardClassName = "w-full md:max-w-md sm:max-w-none md:mx-auto lg:mx-0";
 
 const FIELD_ICONS: Record<ProfileInfoFieldKind, LucideIcon> = {
   name: User,
@@ -39,7 +42,7 @@ function ProfileFieldIcon({
     <div
       className={cn(
         "flex size-10 shrink-0 items-center justify-center rounded-lg",
-        "bg-primary/10 text-primary",
+        "bg-black/5 text-black/70 dark:bg-white/5 dark:text-white/70",
       )}
     >
       <Icon className="size-5" aria-hidden />
@@ -117,8 +120,8 @@ export function MyProfileCard({
   const hasProfileImage = Boolean(user.profile_picture_url?.trim());
 
   return (
-    <div className="flex w-full justify-center">
-      <article className="w-full max-w-md rounded-xl border border-secondary/15 bg-page p-4 sm:p-6">
+      <Card className={profileCardClassName}>
+        <CardContent className="p-4 sm:p-6">
         <ProfileAvatarUpload
           src={user.profile_picture_url}
           name={user.full_name}
@@ -149,8 +152,8 @@ export function MyProfileCard({
             />
           ))}
         </dl>
-      </article>
-    </div>
+        </CardContent>
+      </Card>
   );
 }
 

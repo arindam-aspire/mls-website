@@ -2,9 +2,9 @@
 
 import { Camera, Loader2, Trash2 } from "lucide-react";
 import type { ChangeEvent, RefObject } from "react";
-import { Avatar } from "@/src/components/ui/avatar";
 import { cn } from "@/src/lib/cn";
 import { bodyTextClasses } from "@/src/lib/typography";
+import { ProfileAvatarDisplay } from "./ProfileAvatarDisplay";
 
 export type ProfileAvatarUploadProps = {
   src: string | null;
@@ -12,7 +12,7 @@ export type ProfileAvatarUploadProps = {
   uploadLabel: string;
   uploadingLabel: string;
   removeLabel: string;
-  photoHint: string;
+  photoHint?: string;
   onUploadClick: () => void;
   onRemoveClick: () => void;
   canRemove: boolean;
@@ -21,6 +21,8 @@ export type ProfileAvatarUploadProps = {
   isUploading: boolean;
   isRemoving: boolean;
   removingLabel: string;
+  /** `stacked` centers the avatar (personal profile). `inline` keeps the avatar block compact for side-by-side headers. */
+  layout?: "stacked" | "inline";
 };
 
 function isAvatarBusy(isUploading: boolean, isRemoving: boolean) {
@@ -49,22 +51,20 @@ export function ProfileAvatarUpload({
   isUploading,
   isRemoving,
   removingLabel,
+  layout = "stacked",
 }: ProfileAvatarUploadProps) {
   const busy = isAvatarBusy(isUploading, isRemoving);
+  const isInline = layout === "inline";
 
   return (
-    <div className="flex w-full flex-col items-center gap-3">
+    <div
+      className={cn(
+        "flex flex-col gap-3",
+        isInline ? "shrink-0 items-center" : "w-full items-center",
+      )}
+    >
       <div className="group relative size-28 shrink-0 overflow-visible sm:size-32">
-        <div className="relative size-full overflow-hidden rounded-full border-2 border-secondary/15">
-          <Avatar
-            src={src}
-            name={name}
-            size="xl"
-            className={cn(
-              "!size-full !rounded-full !bg-inherit-color-15 !text-text text-xl sm:text-2xl",
-            )}
-          />
-
+        <ProfileAvatarDisplay src={src} name={name}>
           {canRemove ? (
             <button
               type="button"
@@ -88,7 +88,7 @@ export function ProfileAvatarUpload({
               )}
             </button>
           ) : null}
-        </div>
+        </ProfileAvatarDisplay>
 
         <input
           ref={fileInputRef}
@@ -115,9 +115,11 @@ export function ProfileAvatarUpload({
         </button>
       </div>
 
-      <p className={cn(bodyTextClasses, "max-w-xs text-center text-sm text-muted")}>
-        {photoHint}
-      </p>
+      {photoHint?.trim() ? (
+        <p className={cn(bodyTextClasses, "max-w-xs text-center text-sm text-muted")}>
+          {photoHint}
+        </p>
+      ) : null}
     </div>
   );
 }

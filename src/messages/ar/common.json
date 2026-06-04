@@ -70,5 +70,11 @@
   "logoutConfirmTitle": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
   "logoutConfirmDescription": "ستحتاج إلى تسجيل الدخول مرة أخرى للوصول إلى حسابك.",
   "logoutCancel": "ابقَ مسجلاً",
-  "signingOut": "جارٍ تسجيل الخروج…"
+  "signingOut": "جارٍ تسجيل الخروج…",
+  "upcomingFeature": {
+    "title": "قريباً",
+    "subtitle": "قيد التطوير",
+    "description": "نعمل على إتاحة هذه الميزة لك. ترقّب التحديثات!",
+    "dismissLabel": "حسناً"
+  }
 }

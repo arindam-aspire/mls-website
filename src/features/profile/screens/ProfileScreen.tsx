@@ -6,6 +6,9 @@ import { ProfileScreenSkeleton } from "@/src/features/profile/components/Profile
 import { ChangePasswordModal } from "@/src/features/profile/screens/ChangePasswordModal";
 import { EditEmailModal } from "@/src/features/profile/screens/EditEmailModal";
 import { EditPhoneModal } from "@/src/features/profile/screens/EditPhoneModal";
+import { EditAgencyModal } from "@/src/features/profile/screens/EditAgencyModal";
+import { AgencyProfileCard } from "@/src/features/profile/components/AgencyProfileCard";
+import { MyProfileCardSkeleton } from "@/src/features/profile/components/MyProfileCardSkeleton";
 import { useProfileScreen } from "../hooks/useProfileScreen";
 
 export default function ProfileScreen() {
@@ -15,6 +18,8 @@ export default function ProfileScreen() {
     pageSubtitle,
     changePasswordLabel,
     myProfileCard,
+    agencyProfileCard,
+    showAgencyCardSkeleton,
     isChangePasswordOpen,
     setIsChangePasswordOpen,
     openChangePassword,
@@ -22,6 +27,10 @@ export default function ProfileScreen() {
     setIsEditEmailOpen,
     isEditPhoneOpen,
     setIsEditPhoneOpen,
+    agencyId,
+    agencySource,
+    isEditAgencyOpen,
+    setIsEditAgencyOpen,
   } = useProfileScreen();
 
   if (isLoading) {
@@ -37,8 +46,17 @@ export default function ProfileScreen() {
           changePasswordLabel={changePasswordLabel}
           onChangePassword={openChangePassword}
         />
-
-        {myProfileCard ? <MyProfileCard {...myProfileCard} /> : null}
+        <div className="flex w-full min-w-0 flex-col justify-center gap-2 md:gap-4 lg:flex-row lg:items-start lg:gap-6">
+          {myProfileCard ? (
+            <aside className="w-full shrink-0 lg:sticky lg:top-24 lg:z-10 lg:w-auto lg:self-start">
+              <MyProfileCard {...myProfileCard} />
+            </aside>
+          ) : null}
+          <div className="flex min-w-0 w-full flex-1 flex-col gap-2 md:gap-4 lg:gap-6">
+            {showAgencyCardSkeleton ? <MyProfileCardSkeleton /> : null}
+            {agencyProfileCard ? <AgencyProfileCard {...agencyProfileCard} /> : null}
+          </div>
+        </div>
       </div>
 
       <ChangePasswordModal
@@ -49,6 +67,13 @@ export default function ProfileScreen() {
       <EditEmailModal isOpen={isEditEmailOpen} setIsOpen={setIsEditEmailOpen} />
 
       <EditPhoneModal isOpen={isEditPhoneOpen} setIsOpen={setIsEditPhoneOpen} />
+
+      <EditAgencyModal
+        agencyId={agencyId}
+        agency={agencySource}
+        isOpen={isEditAgencyOpen}
+        setIsOpen={setIsEditAgencyOpen}
+      />
     </>
   );
 }

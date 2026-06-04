@@ -70,5 +70,11 @@
   "logoutConfirmTitle": "¿Estás seguro de que quieres cerrar sesión?",
   "logoutConfirmDescription": "Necesitarás iniciar sesión de nuevo para acceder a tu cuenta.",
   "logoutCancel": "Permanecer conectado",
-  "signingOut": "Cerrando sesión…"
+  "signingOut": "Cerrando sesión…",
+  "upcomingFeature": {
+    "title": "Próximamente",
+    "subtitle": "En desarrollo",
+    "description": "Estamos trabajando para ofrecerte esta función. ¡Permanece atento!",
+    "dismissLabel": "Entendido"
+  }
 }

@@ -1,11 +1,29 @@
-import { authClient } from "@/src/apis/clients/api.client";
+import { apiClient, authClient } from "@/src/apis/clients/api.client";
+import { agencyEndpoints } from "@/src/apis/endpoints/agencyEndpoints";
 import { profileEndpoints } from "@/src/apis/endpoints/profileEndpoints";
 import { getLoggedInUser } from "@/src/features/auth/services/auth.service";
 import type { LoggedInUser } from "@/src/features/auth/types/auth.types";
 import { putFileToPresignedUrl } from "@/src/lib/upload";
+import { resolveLicenseDocumentContentType } from "@/src/lib/validateLicenseDocumentFile";
 import {
   resolveProfileImageContentType,
 } from "../utils/validateProfileImageFile";
+import type {
+  Agency,
+  AgencyLegalDocumentUploadRequest,
+  AgencyLegalDocumentUploadResponse,
+  AgencyLogoUploadRequest,
+  AgencyLogoUploadResponse,
+  DeleteAgencyLogoResponse,
+  GetAgencyResponse,
+  NormalizedGetAgencyResponse,
+  UpdateAgencyRequest,
+  UpdateAgencyResponse,
+} from "../types/profile.types";
+import {
+  normalizeGetAgencyResponse,
+  unwrapAgencyFromResponseData,
+} from "../utils/agencyApi.utils";
 import type {
   DeleteProfilePictureResponse,
   ProfilePictureUploadRequest,
@@ -16,7 +34,31 @@ import type {
   ProfileUpdateVerifyResponse,
   UpdateProfileRequest,
   UpdateProfileResponse,
-} from "../types/profile.api.types";
+} from "../types/profile.types";
+
+export async function getAgencyById(agencyId: string): Promise<NormalizedGetAgencyResponse> {
+  const response = await apiClient.request<GetAgencyResponse>({
+    endpoint: agencyEndpoints.byId(agencyId),
+    method: "GET",
+    auth: true,
+  });
+
+  return normalizeGetAgencyResponse(response);
+}
+
+export async function updateAgency(
+  agencyId: string,
+  body: UpdateAgencyRequest,
+): Promise<Agency> {
+  const response = await apiClient.request<UpdateAgencyResponse>({
+    endpoint: agencyEndpoints.byId(agencyId),
+    method: "PUT",
+    body,
+    auth: true,
+  });
+
+  return unwrapAgencyFromResponseData(response.data);
+}
 
 export async function updateProfile(
   data: UpdateProfileRequest,
@@ -93,4 +135,70 @@ export async function deleteProfilePicture(): Promise<LoggedInUser> {
 
   const me = await getLoggedInUser();
   return me.data;
+}
+
+export async function requestAgencyLogoUpload(
+  agencyId: string,
+  body: AgencyLogoUploadRequest,
+): Promise<AgencyLogoUploadResponse> {
+  return apiClient.request<AgencyLogoUploadResponse>({
+    endpoint: agencyEndpoints.logo(agencyId),
+    method: "POST",
+    body,
+    auth: true,
+  });
+}
+
+export async function uploadAgencyLogo(agencyId: string, file: File): Promise<Agency> {
+  const contentType = resolveProfileImageContentType(file);
+  const response = await requestAgencyLogoUpload(agencyId, {
+    file_name: file.name,
+    content_type: contentType,
+    file_size: file.size,
+  });
+
+  await putFileToPresignedUrl(response.data.upload_url, file, contentType);
+
+  const refreshed = await getAgencyById(agencyId);
+  return refreshed.data;
+}
+
+export async function deleteAgencyLogo(agencyId: string): Promise<Agency> {
+  await apiClient.request<DeleteAgencyLogoResponse>({
+    endpoint: agencyEndpoints.logo(agencyId),
+    method: "DELETE",
+    auth: true,
+  });
+
+  const refreshed = await getAgencyById(agencyId);
+  return refreshed.data;
+}
+
+export async function requestAgencyLegalDocumentUpload(
+  agencyId: string,
+  body: AgencyLegalDocumentUploadRequest,
+): Promise<AgencyLegalDocumentUploadResponse> {
+  return apiClient.request<AgencyLegalDocumentUploadResponse>({
+    endpoint: agencyEndpoints.legalDocument(agencyId),
+    method: "POST",
+    body,
+    auth: true,
+  });
+}
+
+export async function uploadAgencyLegalDocument(
+  agencyId: string,
+  file: File,
+): Promise<Agency> {
+  const contentType = resolveLicenseDocumentContentType(file);
+  const response = await requestAgencyLegalDocumentUpload(agencyId, {
+    file_name: file.name,
+    content_type: contentType,
+    file_size: file.size,
+  });
+
+  await putFileToPresignedUrl(response.data.upload_url, file, contentType);
+
+  const refreshed = await getAgencyById(agencyId);
+  return refreshed.data;
 }

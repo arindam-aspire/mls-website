@@ -16,7 +16,7 @@ export function Card({ className, children, ...rest }: CardProps) {
   return (
     <div
       className={cn(
-        "rounded-lg border border-secondary/30 bg-surface text-text shadow-sm",
+        "rounded-lg border-none bg-surface text-text shadow-[0_0.25rem_1.875rem_rgba(46,45,116,0.05)]",
         className,
       )}
       {...rest}

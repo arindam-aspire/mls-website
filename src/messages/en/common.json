@@ -70,5 +70,11 @@
   "logoutConfirmTitle": "Are you sure you want to logout?",
   "logoutConfirmDescription": "You will need to sign in again to access your account.",
   "logoutCancel": "Stay signed in",
-  "signingOut": "Signing out…"
+  "signingOut": "Signing out…",
+  "upcomingFeature": {
+    "title": "Coming Soon",
+    "subtitle": "Under Development",
+    "description": "We're working hard to bring this feature to you. Stay tuned for updates!",
+    "dismissLabel": "Got it"
+  }
 }

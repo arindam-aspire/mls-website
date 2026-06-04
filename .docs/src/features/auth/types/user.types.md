@@ -6,7 +6,20 @@ Logged-in user profile, roles, permissions, and `/auth/me` response types.
 
 # Exports
 
-- `Permission`, `Role`, `LoggedInUser`, `LoggedInUserResponse`
+- `Permission`, `Role`, `LoggedInUserAgency`, `LoggedInUser`, `LoggedInUserResponse`
+
+# `LoggedInUserAgency` (nested on `/auth/me`)
+
+| Field | Type |
+| --- | --- |
+| `agency_id` | `string` — used for `GET /agency/:agency-id` |
+| `agency_name` | `string` |
+| `agency_trade_name` | `string` |
+| `email` | `string` |
+| `phone` | `string` |
+| `website` | `string \| null` |
+
+`LoggedInUser.agency` is optional; present for agency portal users.
 
 # API Usage
 

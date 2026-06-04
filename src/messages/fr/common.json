@@ -70,5 +70,11 @@
   "logoutConfirmTitle": "Êtes-vous sûr de vouloir vous déconnecter ?",
   "logoutConfirmDescription": "Vous devrez vous reconnecter pour accéder à votre compte.",
   "logoutCancel": "Rester connecté",
-  "signingOut": "Déconnexion en cours…"
+  "signingOut": "Déconnexion en cours…",
+  "upcomingFeature": {
+    "title": "Bientôt disponible",
+    "subtitle": "En cours de développement",
+    "description": "Nous travaillons à vous proposer cette fonctionnalité. Restez à l'écoute !",
+    "dismissLabel": "Compris"
+  }
 }

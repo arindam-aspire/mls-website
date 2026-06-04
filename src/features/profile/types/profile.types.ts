@@ -1,4 +1,9 @@
 import type { ChangeEvent, RefObject } from "react";
+import type { LoggedInUserResponse } from "@/src/features/auth/types/user.types";
+import type {
+  AgencyCurrency,
+  AgencyMeasurementUnit,
+} from "../constants/agencyPreferences";
 
 export type EditEmailFormValues = {
   email: string;
@@ -49,4 +54,250 @@ export type MyProfileCardProps = {
   removeImageLabel: string;
   verifiedLabel: string;
   notVerifiedLabel: string;
+};
+
+export type Agency = {
+  id: string;
+  agency_name: string;
+  agency_trade_name: string;
+  legal_document_s3_link: string | null;
+  email: string;
+  phone: string;
+  logo_url: string | null;
+  profile_picture_url: string | null;
+  website: string | null;
+  address: string | null;
+  city: string | null;
+  state: string | null;
+  country: string | null;
+  zip_code: string | null;
+  is_active: boolean;
+  is_verified: boolean;
+  currency: AgencyCurrency;
+  measurement_unit: AgencyMeasurementUnit;
+  created_at: string;
+  updated_at: string;
+};
+
+export type AgencyDisplayPreferenceItem = {
+  title: string;
+  description: string;
+};
+
+export type DisplayPreferenceOption<T extends string = string> = {
+  value: T;
+  code: string;
+  name: string;
+  symbol: string;
+};
+
+export type AgencySelectablePreference<T extends string> = AgencyDisplayPreferenceItem & {
+  value: T;
+  options: DisplayPreferenceOption<T>[];
+  onSelect: (value: T) => void;
+  /** When false, options are shown but selection does not call the API (upcoming). */
+  interactive: boolean;
+  isUpdating: boolean;
+  disabled: boolean;
+};
+
+export type AgencyCurrencyPreference = AgencySelectablePreference<AgencyCurrency>;
+
+export type AgencyMeasurementUnitPreference =
+  AgencySelectablePreference<AgencyMeasurementUnit>;
+
+/** PUT `/agency/{id}` response `data` shape. */
+export type AgencyApiPayload = {
+  agency: Agency;
+  legal_document_upload?: unknown | null;
+};
+
+export type EditAgencyLicenseUploadProps = {
+  label: string;
+  uploadPrompt: string;
+  uploadHint: string;
+  selectedFileName: string | null;
+  onFileSelect: (file: File) => void;
+  error?: string;
+  isUploading?: boolean;
+  uploadingLabel?: string;
+  disabled?: boolean;
+};
+
+export type AgencyProfileCardUser = {
+  full_name: string;
+  emailDisplay: string;
+  phoneDisplay: string;
+  hasPhone: boolean;
+  is_email_verified: boolean;
+  is_phone_verified: boolean;
+};
+
+export type AgencyProfileCardDisplayPreferences = {
+  title: string;
+  subtitle: string;
+  currency: AgencyCurrencyPreference;
+  measurementUnit: AgencyMeasurementUnitPreference;
+};
+
+export type AgencyProfileCardLabels = {
+  agencyName: string;
+  tradeName: string;
+  license: string;
+  downloadLicense: string;
+  contactName: string;
+  email: string;
+  phone: string;
+  website: string;
+  address: string;
+  notProvided: string;
+};
+
+export type AgencyProfileCardProps = {
+  agency: Agency;
+  user: AgencyProfileCardUser;
+  sectionTitle: string;
+  labels: AgencyProfileCardLabels;
+  uploadLogoLabel: string;
+  avatarUpload: ProfileAvatarUploadBindings;
+  removeLogoLabel: string;
+  verifiedLabel: string;
+  notVerifiedLabel: string;
+  editEmailLabel: string;
+  editPhoneLabel: string;
+  editAgencyLabel: string;
+  onEditEmail: () => void;
+  onEditPhone: () => void;
+  onEditAgency: () => void;
+  displayPreferences: AgencyProfileCardDisplayPreferences;
+};
+
+export type UpdateProfileRequest = {
+  email: string;
+  phone_number: string;
+};
+
+export type UpdateProfileResponse = LoggedInUserResponse;
+
+export type ProfileUpdateRequestBody = {
+  email?: string;
+  phone_number?: string;
+};
+
+export type ProfileUpdateRequestData = {
+  message: string;
+  requires_verification: boolean;
+  verification_fields: string[];
+  dev_phone_otp: string | null;
+  dev_email_otp: string | null;
+  otp: string | null;
+};
+
+export type ProfileUpdateRequestResponse = {
+  success: boolean;
+  message: string | null;
+  data: ProfileUpdateRequestData;
+  error: unknown;
+  meta: Record<string, unknown>;
+};
+
+export type ProfilePhoneVerifyBody = {
+  phone_number: string;
+  phone_otp: string;
+};
+
+export type ProfileEmailVerifyBody = {
+  email: string;
+  email_otp: string;
+};
+
+export type ProfileUpdateVerifyBody = ProfilePhoneVerifyBody | ProfileEmailVerifyBody;
+
+export type ProfileUpdateVerifyData = {
+  message: string;
+};
+
+export type ProfileUpdateVerifyResponse = {
+  success: boolean;
+  message: string | null;
+  data: ProfileUpdateVerifyData;
+  error: unknown;
+  meta: Record<string, unknown>;
+};
+
+export type ProfilePictureUploadRequest = {
+  file_name: string;
+  content_type: string;
+  file_size: number;
+};
+
+export type ProfilePictureUploadData = {
+  upload_url: string;
+};
+
+export type ProfilePictureUploadResponse = {
+  success: boolean;
+  message: string | null;
+  data: ProfilePictureUploadData;
+  error: unknown;
+  meta: Record<string, unknown>;
+};
+
+export type DeleteProfilePictureResponse = LoggedInUserResponse;
+
+export type AgencyLogoUploadRequest = ProfilePictureUploadRequest;
+
+export type AgencyLogoUploadResponse = ProfilePictureUploadResponse;
+
+export type AgencyLegalDocumentUploadRequest = ProfilePictureUploadRequest;
+
+export type AgencyLegalDocumentUploadResponse = ProfilePictureUploadResponse;
+
+export type GetAgencyResponse = {
+  success: boolean;
+  message: string | null;
+  /** GET may return the agency directly; PUT returns `{ agency, legal_document_upload }`. */
+  data: Agency | AgencyApiPayload;
+  error: unknown;
+  meta: Record<string, unknown>;
+};
+
+/** After `normalizeGetAgencyResponse` — `data` is always the agency entity. */
+export type NormalizedGetAgencyResponse = Omit<GetAgencyResponse, "data"> & {
+  data: Agency;
+};
+
+/** PUT `/agency/{id}` body — include only keys whose values changed. */
+export type UpdateAgencyRequest = Partial<{
+  agency_name: string;
+  agency_trade_name: string;
+  website: string | null;
+  address: string | null;
+  city: string | null;
+  state: string | null;
+  country: string | null;
+  zip_code: string | null;
+  currency: AgencyCurrency;
+  measurement_unit: AgencyMeasurementUnit;
+}>;
+
+export type UpdateAgencyResponse = {
+  success: boolean;
+  message: string | null;
+  data: AgencyApiPayload;
+  error: unknown;
+  meta: Record<string, unknown>;
+};
+
+export type DeleteAgencyLogoResponse = GetAgencyResponse;
+
+export type EditAgencyFormValues = {
+  agency_name: string;
+  agency_trade_name: string;
+  website: string;
+  address: string;
+  city: string;
+  state: string;
+  country: string;
+  zip_code: string;
 };

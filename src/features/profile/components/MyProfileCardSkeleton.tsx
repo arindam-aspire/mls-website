@@ -1,5 +1,7 @@
+import { Card, CardContent } from "@/src/components/ui";
 import { Skeleton } from "@/src/components/ui/skeleton";
 import { cn } from "@/src/lib/cn";
+const profileCardClassName = "w-full max-w-md md:mx-auto lg:mx-0";
 
 function ProfileFieldSkeleton({
   showBadge,
@@ -28,7 +30,8 @@ function ProfileFieldSkeleton({
 export function MyProfileCardSkeleton() {
   return (
     <div className="flex w-full justify-center" aria-hidden>
-      <div className="w-full max-w-md rounded-xl border border-secondary/15 bg-page p-4 sm:p-6">
+      <Card className={profileCardClassName}>
+        <CardContent className="p-4 sm:p-6">
         <div className="flex w-full flex-col items-center gap-3">
           <Skeleton
             variant="circular"
@@ -51,7 +54,8 @@ export function MyProfileCardSkeleton() {
           <ProfileFieldSkeleton showBadge showEdit />
           <ProfileFieldSkeleton showBadge showEdit />
         </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

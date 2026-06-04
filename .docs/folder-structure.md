@@ -111,7 +111,10 @@ mls_website/
 │       │   │   ├── README.md
 │       │   │   ├── components/
 │       │   │   │   ├── README.md
+│       │   │   │   ├── AgencyDisplayPreferencesRows.md
+│       │   │   │   ├── AgencyProfileCard.md
 │       │   │   │   ├── ChangePasswordForm.md
+│       │   │   │   ├── DisplayPreferenceOptionCard.md
 │       │   │   │   ├── MyProfileCard.md
 │       │   │   │   ├── MyProfileCardSkeleton.md
 │       │   │   │   ├── ProfileAvatarUpload.md
@@ -121,6 +124,10 @@ mls_website/
 │       │   │   ├── hooks/
 │       │   │   │   ├── README.md
 │       │   │   │   ├── index.md
+│       │   │   │   ├── useAgencyCurrencyPreference.md
+│       │   │   │   ├── useAgencyDisplayPreferencesRows.md
+│       │   │   │   ├── useAgencyLogoUpload.md
+│       │   │   │   ├── useAgencyMeasurementUnitPreference.md
 │       │   │   │   ├── useChangePasswordModal.md
 │       │   │   │   └── useProfileScreen.md
 │       │   │   ├── mutations/
@@ -294,6 +301,7 @@ mls_website/
 │   │   │   ├── token.refresh.ts
 │   │   │   └── token.store.ts
 │   │   └── endpoints/
+│   │       ├── agencyEndpoints.ts
 │   │       ├── authEndpoints.ts
 │   │       ├── index.ts
 │   │       ├── profileEndpoints.ts
@@ -310,8 +318,9 @@ mls_website/
 │   │   ├── common/
 │   │   │   ├── ComingSoonCard.tsx
 │   │   │   ├── ConfirmModal.tsx
+│   │   │   ├── LicenseDocumentUpload.tsx
+│   │   │   ├── PasswordStrengthIndicator.tsx
 │   │   │   └── UpcomingFeatureModal.tsx
-│   │   │   └── PasswordStrengthIndicator.tsx
 │   │   ├── search/
 │   │   │   ├── AnchoredDropdown.tsx
 │   │   │   ├── BudgetField.tsx
@@ -509,17 +518,23 @@ mls_website/
 │   │   │       └── locationTaxonomy.utils.ts
 │   │   ├── profile/
 │   │   │   ├── constants/
+│   │   │   │   ├── agencyPreferences.ts
 │   │   │   │   └── profileEditModal.constants.ts
 │   │   │   ├── components/
+│   │   │   │   ├── AgencyDisplayPreferencesRows.tsx
+│   │   │   │   ├── AgencyProfileCard.tsx
 │   │   │   │   ├── ChangePasswordForm.tsx
+│   │   │   │   ├── DisplayPreferenceOptionCard.tsx
+│   │   │   │   ├── EditAgencyForm.tsx
 │   │   │   │   ├── EditEmailForm.tsx
 │   │   │   │   ├── EditPhoneForm.tsx
+│   │   │   │   ├── MyProfileCard.tsx
+│   │   │   │   ├── MyProfileCardSkeleton.tsx
+│   │   │   │   ├── ProfileAvatarDisplay.tsx
+│   │   │   │   ├── ProfileAvatarUpload.tsx
 │   │   │   │   ├── ProfileEditContactModal.tsx
 │   │   │   │   ├── ProfileEditContactModalTitle.tsx
 │   │   │   │   ├── ProfileOtpVerificationContact.tsx
-│   │   │   │   ├── MyProfileCard.tsx
-│   │   │   │   ├── MyProfileCardSkeleton.tsx
-│   │   │   │   ├── ProfileAvatarUpload.tsx
 │   │   │   │   ├── ProfileOtpVerificationForm.tsx
 │   │   │   │   ├── ProfileOtpVerificationTitle.tsx
 │   │   │   │   ├── ProfilePageToolbar.tsx
@@ -527,7 +542,12 @@ mls_website/
 │   │   │   │   └── ProfileScreenSkeleton.tsx
 │   │   │   ├── hooks/
 │   │   │   │   ├── index.ts
+│   │   │   │   ├── useAgencyCurrencyPreference.ts
+│   │   │   │   ├── useAgencyDisplayPreferencesRows.ts
+│   │   │   │   ├── useAgencyLogoUpload.ts
+│   │   │   │   ├── useAgencyMeasurementUnitPreference.ts
 │   │   │   │   ├── useChangePasswordModal.ts
+│   │   │   │   ├── useEditAgencyModal.ts
 │   │   │   │   ├── useEditEmailModal.ts
 │   │   │   │   ├── useEditPhoneModal.ts
 │   │   │   │   ├── useProfileAvatarUpload.ts
@@ -537,6 +557,7 @@ mls_website/
 │   │   │   │   └── profile.mutation.ts
 │   │   │   ├── screens/
 │   │   │   │   ├── ChangePasswordModal.tsx
+│   │   │   │   ├── EditAgencyModal.tsx
 │   │   │   │   ├── EditEmailModal.tsx
 │   │   │   │   ├── EditPhoneModal.tsx
 │   │   │   │   └── ProfileScreen.tsx
@@ -547,11 +568,14 @@ mls_website/
 │   │   │   │   └── index.ts
 │   │   │   ├── types/
 │   │   │   │   ├── index.ts
-│   │   │   │   ├── profile.api.types.ts
 │   │   │   │   └── profile.types.ts
 │   │   │   └── utils/
 │   │   │       ├── index.ts
+│   │   │       ├── agencyApi.utils.ts
+│   │   │       ├── agencyForm.utils.ts
+│   │   │       ├── agencyPreferences.utils.ts
 │   │   │       ├── formatPhoneNumberE164.ts
+│   │   │       ├── licenseDocumentDisplay.ts
 │   │   │       ├── parseStoredPhoneNumber.ts
 │   │   │       ├── profileOtp.utils.ts
 │   │   │       └── validateProfileImageFile.ts
@@ -591,6 +615,8 @@ mls_website/
 │   │   ├── request.ts
 │   │   └── routing.ts
 │   ├── layouts/
+│   │   ├── shared/
+│   │   │   └── notificationsButtonStyles.ts
 │   │   ├── landing-layout/
 │   │   │   ├── index.tsx
 │   │   │   ├── landingMobileHeaderStyles.ts

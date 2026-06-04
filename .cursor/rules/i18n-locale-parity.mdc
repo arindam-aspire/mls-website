@@ -1,0 +1,41 @@
+---
+description: Translation keys must exist in all locales; run validate:i18n after message changes
+globs:
+  - "src/messages/**/*.json"
+  - "src/**/*.tsx"
+  - "src/**/*.ts"
+alwaysApply: true
+---
+
+# i18n locale parity (mandatory)
+
+User-facing copy uses **next-intl** only. A missing key in **any** locale causes runtime `MISSING_MESSAGE`.
+
+## When you add or change copy
+
+1. Add the key under **`src/messages/en/<namespace>.json`** first (English is the source of truth).
+2. Add the **same key path** to **`ar`**, **`es`**, and **`fr`** in the matching file.
+3. Prefer **nested objects** for feature groups (e.g. `profile.editAgency.fieldRequired`) instead of many flat siblings.
+4. Run **`npm run validate:i18n`** before finishing the task. Fix all reported missing/extra keys.
+5. Use nested namespaces for feature groups: `useTranslations("profile.editAgency")` with keys in `build*Labels(t)` under `src/features/<feature>/i18n/` when the group is large.
+
+## Where to put translations
+
+| Code | Translations |
+| --- | --- |
+| `useTranslations("profile")` in a screen hook that already owns profile labels | Same namespace, or a nested group under `profile.*` |
+| Feature-specific group | Nested JSON + dedicated `build*Labels(t)` in `src/features/<feature>/i18n/*.i18n.ts` |
+| Shared chrome | `common`, `auth`, `home` |
+
+**Do not** call `t("newKey")` in a child hook unless that hook’s namespace file already contains `newKey` in **all four locales**.
+
+## Hooks
+
+- Prefer **one** `useTranslations` site per screen hook (`useProfileScreen`, etc.) that builds label objects via `build*Labels(t)`.
+- Data hooks receive **resolved strings** as props from the screen hook; they must not introduce new `t("…")` keys unless that hook also updates all locale JSON files.
+
+## Verification checklist
+
+- [ ] Key exists in `en`, `ar`, `es`, `fr`
+- [ ] `npm run validate:i18n` passes
+- [ ] No hardcoded user-visible strings (see `no-hardcoded-text.mdc`)

@@ -16,7 +16,9 @@ All user-facing text must come from translation files in `src/messages/` through
 - Do **not** hardcode visible UI text in components, screens, layouts, hooks, modals, toasts, validation messages, placeholders, button labels, headings, helper text, or empty states.
 - Use `useTranslations("<namespace>")` in client components and `getTranslations("<namespace>")` in server code.
 - Keep text as i18n keys in `src/messages/<locale>/*.json` (`en`, `ar`, `es`, `fr`) and reference them in code.
+- **Every new key must exist in all four locales** — run `npm run validate:i18n` (see `i18n-locale-parity.mdc`).
 - Prefer existing namespaces (`auth`, `common`, `home`) and add new keys in all locales when needed.
+- Prefer nested groups (e.g. `profile.editAgency.fieldRequired`) and `build*Labels(t)` helpers in `src/features/<feature>/i18n/` when needed.
 
 ## Examples
 

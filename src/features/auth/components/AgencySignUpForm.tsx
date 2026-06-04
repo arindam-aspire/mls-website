@@ -1,18 +1,14 @@
 "use client";
 
-import { Building2, CloudUpload, Eye, EyeOff, Lock, Mail } from "lucide-react";
+import { Building2, Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { useTranslations } from "next-intl";
-import {
-  useId,
-  useRef,
-  useState,
-  type ChangeEvent,
-  type DragEvent,
-} from "react";
+import { useState } from "react";
+import { LicenseDocumentUpload } from "@/src/components/common/LicenseDocumentUpload";
 import { Button, Input, PhoneInput } from "@/src/components/ui";
 import { PasswordStrengthIndicator } from "@/src/components/common/PasswordStrengthIndicator";
 import { cn } from "@/src/lib/cn";
-import { bodyTextClasses, captionTextClasses } from "@/src/lib/typography";
+import { bodyTextClasses } from "@/src/lib/typography";
+import { validateLicenseDocumentFile } from "@/src/lib/validateLicenseDocumentFile";
 import { useForm } from "@/src/hooks/useForm";
 import type { AgencySignUpSubmitValues } from "../types/auth.types";
 
@@ -27,37 +23,16 @@ export type AgencySignUpFormValues = {
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PASSWORD_PATTERN =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,12}$/;
-const MAX_LICENSE_FILE_BYTES = 10 * 1024 * 1024;
-const ACCEPTED_LICENSE_TYPES = [
-  "application/pdf",
-  "image/jpeg",
-  "image/png",
-  "image/jpg",
-];
-const ACCEPTED_LICENSE_EXTENSIONS = [".pdf", ".jpg", ".jpeg", ".png"];
-
 type AgencySignUpFormProps = {
   onSubmit: (values: AgencySignUpSubmitValues) => void;
   isLoading: boolean;
 };
 
-function isAcceptedLicenseFile(file: File): boolean {
-  if (ACCEPTED_LICENSE_TYPES.includes(file.type)) {
-    return true;
-  }
-
-  const lowerName = file.name.toLowerCase();
-  return ACCEPTED_LICENSE_EXTENSIONS.some((ext) => lowerName.endsWith(ext));
-}
-
 export function AgencySignUpForm({ onSubmit, isLoading }: AgencySignUpFormProps) {
   const t = useTranslations("auth");
-  const uploadInputId = useId();
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [licenseFile, setLicenseFile] = useState<File | null>(null);
   const [licenseError, setLicenseError] = useState<string | undefined>();
-  const [isDragOver, setIsDragOver] = useState(false);
   const [phoneCountryCode, setPhoneCountryCode] = useState("JO");
   const [phoneNationalNumber, setPhoneNationalNumber] = useState("");
 
@@ -127,16 +102,15 @@ export function AgencySignUpForm({ onSubmit, isLoading }: AgencySignUpFormProps)
     if (file == null) {
       return t("agencySignUpLicenseRequired");
     }
-    if (!isAcceptedLicenseFile(file)) {
-      return t("agencySignUpLicenseInvalidType");
-    }
-    if (file.size > MAX_LICENSE_FILE_BYTES) {
-      return t("agencySignUpLicenseTooLarge");
-    }
-    return undefined;
+    return (
+      validateLicenseDocumentFile(file, {
+        invalidType: t("agencySignUpLicenseInvalidType"),
+        tooLarge: t("agencySignUpLicenseTooLarge"),
+      }) ?? undefined
+    );
   };
 
-  const applyLicenseFile = (file: File | null) => {
+  const applyLicenseFile = (file: File) => {
     setLicenseFile(file);
     setLicenseError(validateLicenseFile(file));
   };
@@ -171,28 +145,6 @@ export function AgencySignUpForm({ onSubmit, isLoading }: AgencySignUpFormProps)
       ...prev,
       phone: getPhoneError(phoneNationalNumber),
     }));
-  };
-
-  const handleFileInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0] ?? null;
-    applyLicenseFile(file);
-    event.target.value = "";
-  };
-
-  const handleDrop = (event: DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    setIsDragOver(false);
-    const file = event.dataTransfer.files?.[0] ?? null;
-    applyLicenseFile(file);
-  };
-
-  const handleDragOver = (event: DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    setIsDragOver(true);
-  };
-
-  const handleDragLeave = () => {
-    setIsDragOver(false);
   };
 
   const onFormSubmit = handleSubmit((formValues) => {
@@ -312,66 +264,16 @@ export function AgencySignUpForm({ onSubmit, isLoading }: AgencySignUpFormProps)
 
         <PasswordStrengthIndicator password={values.password} />
 
-        <div className="flex flex-col gap-1.5">
-          <span className={cn(bodyTextClasses, "font-medium text-text")}>
-            {t("agencySignUpLicenseLabel")}
-            <span className="ms-0.5 text-danger" aria-hidden>
-              *
-            </span>
-          </span>
-
-          <div
-            role="button"
-            tabIndex={0}
-            onKeyDown={(event) => {
-              if (event.key === "Enter" || event.key === " ") {
-                event.preventDefault();
-                fileInputRef.current?.click();
-              }
-            }}
-            onClick={() => fileInputRef.current?.click()}
-            onDrop={handleDrop}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            className={cn(
-              "flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed px-4 py-8 text-center transition-colors",
-              "border-primary bg-primary-light hover:border-primary-dark",
-              isDragOver && "border-primary-dark bg-primary-light/80",
-              licenseError && "border-danger",
-            )}
-          >
-            <CloudUpload
-              className="size-10 shrink-0 text-primary"
-              aria-hidden
-            />
-            <p className={cn(bodyTextClasses, "font-medium text-text")}>
-              {t("agencySignUpUploadPrompt")}
-            </p>
-            <p className={cn(captionTextClasses, "text-muted")}>
-              {t("agencySignUpUploadHint")}
-            </p>
-            {licenseFile != null && (
-              <p className={cn("mt-1 max-w-full truncate font-medium text-primary-dark", captionTextClasses)}>
-                {licenseFile.name}
-              </p>
-            )}
-          </div>
-
-          <input
-            ref={fileInputRef}
-            id={uploadInputId}
-            type="file"
-            accept={ACCEPTED_LICENSE_EXTENSIONS.join(",")}
-            className="sr-only"
-            onChange={handleFileInputChange}
-          />
-
-          {licenseError != null && (
-            <p role="alert" className={cn(bodyTextClasses, "text-danger")}>
-              {licenseError}
-            </p>
-          )}
-        </div>
+        <LicenseDocumentUpload
+          label={t("agencySignUpLicenseLabel")}
+          uploadPrompt={t("agencySignUpUploadPrompt")}
+          uploadHint={t("agencySignUpUploadHint")}
+          selectedFileName={licenseFile?.name ?? null}
+          onFileSelect={applyLicenseFile}
+          error={licenseError}
+          isRequired
+          disabled={isLoading}
+        />
       </div>
 
       <Button

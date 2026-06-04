@@ -1,21 +1,28 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import type { ApiError } from "@/src/apis/core/error.normalizer";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { useToast } from "@/src/hooks/useToast";
 import {
+  deleteAgencyLogo,
   deleteProfilePicture,
   requestProfileUpdate,
   updateProfile,
+  updateAgency,
+  uploadAgencyLegalDocument,
+  uploadAgencyLogo,
   uploadProfilePicture,
   verifyProfileUpdateAndRefreshUser,
 } from "../services/profile.service";
 import type {
+  GetAgencyResponse,
+  NormalizedGetAgencyResponse,
+  UpdateAgencyRequest,
   ProfileUpdateRequestBody,
   ProfileUpdateVerifyBody,
-} from "../types/profile.api.types";
+} from "../types/profile.types";
 
 function useProfileUpdateMutation(
   successTitleKey: "updateEmailSuccessTitle" | "updatePhoneSuccessTitle" | "updateProfileSuccessTitle",
@@ -134,6 +141,133 @@ export function useDeleteProfilePicture() {
     },
     onError: (error: ApiError) => {
       toast.error(t("removeProfilePhotoErrorTitle"), {
+        description: error.message,
+      });
+    },
+  });
+}
+
+function agencyQueryKey(agencyId: string) {
+  return ["agency", agencyId] as const;
+}
+
+function patchAgencyQueryCache(
+  queryClient: ReturnType<typeof useQueryClient>,
+  agencyId: string,
+  agency: NormalizedGetAgencyResponse["data"],
+) {
+  queryClient.setQueryData<NormalizedGetAgencyResponse>(agencyQueryKey(agencyId), (current) =>
+    current
+      ? { ...current, data: agency }
+      : {
+          success: true,
+          message: null,
+          data: agency,
+          error: null,
+          meta: {},
+        },
+  );
+}
+
+export function useUpdateAgency(agencyId: string) {
+  const t = useTranslations("profile");
+  const toast = useToast();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (body: UpdateAgencyRequest) => updateAgency(agencyId, body),
+    onSuccess: (agency) => {
+      patchAgencyQueryCache(queryClient, agencyId, agency);
+      toast.success(t("editAgencySuccessTitle"), {
+        description: t("editAgencySuccessDescription"),
+      });
+    },
+    onError: (error: ApiError) => {
+      toast.error(t("editAgencyErrorTitle"), {
+        description: error.message,
+      });
+    },
+  });
+}
+
+export function useUpdateAgencyDisplayPreferences(agencyId: string) {
+  const t = useTranslations("profile.displayPreferences");
+  const toast = useToast();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (body: UpdateAgencyRequest) => updateAgency(agencyId, body),
+    onSuccess: (agency) => {
+      patchAgencyQueryCache(queryClient, agencyId, agency);
+      toast.success(t("updateSuccessTitle"), {
+        description: t("updateSuccessDescription"),
+      });
+    },
+    onError: (error: ApiError) => {
+      toast.error(t("updateErrorTitle"), {
+        description: error.message,
+      });
+    },
+  });
+}
+
+export function useUploadAgencyLogo(agencyId: string) {
+  const t = useTranslations("profile");
+  const toast = useToast();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (file: File) => uploadAgencyLogo(agencyId, file),
+    onSuccess: (agency) => {
+      patchAgencyQueryCache(queryClient, agencyId, agency);
+      toast.success(t("uploadAgencyLogoSuccessTitle"), {
+        description: t("uploadAgencyLogoSuccessDescription"),
+      });
+    },
+    onError: (error: ApiError) => {
+      toast.error(t("uploadAgencyLogoErrorTitle"), {
+        description: error.message,
+      });
+    },
+  });
+}
+
+export function useUploadAgencyLegalDocument(agencyId: string) {
+  const t = useTranslations("profile");
+  const toast = useToast();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (file: File) => uploadAgencyLegalDocument(agencyId, file),
+    onSuccess: (agency) => {
+      patchAgencyQueryCache(queryClient, agencyId, agency);
+      toast.success(t("uploadAgencyLicenseSuccessTitle"), {
+        description: t("uploadAgencyLicenseSuccessDescription"),
+      });
+    },
+    onError: (error: ApiError) => {
+      toast.error(t("uploadAgencyLicenseErrorTitle"), {
+        description: error.message,
+      });
+    },
+  });
+}
+
+export function useDeleteAgencyLogo(agencyId: string) {
+  const t = useTranslations("profile");
+  const toast = useToast();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => deleteAgencyLogo(agencyId),
+    onSuccess: (agency) => {
+      patchAgencyQueryCache(queryClient, agencyId, agency);
+      toast.success(t("removeAgencyLogoSuccessTitle"), {
+        description: t("removeAgencyLogoSuccessDescription"),
+      });
+    },
+    onError: (error: ApiError) => {
+      toast.error(t("removeAgencyLogoErrorTitle"), {
         description: error.message,
       });
     },

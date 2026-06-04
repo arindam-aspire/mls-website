@@ -13,7 +13,18 @@ export type Role = {
   created_at: string;
 };
 
+/** Agency summary nested on `/auth/me` for agency portal users. */
+export type LoggedInUserAgency = {
+  agency_id: string;
+  agency_name: string;
+  agency_trade_name: string;
+  email: string;
+  phone: string;
+  website: string | null;
+};
+
 export type LoggedInUser = {
+  agency?: LoggedInUserAgency | null;
   email: string;
   full_name: string;
   phone_number: string;

@@ -4,6 +4,7 @@ import { Bell } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { IconButton } from "@/src/components/ui/icon-button";
 import { cn } from "@/src/lib/cn";
+import { notificationsIndicatorClass } from "@/src/layouts/shared/notificationsButtonStyles";
 
 export interface ProtectedNotificationsButtonProps {
   onClick: () => void;
@@ -22,7 +23,7 @@ export function ProtectedNotificationsButton({
   return (
     <span className={cn("relative inline-flex shrink-0", className)}>
       <IconButton
-        icon={<Bell className="size-5" strokeWidth={1.75} aria-hidden />}
+        icon={<Bell className="size-5 shrink-0" strokeWidth={2} aria-hidden />}
         aria-label={t("notifications")}
         color="inherit"
         variant="outline"
@@ -31,10 +32,7 @@ export function ProtectedNotificationsButton({
         onClick={onClick}
       />
       {showIndicator ? (
-        <span
-          className="pointer-events-none absolute top-2.5 end-2.5 size-2 rounded-full bg-danger ring-2 ring-surface"
-          aria-hidden
-        />
+        <span className={notificationsIndicatorClass()} aria-hidden />
       ) : null}
     </span>
   );

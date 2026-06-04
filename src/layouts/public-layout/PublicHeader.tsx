@@ -59,7 +59,7 @@ export function PublicHeader() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 h-16 w-full border-b border-secondary/10 bg-page/90 backdrop-blur-md transition-colors duration-300 sm:h-20">
+      <header className="sticky top-0 z-50 h-16 w-full border-b border-secondary/15 bg-surface backdrop-blur-md transition-colors duration-300 sm:h-20">
         <div
           className={cn(
             publicMobileHeaderContainerClass,
