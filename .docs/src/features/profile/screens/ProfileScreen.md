@@ -8,7 +8,8 @@ Route-level profile screen: toolbar, profile card, change-password modal, separa
 
 - While `useProfileScreen().isLoading` (`isLoadingUser && !user`), render `ProfileScreenSkeleton` (toolbar + card placeholders).
 - Compose `ProfilePageToolbar`, `MyProfileCard`, optional `MyProfileCardSkeleton` while agency loads, and `AgencyProfileCard` from `useProfileScreen`.
-- **lg+ layout:** `MyProfileCard` in a sticky aside (`lg:sticky lg:top-24`); agency skeleton/card in a flex main column so the personal card stays pinned while the agency card scrolls.
+- **lg+ layout (agency users):** `MyProfileCard` in a sticky aside (`lg:sticky lg:top-24`); agency skeleton/card in a flex main column so the personal card stays pinned while the agency card scrolls.
+- **md/lg (non-agency users):** only `MyProfileCard` — centered horizontally (`justify-center`); no agency column.
 - Open `ChangePasswordModal` on change-password action.
 - Open `EditEmailModal` / `EditPhoneModal` from per-field edit actions on the card.
 - Render `ProfileAvatarUpload` with upload/remove handlers from `useProfileAvatarUpload`.

@@ -2,6 +2,7 @@
 
 import { MyProfileCard } from "@/src/features/profile/components/MyProfileCard";
 import { ProfilePageToolbar } from "@/src/features/profile/components/ProfilePageToolbar";
+import { cn } from "@/src/lib/cn";
 import { ProfileScreenSkeleton } from "@/src/features/profile/components/ProfileScreenSkeleton";
 import { ChangePasswordModal } from "@/src/features/profile/screens/ChangePasswordModal";
 import { EditEmailModal } from "@/src/features/profile/screens/EditEmailModal";
@@ -37,6 +38,8 @@ export default function ProfileScreen() {
     return <ProfileScreenSkeleton />;
   }
 
+  const hasAgencySection = showAgencyCardSkeleton || Boolean(agencyProfileCard);
+
   return (
     <>
       <div className="flex w-full min-w-0 flex-col gap-2 md:gap-4 lg:gap-6">
@@ -46,16 +49,34 @@ export default function ProfileScreen() {
           changePasswordLabel={changePasswordLabel}
           onChangePassword={openChangePassword}
         />
-        <div className="flex w-full min-w-0 flex-col justify-center gap-2 md:gap-4 lg:flex-row lg:items-start lg:gap-6">
+        <div
+          className={cn(
+            "flex w-full min-w-0 flex-col justify-center gap-2 md:gap-4",
+            hasAgencySection
+              ? "lg:flex-row lg:items-start lg:gap-6"
+              : "md:items-center lg:items-center",
+          )}
+        >
           {myProfileCard ? (
-            <aside className="w-full shrink-0 lg:sticky lg:top-24 lg:z-10 lg:w-auto lg:self-start">
-              <MyProfileCard {...myProfileCard} />
+            <aside
+              className={cn(
+                "w-full shrink-0",
+                hasAgencySection
+                  ? "lg:sticky lg:top-24 lg:z-10 lg:w-auto lg:self-start"
+                  : "flex justify-center md:justify-center lg:justify-center",
+              )}
+            >
+              <div className={cn("w-full", !hasAgencySection && "max-w-md")}>
+                <MyProfileCard {...myProfileCard} />
+              </div>
             </aside>
           ) : null}
-          <div className="flex min-w-0 w-full flex-1 flex-col gap-2 md:gap-4 lg:gap-6">
-            {showAgencyCardSkeleton ? <MyProfileCardSkeleton /> : null}
-            {agencyProfileCard ? <AgencyProfileCard {...agencyProfileCard} /> : null}
-          </div>
+          {hasAgencySection ? (
+            <div className="flex min-w-0 w-full flex-1 flex-col gap-2 md:gap-4 lg:gap-6">
+              {showAgencyCardSkeleton ? <MyProfileCardSkeleton /> : null}
+              {agencyProfileCard ? <AgencyProfileCard {...agencyProfileCard} /> : null}
+            </div>
+          ) : null}
         </div>
       </div>
 
