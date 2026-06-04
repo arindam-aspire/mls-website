@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { AUTH_VIEW } from "../authViews";
 import { useSignInWithPassword } from "../mutations/auth.mutation";
@@ -14,10 +14,8 @@ export function useAgencyEmailSignInScreen() {
   const { termsText, privacyText } = useAuthScreenLegalFooter();
   const navigate = useAuthStore((state) => state.navigate);
   const { onBack, canGoBack } = useAuthModalNavigation();
-  const closeAuth = useAuthStore((state) => state.closeAuth);
   const isAgent = useIsAgentSignInPortal();
-  const { mutate: signInWithPassword, isPending, isSuccess: isLoginSuccess } =
-    useSignInWithPassword();
+  const { mutate: signInWithPassword, isPending } = useSignInWithPassword();
 
   const onAgencySignUpClick = useCallback(() => {
     navigate(AUTH_VIEW.agencySignUp);
@@ -32,12 +30,6 @@ export function useAgencyEmailSignInScreen() {
     },
     [isAgent, signInWithPassword],
   );
-
-  useEffect(() => {
-    if (isLoginSuccess) {
-      closeAuth();
-    }
-  }, [closeAuth, isLoginSuccess]);
 
   return {
     title: t("signInFormTitle"),

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { AUTH_VIEW, resolveSignInRoleFromAuthContext } from "../authViews";
 import {
@@ -17,7 +17,6 @@ export function useOTPVerificationScreen() {
   const { termsText, privacyText } = useAuthScreenLegalFooter();
   const navigate = useAuthStore((state) => state.navigate);
   const { onBack, canGoBack } = useAuthModalNavigation();
-  const closeAuth = useAuthStore((state) => state.closeAuth);
   const otpFlow = useAuthStore((state) => state.otpFlow);
   const pendingEmail = useAuthStore((state) => state.pendingEmail);
   const pendingPhone = useAuthStore((state) => state.pendingPhone);
@@ -40,11 +39,7 @@ export function useOTPVerificationScreen() {
   const { mutate: resendOtp, isPending: isResending } = useForgotPassword();
   const { mutate: resendSignInOtp, isPending: isResendingSignInOtp } =
     useSignInWithOtpRequest();
-  const {
-    mutate: verifyOtp,
-    isPending: isVerifying,
-    isSuccess: isOtpVerifySuccess,
-  } = useSignInWithOtpVerify();
+  const { mutate: verifyOtp, isPending: isVerifying } = useSignInWithOtpVerify();
   const isResendingOtp = otpFlow === "forgot" ? isResending : isResendingSignInOtp;
 
   const onResend = useCallback(() => {
@@ -109,12 +104,6 @@ export function useOTPVerificationScreen() {
   const onCreateAccountClick = useCallback(() => {
     navigate(signUpView);
   }, [navigate, signUpView]);
-
-  useEffect(() => {
-    if (isOtpVerifySuccess && otpFlow === "signin") {
-      closeAuth();
-    }
-  }, [closeAuth, isOtpVerifySuccess, otpFlow]);
 
   return {
     contactEmail: pendingEmail ?? undefined,

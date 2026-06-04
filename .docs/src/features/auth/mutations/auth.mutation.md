@@ -43,7 +43,8 @@ TanStack React Query mutation hooks.
 
 # Navigation
 
-- Imperative **`navigateTo`** from `navigation.utils` (non-locale paths; used after logout).
+- **`navigateTo`** after logout → `/${locale}`.
+- After password or OTP sign-in: `completeSignInFlow` closes the modal and redirects together. Dashboard path uses JWT role when present, else OTP/password `variables.role` (`admin` → agency dashboard).
 
 # Props / Parameters
 

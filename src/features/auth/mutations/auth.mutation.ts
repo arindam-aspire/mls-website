@@ -5,13 +5,67 @@ import { confirmSignUp, agencySignUp, changePassword, forgotPassword, getLoggedI
 import { useToast } from "@/src/hooks/useToast";
 import { type ApiError } from "@/src/apis/core/error.normalizer";
 import { useAuthStore } from "../store/auth.store";
-import type { SignInResponse, SignInWithOtpResponse, SignInWithOtpVerifyResponse } from "../types/auth.types";
+import type {
+  LoggedInUser,
+  SignInResponse,
+  SignInWithOtpResponse,
+  SignInWithOtpVerifyResponse,
+} from "../types/auth.types";
+import type { SignInRole } from "../types/signIn.types";
+import {
+  getPostSignInRedirectPath,
+  resolveImmediateDashboardPath,
+} from "../utils/postSignInRedirect";
 import { navigateTo } from "@/src/utils/navigation.utils";
 import { AppLocale } from "@/src/i18n/routing";
 import { useLocale } from "next-intl";
 
+async function completeSignInFlow(
+  accessToken: string,
+  locale: AppLocale,
+  setUser: (user: LoggedInUser) => void,
+  onProfileError: (message: string) => void,
+  signInRole?: SignInRole,
+) {
+  await Promise.resolve();
+
+  const dashboardPath = resolveImmediateDashboardPath(
+    accessToken,
+    locale,
+    signInRole,
+  );
+
+  if (dashboardPath) {
+    useAuthStore.getState().closeAuth();
+    navigateTo(dashboardPath);
+
+    try {
+      const userResponse = await getLoggedInUser();
+      setUser(userResponse.data);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed";
+      onProfileError(message);
+    }
+    return;
+  }
+
+  try {
+    const userResponse = await getLoggedInUser();
+    const user = userResponse.data;
+    setUser(user);
+
+    const path = getPostSignInRedirectPath(user, locale);
+    useAuthStore.getState().closeAuth();
+    if (path) navigateTo(path);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Failed";
+    onProfileError(message);
+  }
+}
+
 export const useSignInWithPassword = () => {
   const toast = useToast();
+  const locale = useLocale() as AppLocale;
   const { setAuth, setUser } = useAuthStore();
 
   return useMutation({
@@ -22,16 +76,15 @@ export const useSignInWithPassword = () => {
         rememberMeCookie: remember_me_cookie,
         username: variables.username,
       });
-      try {
-        // ✅ Wait for next tick so cookies are set before the request fires
-        await Promise.resolve();
-        const userResponse = await getLoggedInUser();
-        setUser(userResponse.data);
-      } catch (error:any) {
-        toast.error("Failed", {
-          description: error.message,
-        });
-      }
+      await completeSignInFlow(
+        access_token,
+        locale,
+        setUser,
+        (message) => {
+          toast.error("Failed", { description: message });
+        },
+        variables.role,
+      );
     },
     onError: (error: ApiError) => {
       toast.error("Sign in failed", {
@@ -120,6 +173,7 @@ export const useSignInWithOtpRequest = () => {
 
 export const useSignInWithOtpVerify = () => {
   const toast = useToast();
+  const locale = useLocale() as AppLocale;
   const { setAuth, setUser, clearOtpSession } = useAuthStore();
 
   return useMutation({
@@ -131,15 +185,15 @@ export const useSignInWithOtpVerify = () => {
         username: variables.username,
       });
       clearOtpSession();
-      try {
-        await Promise.resolve();
-        const userResponse = await getLoggedInUser();
-        setUser(userResponse.data);
-      } catch (error: any) {
-        toast.error("Failed", {
-          description: error.message,
-        });
-      }
+      await completeSignInFlow(
+        access_token,
+        locale,
+        setUser,
+        (message) => {
+          toast.error("Failed", { description: message });
+        },
+        variables.role,
+      );
     },
     onError: (error: ApiError) => {
       toast.error("OTP verification failed", {
