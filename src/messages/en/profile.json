@@ -1,6 +1,6 @@
 {
-  "pageTitle": "Profile & Personal Info",
-  "pageSubtitle": "View your account details and manage security settings.",
+  "pageSubtitlePersonal": "View and manage your personal information.",
+  "pageSubtitleAgency": "View and manage your personal and business information.",
   "edit": "Edit",
   "editEmail": "Edit email",
   "editPhone": "Edit phone number",

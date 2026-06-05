@@ -1,6 +1,7 @@
 "use client";
 
 import { UpcomingFeatureModal } from "@/src/components/common/UpcomingFeatureModal";
+import { SaveSearchModal } from "@/src/features/saved-searches/screens/SaveSearchModal";
 import { PropertyCardList } from "@abdoun/abdoun-library";
 import { PropertyListFilters } from "../components/PropertyListFilters";
 import { usePropertyList } from "../hooks/usePropertyList";
@@ -21,6 +22,7 @@ export default function PropertyListScreen() {
     onClickCall,
     onClickWhatsApp,
     upcomingFeatureModal,
+    saveSearchModal,
   } = usePropertyList();
 
   return (
@@ -34,6 +36,15 @@ export default function PropertyListScreen() {
       <UpcomingFeatureModal
         open={upcomingFeatureModal.open}
         onClose={upcomingFeatureModal.onClose}
+      />
+
+      <SaveSearchModal
+        open={saveSearchModal.open}
+        onClose={saveSearchModal.onClose}
+        filterItems={saveSearchModal.filterItems}
+        searchCriteria={saveSearchModal.searchCriteria}
+        savedSearchId={saveSearchModal.savedSearchId}
+        initialName={saveSearchModal.initialName}
       />
 
       <div className="container mx-auto mt-4 w-full min-w-0 sm:mt-6">

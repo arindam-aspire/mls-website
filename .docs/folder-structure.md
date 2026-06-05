@@ -37,7 +37,9 @@ mls_website/
 │   │       │   ├── layout.md
 │   │       │   ├── dashboard/
 │   │       │   │   └── page.md
-│   │       │   └── my-profile/
+│   │       │   ├── my-profile/
+│   │       │   │   └── page.md
+│   │       │   └── saved-searches/
 │   │       │       └── page.md
 │   │       └── (property)/
 │   │           ├── README.md
@@ -55,8 +57,6 @@ mls_website/
 │   │           │       └── page.md
 │   │           ├── recently-viewed/
 │   │           │   └── page.md
-│   │           └── saved-searches/
-│   │               └── page.md
 │   └── src/
 │       ├── README.md
 │       ├── apis/
@@ -106,6 +106,7 @@ mls_website/
 │       │   │   └── screens/
 │       │   │       └── index.md
 │       │   ├── not-found/
+│       │   ├── notifications/
 │       │   ├── unauthorized/
 │       │   ├── profile/
 │       │   │   ├── README.md
@@ -200,7 +201,6 @@ mls_website/
 │       │   │   ├── hooks/
 │       │   │   │   ├── useProtectedBottomTabBar.md
 │       │   │   │   ├── useProtectedHeader.md
-│       │   │   │   ├── useProtectedMobileDrawerSystemOptions.md
 │       │   │   │   ├── useProtectedProfileMenu.md
 │       │   │   │   ├── useProtectedSidebar.md
 │       │   │   │   └── useProtectedSidebarNav.md
@@ -212,10 +212,10 @@ mls_website/
 │       │   │   ├── ProtectedHeader.md
 │       │   │   ├── ProtectedProfileMenu.md
 │       │   │   ├── ProtectedNotificationsButton.md
+│       │   │   ├── ProtectedSearchButton.md
 │       │   │   ├── ProtectedThemeButton.md
 │       │   │   ├── ProtectedMain.md
 │       │   │   ├── ProtectedMobileDrawer.md
-│       │   │   ├── ProtectedMobileDrawerSystemOptions.md
 │       │   │   ├── ProtectedMobileMenu.md
 │       │   │   ├── protectedMobileHeaderStyles.md
 │       │   │   ├── ProtectedSidebar.md
@@ -259,6 +259,8 @@ mls_website/
 │   │   │   ├── layout.tsx
 │   │   │   ├── my-profile/
 │   │   │   │   └── page.tsx
+│   │   │   └── saved-searches/
+│   │   │       └── page.tsx
 │   │   └── (property)/
 │   │       ├── layout.tsx
 │   │       ├── favourites/
@@ -274,8 +276,6 @@ mls_website/
 │   │       │   └── page.tsx
 │   │       ├── recently-viewed/
 │   │       │   └── page.tsx
-│   │       └── saved-searches/
-│   │           └── page.tsx
 │   ├── globals.css
 │   ├── icon.png
 │   ├── layout.tsx
@@ -496,6 +496,16 @@ mls_website/
 │   │   ├── not-found/
 │   │   │   └── screens/
 │   │   │       └── NotFoundScreen.tsx
+│   │   ├── notifications/
+│   │   │   ├── components/
+│   │   │   ├── constants/
+│   │   │   ├── hooks/
+│   │   │   ├── mutations/
+│   │   │   ├── screens/
+│   │   │   ├── services/
+│   │   │   ├── store/
+│   │   │   ├── types/
+│   │   │   └── utils/
 │   │   ├── unauthorized/
 │   │   │   └── screens/
 │   │   │       └── UnauthorizedScreen.tsx
@@ -606,6 +616,36 @@ mls_website/
 │   │       │   └── property.store.ts
 │   │       └── types/
 │   │           └── property.types.ts
+│   │   ├── saved-searches/
+│   │   │   ├── components/
+│   │   │   │   ├── SavedSearchFilterChips.tsx
+│   │   │   │   ├── SavedSearchPopoverItem.tsx
+│   │   │   │   ├── SaveSearchFiltersSummary.tsx
+│   │   │   │   ├── SaveSearchForm.tsx
+│   │   │   │   └── SearchCard.tsx
+│   │   │   ├── constants/
+│   │   │   │   └── savedSearch.constants.ts
+│   │   │   ├── hooks/
+│   │   │   │   ├── useSavedSearchScreen.ts
+│   │   │   │   ├── useSaveSearchForm.ts
+│   │   │   │   ├── useSaveSearchModal.ts
+│   │   │   │   └── useSaveSearchPopover.ts
+│   │   │   ├── mutations/
+│   │   │   │   └── saved-search.mutation.ts
+│   │   │   ├── screens/
+│   │   │   │   ├── SavedSearchScreen.tsx
+│   │   │   │   ├── SaveSearchModal.tsx
+│   │   │   │   └── SaveSearchPopover.tsx
+│   │   │   ├── services/
+│   │   │   │   └── saved-search.service.ts
+│   │   │   ├── store/
+│   │   │   ├── types/
+│   │   │   │   └── savedSearch.types.ts
+│   │   │   └── utils/
+│   │   │       ├── buildSaveSearchCriteria.ts
+│   │   │       ├── buildSavedSearchCriteriaFilterItems.ts
+│   │   │       ├── buildSavedSearchFilterItems.ts
+│   │   │       └── buildSavedSearchPropertyListHref.ts
 │   ├── hooks/
 │   │   ├── useForm.ts
 │   │   ├── useMatchMedia.ts
@@ -634,7 +674,6 @@ mls_website/
 │   │   │   ├── hooks/
 │   │   │   │   ├── useProtectedBottomTabBar.ts
 │   │   │   │   ├── useProtectedHeader.ts
-│   │   │   │   ├── useProtectedMobileDrawerSystemOptions.ts
 │   │   │   │   ├── useProtectedProfileMenu.ts
 │   │   │   │   ├── useProtectedSidebar.ts
 │   │   │   │   └── useProtectedSidebarNav.ts
@@ -648,11 +687,11 @@ mls_website/
 │   │   │   ├── ProtectedHeader.tsx
 │   │   │   ├── ProtectedProfileMenu.tsx
 │   │   │   ├── ProtectedNotificationsButton.tsx
+│   │   │   ├── ProtectedSearchButton.tsx
 │   │   │   ├── ProtectedThemeButton.tsx
 │   │   │   ├── ProtectedMain.tsx
 │   │   │   ├── protectedMobileHeaderStyles.ts
 │   │   │   ├── ProtectedMobileDrawer.tsx
-│   │   │   ├── ProtectedMobileDrawerSystemOptions.tsx
 │   │   │   ├── ProtectedMobileMenu.tsx
 │   │   │   └── ProtectedSidebar.tsx
 │   │   └── public-layout/
@@ -675,6 +714,7 @@ mls_website/
 │   │   │   ├── home.json
 │   │   │   ├── notFound.json
 │   │   │   ├── profile.json
+│   │   │   ├── savedSearches.json
 │   │   │   ├── unauthorized.json
 │   │   │   └── index.ts
 │   │   ├── en/
@@ -683,6 +723,7 @@ mls_website/
 │   │   │   ├── home.json
 │   │   │   ├── notFound.json
 │   │   │   ├── profile.json
+│   │   │   ├── savedSearches.json
 │   │   │   ├── unauthorized.json
 │   │   │   └── index.ts
 │   │   ├── es/
@@ -691,6 +732,7 @@ mls_website/
 │   │   │   ├── home.json
 │   │   │   ├── notFound.json
 │   │   │   ├── profile.json
+│   │   │   ├── savedSearches.json
 │   │   │   ├── unauthorized.json
 │   │   │   └── index.ts
 │   │   └── fr/
@@ -698,6 +740,8 @@ mls_website/
 │   │       ├── common.json
 │   │       ├── home.json
 │   │       ├── notFound.json
+│   │       ├── profile.json
+│   │       ├── savedSearches.json
 │   │       ├── unauthorized.json
 │   │       └── index.ts
 │   ├── providers/

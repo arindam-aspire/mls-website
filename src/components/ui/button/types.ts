@@ -15,7 +15,7 @@ export const BUTTON_VARIANTS = ["solid", "ghost", "outline"] as const;
 
 export type ButtonVariant = (typeof BUTTON_VARIANTS)[number];
 
-export const BUTTON_SIZES = ["sm", "md", "lg"] as const;
+export const BUTTON_SIZES = ["xs", "sm", "md", "lg"] as const;
 
 export type ButtonSize = (typeof BUTTON_SIZES)[number];
 

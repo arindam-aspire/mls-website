@@ -9,7 +9,7 @@ Placeholder folder for authenticated-only route chrome and wrappers that may be 
 - Wired to App Router `(main)` route group (`app/[locale]/(main)/layout.tsx`).
 - **`ProtectedHeader`** implemented: responsive mobile bar (logo, notifications, menu) and desktop bar (search, language, theme, notifications, profile).
 - **`ProtectedBottomTabBar`** on mobile (`< md`): Home, Listings, Favourites, Enquiry.
-- **`ProtectedMobileMenu`** drawer wired from header (`< md`); system settings only.
+- **`ProtectedMobileMenu`** drawer wired from header (`< md`): account, nav (no Dashboard), settings cards, and public-style footer with logout confirm.
 - **`ProtectedSidebar`** optional from `md+` (agency and agent only).
 - `ProtectedDrawer` remains a placeholder (not mounted).
 
@@ -30,14 +30,13 @@ ProtectedLayout (index.tsx)
 | --- | --- |
 | [index.md](./index.md) | Protected layout composer |
 | [ProtectedHeader.md](./ProtectedHeader.md) | Sticky protected header (responsive mobile + desktop actions) |
-| [ProtectedMobileDrawer.md](./ProtectedMobileDrawer.md) | Mobile off-canvas drawer shell |
-| [ProtectedMobileDrawerSystemOptions.md](./ProtectedMobileDrawerSystemOptions.md) | Drawer body: language + theme |
-| [hooks/useProtectedMobileDrawerSystemOptions.md](./hooks/useProtectedMobileDrawerSystemOptions.md) | Drawer system settings hook |
+| [ProtectedMobileDrawer.md](./ProtectedMobileDrawer.md) | Mobile off-canvas drawer (single file: account, nav, settings, footer) |
 | [ProtectedMobileMenu.md](./ProtectedMobileMenu.md) | Header menu → drawer wrapper |
 | [ProtectedBottomTabBar.md](./ProtectedBottomTabBar.md) | Mobile bottom tabs |
 | [protectedBottomTab.config.md](./protectedBottomTab.config.md) | Tab paths and permissions |
 | [hooks/useProtectedBottomTabBar.md](./hooks/useProtectedBottomTabBar.md) | Tab filter + active state |
 | [protectedMobileHeaderStyles.md](./protectedMobileHeaderStyles.md) | Shared mobile header class constants |
+| [ProtectedSearchButton.md](./ProtectedSearchButton.md) | Header search icon (`lg+`) → property list |
 | [ProtectedNotificationsButton.md](./ProtectedNotificationsButton.md) | Header bell icon button with unread dot |
 | [ProtectedThemeButton.md](./ProtectedThemeButton.md) | Header light/dark theme toggle |
 | [ProtectedProfileMenu.md](./ProtectedProfileMenu.md) | Header profile strip + menu |

@@ -7,7 +7,7 @@ Client hook powering `ProtectedHeader` actions and state.
 # Responsibilities
 
 - Locale switching on current pathname.
-- Notifications upcoming-feature modal open/close.
+- Upcoming-feature modal for notifications and search (`upcomingFeatureModal` source).
 - Mobile menu open/close state.
 - Theme-aware header logo source for mobile bar.
 - Expose auth user and locale option labels.
@@ -27,8 +27,9 @@ Client hook powering `ProtectedHeader` actions and state.
 | `isLoadingUser` | `boolean` | Profile hydration |
 | `headerLogoSrc` | `StaticImageData` | `MLS_Light_Logo` or `MLS_Dark_Logo` from `useTheme` |
 | `handleLocaleChange` | `(locale: string) => void` | `router.replace` with new locale |
-| `isUpcomingFeatureModalOpen` | `boolean` | Notifications modal visibility |
-| `openNotifications` | `() => void` | Opens notifications upcoming-feature modal |
+| `upcomingFeatureModal` | `"notifications" \| "search" \| null` | Which upcoming modal is open |
+| `openNotifications` | `() => void` | Opens modal (bell icon) |
+| `openSearch` | `() => void` | Opens modal (search icon); no route change |
 | `closeUpcomingFeatureModal` | `() => void` | Closes modal |
 | `isMobileMenuOpen` | `boolean` | Mobile drawer visibility |
 | `openMobileMenu` | `() => void` | Opens `ProtectedMobileMenu` |
@@ -40,4 +41,4 @@ Client hook powering `ProtectedHeader` actions and state.
 
 # Notes
 
-- Search field has no hook state; behavior will be added when product flow is defined.
+- Header search uses `openSearch` until a dedicated search flow ships.

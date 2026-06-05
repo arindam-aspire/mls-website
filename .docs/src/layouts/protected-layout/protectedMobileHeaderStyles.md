@@ -13,10 +13,10 @@ Shared Tailwind class strings for protected mobile header and drawer chrome (ali
 | `protectedMobileLogoLinkClass` | App header logo link |
 | `protectedMobileLogoImageClass` | App header logo image |
 | `protectedDrawerHeaderBarClass` | Drawer primary header bar |
-| `protectedDrawerLogoLinkClass` | Drawer logo on `bg-primary` |
+| `protectedDrawerLogoLinkClass` | Drawer logo on `bg-surface` |
 | `protectedDrawerLogoImageClass` | Drawer logo image (public sizing) |
-| `protectedDrawerCloseButtonClass` | White close button on primary |
 | `protectedDrawerSectionsContainerClass` | Drawer scroll body sections |
+| `protectedDrawerFooterClass` | Drawer fixed footer container (`container` + vertical padding) |
 | `protectedMobileHeaderIconButtonClass` | App header icon buttons |
 | `protectedMobileHeaderIconClass` | `size-6` lucide icons |
 

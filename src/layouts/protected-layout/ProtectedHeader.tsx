@@ -10,6 +10,7 @@ import { Link } from "@/src/i18n/navigation";
 import { ProtectedMobileMenu } from "@/src/layouts/protected-layout/ProtectedMobileMenu";
 import { ProtectedNotificationsButton } from "@/src/layouts/protected-layout/ProtectedNotificationsButton";
 import { ProtectedProfileMenu } from "@/src/layouts/protected-layout/ProtectedProfileMenu";
+import { SaveSearchPopover } from "@/src/features/saved-searches/screens/SaveSearchPopover";
 import { ProtectedThemeButton } from "@/src/layouts/protected-layout/ProtectedThemeButton";
 import {
   protectedMobileHeaderBarClass,
@@ -30,7 +31,7 @@ export function ProtectedHeader() {
     isLoadingUser,
     headerLogoSrc,
     handleLocaleChange,
-    isUpcomingFeatureModalOpen,
+    upcomingFeatureModal,
     openNotifications,
     closeUpcomingFeatureModal,
     isMobileMenuOpen,
@@ -96,31 +97,49 @@ export function ProtectedHeader() {
         </div>
 
         <div className="hidden h-16 items-center justify-end gap-2 px-4 md:flex sm:h-20 sm:gap-3 sm:px-6">
-          <SelectDropdown
-            variant="outline"
-            size="md"
-            iconStart={<Globe aria-hidden />}
-            aria-label={t("language")}
-            placeholder={t("language")}
-            includePlaceholderOption={false}
-            options={localeOptions}
-            value={locale}
-            onChange={handleLocaleChange}
-            fullWidth={false}
-            wrapperClassName="relative z-[60] w-auto shrink-0"
-          />
-
           {isLoadingUser ? (
-            <div className="flex items-center gap-2 sm:gap-3">
-              <Skeleton variant="circular" className="size-9 sm:size-11" />
-              <Skeleton variant="circular" className="size-9 sm:size-11" />
-              <span className="h-9 w-px shrink-0 bg-secondary/15 sm:h-10" />
-              <Skeleton className="hidden h-9 w-24 rounded-lg lg:block lg:h-10" />
-              <Skeleton variant="circular" className="size-9 sm:size-11" />
-            </div>
+            <>
+              <Skeleton variant="circular" className="size-9 shrink-0 sm:size-11" aria-hidden />
+              <Skeleton
+                variant="circular"
+                className="hidden size-9 shrink-0 md:block sm:size-11"
+                aria-hidden
+              />
+              <SelectDropdown
+                variant="outline"
+                size="md"
+                iconStart={<Globe aria-hidden />}
+                aria-label={t("language")}
+                placeholder={t("language")}
+                includePlaceholderOption={false}
+                options={localeOptions}
+                value={locale}
+                onChange={handleLocaleChange}
+                fullWidth={false}
+                wrapperClassName="relative z-[60] w-auto shrink-0"
+              />
+              <Skeleton variant="circular" className="size-9 shrink-0 sm:size-11" aria-hidden />
+              <span className="h-9 w-px shrink-0 bg-secondary/15 sm:h-10" aria-hidden />
+              <Skeleton className="hidden h-9 w-24 shrink-0 rounded-lg lg:block lg:h-10" aria-hidden />
+              <Skeleton variant="circular" className="size-9 shrink-0 sm:size-11" aria-hidden />
+            </>
           ) : (
             <>
               <ProtectedThemeButton />
+              <SaveSearchPopover enabled={Boolean(user)} />
+              <SelectDropdown
+                variant="outline"
+                size="md"
+                iconStart={<Globe aria-hidden />}
+                aria-label={t("language")}
+                placeholder={t("language")}
+                includePlaceholderOption={false}
+                options={localeOptions}
+                value={locale}
+                onChange={handleLocaleChange}
+                fullWidth={false}
+                wrapperClassName="relative z-[60] w-auto shrink-0"
+              />
               {user ? (
                 <>
                   <ProtectedNotificationsButton onClick={openNotifications} />
@@ -138,7 +157,7 @@ export function ProtectedHeader() {
       />
 
       <UpcomingFeatureModal
-        open={isUpcomingFeatureModalOpen}
+        open={upcomingFeatureModal}
         onClose={closeUpcomingFeatureModal}
         icon={<Bell className="size-7" aria-hidden />}
       />

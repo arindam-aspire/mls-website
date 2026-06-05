@@ -22,8 +22,7 @@ export function useProtectedHeader() {
 
   const { user, isLoadingUser } = useAuthStore();
 
-  const [isUpcomingFeatureModalOpen, setIsUpcomingFeatureModalOpen] =
-    useState(false);
+  const [upcomingFeatureModal, setUpcomingFeatureModal] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const headerLogoSrc: StaticImageData = useMemo(
@@ -39,11 +38,11 @@ export function useProtectedHeader() {
   );
 
   const openNotifications = useCallback(() => {
-    setIsUpcomingFeatureModalOpen(true);
+    setUpcomingFeatureModal(true);
   }, []);
 
   const closeUpcomingFeatureModal = useCallback(() => {
-    setIsUpcomingFeatureModalOpen(false);
+    setUpcomingFeatureModal(false);
   }, []);
 
   const openMobileMenu = useCallback(() => {
@@ -71,7 +70,7 @@ export function useProtectedHeader() {
     isLoadingUser,
     headerLogoSrc,
     handleLocaleChange,
-    isUpcomingFeatureModalOpen,
+    upcomingFeatureModal,
     openNotifications,
     closeUpcomingFeatureModal,
     isMobileMenuOpen,

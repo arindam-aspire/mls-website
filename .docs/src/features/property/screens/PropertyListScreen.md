@@ -42,7 +42,8 @@ _No props._
 | User action | Handler (from hook) |
 | --- | --- |
 | Status / category / type | `filters.onStatusChange`, `onCategoryChange`, `onTypeChange` |
-| Advance / Save search / Favourite / Email / Call / WhatsApp | Opens `UpcomingFeatureModal` |
+| Save search | Guest → `AuthModal` (`chooseAccount`); signed-in → `SaveSearchModal` with `SaveSearchForm` |
+| Favourite / Email / Call / WhatsApp | Opens `UpcomingFeatureModal` |
 | Sort change | `toolbar.onSortChange` |
 | Grid/list toggle | `toolbar.onViewChange` |
 | Page change | `pagination.onPageChange` |

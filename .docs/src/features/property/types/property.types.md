@@ -39,7 +39,7 @@ _N/A — type-only module._
 | `PropertySimilarResponse` | `/properties/:id/similar` | GET |
 | `FeatureCatalogResponse` | `/features?is_active=true` | GET |
 
-Request query shape: `PropertyListParams` — required: `page`, `pageSize`, `category`, `status`; optional: `sort`, `type`, `location`, `budgetMin`, `budgetMax`, `furnitureStatus`, `bedrooms`, `bathrooms`, `parking`, `propertyAge`, `minArea`, `maxArea`, `amenities`.
+Request query shape: `PropertyListParams` — required: `page`, `pageSize`, `category`, `status`; optional: `sort`, `type`, `location`, `budgetMin`, `budgetMax`, `furnitureStatus`, `bedrooms`, `bathrooms`, `parking`, `propertyAge`, `minArea`, `maxArea`, `amenities`, `similar_to`, `savedSearchId`.
 
 URL-synced filters: all `PropertyListParams` fields (see [property.types.md](./property.types.md)).
 
@@ -69,6 +69,7 @@ _N/A._
 | `PropertyListParams.maxArea?` | Maximum area |
 | `PropertyListParams.amenities?` | Amenities filter |
 | `PropertyListParams.similar_to?` | Similar-to property id (from detail “View More”) |
+| `PropertyListParams.savedSearchId?` | Saved search id when opening a saved search from the popover or saved-searches page |
 
 # Actions / Inputs
 

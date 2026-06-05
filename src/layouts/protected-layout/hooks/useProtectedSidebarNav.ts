@@ -19,10 +19,17 @@ export type ProtectedSidebarNavSection = {
   items: ProtectedSidebarNavItem[];
 };
 
-export function useProtectedSidebarNav() {
+type UseProtectedSidebarNavOptions = {
+  excludeHrefs?: readonly string[];
+};
+
+export function useProtectedSidebarNav(
+  options?: UseProtectedSidebarNavOptions,
+) {
   const t = useTranslations("common");
   const pathname = usePathname();
   const user = useAuthStore((state) => state.user);
+  const excludeHrefs = options?.excludeHrefs;
 
   const sections = useMemo((): ProtectedSidebarNavSection[] => {
     return PROTECTED_SIDEBAR_NAV_SECTIONS.map((section) => ({
@@ -30,6 +37,7 @@ export function useProtectedSidebarNav() {
       title: t(section.titleKey),
       items: section.items
         .filter((item) => hasPermission(user, item.permission))
+        .filter((item) => !excludeHrefs?.includes(item.href))
         .map((item) => ({
           ...item,
           label: t(item.labelKey),
@@ -37,7 +45,7 @@ export function useProtectedSidebarNav() {
             pathname === item.href || pathname.startsWith(`${item.href}/`),
         })),
     })).filter((section) => section.items.length > 0);
-  }, [pathname, t, user]);
+  }, [excludeHrefs, pathname, t, user]);
 
   return { sections };
 }

@@ -1,0 +1,9 @@
+export const SAVED_SEARCH_POPOVER_PAGE = 1;
+export const SAVED_SEARCH_POPOVER_PAGE_SIZE = 5;
+export const SAVED_SEARCH_POPOVER_WIDTH_PX = 380;
+export const SAVED_SEARCH_POPOVER_MAX_VISIBLE_FILTERS = 4;
+
+export const SAVED_SEARCH_LIST_PAGE = 1;
+export const SAVED_SEARCH_LIST_PAGE_SIZE = 20;
+
+export const SAVED_SEARCHES_QUERY_KEY = "saved-searches" as const;

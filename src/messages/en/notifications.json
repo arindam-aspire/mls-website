@@ -1,0 +1,10 @@
+{
+  "pageTitle": "Notifications",
+  "pageSubtitle": "Stay up to date with activity on your account and listings.",
+  "emptyTitle": "No notifications yet",
+  "emptyDescription": "When you receive updates about listings, inquiries, or your account, they will appear here.",
+  "unreadCount": "{count, plural, =0 {All caught up} one {# unread notification} other {# unread notifications}}",
+  "markAllRead": "Mark all as read",
+  "listAriaLabel": "Notification list",
+  "markReadErrorTitle": "Could not update notification"
+}

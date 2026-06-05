@@ -8,7 +8,6 @@ import {
 import Image from "next/image";
 import {
   Bell,
-  Building2,
   ChevronRight,
   ClipboardList,
   Globe,
@@ -26,15 +25,22 @@ import {
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState, type ReactNode } from "react";
 import mlsLogoDark from "@/src/assets/images/MLS_Dark_Logo.png";
+import mlsLogoLight from "@/src/assets/images/MLS_Light_Logo.png";
 import { ConfirmModal } from "@/src/components/common/ConfirmModal";
+import { IconButton } from "@/src/components/ui/icon-button";
 import { UpcomingFeatureModal } from "@/src/components/common/UpcomingFeatureModal";
 import { Avatar } from "@/src/components/ui/avatar";
+import { Card, CardContent } from "@/src/components/ui/card";
 import { Skeleton } from "@/src/components/ui/skeleton";
 import { SelectDropdown } from "@/src/components/ui/select-dropdown";
 import { SettingField, SwitchField } from "@/src/components/ui/switch";
 import { AUTH_VIEW } from "@/src/features/auth/authViews";
 import { useLogout } from "@/src/features/auth/mutations/auth.mutation";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
+import {
+  resolveDrawerAccountLabel,
+  shouldShowDrawerNotificationSettings,
+} from "@/src/features/auth/utils/resolveDrawerAccountLabel";
 import { ChangePasswordModal } from "@/src/features/profile/screens/ChangePasswordModal";
 import { Link } from "@/src/i18n/navigation";
 import type { AppLocale } from "@/src/i18n/routing";
@@ -61,7 +67,14 @@ const MOBILE_MENU_LOCALE_OPTIONS: { value: AppLocale; label: string }[] = [
 ];
 
 const MOBILE_MENU_LANGUAGE_SELECT_WIDTH_CLASS = "w-14";
-const MOBILE_MENU_LANGUAGE_TRIGGER_CLASS = "px-1.5 gap-0.5";
+const MOBILE_MENU_LANGUAGE_TRIGGER_CLASS = "gap-0.5 px-1.5";
+
+const DRAWER_ACTIVITY_ITEMS = [
+  { labelKey: "myListings", path: "/listing", icon: ClipboardList },
+  { labelKey: "myFavourites", path: "/favourites", icon: Heart },
+  { labelKey: "mySavedSearches", path: "/saved-searches", icon: Search },
+  { labelKey: "myRecentlyViewed", path: "/recently-viewed", icon: History },
+] as const;
 
 const DRAWER_DURATION = "duration-700";
 
@@ -73,7 +86,7 @@ const drawerBackdropClass = cn(
 
 function drawerPanelClass(isRtl: boolean) {
   return cn(
-    "pointer-events-auto relative flex h-dvh w-[calc(85vw-1rem)] max-w-[36rem] flex-col overflow-hidden bg-page text-text shadow-xl outline-none",
+    "pointer-events-auto relative flex h-dvh w-[90vw] max-w-[36rem] flex-col overflow-hidden bg-page text-text shadow-xl outline-none",
     "transform transition ease-in-out",
     DRAWER_DURATION,
     isRtl ? "data-closed:translate-x-full" : "data-closed:-translate-x-full",
@@ -85,25 +98,24 @@ const sectionsContainerClass = cn(
   "flex flex-col gap-5 py-4 sm:gap-6 sm:py-5",
 );
 
-const sectionTitleClass =
-  "pb-2 text-xs font-semibold uppercase tracking-wide text-muted";
-
 const rowButtonClass =
-  "flex w-full min-h-14 items-center gap-3 py-3 text-start transition-colors hover:bg-surface focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-secondary/40 sm:min-h-[3.75rem]";
+  "flex w-full min-h-14 items-center gap-3 px-4 py-3 text-start transition-colors hover:bg-page focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-secondary/40 sm:min-h-[3.75rem] sm:px-4";
 
 const rowDividerClass = "border-b border-secondary/10";
 
 const rowIconClass =
-  "flex size-10 shrink-0 items-center justify-center rounded-lg bg-surface text-text";
+  "flex size-10 shrink-0 items-center justify-center rounded-lg bg-page text-text";
 
 const rowLabelClass = "min-w-0 flex-1 text-sm font-medium text-text";
 
-const rowTrailingClass =
-  "flex shrink-0 items-center gap-2 text-sm font-semibold uppercase tracking-wide text-muted";
-
 const accountFooterClass = cn(
   publicMobileHeaderContainerClass,
-  "border-t border-secondary/15 py-3 sm:py-4",
+  "py-3 sm:py-4",
+);
+
+const drawerCloseButtonClass = cn(
+  publicMobileHeaderIconButtonClass,
+  "!bg-transparent hover:!bg-page",
 );
 
 // --- Hooks ---
@@ -194,23 +206,36 @@ function useMobileMenuAccountFooter(
 
 // --- Internal UI ---
 
-interface MenuRowProps {
-  icon: LucideIcon;
-  label: string;
-  trailing?: ReactNode;
-  showChevron?: boolean;
-  showDivider?: boolean;
-  onClick: () => void;
+function MenuSectionCard({
+  title,
+  children,
+}: {
+  title: string;
+  children: ReactNode;
+}) {
+  return (
+    <section>
+      <p className="mb-2 px-1 text-xs font-semibold uppercase tracking-wide text-muted sm:px-1">
+        {title}
+      </p>
+      <Card className="rounded-xl border border-secondary/15 shadow-none">
+        <CardContent className="!p-0 sm:!p-0">{children}</CardContent>
+      </Card>
+    </section>
+  );
 }
 
 function MenuRow({
   icon: Icon,
   label,
-  trailing,
-  showChevron = true,
   showDivider = true,
   onClick,
-}: MenuRowProps) {
+}: {
+  icon: LucideIcon;
+  label: string;
+  showDivider?: boolean;
+  onClick: () => void;
+}) {
   return (
     <button
       type="button"
@@ -221,24 +246,11 @@ function MenuRow({
         <Icon className="size-5" />
       </span>
       <span className={rowLabelClass}>{label}</span>
-      {(trailing || showChevron) && (
-        <span className={rowTrailingClass}>
-          {trailing}
-          {showChevron ? (
-            <ChevronRight className="size-4 shrink-0 text-muted rtl:rotate-180" aria-hidden />
-          ) : null}
-        </span>
-      )}
+      <ChevronRight
+        className="size-4 shrink-0 text-muted rtl:rotate-180"
+        aria-hidden
+      />
     </button>
-  );
-}
-
-function MenuSection({ title, children }: { title: string; children: ReactNode }) {
-  return (
-    <section>
-      <h2 className={sectionTitleClass}>{title}</h2>
-      <div className="flex flex-col">{children}</div>
-    </section>
   );
 }
 
@@ -257,8 +269,8 @@ function MenuLanguageRow({
 
   return (
     <SettingField
-      className={cn(showDivider && rowDividerClass)}
-      icon={<Globe className="size-5" />}
+      className={cn("px-4 py-3 sm:px-4", showDivider && rowDividerClass)}
+      icon={<Globe className="size-5" aria-hidden />}
       title={t("language")}
       description={t("languageSwitchDescription")}
     >
@@ -297,9 +309,9 @@ function MenuThemeRow({
 
   return (
     <SwitchField
-      className={cn(showDivider && rowDividerClass)}
-      icon={<ThemeIcon className="size-5" />}
-      title={t("darkMode")}
+      className={cn("px-4 py-3 sm:px-4", showDivider && rowDividerClass)}
+      icon={<ThemeIcon className="size-5" aria-hidden />}
+      title={t("themeMode")}
       description={t(isDark ? "themeSwitchToLight" : "themeSwitchToDark")}
       checked={isDark}
       onChange={(checked) => onChange(checked ? "dark" : "light")}
@@ -339,34 +351,39 @@ function MenuContent({
     onOpenChangePasswordModal,
   );
   const account = useMobileMenuAccountFooter(onClose, onNavigate, onLogoutPress);
+  const { theme } = useTheme();
+  const drawerLogoSrc = theme === "dark" ? mlsLogoDark : mlsLogoLight;
+  const accountLabel = resolveDrawerAccountLabel(sections.user, t);
+  const showNotificationSettings = shouldShowDrawerNotificationSettings(
+    sections.user,
+  );
 
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-page">
-      <div className="sticky top-0 z-10 shrink-0 bg-primary">
+      <div className="sticky top-0 z-10 shrink-0 bg-surface">
         <div className={cn(publicMobileHeaderContainerClass, publicMobileHeaderBarClass)}>
           <Link
             href="/"
             onClick={onClose}
-            className={cn(publicMobileLogoLinkClass, "focus-visible:ring-white/40")}
+            className={publicMobileLogoLinkClass}
           >
             <Image
-              src={mlsLogoDark}
+              src={drawerLogoSrc}
               alt={t("brand")}
               className={publicMobileLogoImageClass}
               priority
             />
           </Link>
-          <button
+          <IconButton
             type="button"
+            icon={<X className={publicMobileHeaderIconClass} aria-hidden />}
             aria-label={closeMenuLabel}
-            className={cn(
-              publicMobileHeaderIconButtonClass,
-              "!text-white hover:!bg-white/15 focus-visible:ring-white/40",
-            )}
+            color="inherit"
+            variant="outline"
+            size="md"
+            className={drawerCloseButtonClass}
             onClick={onClose}
-          >
-            <X className={publicMobileHeaderIconClass} aria-hidden />
-          </button>
+          />
         </div>
       </div>
 
@@ -374,36 +391,44 @@ function MenuContent({
         <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain [scrollbar-width:thin]">
           <div className={sectionsContainerClass}>
             {sections.user ? (
-              <MenuSection title={t("mobileMenuAccount")}>
-                <MenuRow
-                  icon={User}
-                  label={t("profilePersonalInfo")}
-                  onClick={() => sections.handleNavigate("/my-profile")}
-                />
-                <MenuRow
-                  icon={Building2}
-                  label={t("agencySettings")}
-                  onClick={() =>
-                    sections.openUpcomingFeature(<Building2 className="size-7" aria-hidden />)
-                  }
-                />
-                <MenuRow
-                  icon={Bell}
-                  label={t("notificationSettings")}
-                  onClick={() =>
-                    sections.openUpcomingFeature(<Bell className="size-7" aria-hidden />)
-                  }
-                />
-                <MenuRow
-                  icon={Lock}
-                  label={t("changePassword")}
-                  showDivider={false}
-                  onClick={sections.openChangePasswordModal}
-                />
-              </MenuSection>
+              <MenuSectionCard title={t("mobileMenuAccount")}>
+                <nav aria-label={t("mobileMenuAccount")}>
+                  <ul className="flex flex-col">
+                    <li>
+                      <MenuRow
+                        icon={User}
+                        label={accountLabel}
+                        onClick={() => sections.handleNavigate("/my-profile")}
+                      />
+                    </li>
+                    <li>
+                      <MenuRow
+                        icon={Lock}
+                        label={t("changePassword")}
+                        showDivider={showNotificationSettings}
+                        onClick={sections.openChangePasswordModal}
+                      />
+                    </li>
+                    {showNotificationSettings ? (
+                      <li>
+                        <MenuRow
+                          icon={Bell}
+                          label={t("notificationSettings")}
+                          showDivider={false}
+                          onClick={() =>
+                            sections.openUpcomingFeature(
+                              <Bell className="size-7" aria-hidden />,
+                            )
+                          }
+                        />
+                      </li>
+                    ) : null}
+                  </ul>
+                </nav>
+              </MenuSectionCard>
             ) : null}
 
-            <MenuSection title={t("mobileMenuGeneral")}>
+            <MenuSectionCard title={t("mobileMenuPreferences")}>
               <MenuLanguageRow
                 value={locale}
                 onChange={sections.handleLocaleChange}
@@ -413,37 +438,34 @@ function MenuContent({
                 onChange={sections.handleThemeChange}
                 showDivider={false}
               />
-            </MenuSection>
+            </MenuSectionCard>
 
             {sections.user ? (
-              <MenuSection title={t("mobileMenuPreferences")}>
-                <MenuRow
-                  icon={Heart}
-                  label={t("myFavourites")}
-                  onClick={() => sections.handleNavigate("/favourites")}
-                />
-                <MenuRow
-                  icon={ClipboardList}
-                  label={t("myListings")}
-                  onClick={() => sections.handleNavigate("/listing")}
-                />
-                <MenuRow
-                  icon={Search}
-                  label={t("mySavedSearches")}
-                  onClick={() => sections.handleNavigate("/saved-searches")}
-                />
-                <MenuRow
-                  icon={History}
-                  label={t("myRecentlyViewed")}
-                  showDivider={false}
-                  onClick={() => sections.handleNavigate("/recently-viewed")}
-                />
-              </MenuSection>
+              <MenuSectionCard title={t("mobileMenuMyActivity")}>
+                <nav aria-label={t("mobileMenuMyActivity")}>
+                  <ul className="flex flex-col">
+                    {DRAWER_ACTIVITY_ITEMS.map((item, index) => {
+                      const isLast = index === DRAWER_ACTIVITY_ITEMS.length - 1;
+
+                      return (
+                        <li key={item.path}>
+                          <MenuRow
+                            icon={item.icon}
+                            label={t(item.labelKey)}
+                            showDivider={!isLast}
+                            onClick={() => sections.handleNavigate(item.path)}
+                          />
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </nav>
+              </MenuSectionCard>
             ) : null}
           </div>
         </div>
 
-        <div className="shrink-0 border-t border-secondary/15">
+        <div className="shrink-0 border-t border-secondary/15 bg-surface">
           <div className={accountFooterClass}>
             <div className="flex min-h-14 items-center gap-3 sm:min-h-16">
               {account.isLoadingUser ? (
@@ -459,7 +481,7 @@ function MenuContent({
                   <button
                     type="button"
                     onClick={account.handleProfilePress}
-                    className="flex min-w-0 flex-1 items-center gap-3 rounded-lg text-start transition-colors hover:bg-surface focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary/40"
+                    className="flex min-w-0 flex-1 items-center gap-3 rounded-lg text-start transition-colors hover:bg-page focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary/40"
                   >
                     <Avatar
                       src={account.user.profile_picture_url}
@@ -479,7 +501,7 @@ function MenuContent({
                   <button
                     type="button"
                     aria-label={t("signOut")}
-                    className="inline-flex size-11 shrink-0 items-center justify-center rounded-lg text-muted transition-colors hover:bg-surface hover:text-danger focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary/40"
+                    className="inline-flex size-11 shrink-0 items-center justify-center rounded-lg text-muted transition-colors hover:bg-page hover:text-danger focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary/40"
                     onClick={account.handleLogoutPress}
                   >
                     <LogOut className="size-5" aria-hidden />
@@ -489,7 +511,7 @@ function MenuContent({
                 <button
                   type="button"
                   onClick={account.handleSignIn}
-                  className="flex w-full min-h-14 items-center gap-3 rounded-lg px-1 text-start transition-colors hover:bg-surface focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary/40 sm:min-h-16"
+                  className="flex w-full min-h-14 items-center gap-3 rounded-lg px-1 text-start transition-colors hover:bg-page focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary/40 sm:min-h-16"
                 >
                   <div
                     className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary sm:size-16"

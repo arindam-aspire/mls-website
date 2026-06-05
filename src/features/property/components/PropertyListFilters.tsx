@@ -12,9 +12,12 @@ import {
 } from "@/src/components/ui";
 import { isRtlLocale } from "@/src/i18n/routing";
 import { Bookmark, MapPin, Minus, RotateCcw, SlidersHorizontal } from "lucide-react";
-import { useLocale } from "next-intl";
-import { useEffect, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
+import { useCallback, useEffect, useState } from "react";
 import { cn } from "@/src/lib/cn";
+import type { SaveSearchSubmitPayload } from "@/src/features/saved-searches/types/savedSearch.types";
+import { buildSaveSearchCriteria } from "@/src/features/saved-searches/utils/buildSaveSearchCriteria";
+import { buildSaveSearchFilterItems } from "@/src/features/saved-searches/utils/buildSaveSearchFilterItems";
 import { PropertyListAdvancedFilters } from "./PropertyListAdvancedFilters";
 
 /** Horizontal filter row below `md`; scrollbar hidden on small viewports. */
@@ -68,7 +71,8 @@ export type PropertyListFiltersProps = {
   onAmenityChange: (slug: string, checked: boolean) => void;
   hasAdvancedFilters?: boolean;
   onResetSearch: () => void;
-  onSaveSearch?: () => void;
+  onSaveSearch?: (payload: SaveSearchSubmitPayload) => void;
+  savedSearchId?: string;
   statusAriaLabel?: string;
   categoryAriaLabel?: string;
   categoryPlaceholder?: string;
@@ -125,6 +129,7 @@ export function PropertyListFilters({
   hasAdvancedFilters = false,
   onResetSearch,
   onSaveSearch,
+  savedSearchId,
   statusAriaLabel = "Listing status",
   categoryAriaLabel = "Property category",
   categoryPlaceholder = "Select category",
@@ -139,6 +144,64 @@ export function PropertyListFilters({
   disabled = false,
 }: PropertyListFiltersProps) {
   const locale = useLocale();
+  const tSavedSearch = useTranslations("savedSearches");
+  const isUpdateMode = Boolean(savedSearchId);
+  const saveSearchActionLabel = isUpdateMode
+    ? tSavedSearch("updateSearch")
+    : tSavedSearch("saveSearch");
+
+  const handleSaveSearchClick = useCallback(() => {
+    if (!onSaveSearch) {
+      return;
+    }
+
+    const filterInput = {
+      status,
+      statusOptions,
+      category,
+      categoryOptions,
+      type,
+      typeOptions,
+      location,
+      locationValue,
+      locationOptions,
+      budgetMin,
+      budgetMax,
+      bedrooms,
+      bathrooms,
+      parking,
+      propertyAge,
+      minArea,
+      maxArea,
+      selectedAmenities,
+    };
+
+    onSaveSearch({
+      filterItems: buildSaveSearchFilterItems(filterInput, tSavedSearch),
+      searchCriteria: buildSaveSearchCriteria(filterInput),
+    });
+  }, [
+    bathrooms,
+    budgetMax,
+    budgetMin,
+    category,
+    categoryOptions,
+    location,
+    locationOptions,
+    locationValue,
+    maxArea,
+    minArea,
+    onSaveSearch,
+    parking,
+    propertyAge,
+    selectedAmenities,
+    status,
+    statusOptions,
+    tSavedSearch,
+    type,
+    typeOptions,
+    bedrooms,
+  ]);
   const isRtl = isRtlLocale(locale);
   const [isBudgetOpen, setIsBudgetOpen] = useState(false);
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(hasAdvancedFilters);
@@ -243,7 +306,6 @@ export function PropertyListFilters({
             color="primary"
             variant="solid"
             className={cn(mobileScrollItemClassName, "rounded-lg md:shrink")}
-            disabled={disabled}
             aria-expanded={isAdvancedOpen}
             onClick={() => {
               setIsAdvancedOpen((open) => !open);
@@ -263,7 +325,6 @@ export function PropertyListFilters({
             color="inherit"
             variant="outline"
             className={cn(mobileScrollItemClassName, "rounded-lg md:shrink")}
-            disabled={disabled}
             onClick={() => {
               setIsAdvancedOpen(false);
               onResetSearch();
@@ -277,11 +338,11 @@ export function PropertyListFilters({
             color="secondary"
             variant="outline"
             className={cn(mobileScrollItemClassName, "rounded-lg md:shrink")}
-            disabled={disabled}
-            onClick={onSaveSearch}
+            onClick={handleSaveSearchClick}
             iconStart={<Bookmark className="size-4" aria-hidden />}
+            disabled={disabled}
           >
-            Save Search
+            {saveSearchActionLabel}
           </Button>
         </div>
       </section>

@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import type { ApiError } from "@/src/apis/core/error.normalizer";
 import { maskEmail, maskStoredPhoneNumber } from "@/src/features/auth/maskContact";
 import type { LoggedInUser, LoggedInUserAgency } from "@/src/features/auth/types/user.types";
+import { resolveDrawerAccountLabel } from "@/src/features/auth/utils/resolveDrawerAccountLabel";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { useToast } from "@/src/hooks/useToast";
 import { getAgencyById } from "../services/profile.service";
@@ -307,13 +308,24 @@ export function useProfileScreen() {
   const isLoading = isLoadingUserPending;
   const showAgencyCardSkeleton = isLoadingAgency;
 
+  const pageTitle = useMemo(
+    () => resolveDrawerAccountLabel(user, tCommon),
+    [tCommon, user],
+  );
+
+  const pageSubtitle = useMemo(
+    () =>
+      isAgency ? t("pageSubtitleAgency") : t("pageSubtitlePersonal"),
+    [isAgency, t],
+  );
+
   // 10. Return values
   return {
     user,
     isLoading,
     showAgencyCardSkeleton,
-    pageTitle: t("pageTitle"),
-    pageSubtitle: t("pageSubtitle"),
+    pageTitle,
+    pageSubtitle,
     changePasswordLabel: tCommon("changePassword"),
     myProfileCard,
     agencyProfileCard,

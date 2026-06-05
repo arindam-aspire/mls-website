@@ -14,6 +14,9 @@ import {
  */
 export type UiSizeTier = "sm" | "md" | "lg";
 
+/** Button-only tier below `sm` for compact actions. */
+export type ButtonSizeTier = "xs" | UiSizeTier;
+
 /** Shared outer height for buttons, inputs, selects, toggles (mobile → sm+ → lg+). */
 const controlHeightClasses: Record<UiSizeTier, string> = {
   sm: "h-8 sm:h-9 lg:h-10",
@@ -33,7 +36,8 @@ const controlGapClasses: Record<UiSizeTier, string> = {
   lg: "gap-2 lg:gap-2.5",
 };
 
-export const buttonSizeClasses: Record<UiSizeTier, string> = {
+export const buttonSizeClasses: Record<ButtonSizeTier, string> = {
+  xs: cnTier("h-7 px-2 gap-1 text-xs font-medium"),
   sm: cnTier(
     controlHeightClasses.sm,
     controlPaddingClasses.sm,
@@ -57,7 +61,8 @@ export const buttonSizeClasses: Record<UiSizeTier, string> = {
   ),
 };
 
-export const buttonIconSizeClasses: Record<UiSizeTier, string> = {
+export const buttonIconSizeClasses: Record<ButtonSizeTier, string> = {
+  xs: "size-3",
   sm: "size-3 sm:size-3.5 lg:size-4",
   md: "size-3.5 sm:size-4 lg:size-5",
   lg: "size-4 sm:size-5 lg:size-5",
@@ -67,7 +72,8 @@ export const buttonIconSizeClasses: Record<UiSizeTier, string> = {
 export const iconButtonIconSizeClasses = buttonIconSizeClasses;
 
 /** Square buttons — side length matches shared control height. */
-export const iconButtonSizeClasses: Record<UiSizeTier, string> = {
+export const iconButtonSizeClasses: Record<ButtonSizeTier, string> = {
+  xs: "size-7 shrink-0 !p-0",
   sm: "size-8 shrink-0 !p-0 sm:size-9 lg:size-10",
   md: "size-9 shrink-0 !p-0 sm:size-11 lg:size-12",
   lg: "size-10 shrink-0 !p-0 sm:size-12 lg:size-12",

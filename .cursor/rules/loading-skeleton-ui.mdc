@@ -1,0 +1,61 @@
+---
+description: Require responsive loading skeletons that mirror API-driven UI layout
+globs:
+  - "**/*"
+alwaysApply: true
+---
+
+# Responsive loading skeletons (API / data UI)
+
+When **designing or implementing** a **component or screen** that shows **fetched or async data** (React Query, auth hydration, mutations, server data), you **must** ship a **loading skeleton** that **matches the real UI layout at every breakpoint**—not a single generic spinner or one-size block.
+
+## When required
+
+- Screens and cards fed by APIs, stores, or `useQuery` / `useMutation` results.
+- Lists, tables, detail panels, toolbars, and modals that render after data arrives.
+- **Not required** for purely static UI, forms with only client state, or instant local data.
+
+## Layout parity
+
+- Skeleton structure must mirror the loaded component: same **grid/flex**, **columns** (`grid-cols-1 md:grid-cols-2 lg:…`), **gaps** (`gap-4 md:gap-6`), **padding**, and **visibility** (`hidden md:block`, sticky aside on `lg`, etc.).
+- **Mobile-first** responsive classes on skeletons must match the final UI (see `responsive-design` rule).
+- Reuse the same **card shells**, **toolbar** height, and **avatar** sizes as the loaded view.
+
+## Implementation
+
+| Piece | Convention |
+| --- | --- |
+| Primitives | `@/src/components/ui` **`Skeleton`** (`variant`: `text`, `circular`, `block`) |
+| Naming | `FeatureCardSkeleton.tsx`, `FeatureScreenSkeleton.tsx` — `PascalCase` + `Skeleton` suffix |
+| Screen | Early return when `isLoading` (or equivalent) → render `*ScreenSkeleton` |
+| Composition | Screen skeleton composes section/card skeletons (e.g. `ProfileScreenSkeleton` + `MyProfileCardSkeleton`) |
+| Logic | Loading flags live in **hooks**; skeleton components stay presentational |
+| a11y | `aria-hidden` on decorative skeleton groups; do not expose skeleton as the main label |
+
+## Examples
+
+```tsx
+// ❌ BAD — one block, wrong on md/lg
+if (isLoading) return <Skeleton className="h-96 w-full" />;
+
+// ✅ GOOD — same layout as loaded screen
+if (isLoading) return <ProfileScreenSkeleton />;
+```
+
+```tsx
+// ✅ Card skeleton matches loaded card padding and field rows
+<Card className={profileCardClassName}>
+  <CardContent className="p-4 sm:p-6">
+    <Skeleton variant="circular" className="size-28 sm:size-32" />
+    <Skeleton variant="text" className="mx-auto mt-6 h-6 w-40 md:mx-0" />
+  </CardContent>
+</Card>
+```
+
+## Verification
+
+Before finishing, compare skeleton vs loaded UI at **320px**, **768px**, and **1280px**: no layout shift jump between loading and loaded states beyond intentional content fill-in.
+
+## Docs
+
+When adding skeletons under `src/`, add or update mirrored `.docs` for the screen and skeleton components (see `docs-sync` rule).

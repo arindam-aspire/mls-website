@@ -1,6 +1,6 @@
 # File Overview
 
-Sticky top bar for authenticated `(main)` routes. **`< md`:** logo (left), notifications + menu (right). **`md+`:** language, theme, notifications, profile (right). Property search is on the center bottom tab (`/property-list`).
+Sticky top bar for authenticated `(main)` routes. **`< md`:** logo (left), notifications + menu (right). **`md+`:** theme → search (`lg+`) → language → notifications → profile (right). Search and notifications open the upcoming-feature modal (no redirect).
 
 **Source:** `src/layouts/protected-layout/ProtectedHeader.tsx` (Client Component)
 
@@ -13,7 +13,7 @@ Sticky top bar for authenticated `(main)` routes. **`< md`:** logo (left), notif
 # Imports
 
 - `useProtectedHeader`, `SelectDropdown`, `Skeleton`, `IconButton`, `Link`, `Image`
-- `ProtectedThemeButton`, `ProtectedNotificationsButton`, `ProtectedProfileMenu`, `ProtectedMobileMenu`
+- `ProtectedSearchButton`, `ProtectedThemeButton`, `ProtectedNotificationsButton`, `ProtectedProfileMenu`, `ProtectedMobileMenu`
 - `protectedMobileHeaderStyles`, `UpcomingFeatureModal`
 
 # Exports
@@ -27,7 +27,8 @@ Sticky top bar for authenticated `(main)` routes. **`< md`:** logo (left), notif
 | Logo link | `< md` | Theme-aware MLS logo → home |
 | Notifications | when signed in | Upcoming-feature modal |
 | Menu | `< md` | Opens mobile drawer (system settings) |
-| Language / theme / profile | `md+` | Desktop actions |
+| Theme / search / language / notifications | `md+` (`search` at `lg+`) | Search → `/property-list`; notifications → upcoming modal |
+| Profile | `md+` when signed in | `ProtectedProfileMenu` |
 
 # UI Details
 

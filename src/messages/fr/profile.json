@@ -1,6 +1,6 @@
 {
-  "pageTitle": "Profil et informations personnelles",
-  "pageSubtitle": "Consultez les détails de votre compte et gérez la sécurité.",
+  "pageSubtitlePersonal": "Consultez et gérez vos informations personnelles.",
+  "pageSubtitleAgency": "Consultez et gérez vos informations personnelles et professionnelles.",
   "edit": "Modifier",
   "editEmail": "Modifier l'e-mail",
   "editPhone": "Modifier le numéro de téléphone",

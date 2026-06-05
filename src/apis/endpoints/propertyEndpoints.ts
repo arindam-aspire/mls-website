@@ -37,6 +37,7 @@ export const propertyEndpoints = {
     appendOptionalParam(search, "maxArea", params.maxArea);
     appendOptionalParam(search, "amenities", params.amenities);
     appendOptionalParam(search, "similar_to", params.similar_to);
+    appendOptionalParam(search, "savedSearchId", params.savedSearchId);
 
     return `/properties?${search.toString()}`;
   },

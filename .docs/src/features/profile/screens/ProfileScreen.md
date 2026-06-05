@@ -17,7 +17,7 @@ Route-level profile screen: toolbar, profile card, change-password modal, separa
 # Flow Description
 
 1. On first paint after `/my-profile` authorize, `AuthProvider` may still hydrate `user` → screen shows skeleton until `user` is set.
-2. Toolbar shows page title/subtitle and **Change Password**.
+2. Toolbar shows role-based page title/subtitle (admin/agency: Personal & Business Profile + `pageSubtitleAgency`; others: My Profile + `pageSubtitlePersonal`) and **Change Password**.
 3. **Change Password** → `ChangePasswordModal`.
 4. Card email row **Edit** → `EditEmailModal` (request OTP → confirm).
 5. Card phone row **Edit** → `EditPhoneModal` (request OTP → confirm).

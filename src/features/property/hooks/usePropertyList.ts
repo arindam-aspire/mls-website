@@ -24,7 +24,17 @@ import {
   getInitialBudgetMin,
 } from "@/src/components/search";
 import { SELECT_DROPDOWN_EMPTY_VALUE } from "@/src/components/ui";
+import { tokenStore } from "@/src/apis/core/token.store";
+import { AUTH_VIEW } from "@/src/features/auth/authViews";
+import { useAuthStore } from "@/src/features/auth/store/auth.store";
+import type {
+  SavedSearchCriteria,
+  SaveSearchFilterItem,
+} from "@/src/features/saved-searches/types/savedSearch.types";
 import { useGetPropertyList } from "../mutations/property.mutation";
+import { useGetSavedSearch } from "@/src/features/saved-searches/mutations/saved-search.mutation";
+import { getSavedSearchById } from "@/src/features/saved-searches/services/saved-search.service";
+import { buildSavedSearchPropertyListSearchParams } from "@/src/features/saved-searches/utils/buildSavedSearchPropertyListHref";
 import { usePropertyStore } from "../store/property.store";
 import type { PropertyListParams, PropertyListing } from "../types/property.types";
 import {
@@ -65,6 +75,7 @@ const LIST_PARAM_KEYS = [
   "maxArea",
   "amenities",
   "similar_to",
+  "savedSearchId",
 ] as const satisfies readonly (keyof PropertyListParams)[];
 
 const SORT_OPTIONS = [
@@ -124,6 +135,7 @@ function parseUrlListParams(searchParams: URLSearchParams): PropertyListParams {
     maxArea: parseOptionalNumber(searchParams.get("maxArea")),
     amenities: normalizeAmenitiesParam(getOptionalString(searchParams.get("amenities"))),
     similar_to: getOptionalString(searchParams.get("similar_to")),
+    savedSearchId: getOptionalString(searchParams.get("savedSearchId")),
   };
 }
 
@@ -218,6 +230,10 @@ export function usePropertyList() {
     useGetPropertyTaxonomy();
 
   const { mutate: getLocationTaxonomy } = useGetLocationTaxonomy();
+
+  const { data: savedSearchDetail } = useGetSavedSearch(listParams.savedSearchId, {
+    enabled: Boolean(listParams.savedSearchId),
+  });
 
   const locationSuggestions = useMemo(
     () => buildLocationSuggestions(locationTaxonomy ?? undefined),
@@ -568,23 +584,64 @@ export function usePropertyList() {
   );
 
   const onResetSearch = useCallback(() => {
-    const params = new URLSearchParams();
+    const resetToDefaultSearch = () => {
+      const params = new URLSearchParams();
 
-    params.set("status", DEFAULT_SEARCH_PARAMS.status);
-    params.set("category", DEFAULT_SEARCH_PARAMS.category);
-    params.set("sort", DEFAULT_SEARCH_PARAMS.sort ?? DEFAULT_SORT);
-    params.set("page", String(DEFAULT_SEARCH_PARAMS.page));
-    params.set("pageSize", String(DEFAULT_SEARCH_PARAMS.pageSize));
+      params.set("status", DEFAULT_SEARCH_PARAMS.status);
+      params.set("category", DEFAULT_SEARCH_PARAMS.category);
+      params.set("sort", DEFAULT_SEARCH_PARAMS.sort ?? DEFAULT_SORT);
+      params.set("page", String(DEFAULT_SEARCH_PARAMS.page));
+      params.set("pageSize", String(DEFAULT_SEARCH_PARAMS.pageSize));
 
-    if (listParams.similar_to) {
-      params.set("similar_to", listParams.similar_to);
+      if (listParams.similar_to) {
+        params.set("similar_to", listParams.similar_to);
+      }
+
+      router.replace(`${pathname}?${params.toString()}`);
+    };
+
+    if (!listParams.savedSearchId) {
+      resetToDefaultSearch();
+      return;
     }
 
-    router.replace(`${pathname}?${params.toString()}`);
-  }, [listParams.similar_to, pathname, router]);
+    void (async () => {
+      try {
+        const response = await getSavedSearchById(listParams.savedSearchId!);
+        const record = response.data;
+
+        if (!record) {
+          resetToDefaultSearch();
+          return;
+        }
+
+        const params = new URLSearchParams(
+          buildSavedSearchPropertyListSearchParams(record),
+        );
+
+        if (listParams.similar_to) {
+          params.set("similar_to", listParams.similar_to);
+        }
+
+        router.replace(`${pathname}?${params.toString()}`);
+      } catch {
+        resetToDefaultSearch();
+      }
+    })();
+  }, [listParams.savedSearchId, listParams.similar_to, pathname, router]);
 
   const [isUpcomingFeatureModalOpen, setIsUpcomingFeatureModalOpen] =
     useState(false);
+  const [isSaveSearchModalOpen, setIsSaveSearchModalOpen] = useState(false);
+  const [saveSearchFilterItems, setSaveSearchFilterItems] = useState<
+    SaveSearchFilterItem[]
+  >([]);
+  const [saveSearchCriteria, setSaveSearchCriteria] = useState<SavedSearchCriteria>(
+    {},
+  );
+  const [saveSearchModalSavedSearchId, setSaveSearchModalSavedSearchId] = useState<
+    string | undefined
+  >();
 
   const openUpcomingFeature = useCallback(() => {
     setIsUpcomingFeatureModalOpen(true);
@@ -593,6 +650,40 @@ export function usePropertyList() {
   const closeUpcomingFeature = useCallback(() => {
     setIsUpcomingFeatureModalOpen(false);
   }, []);
+
+  const openSaveSearchModal = useCallback(() => {
+    setIsSaveSearchModalOpen(true);
+  }, []);
+
+  const closeSaveSearchModal = useCallback(() => {
+    setIsSaveSearchModalOpen(false);
+    setSaveSearchModalSavedSearchId(undefined);
+  }, []);
+
+  const onSaveSearch = useCallback(
+    (payload: {
+      filterItems: SaveSearchFilterItem[];
+      searchCriteria: SavedSearchCriteria;
+    }) => {
+      setIsUpcomingFeatureModalOpen(false);
+
+      const { user: currentUser, isLoadingUser } = useAuthStore.getState();
+      const hasAccessToken = Boolean(tokenStore.getAccessToken());
+      const isAuthenticated =
+        Boolean(currentUser) || (hasAccessToken && isLoadingUser);
+
+      if (!isAuthenticated) {
+        useAuthStore.getState().openAuth(AUTH_VIEW.chooseAccount);
+        return;
+      }
+
+      setSaveSearchFilterItems(payload.filterItems);
+      setSaveSearchCriteria(payload.searchCriteria);
+      setSaveSearchModalSavedSearchId(listParams.savedSearchId);
+      openSaveSearchModal();
+    },
+    [listParams.savedSearchId, openSaveSearchModal],
+  );
 
   const activeParkingValue = useMemo(() => {
     if (listParams.parking == null) {
@@ -673,7 +764,8 @@ export function usePropertyList() {
       onAmenityChange,
       hasAdvancedFilters: hasAdvancedFilters(listParams),
       onResetSearch,
-      onSaveSearch: openUpcomingFeature,
+      onSaveSearch,
+      savedSearchId: listParams.savedSearchId,
       disabled: isLoadingTaxonomy && propertyTaxonomy == null,
     }),
     [
@@ -708,9 +800,9 @@ export function usePropertyList() {
       onParkingChange,
       onPropertyAgeChange,
       onResetSearch,
+      onSaveSearch,
       onStatusChange,
       onTypeChange,
-      openUpcomingFeature,
       propertyTaxonomy,
       selectedAmenities,
       selectedLocationValue,
@@ -842,6 +934,17 @@ export function usePropertyList() {
     upcomingFeatureModal: {
       open: isUpcomingFeatureModalOpen,
       onClose: closeUpcomingFeature,
+    },
+    saveSearchModal: {
+      open: isSaveSearchModalOpen,
+      onClose: closeSaveSearchModal,
+      filterItems: saveSearchFilterItems,
+      searchCriteria: saveSearchCriteria,
+      savedSearchId: saveSearchModalSavedSearchId,
+      initialName:
+        saveSearchModalSavedSearchId != null
+          ? (savedSearchDetail?.data?.name ?? "")
+          : "",
     },
   };
 }

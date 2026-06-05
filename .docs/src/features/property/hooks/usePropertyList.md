@@ -74,7 +74,7 @@ _No hook arguments._
 | `filters.rentMode` | `true` when `status === "rent"` |
 | `filters.bedrooms` … `filters.onAmenityChange` | Advanced search URL params + handlers |
 | `filters.hasAdvancedFilters` | True when any advanced param is in URL |
-| `filters.onSaveSearch` | Opens upcoming modal (Save Search only) |
+| `filters.onSaveSearch` | Closes upcoming modal first; guest → `openAuth(AUTH_VIEW.chooseAccount)`; signed-in or token hydrating → `saveSearchModal` (`SaveSearchModal` + `SaveSearchForm`) |
 
 # UI Details
 

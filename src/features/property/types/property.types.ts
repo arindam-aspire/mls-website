@@ -32,6 +32,7 @@ export type PropertyListParams = {
   maxArea?: number;
   amenities?: string;
   similar_to?: string;
+  savedSearchId?: string;
 };
 
 export interface PaginationMeta {

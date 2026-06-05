@@ -1,4 +1,4 @@
-import { Heart, Home, LayoutDashboard, type LucideIcon } from "lucide-react";
+import { Heart, Home, LayoutDashboard, Search, type LucideIcon } from "lucide-react";
 import type { PermissionKey } from "@/src/lib/auth/permissions";
 
 export type ProtectedSidebarNavItemConfig = {
@@ -39,6 +39,12 @@ export const PROTECTED_SIDEBAR_NAV_SECTIONS: ProtectedSidebarNavSectionConfig[] 
           labelKey: "myFavourites",
           href: "/favourites",
           icon: Heart,
+          permission: "PROFILE",
+        },
+        {
+          labelKey: "mySavedSearches",
+          href: "/saved-searches",
+          icon: Search,
           permission: "PROFILE",
         },
       ],

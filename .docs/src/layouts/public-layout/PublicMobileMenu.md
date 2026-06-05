@@ -7,7 +7,10 @@ Single-file left slide mobile drawer for the public header — same structure as
 # Responsibilities
 
 - Headless UI slide drawer (`md:hidden`, RTL-aware).
-- Primary header, Account / General / Preferences sections, account footer.
+- Primary header and account footer on `bg-surface`; theme-aware logo; outline `IconButton` close (matches header menu open button).
+- Drawer width `w-[90vw]` (max `36rem`).
+- Card sections (title above `Card`): **Account** (logged in), **Preferences**, **My Activity** (logged in); account footer.
+- Account: profile link, Change Password, Notification Settings (`owner` / `registered_user` only). Preferences: Language, Theme Mode. Activity: Listings, Favourites, Saved Searches, Recently Viewed.
 - Inline **Language** row: `SettingField` + compact `SelectDropdown` (`w-14`, labels **En / Ar / Sp / Fr**).
 - Inline **Theme** row: `SwitchField` with Sun/Moon icon, “Dark Mode” title + switch-to-dark/light subtitle + pill switch.
 - Uses local state `isOpenChangePasswordModal` to control profile password modal visibility.
