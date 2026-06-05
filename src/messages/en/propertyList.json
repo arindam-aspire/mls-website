@@ -1,0 +1,65 @@
+{
+  "filters": {
+    "advancedSearch": "Advanced Search",
+    "resetSearch": "Reset Search"
+  },
+  "advanced": {
+    "title": "Advanced Search",
+    "closeAriaLabel": "Close advanced search",
+    "bedrooms": "Bedrooms",
+    "rooms": "Rooms",
+    "bathrooms": "Bathrooms",
+    "parking": "Parking",
+    "minArea": "Min area (sqm)",
+    "maxArea": "Max area (sqm)",
+    "minPlotArea": "Min plot area",
+    "maxPlotArea": "Max plot area",
+    "governorate": "Governorate",
+    "directorate": "Directorate",
+    "village": "Village",
+    "parcelName": "Parcel name",
+    "propertyAge": "Property age",
+    "floorLevel": "Floor level",
+    "furnitureStatus": "Furniture status",
+    "allRooms": "All",
+    "allBaths": "All",
+    "allParking": "All",
+    "selectPropertyAge": "Select property age",
+    "selectFloorLevel": "Select floor level",
+    "selectFurnitureStatus": "Select furniture status",
+    "propertyAgeOptions": {
+      "new": "New",
+      "1-5": "1–5 years",
+      "5-10": "5–10 years",
+      "10-20": "10–20 years",
+      "20+": "20+ years"
+    },
+    "floorOptions": {
+      "ground": "Ground floor",
+      "penthouse": "Penthouse"
+    },
+    "furnitureOptions": {
+      "furnished": "Furnished",
+      "semiFurnished": "Semi-furnished",
+      "unfurnished": "Unfurnished"
+    },
+    "amenities": {
+      "alarmSystem": "Alarm system",
+      "parkingAvailable": "Parking available",
+      "balcony": "Balcony",
+      "builtInCloset": "Built-in closet",
+      "garden": "Garden",
+      "homeAutomation": "Home automation",
+      "gymAccess": "Gym access",
+      "loadingAccess": "Loading access",
+      "displayFrontage": "Display frontage",
+      "airConditioning": "Air conditioning",
+      "storageArea": "Storage area",
+      "roadAccess": "Road access",
+      "utilitiesAvailable": "Utilities available",
+      "zonedUse": "Zoned use",
+      "waterSource": "Water source",
+      "electricityNearby": "Electricity nearby"
+    }
+  }
+}

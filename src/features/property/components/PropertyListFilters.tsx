@@ -54,20 +54,44 @@ export type PropertyListFiltersProps = {
   onBudgetReset: () => void;
   rentMode?: boolean;
   bedrooms: string;
+  rooms: string;
   bathrooms: string;
   parking: string;
   propertyAge: string;
+  floorLevel: string;
+  furnitureStatus: string;
   minArea: string;
   maxArea: string;
+  minPlotArea: string;
+  maxPlotArea: string;
+  governorate: string;
+  directorate: string;
+  village: string;
+  parcelName: string;
   selectedAmenities: string[];
   onBedroomsChange: (value: string) => void;
+  onRoomsChange: (value: string) => void;
   onBathroomsChange: (value: string) => void;
   onParkingChange: (value: string) => void;
   onPropertyAgeChange: (value: string) => void;
+  onFloorLevelChange: (value: string) => void;
+  onFurnitureStatusChange: (value: string) => void;
   onMinAreaChange: (value: string) => void;
   onMaxAreaChange: (value: string) => void;
+  onMinPlotAreaChange: (value: string) => void;
+  onMaxPlotAreaChange: (value: string) => void;
+  onGovernorateChange: (value: string) => void;
+  onDirectorateChange: (value: string) => void;
+  onVillageChange: (value: string) => void;
+  onParcelNameChange: (value: string) => void;
   onMinAreaCommit: () => void;
   onMaxAreaCommit: () => void;
+  onMinPlotAreaCommit: () => void;
+  onMaxPlotAreaCommit: () => void;
+  onGovernorateCommit: () => void;
+  onDirectorateCommit: () => void;
+  onVillageCommit: () => void;
+  onParcelNameCommit: () => void;
   onAmenityChange: (slug: string, checked: boolean) => void;
   hasAdvancedFilters?: boolean;
   onResetSearch: () => void;
@@ -111,20 +135,44 @@ export function PropertyListFilters({
   onBudgetReset,
   rentMode = false,
   bedrooms,
+  rooms,
   bathrooms,
   parking,
   propertyAge,
+  floorLevel,
+  furnitureStatus,
   minArea,
   maxArea,
+  minPlotArea,
+  maxPlotArea,
+  governorate,
+  directorate,
+  village,
+  parcelName,
   selectedAmenities,
   onBedroomsChange,
+  onRoomsChange,
   onBathroomsChange,
   onParkingChange,
   onPropertyAgeChange,
+  onFloorLevelChange,
+  onFurnitureStatusChange,
   onMinAreaChange,
   onMaxAreaChange,
+  onMinPlotAreaChange,
+  onMaxPlotAreaChange,
+  onGovernorateChange,
+  onDirectorateChange,
+  onVillageChange,
+  onParcelNameChange,
   onMinAreaCommit,
   onMaxAreaCommit,
+  onMinPlotAreaCommit,
+  onMaxPlotAreaCommit,
+  onGovernorateCommit,
+  onDirectorateCommit,
+  onVillageCommit,
+  onParcelNameCommit,
   onAmenityChange,
   hasAdvancedFilters = false,
   onResetSearch,
@@ -144,6 +192,8 @@ export function PropertyListFilters({
   disabled = false,
 }: PropertyListFiltersProps) {
   const locale = useLocale();
+  const tPropertyList = useTranslations("propertyList.filters");
+  const tPropertyListAmenities = useTranslations("propertyList.advanced.amenities");
   const tSavedSearch = useTranslations("savedSearches");
   const isUpdateMode = Boolean(savedSearchId);
   const saveSearchActionLabel = isUpdateMode
@@ -168,16 +218,32 @@ export function PropertyListFilters({
       budgetMin,
       budgetMax,
       bedrooms,
+      rooms,
       bathrooms,
       parking,
       propertyAge,
+      floorLevel,
+      furnitureStatus,
       minArea,
       maxArea,
+      minPlotArea,
+      maxPlotArea,
+      governorate,
+      directorate,
+      village,
+      parcelName,
       selectedAmenities,
     };
 
     onSaveSearch({
-      filterItems: buildSaveSearchFilterItems(filterInput, tSavedSearch),
+      filterItems: buildSaveSearchFilterItems(
+        filterInput,
+        tSavedSearch,
+        (slug) =>
+          tPropertyListAmenities(
+            slug as Parameters<typeof tPropertyListAmenities>[0],
+          ),
+      ),
       searchCriteria: buildSaveSearchCriteria(filterInput),
     });
   }, [
@@ -198,9 +264,19 @@ export function PropertyListFilters({
     status,
     statusOptions,
     tSavedSearch,
+    tPropertyListAmenities,
     type,
     typeOptions,
     bedrooms,
+    directorate,
+    floorLevel,
+    furnitureStatus,
+    governorate,
+    maxPlotArea,
+    minPlotArea,
+    parcelName,
+    rooms,
+    village,
   ]);
   const isRtl = isRtlLocale(locale);
   const [isBudgetOpen, setIsBudgetOpen] = useState(false);
@@ -318,7 +394,7 @@ export function PropertyListFilters({
               )
             }
           >
-            Advanced Search
+            {tPropertyList("advancedSearch")}
           </Button>
           <Button
             type="button"
@@ -331,7 +407,7 @@ export function PropertyListFilters({
             }}
             iconStart={<RotateCcw className="size-4" aria-hidden />}
           >
-            Reset Search
+            {tPropertyList("resetSearch")}
           </Button>
           <Button
             type="button"
@@ -352,21 +428,47 @@ export function PropertyListFilters({
         onClose={() => {
           setIsAdvancedOpen(false);
         }}
+        category={category}
+        type={type}
         bedrooms={bedrooms}
+        rooms={rooms}
         bathrooms={bathrooms}
         parking={parking}
         propertyAge={propertyAge}
+        floorLevel={floorLevel}
+        furnitureStatus={furnitureStatus}
         minArea={minArea}
         maxArea={maxArea}
+        minPlotArea={minPlotArea}
+        maxPlotArea={maxPlotArea}
+        governorate={governorate}
+        directorate={directorate}
+        village={village}
+        parcelName={parcelName}
         selectedAmenities={selectedAmenities}
         onBedroomsChange={onBedroomsChange}
+        onRoomsChange={onRoomsChange}
         onBathroomsChange={onBathroomsChange}
         onParkingChange={onParkingChange}
         onPropertyAgeChange={onPropertyAgeChange}
+        onFloorLevelChange={onFloorLevelChange}
+        onFurnitureStatusChange={onFurnitureStatusChange}
         onMinAreaChange={onMinAreaChange}
         onMaxAreaChange={onMaxAreaChange}
+        onMinPlotAreaChange={onMinPlotAreaChange}
+        onMaxPlotAreaChange={onMaxPlotAreaChange}
+        onGovernorateChange={onGovernorateChange}
+        onDirectorateChange={onDirectorateChange}
+        onVillageChange={onVillageChange}
+        onParcelNameChange={onParcelNameChange}
         onMinAreaCommit={onMinAreaCommit}
         onMaxAreaCommit={onMaxAreaCommit}
+        onMinPlotAreaCommit={onMinPlotAreaCommit}
+        onMaxPlotAreaCommit={onMaxPlotAreaCommit}
+        onGovernorateCommit={onGovernorateCommit}
+        onDirectorateCommit={onDirectorateCommit}
+        onVillageCommit={onVillageCommit}
+        onParcelNameCommit={onParcelNameCommit}
         onAmenityChange={onAmenityChange}
         disabled={disabled}
       />

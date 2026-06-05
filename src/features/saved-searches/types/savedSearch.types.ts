@@ -21,6 +21,12 @@ export type SavedSearchCriteria = {
   propertyAge?: string;
   minArea?: string;
   maxArea?: string;
+  minPlotArea?: string;
+  maxPlotArea?: string;
+  governorate?: string;
+  directorate?: string;
+  village?: string;
+  parcelName?: string;
   amenities?: string;
   rooms?: string;
   floorLevel?: string;

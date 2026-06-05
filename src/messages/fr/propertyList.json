@@ -1,0 +1,65 @@
+{
+  "filters": {
+    "advancedSearch": "Recherche avancée",
+    "resetSearch": "Réinitialiser la recherche"
+  },
+  "advanced": {
+    "title": "Recherche avancée",
+    "closeAriaLabel": "Fermer la recherche avancée",
+    "bedrooms": "Chambres",
+    "rooms": "Pièces",
+    "bathrooms": "Salles de bain",
+    "parking": "Parking",
+    "minArea": "Surface min. (m²)",
+    "maxArea": "Surface max. (m²)",
+    "minPlotArea": "Surface parcelle min.",
+    "maxPlotArea": "Surface parcelle max.",
+    "governorate": "Gouvernorat",
+    "directorate": "Directorate",
+    "village": "Village",
+    "parcelName": "Nom de parcelle",
+    "propertyAge": "Âge du bien",
+    "floorLevel": "Étage",
+    "furnitureStatus": "Ameublement",
+    "allRooms": "Tous",
+    "allBaths": "Tous",
+    "allParking": "Tous",
+    "selectPropertyAge": "Sélectionner l'âge",
+    "selectFloorLevel": "Sélectionner l'étage",
+    "selectFurnitureStatus": "Sélectionner l'ameublement",
+    "propertyAgeOptions": {
+      "new": "Neuf",
+      "1-5": "1–5 ans",
+      "5-10": "5–10 ans",
+      "10-20": "10–20 ans",
+      "20+": "Plus de 20 ans"
+    },
+    "floorOptions": {
+      "ground": "Rez-de-chaussée",
+      "penthouse": "Penthouse"
+    },
+    "furnitureOptions": {
+      "furnished": "Meublé",
+      "semiFurnished": "Semi-meublé",
+      "unfurnished": "Non meublé"
+    },
+    "amenities": {
+      "alarmSystem": "Système d'alarme",
+      "parkingAvailable": "Parking disponible",
+      "balcony": "Balcon",
+      "builtInCloset": "Placard intégré",
+      "garden": "Jardin",
+      "homeAutomation": "Domotique",
+      "gymAccess": "Accès salle de sport",
+      "loadingAccess": "Accès chargement",
+      "displayFrontage": "Vitrine",
+      "airConditioning": "Climatisation",
+      "storageArea": "Zone de stockage",
+      "roadAccess": "Accès routier",
+      "utilitiesAvailable": "Services disponibles",
+      "zonedUse": "Usage zoné",
+      "waterSource": "Source d'eau",
+      "electricityNearby": "Électricité à proximité"
+    }
+  }
+}

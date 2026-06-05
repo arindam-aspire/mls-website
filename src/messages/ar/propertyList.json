@@ -1,0 +1,65 @@
+{
+  "filters": {
+    "advancedSearch": "بحث متقدم",
+    "resetSearch": "إعادة تعيين البحث"
+  },
+  "advanced": {
+    "title": "بحث متقدم",
+    "closeAriaLabel": "إغلاق البحث المتقدم",
+    "bedrooms": "غرف النوم",
+    "rooms": "الغرف",
+    "bathrooms": "الحمامات",
+    "parking": "مواقف السيارات",
+    "minArea": "الحد الأدنى للمساحة (م²)",
+    "maxArea": "الحد الأقصى للمساحة (م²)",
+    "minPlotArea": "الحد الأدنى لمساحة القطعة",
+    "maxPlotArea": "الحد الأقصى لمساحة القطعة",
+    "governorate": "المحافظة",
+    "directorate": "المديرية",
+    "village": "القرية",
+    "parcelName": "اسم القطعة",
+    "propertyAge": "عمر العقار",
+    "floorLevel": "الطابق",
+    "furnitureStatus": "حالة الأثاث",
+    "allRooms": "الكل",
+    "allBaths": "الكل",
+    "allParking": "الكل",
+    "selectPropertyAge": "اختر عمر العقار",
+    "selectFloorLevel": "اختر الطابق",
+    "selectFurnitureStatus": "اختر حالة الأثاث",
+    "propertyAgeOptions": {
+      "new": "جديد",
+      "1-5": "1–5 سنوات",
+      "5-10": "5–10 سنوات",
+      "10-20": "10–20 سنة",
+      "20+": "أكثر من 20 سنة"
+    },
+    "floorOptions": {
+      "ground": "الطابق الأرضي",
+      "penthouse": "البنتهاوس"
+    },
+    "furnitureOptions": {
+      "furnished": "مفروش",
+      "semiFurnished": "نصف مفروش",
+      "unfurnished": "غير مفروش"
+    },
+    "amenities": {
+      "alarmSystem": "نظام إنذار",
+      "parkingAvailable": "موقف متاح",
+      "balcony": "شرفة",
+      "builtInCloset": "خزانة مدمجة",
+      "garden": "حديقة",
+      "homeAutomation": "أتمتة المنزل",
+      "gymAccess": "وصول للصالة الرياضية",
+      "loadingAccess": "وصول للتحميل",
+      "displayFrontage": "واجهة عرض",
+      "airConditioning": "تكييف",
+      "storageArea": "منطقة تخزين",
+      "roadAccess": "وصول للطريق",
+      "utilitiesAvailable": "مرافق متاحة",
+      "zonedUse": "استخدام مخطط",
+      "waterSource": "مصدر مياه",
+      "electricityNearby": "كهرباء قريبة"
+    }
+  }
+}

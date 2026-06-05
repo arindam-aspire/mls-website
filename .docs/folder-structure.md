@@ -175,9 +175,11 @@ mls_website/
 │       │       ├── store/
 │       │       │   ├── README.md
 │       │       │   └── property.store.md
-│       │       └── types/
-│       │           ├── README.md
-│       │           └── property.types.md
+│       │       ├── types/
+│       │       │   ├── README.md
+│       │       │   └── property.types.md
+│       │       └── utils/
+│       │           └── propertyAdvancedFieldVisibility.md
 │       ├── hooks/
 │       ├── i18n/
 │       ├── initializers/
@@ -614,8 +616,10 @@ mls_website/
 │   │       │   └── PropertyListScreen.tsx
 │   │       ├── store/
 │   │       │   └── property.store.ts
-│   │       └── types/
-│   │           └── property.types.ts
+│   │       ├── types/
+│   │       │   └── property.types.ts
+│   │       └── utils/
+│   │           └── propertyAdvancedFieldVisibility.ts
 │   │   ├── saved-searches/
 │   │   │   ├── components/
 │   │   │   │   ├── SavedSearchFilterChips.tsx

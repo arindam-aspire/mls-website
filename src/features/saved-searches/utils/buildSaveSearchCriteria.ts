@@ -39,11 +39,20 @@ export function buildSaveSearchCriteria(
   appendCriteriaValue(criteria, "budgetMin", input.budgetMin);
   appendCriteriaValue(criteria, "budgetMax", input.budgetMax);
   appendCriteriaValue(criteria, "bedrooms", input.bedrooms);
+  appendCriteriaValue(criteria, "rooms", input.rooms);
   appendCriteriaValue(criteria, "bathrooms", input.bathrooms);
   appendCriteriaValue(criteria, "parking", input.parking);
   appendCriteriaValue(criteria, "propertyAge", input.propertyAge);
+  appendCriteriaValue(criteria, "floorLevel", input.floorLevel);
+  appendCriteriaValue(criteria, "furnitureStatus", input.furnitureStatus);
   appendCriteriaValue(criteria, "minArea", input.minArea);
   appendCriteriaValue(criteria, "maxArea", input.maxArea);
+  appendCriteriaValue(criteria, "minPlotArea", input.minPlotArea);
+  appendCriteriaValue(criteria, "maxPlotArea", input.maxPlotArea);
+  appendCriteriaValue(criteria, "governorate", input.governorate);
+  appendCriteriaValue(criteria, "directorate", input.directorate);
+  appendCriteriaValue(criteria, "village", input.village);
+  appendCriteriaValue(criteria, "parcelName", input.parcelName);
 
   if (input.selectedAmenities.length > 0) {
     const serialized = serializeAmenitiesParam(new Set(input.selectedAmenities));

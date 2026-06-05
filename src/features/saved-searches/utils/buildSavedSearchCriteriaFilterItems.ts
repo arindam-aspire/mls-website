@@ -3,6 +3,11 @@ import type {
   SavedSearchCriteria,
   SaveSearchFilterItem,
 } from "../types/savedSearch.types";
+import {
+  appendAmenityFilterItems,
+  humanizeAmenitySlug,
+  parseAmenitySlugs,
+} from "./saveSearchAmenityFilterItems";
 
 type CriteriaLabelKey =
   | "filterLabels.status"
@@ -15,6 +20,11 @@ type CriteriaLabelKey =
   | "filterLabels.parking"
   | "filterLabels.propertyAge"
   | "filterLabels.area"
+  | "filterLabels.plotArea"
+  | "filterLabels.governorate"
+  | "filterLabels.directorate"
+  | "filterLabels.village"
+  | "filterLabels.parcelName"
   | "filterLabels.amenities"
   | "filterLabels.rooms"
   | "filterLabels.floorLevel"
@@ -30,6 +40,20 @@ const AMENITY_LABELS: Record<string, string> = {
   alarmSystem: "Alarm System",
   "parking-available": "Parking Available",
   parkingAvailable: "Parking Available",
+  balcony: "Balcony",
+  builtInCloset: "Built-in closet",
+  garden: "Garden",
+  homeAutomation: "Home automation",
+  gymAccess: "Gym access",
+  loadingAccess: "Loading access",
+  displayFrontage: "Display frontage",
+  airConditioning: "Air conditioning",
+  storageArea: "Storage area",
+  roadAccess: "Road access",
+  utilitiesAvailable: "Utilities available",
+  zonedUse: "Zoned use",
+  waterSource: "Water source",
+  electricityNearby: "Electricity nearby",
 };
 
 const COMBINED_KEYS = new Set([
@@ -37,6 +61,8 @@ const COMBINED_KEYS = new Set([
   "budgetMax",
   "minArea",
   "maxArea",
+  "minPlotArea",
+  "maxPlotArea",
   "city",
   "locations",
 ]);
@@ -71,13 +97,8 @@ function formatLocation(criteria: SavedSearchCriteria) {
   return city || locations || location || null;
 }
 
-function formatAmenities(value: string) {
-  return value
-    .split(",")
-    .map((item) => item.trim())
-    .filter(Boolean)
-    .map((slug) => AMENITY_LABELS[slug] ?? humanizeToken(slug))
-    .join(", ");
+function resolveAmenityLabelFromMap(slug: string) {
+  return AMENITY_LABELS[slug] ?? humanizeAmenitySlug(slug);
 }
 
 function resolvePropertyAgeLabel(value: string) {
@@ -105,6 +126,7 @@ function pushItem(
 export function buildSavedSearchCriteriaFilterItems(
   criteria: SavedSearchCriteria,
   t: (key: CriteriaLabelKey) => string,
+  resolveAmenityLabel: (slug: string) => string = resolveAmenityLabelFromMap,
 ): SaveSearchFilterItem[] {
   const items: SaveSearchFilterItem[] = [];
 
@@ -162,6 +184,18 @@ export function buildSavedSearchCriteriaFilterItems(
 
   pushItem(
     items,
+    "plotArea",
+    t("filterLabels.plotArea"),
+    formatRange(criteria.minPlotArea, criteria.maxPlotArea),
+  );
+
+  pushItem(items, "governorate", t("filterLabels.governorate"), criteria.governorate);
+  pushItem(items, "directorate", t("filterLabels.directorate"), criteria.directorate);
+  pushItem(items, "village", t("filterLabels.village"), criteria.village);
+  pushItem(items, "parcelName", t("filterLabels.parcelName"), criteria.parcelName);
+
+  pushItem(
+    items,
     "rooms",
     t("filterLabels.rooms"),
     criteria.rooms,
@@ -184,11 +218,11 @@ export function buildSavedSearchCriteriaFilterItems(
   );
 
   if (criteria.amenities?.trim()) {
-    pushItem(
+    appendAmenityFilterItems(
       items,
-      "amenities",
+      parseAmenitySlugs(criteria.amenities),
       t("filterLabels.amenities"),
-      formatAmenities(criteria.amenities),
+      resolveAmenityLabel,
     );
   }
 
@@ -207,6 +241,12 @@ export function buildSavedSearchCriteriaFilterItems(
     "propertyAge",
     "minArea",
     "maxArea",
+    "minPlotArea",
+    "maxPlotArea",
+    "governorate",
+    "directorate",
+    "village",
+    "parcelName",
     "rooms",
     "floorLevel",
     "furnitureStatus",

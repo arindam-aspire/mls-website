@@ -1,0 +1,65 @@
+{
+  "filters": {
+    "advancedSearch": "Búsqueda avanzada",
+    "resetSearch": "Restablecer búsqueda"
+  },
+  "advanced": {
+    "title": "Búsqueda avanzada",
+    "closeAriaLabel": "Cerrar búsqueda avanzada",
+    "bedrooms": "Dormitorios",
+    "rooms": "Habitaciones",
+    "bathrooms": "Baños",
+    "parking": "Estacionamiento",
+    "minArea": "Área mín. (m²)",
+    "maxArea": "Área máx. (m²)",
+    "minPlotArea": "Área mín. de parcela",
+    "maxPlotArea": "Área máx. de parcela",
+    "governorate": "Gobernación",
+    "directorate": "Dirección",
+    "village": "Pueblo",
+    "parcelName": "Nombre de parcela",
+    "propertyAge": "Antigüedad",
+    "floorLevel": "Nivel de piso",
+    "furnitureStatus": "Estado del mobiliario",
+    "allRooms": "Todos",
+    "allBaths": "Todos",
+    "allParking": "Todos",
+    "selectPropertyAge": "Seleccionar antigüedad",
+    "selectFloorLevel": "Seleccionar piso",
+    "selectFurnitureStatus": "Seleccionar mobiliario",
+    "propertyAgeOptions": {
+      "new": "Nuevo",
+      "1-5": "1–5 años",
+      "5-10": "5–10 años",
+      "10-20": "10–20 años",
+      "20+": "Más de 20 años"
+    },
+    "floorOptions": {
+      "ground": "Planta baja",
+      "penthouse": "Ático"
+    },
+    "furnitureOptions": {
+      "furnished": "Amueblado",
+      "semiFurnished": "Semi amueblado",
+      "unfurnished": "Sin amueblar"
+    },
+    "amenities": {
+      "alarmSystem": "Sistema de alarma",
+      "parkingAvailable": "Estacionamiento disponible",
+      "balcony": "Balcón",
+      "builtInCloset": "Armario empotrado",
+      "garden": "Jardín",
+      "homeAutomation": "Domótica",
+      "gymAccess": "Acceso al gimnasio",
+      "loadingAccess": "Acceso de carga",
+      "displayFrontage": "Fachada comercial",
+      "airConditioning": "Aire acondicionado",
+      "storageArea": "Área de almacenamiento",
+      "roadAccess": "Acceso por carretera",
+      "utilitiesAvailable": "Servicios disponibles",
+      "zonedUse": "Uso zonificado",
+      "waterSource": "Fuente de agua",
+      "electricityNearby": "Electricidad cercana"
+    }
+  }
+}

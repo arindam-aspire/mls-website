@@ -43,6 +43,7 @@ import {
   parseAmenitiesParam,
   serializeAmenitiesParam,
 } from "../components/propertyListAdvancedFilters.constants";
+import { pruneAdvancedParamsForContext } from "../utils/propertyAdvancedFieldVisibility";
 
 const DEFAULT_SORT = "newest";
 
@@ -68,11 +69,19 @@ const LIST_PARAM_KEYS = [
   "budgetMax",
   "furnitureStatus",
   "bedrooms",
+  "rooms",
   "bathrooms",
   "parking",
   "propertyAge",
+  "floorLevel",
   "minArea",
   "maxArea",
+  "minPlotArea",
+  "maxPlotArea",
+  "governorate",
+  "directorate",
+  "village",
+  "parcelName",
   "amenities",
   "similar_to",
   "savedSearchId",
@@ -128,11 +137,19 @@ function parseUrlListParams(searchParams: URLSearchParams): PropertyListParams {
     budgetMax: parseOptionalNumber(getInitialBudgetMax(searchParams) || null),
     furnitureStatus: getOptionalString(searchParams.get("furnitureStatus")),
     bedrooms: parseOptionalNumber(searchParams.get("bedrooms")),
+    rooms: parseOptionalNumber(searchParams.get("rooms")),
     bathrooms: parseOptionalNumber(searchParams.get("bathrooms")),
     parking: parseOptionalNumber(searchParams.get("parking")),
     propertyAge: getOptionalString(searchParams.get("propertyAge")),
+    floorLevel: getOptionalString(searchParams.get("floorLevel")),
     minArea: parseOptionalNumber(searchParams.get("minArea")),
     maxArea: parseOptionalNumber(searchParams.get("maxArea")),
+    minPlotArea: parseOptionalNumber(searchParams.get("minPlotArea")),
+    maxPlotArea: parseOptionalNumber(searchParams.get("maxPlotArea")),
+    governorate: getOptionalString(searchParams.get("governorate")),
+    directorate: getOptionalString(searchParams.get("directorate")),
+    village: getOptionalString(searchParams.get("village")),
+    parcelName: getOptionalString(searchParams.get("parcelName")),
     amenities: normalizeAmenitiesParam(getOptionalString(searchParams.get("amenities"))),
     similar_to: getOptionalString(searchParams.get("similar_to")),
     savedSearchId: getOptionalString(searchParams.get("savedSearchId")),
@@ -201,6 +218,26 @@ export function usePropertyList() {
   const [maxAreaDraft, setMaxAreaDraft] = useState(
     () => (listParams.maxArea != null ? String(listParams.maxArea) : ""),
   );
+  const [minPlotAreaDraft, setMinPlotAreaDraft] = useState(
+    () =>
+      listParams.minPlotArea != null ? String(listParams.minPlotArea) : "",
+  );
+  const [maxPlotAreaDraft, setMaxPlotAreaDraft] = useState(
+    () =>
+      listParams.maxPlotArea != null ? String(listParams.maxPlotArea) : "",
+  );
+  const [governorateDraft, setGovernorateDraft] = useState(
+    () => listParams.governorate ?? "",
+  );
+  const [directorateDraft, setDirectorateDraft] = useState(
+    () => listParams.directorate ?? "",
+  );
+  const [villageDraft, setVillageDraft] = useState(
+    () => listParams.village ?? "",
+  );
+  const [parcelNameDraft, setParcelNameDraft] = useState(
+    () => listParams.parcelName ?? "",
+  );
 
   useEffect(() => {
     setBudgetMinDraft(
@@ -219,6 +256,27 @@ export function usePropertyList() {
       listParams.maxArea != null ? String(listParams.maxArea) : "",
     );
   }, [listParams.maxArea, listParams.minArea]);
+
+  useEffect(() => {
+    setMinPlotAreaDraft(
+      listParams.minPlotArea != null ? String(listParams.minPlotArea) : "",
+    );
+    setMaxPlotAreaDraft(
+      listParams.maxPlotArea != null ? String(listParams.maxPlotArea) : "",
+    );
+  }, [listParams.maxPlotArea, listParams.minPlotArea]);
+
+  useEffect(() => {
+    setGovernorateDraft(listParams.governorate ?? "");
+    setDirectorateDraft(listParams.directorate ?? "");
+    setVillageDraft(listParams.village ?? "");
+    setParcelNameDraft(listParams.parcelName ?? "");
+  }, [
+    listParams.directorate,
+    listParams.governorate,
+    listParams.parcelName,
+    listParams.village,
+  ]);
 
   // 5. Data fetching / queries
   const {
@@ -365,19 +423,31 @@ export function usePropertyList() {
 
   const onCategoryChange = useCallback(
     (category: string) => {
-      updateSearchParams({ category, type: "", page: 1 });
+      updateSearchParams({
+        category,
+        type: "",
+        page: 1,
+        ...pruneAdvancedParamsForContext(listParams, category, undefined),
+      });
     },
-    [updateSearchParams],
+    [listParams, updateSearchParams],
   );
 
   const onTypeChange = useCallback(
     (type: string) => {
+      const nextType = type === SELECT_DROPDOWN_EMPTY_VALUE ? "" : type;
+
       updateSearchParams({
-        type: type === SELECT_DROPDOWN_EMPTY_VALUE ? "" : type,
+        type: nextType,
         page: 1,
+        ...pruneAdvancedParamsForContext(
+          listParams,
+          activeCategorySlug,
+          nextType,
+        ),
       });
     },
-    [updateSearchParams],
+    [activeCategorySlug, listParams, updateSearchParams],
   );
 
   const onLocationInputChange = useCallback((nextValue: string) => {
@@ -490,6 +560,19 @@ export function usePropertyList() {
     [updateSearchParams],
   );
 
+  const onRoomsChange = useCallback(
+    (value: string) => {
+      updateSearchParams({
+        rooms:
+          value === SELECT_DROPDOWN_EMPTY_VALUE
+            ? ("" as unknown as number)
+            : Number(value),
+        page: 1,
+      });
+    },
+    [updateSearchParams],
+  );
+
   const onBathroomsChange = useCallback(
     (value: string) => {
       updateSearchParams({
@@ -521,6 +604,26 @@ export function usePropertyList() {
       updateSearchParams({
         propertyAge:
           value === SELECT_DROPDOWN_EMPTY_VALUE ? "" : value,
+        page: 1,
+      });
+    },
+    [updateSearchParams],
+  );
+
+  const onFloorLevelChange = useCallback(
+    (value: string) => {
+      updateSearchParams({
+        floorLevel: value === SELECT_DROPDOWN_EMPTY_VALUE ? "" : value,
+        page: 1,
+      });
+    },
+    [updateSearchParams],
+  );
+
+  const onFurnitureStatusChange = useCallback(
+    (value: string) => {
+      updateSearchParams({
+        furnitureStatus: value === SELECT_DROPDOWN_EMPTY_VALUE ? "" : value,
         page: 1,
       });
     },
@@ -562,6 +665,114 @@ export function usePropertyList() {
       page: 1,
     });
   }, [listParams.maxArea, maxAreaDraft, updateSearchParams]);
+
+  const onMinPlotAreaChange = useCallback((value: string) => {
+    setMinPlotAreaDraft(value.replace(/\D/g, ""));
+  }, []);
+
+  const onMaxPlotAreaChange = useCallback((value: string) => {
+    setMaxPlotAreaDraft(value.replace(/\D/g, ""));
+  }, []);
+
+  const onMinPlotAreaCommit = useCallback(() => {
+    const nextValue = minPlotAreaDraft ? Number(minPlotAreaDraft) : undefined;
+    const currentValue = listParams.minPlotArea;
+
+    if (nextValue === currentValue || (nextValue == null && currentValue == null)) {
+      return;
+    }
+
+    updateSearchParams({
+      minPlotArea: nextValue ?? ("" as unknown as number),
+      page: 1,
+    });
+  }, [listParams.minPlotArea, minPlotAreaDraft, updateSearchParams]);
+
+  const onMaxPlotAreaCommit = useCallback(() => {
+    const nextValue = maxPlotAreaDraft ? Number(maxPlotAreaDraft) : undefined;
+    const currentValue = listParams.maxPlotArea;
+
+    if (nextValue === currentValue || (nextValue == null && currentValue == null)) {
+      return;
+    }
+
+    updateSearchParams({
+      maxPlotArea: nextValue ?? ("" as unknown as number),
+      page: 1,
+    });
+  }, [listParams.maxPlotArea, maxPlotAreaDraft, updateSearchParams]);
+
+  const onGovernorateChange = useCallback((value: string) => {
+    setGovernorateDraft(value);
+  }, []);
+
+  const onDirectorateChange = useCallback((value: string) => {
+    setDirectorateDraft(value);
+  }, []);
+
+  const onVillageChange = useCallback((value: string) => {
+    setVillageDraft(value);
+  }, []);
+
+  const onParcelNameChange = useCallback((value: string) => {
+    setParcelNameDraft(value);
+  }, []);
+
+  const onGovernorateCommit = useCallback(() => {
+    const nextValue = governorateDraft.trim();
+    const currentValue = listParams.governorate ?? "";
+
+    if (nextValue === currentValue) {
+      return;
+    }
+
+    updateSearchParams({
+      governorate: nextValue,
+      page: 1,
+    });
+  }, [governorateDraft, listParams.governorate, updateSearchParams]);
+
+  const onDirectorateCommit = useCallback(() => {
+    const nextValue = directorateDraft.trim();
+    const currentValue = listParams.directorate ?? "";
+
+    if (nextValue === currentValue) {
+      return;
+    }
+
+    updateSearchParams({
+      directorate: nextValue,
+      page: 1,
+    });
+  }, [directorateDraft, listParams.directorate, updateSearchParams]);
+
+  const onVillageCommit = useCallback(() => {
+    const nextValue = villageDraft.trim();
+    const currentValue = listParams.village ?? "";
+
+    if (nextValue === currentValue) {
+      return;
+    }
+
+    updateSearchParams({
+      village: nextValue,
+      page: 1,
+    });
+  }, [listParams.village, updateSearchParams, villageDraft]);
+
+  const onParcelNameCommit = useCallback(() => {
+    const nextValue = parcelNameDraft.trim();
+    const currentValue = listParams.parcelName ?? "";
+
+    if (nextValue === currentValue) {
+      return;
+    }
+
+    updateSearchParams({
+      parcelName: nextValue,
+      page: 1,
+    });
+  }, [listParams.parcelName, parcelNameDraft, updateSearchParams]);
 
   const onAmenityChange = useCallback(
     (slug: string, checked: boolean) => {
@@ -701,6 +912,14 @@ export function usePropertyList() {
     return String(listParams.bedrooms);
   }, [listParams.bedrooms]);
 
+  const activeRoomsValue = useMemo(() => {
+    if (listParams.rooms == null) {
+      return SELECT_DROPDOWN_EMPTY_VALUE;
+    }
+
+    return String(listParams.rooms);
+  }, [listParams.rooms]);
+
   const activeBathroomsValue = useMemo(() => {
     if (listParams.bathrooms == null) {
       return SELECT_DROPDOWN_EMPTY_VALUE;
@@ -716,6 +935,22 @@ export function usePropertyList() {
 
     return listParams.propertyAge;
   }, [listParams.propertyAge]);
+
+  const activeFloorLevelValue = useMemo(() => {
+    if (!listParams.floorLevel) {
+      return SELECT_DROPDOWN_EMPTY_VALUE;
+    }
+
+    return listParams.floorLevel;
+  }, [listParams.floorLevel]);
+
+  const activeFurnitureStatusValue = useMemo(() => {
+    if (!listParams.furnitureStatus) {
+      return SELECT_DROPDOWN_EMPTY_VALUE;
+    }
+
+    return listParams.furnitureStatus;
+  }, [listParams.furnitureStatus]);
 
   const selectedAmenities = useMemo(
     () => [...parseAmenitiesParam(listParams.amenities)],
@@ -747,20 +982,44 @@ export function usePropertyList() {
       onBudgetReset,
       rentMode: listParams.status === "rent",
       bedrooms: activeBedroomsValue,
+      rooms: activeRoomsValue,
       bathrooms: activeBathroomsValue,
       parking: activeParkingValue,
       propertyAge: activePropertyAgeValue,
+      floorLevel: activeFloorLevelValue,
+      furnitureStatus: activeFurnitureStatusValue,
       minArea: minAreaDraft,
       maxArea: maxAreaDraft,
+      minPlotArea: minPlotAreaDraft,
+      maxPlotArea: maxPlotAreaDraft,
+      governorate: governorateDraft,
+      directorate: directorateDraft,
+      village: villageDraft,
+      parcelName: parcelNameDraft,
       selectedAmenities,
       onBedroomsChange,
+      onRoomsChange,
       onBathroomsChange,
       onParkingChange,
       onPropertyAgeChange,
+      onFloorLevelChange,
+      onFurnitureStatusChange,
       onMinAreaChange,
       onMaxAreaChange,
+      onMinPlotAreaChange,
+      onMaxPlotAreaChange,
+      onGovernorateChange,
+      onDirectorateChange,
+      onVillageChange,
+      onParcelNameChange,
       onMinAreaCommit,
       onMaxAreaCommit,
+      onMinPlotAreaCommit,
+      onMaxPlotAreaCommit,
+      onGovernorateCommit,
+      onDirectorateCommit,
+      onVillageCommit,
+      onParcelNameCommit,
       onAmenityChange,
       hasAdvancedFilters: hasAdvancedFilters(listParams),
       onResetSearch,
@@ -772,33 +1031,57 @@ export function usePropertyList() {
       activeBedroomsValue,
       activeBathroomsValue,
       activeCategorySlug,
+      activeFloorLevelValue,
+      activeFurnitureStatusValue,
       activeParkingValue,
       activePropertyAgeValue,
+      activeRoomsValue,
       activeTypeValue,
       budgetMaxDraft,
       budgetMinDraft,
       categoryOptions,
+      directorateDraft,
+      governorateDraft,
       isLoadingTaxonomy,
       listParams,
       locationDraft,
       locationOptions,
       maxAreaDraft,
+      maxPlotAreaDraft,
       minAreaDraft,
+      minPlotAreaDraft,
       onAmenityChange,
       onBathroomsChange,
       onBedroomsChange,
       onBudgetCommit,
       onBudgetReset,
       onCategoryChange,
+      onDirectorateChange,
+      onDirectorateCommit,
+      onFloorLevelChange,
+      onFurnitureStatusChange,
+      onGovernorateChange,
+      onGovernorateCommit,
       onLocationCommit,
       onLocationInputChange,
       onLocationOptionSelect,
       onMaxAreaChange,
       onMaxAreaCommit,
+      onMaxPlotAreaChange,
+      onMaxPlotAreaCommit,
       onMinAreaChange,
       onMinAreaCommit,
+      onMinPlotAreaChange,
+      onMinPlotAreaCommit,
+      onParcelNameChange,
+      onParcelNameCommit,
       onParkingChange,
       onPropertyAgeChange,
+      onRoomsChange,
+      onVillageChange,
+      onVillageCommit,
+      parcelNameDraft,
+      villageDraft,
       onResetSearch,
       onSaveSearch,
       onStatusChange,

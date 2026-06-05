@@ -18,10 +18,16 @@ export function SavedSearchPopoverItem({
   onSelect,
 }: SavedSearchPopoverItemProps) {
   const t = useTranslations("savedSearches");
+  const tAmenities = useTranslations("propertyList.advanced.amenities");
 
   const filterItems = useMemo(
-    () => buildSavedSearchCriteriaFilterItems(record.search_criteria, t),
-    [record.search_criteria, t],
+    () =>
+      buildSavedSearchCriteriaFilterItems(
+        record.search_criteria,
+        t,
+        (slug) => tAmenities(slug as Parameters<typeof tAmenities>[0]),
+      ),
+    [record.search_criteria, t, tAmenities],
   );
 
   return (

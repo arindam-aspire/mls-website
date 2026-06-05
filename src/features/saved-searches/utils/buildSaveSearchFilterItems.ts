@@ -2,13 +2,19 @@ import { SELECT_DROPDOWN_EMPTY_VALUE } from "@/src/components/ui";
 import type { ToggleButtonItem } from "@/src/components/ui";
 import type { SelectDropdownOption } from "@/src/components/ui";
 import {
-  ADVANCED_AMENITY_OPTIONS,
   BATHROOMS_OPTIONS,
   BEDROOMS_OPTIONS,
+  FLOOR_OPTIONS,
+  FURNITURE_STATUS_OPTIONS,
   PARKING_OPTIONS,
   PROPERTY_AGE_OPTIONS,
+  ROOM_OPTIONS,
 } from "@/src/features/property/components/propertyListAdvancedFilters.constants";
 import type { SaveSearchFilterItem } from "../types/savedSearch.types";
+import {
+  appendAmenityFilterItems,
+  humanizeAmenitySlug,
+} from "./saveSearchAmenityFilterItems";
 
 export type BuildSaveSearchFilterItemsInput = {
   status: string;
@@ -23,11 +29,20 @@ export type BuildSaveSearchFilterItemsInput = {
   budgetMin: string;
   budgetMax: string;
   bedrooms: string;
+  rooms: string;
   bathrooms: string;
   parking: string;
   propertyAge: string;
+  floorLevel: string;
+  furnitureStatus: string;
   minArea: string;
   maxArea: string;
+  minPlotArea: string;
+  maxPlotArea: string;
+  governorate: string;
+  directorate: string;
+  village: string;
+  parcelName: string;
   selectedAmenities: string[];
 };
 
@@ -42,7 +57,15 @@ type FilterLabelKey =
   | "filterLabels.parking"
   | "filterLabels.propertyAge"
   | "filterLabels.area"
-  | "filterLabels.amenities";
+  | "filterLabels.plotArea"
+  | "filterLabels.governorate"
+  | "filterLabels.directorate"
+  | "filterLabels.village"
+  | "filterLabels.parcelName"
+  | "filterLabels.amenities"
+  | "filterLabels.rooms"
+  | "filterLabels.floorLevel"
+  | "filterLabels.furnitureStatus";
 
 function resolveOptionLabel(
   value: string,
@@ -96,6 +119,7 @@ function formatAreaRange(min: string, max: string) {
 export function buildSaveSearchFilterItems(
   input: BuildSaveSearchFilterItemsInput,
   t: (key: FilterLabelKey) => string,
+  resolveAmenityLabel: (slug: string) => string = humanizeAmenitySlug,
 ): SaveSearchFilterItem[] {
   const items: SaveSearchFilterItem[] = [];
 
@@ -163,6 +187,15 @@ export function buildSaveSearchFilterItems(
     });
   }
 
+  const roomsLabel = resolveOptionLabel(input.rooms, ROOM_OPTIONS);
+  if (roomsLabel) {
+    items.push({
+      key: "rooms",
+      label: t("filterLabels.rooms"),
+      value: roomsLabel,
+    });
+  }
+
   const bathroomsLabel = resolveOptionLabel(
     input.bathrooms,
     BATHROOMS_OPTIONS,
@@ -205,20 +238,75 @@ export function buildSaveSearchFilterItems(
     });
   }
 
-  if (input.selectedAmenities.length > 0) {
-    const amenityLabels = input.selectedAmenities
-      .map(
-        (slug) =>
-          ADVANCED_AMENITY_OPTIONS.find((option) => option.slug === slug)
-            ?.label ?? slug,
-      )
-      .join(", ");
-
+  const plotAreaLabel = formatAreaRange(input.minPlotArea, input.maxPlotArea);
+  if (plotAreaLabel) {
     items.push({
-      key: "amenities",
-      label: t("filterLabels.amenities"),
-      value: amenityLabels,
+      key: "plotArea",
+      label: t("filterLabels.plotArea"),
+      value: plotAreaLabel,
     });
+  }
+
+  if (input.governorate.trim()) {
+    items.push({
+      key: "governorate",
+      label: t("filterLabels.governorate"),
+      value: input.governorate.trim(),
+    });
+  }
+
+  if (input.directorate.trim()) {
+    items.push({
+      key: "directorate",
+      label: t("filterLabels.directorate"),
+      value: input.directorate.trim(),
+    });
+  }
+
+  if (input.village.trim()) {
+    items.push({
+      key: "village",
+      label: t("filterLabels.village"),
+      value: input.village.trim(),
+    });
+  }
+
+  if (input.parcelName.trim()) {
+    items.push({
+      key: "parcelName",
+      label: t("filterLabels.parcelName"),
+      value: input.parcelName.trim(),
+    });
+  }
+
+  const floorLevelLabel = resolveOptionLabel(input.floorLevel, FLOOR_OPTIONS);
+  if (floorLevelLabel) {
+    items.push({
+      key: "floorLevel",
+      label: t("filterLabels.floorLevel"),
+      value: floorLevelLabel,
+    });
+  }
+
+  const furnitureLabel = resolveOptionLabel(
+    input.furnitureStatus,
+    FURNITURE_STATUS_OPTIONS,
+  );
+  if (furnitureLabel) {
+    items.push({
+      key: "furnitureStatus",
+      label: t("filterLabels.furnitureStatus"),
+      value: furnitureLabel,
+    });
+  }
+
+  if (input.selectedAmenities.length > 0) {
+    appendAmenityFilterItems(
+      items,
+      input.selectedAmenities,
+      t("filterLabels.amenities"),
+      resolveAmenityLabel,
+    );
   }
 
   return items;
