@@ -147,47 +147,58 @@ export const textareaSizeClasses: Record<UiSizeTier, string> = {
 };
 
 /** Inset padding between the toggle shell border and segment track. */
-const toggleInsetPaddingClasses: Record<UiSizeTier, string> = {
+const toggleInsetPaddingClasses: Record<ButtonSizeTier, string> = {
+  xs: "p-0.5",
   sm: "p-0.5 sm:p-1",
   md: "p-0.5 sm:p-1",
   lg: "p-1 sm:p-1",
 };
 
 /** Extra inset for bordered variants (`solid` / `outline`) so the slide clears the shell border. */
-const toggleBorderedTrackInsetPaddingClasses: Record<UiSizeTier, string> = {
+const toggleBorderedTrackInsetPaddingClasses: Record<ButtonSizeTier, string> = {
+  xs: "p-0.5",
   sm: "p-1",
   md: "p-1",
   lg: "p-1 sm:p-1.5",
 };
 
 /** Horizontal padding inside each toggle segment (tighter than standalone buttons). */
-const toggleSegmentPaddingClasses: Record<UiSizeTier, string> = {
+const toggleSegmentPaddingClasses: Record<ButtonSizeTier, string> = {
+  xs: "px-1.5",
   sm: "px-2 sm:px-3",
   md: "px-2.5 sm:px-3",
   lg: "px-3 sm:px-4",
 };
 
 /** Outer shell height (border + background); padding lives on the inner track. */
-export const toggleShellSizeClasses: Record<UiSizeTier, string> = {
+export const toggleShellSizeClasses: Record<ButtonSizeTier, string> = {
+  xs: "h-7",
   sm: controlHeightClasses.sm,
   md: controlHeightClasses.md,
   lg: controlHeightClasses.lg,
 };
 
-export const toggleTrackInsetClasses: Record<UiSizeTier, string> =
+export const toggleTrackInsetClasses: Record<ButtonSizeTier, string> =
   toggleInsetPaddingClasses;
 
-export const toggleBorderedTrackInsetClasses =
+export const toggleBorderedTrackInsetClasses: Record<ButtonSizeTier, string> =
   toggleBorderedTrackInsetPaddingClasses;
 
 /** @deprecated Prefer `toggleShellSizeClasses` + `toggleTrackInsetClasses`. */
-export const toggleContainerSizeClasses: Record<UiSizeTier, string> = {
+export const toggleContainerSizeClasses: Record<ButtonSizeTier, string> = {
+  xs: cnTier("h-7", toggleInsetPaddingClasses.xs),
   sm: cnTier(controlHeightClasses.sm, toggleInsetPaddingClasses.sm),
   md: cnTier(controlHeightClasses.md, toggleInsetPaddingClasses.md),
   lg: cnTier(controlHeightClasses.lg, toggleInsetPaddingClasses.lg),
 };
 
-export const toggleSegmentSizeClasses: Record<UiSizeTier, string> = {
+export const toggleSegmentSizeClasses: Record<ButtonSizeTier, string> = {
+  xs: cnTier(
+    "min-h-0 flex-1 self-stretch py-0",
+    toggleSegmentPaddingClasses.xs,
+    "gap-1",
+    "text-xs font-medium",
+  ),
   sm: cnTier(
     "min-h-0 flex-1 self-stretch py-0",
     toggleSegmentPaddingClasses.sm,

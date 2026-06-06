@@ -1,6 +1,7 @@
 import { SELECT_DROPDOWN_EMPTY_VALUE } from "@/src/components/ui";
 import type { ToggleButtonItem } from "@/src/components/ui";
 import type { SelectDropdownOption } from "@/src/components/ui";
+import type { ReactNode } from "react";
 import {
   BATHROOMS_OPTIONS,
   BEDROOMS_OPTIONS,
@@ -69,13 +70,19 @@ type FilterLabelKey =
 
 function resolveOptionLabel(
   value: string,
-  options: { value: string; label: string }[],
+  options: { value: string; label: string | ReactNode }[],
 ) {
   if (!value || value === SELECT_DROPDOWN_EMPTY_VALUE) {
     return null;
   }
 
-  return options.find((option) => option.value === value)?.label ?? value;
+  const matched = options.find((option) => option.value === value);
+
+  if (!matched) {
+    return value;
+  }
+
+  return typeof matched.label === "string" ? matched.label : value;
 }
 
 function formatBudgetRange(min: string, max: string) {
