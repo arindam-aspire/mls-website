@@ -36,9 +36,9 @@ export default function SavedSearchScreen() {
 
   return (
     <>
-      <div className="flex w-full min-w-0 flex-col gap-4 md:gap-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div className="min-w-0 space-y-1">
+      <div className="flex w-full min-w-0 flex-col gap-2 md:gap-4 lg:gap-6">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between md:gap-4 lg:gap-6">
+          <div className="min-w-0 flex-1">
             <h1 className={headingPageClasses}>{title}</h1>
             <p className={cn("text-muted", bodyLargeTextClasses)}>{subtitle}</p>
           </div>
@@ -58,7 +58,7 @@ export default function SavedSearchScreen() {
         </div>
 
         {isLoading ? (
-          <ul className="flex flex-col gap-4 lg:gap-5">
+          <ul className="flex flex-col gap-2 md:gap-4 lg:gap-6">
             {Array.from({ length: 4 }).map((_, index) => (
               <li key={index}>
                 <Card className={searchCardShellClassName}>
@@ -96,7 +96,7 @@ export default function SavedSearchScreen() {
         ) : null}
 
         {!isLoading && !isError && items.length === 0 ? (
-          <div className="flex flex-col items-center gap-4 rounded-xl border border-secondary/15 bg-surface px-4 py-8 text-center sm:px-6 sm:py-10">
+          <div className="flex flex-col items-center gap-2 rounded-xl border border-secondary/15 bg-surface px-4 py-8 text-center md:gap-4 sm:px-6 sm:py-10">
             <div className="space-y-1">
               <p className="text-base font-semibold text-text sm:text-lg">
                 {emptyTitle}
@@ -119,7 +119,7 @@ export default function SavedSearchScreen() {
         ) : null}
 
         {!isLoading && !isError && items.length > 0 ? (
-          <ul className="flex flex-col gap-4 lg:gap-5">
+          <ul className="flex flex-col gap-2 md:gap-4 lg:gap-6">
             {items.map((item) => (
               <li key={item.id} className="min-w-0">
                 <SearchCard
