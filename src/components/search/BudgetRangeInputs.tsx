@@ -4,14 +4,13 @@ import { useMemo, useState } from "react";
 import { Button } from "@/src/components/ui/button";
 import {
   buttonSizeClasses,
-  dropdownOptionSizeClasses,
   fieldControlSizeClasses,
 } from "@/src/components/ui/responsiveSizes";
 import { cn } from "@/src/lib/cn";
 import { controlTextClasses, overlineLabelClasses } from "@/src/lib/typography";
+import { BudgetSuggestionList } from "./BudgetSuggestionList";
 import {
   BUY_BUDGET_SUGGESTIONS,
-  formatBudgetAmount,
   filterMaxSuggestions,
   filterMinSuggestions,
   handleMaxChange,
@@ -25,62 +24,6 @@ const inputClasses = cn(
   "h-9 w-full rounded-lg border border-secondary/15 bg-surface outline-none",
   "placeholder:text-muted/70",
   "focus:border-secondary focus:ring-2 focus:ring-secondary/20",
-);
-
-function SuggestionList({
-  values,
-  selectedValue,
-  onSelect,
-}: {
-  values: string[];
-  selectedValue: string;
-  onSelect: (value: string) => void;
-}) {
-  if (values.length === 0) {
-    return null;
-  }
-
-  return (
-    <ul
-      className="mt-1 max-h-56 w-full overflow-y-auto rounded-xl border border-secondary/15 bg-surface py-1 shadow-xl ring-1 ring-black/5"
-      role="listbox"
-      onMouseDown={(event) => {
-        event.stopPropagation();
-      }}
-    >
-      {values.map((value) => {
-        const isSelected = selectedValue === value;
-
-        return (
-          <li key={value}>
-            <button
-              type="button"
-              role="option"
-              aria-selected={isSelected}
-              className={cn(
-                "w-full text-start text-text transition-colors",
-                dropdownOptionSizeClasses,
-                "hover:bg-page focus:bg-page focus:outline-none",
-                isSelected && "bg-page font-medium text-secondary-dark",
-              )}
-              onMouseDown={(event) => {
-                event.preventDefault();
-                event.stopPropagation();
-                onSelect(value);
-              }}
-            >
-              {formatBudgetAmount(value)}
-            </button>
-          </li>
-        );
-      })}
-    </ul>
-  );
-}
-
-const panelButtonClassName = cn(
-  buttonSizeClasses.sm,
-  "rounded-lg uppercase tracking-wide",
 );
 
 export function BudgetRangeInputs({
@@ -153,11 +96,12 @@ export function BudgetRangeInputs({
             }}
           />
           {activeField === "min" && (
-            <SuggestionList
+            <BudgetSuggestionList
+              anchored={false}
               values={minSuggestions}
               selectedValue={minBudget}
-              onSelect={(value) => {
-                onChangeMin(value);
+              onSelect={(nextValue) => {
+                onChangeMin(nextValue);
                 setActiveField(null);
               }}
             />
@@ -188,11 +132,12 @@ export function BudgetRangeInputs({
             }}
           />
           {activeField === "max" && (
-            <SuggestionList
+            <BudgetSuggestionList
+              anchored={false}
               values={maxSuggestions}
               selectedValue={maxBudget}
-              onSelect={(value) => {
-                onChangeMax(value);
+              onSelect={(nextValue) => {
+                onChangeMax(nextValue);
                 setActiveField(null);
               }}
             />
@@ -211,7 +156,7 @@ export function BudgetRangeInputs({
           color="inherit"
           variant="outline"
           size="sm"
-          className={panelButtonClassName}
+          className={cn(buttonSizeClasses.sm, "rounded-lg uppercase tracking-wide")}
           onClick={(event) => {
             event.stopPropagation();
             onReset();
@@ -225,7 +170,7 @@ export function BudgetRangeInputs({
           color="tertiary"
           variant="solid"
           size="sm"
-          className={panelButtonClassName}
+          className={cn(buttonSizeClasses.sm, "rounded-lg uppercase tracking-wide")}
           onClick={(event) => {
             event.stopPropagation();
             onDone();

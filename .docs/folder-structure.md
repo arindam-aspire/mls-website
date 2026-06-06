@@ -159,7 +159,8 @@ mls_website/
 │       │       ├── hooks/
 │       │       │   ├── README.md
 │       │       │   ├── usePropertyDetails.md
-│       │       │   └── usePropertyList.md
+│       │       │   ├── usePropertyList.md
+│       │       │   └── usePropertySearchFilters.md
 │       │       ├── mappers/
 │       │       │   ├── README.md
 │       │       │   ├── propertyFeatures.mapper.md
@@ -326,6 +327,8 @@ mls_website/
 │   │   ├── search/
 │   │   │   ├── AnchoredDropdown.tsx
 │   │   │   ├── BudgetField.tsx
+│   │   │   ├── BudgetAutocompleteField.tsx
+│   │   │   ├── BudgetSuggestionList.tsx
 │   │   │   ├── BudgetRangeInputs.tsx
 │   │   │   ├── budget.utils.ts
 │   │   │   ├── index.ts
@@ -597,8 +600,10 @@ mls_website/
 │   │       │   ├── PropertyListFilters.tsx
 │   │       │   └── propertyListAdvancedFilters.constants.ts
 │   │       ├── hooks/
+│   │       │   ├── propertySearchFilter.constants.ts
 │   │       │   ├── usePropertyDetails.ts
-│   │       │   └── usePropertyList.ts
+│   │       │   ├── usePropertyList.ts
+│   │       │   └── usePropertySearchFilters.ts
 │   │       ├── mappers/
 │   │       │   ├── propertyFeatures.mapper.ts
 │   │       │   └── propertyList.mapper.ts
@@ -626,20 +631,27 @@ mls_website/
 │   │   │   │   ├── SavedSearchPopoverItem.tsx
 │   │   │   │   ├── SaveSearchFiltersSummary.tsx
 │   │   │   │   ├── SaveSearchForm.tsx
+│   │   │   │   ├── SearchCriteriaForm.tsx
 │   │   │   │   └── SearchCard.tsx
 │   │   │   ├── constants/
-│   │   │   │   └── savedSearch.constants.ts
+│   │   │   │   ├── savedSearch.constants.ts
+│   │   │   │   └── searchCriteriaFilter.constants.ts
 │   │   │   ├── hooks/
 │   │   │   │   ├── useSavedSearchScreen.ts
 │   │   │   │   ├── useSaveSearchForm.ts
+│   │   │   │   ├── useSearchCriteriaForm.ts
+│   │   │   │   ├── useSearchCriteriaFilters.ts
 │   │   │   │   ├── useSaveSearchModal.ts
 │   │   │   │   └── useSaveSearchPopover.ts
+│   │   │   ├── modals/
+│   │   │   │   ├── SaveSearchFormModal.tsx
+│   │   │   │   └── SaveSearchModal.tsx
 │   │   │   ├── mutations/
 │   │   │   │   └── saved-search.mutation.ts
-│   │   │   ├── screens/
-│   │   │   │   ├── SavedSearchScreen.tsx
-│   │   │   │   ├── SaveSearchModal.tsx
+│   │   │   ├── popovers/
 │   │   │   │   └── SaveSearchPopover.tsx
+│   │   │   ├── screens/
+│   │   │   │   └── SavedSearchScreen.tsx
 │   │   │   ├── services/
 │   │   │   │   └── saved-search.service.ts
 │   │   │   ├── store/
@@ -647,6 +659,8 @@ mls_website/
 │   │   │   │   └── savedSearch.types.ts
 │   │   │   └── utils/
 │   │   │       ├── buildSaveSearchCriteria.ts
+│   │   │       ├── parseSavedSearchCriteriaToParams.ts
+│   │   │       ├── searchCriteriaFieldVisibility.ts
 │   │   │       ├── buildSavedSearchCriteriaFilterItems.ts
 │   │   │       ├── buildSavedSearchFilterItems.ts
 │   │   │       └── buildSavedSearchPropertyListHref.ts

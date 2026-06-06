@@ -19,6 +19,10 @@ export function useSavedSearchScreen() {
   const locale = useLocale() as AppLocale;
   const router = useRouter();
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+  const [editingRecord, setEditingRecord] = useState<SavedSearchRecord | null>(
+    null,
+  );
 
   const { data, isPending, isFetching, isError } = useGetSavedSearches(
     savedSearchListParams,
@@ -57,6 +61,21 @@ export function useSavedSearchScreen() {
     router.push(PROPERTY_LIST_PATH);
   }, [router]);
 
+  const openAddModal = useCallback(() => {
+    setEditingRecord(null);
+    setIsFormModalOpen(true);
+  }, []);
+
+  const openEditModal = useCallback((record: SavedSearchRecord) => {
+    setEditingRecord(record);
+    setIsFormModalOpen(true);
+  }, []);
+
+  const closeFormModal = useCallback(() => {
+    setIsFormModalOpen(false);
+    setEditingRecord(null);
+  }, []);
+
   return {
     title: t("pageTitle"),
     subtitle: t("pageSubtitle"),
@@ -67,10 +86,23 @@ export function useSavedSearchScreen() {
     emptyTitle: t("pageEmptyTitle"),
     emptyDescription: t("pageEmptyDescription"),
     addSearchCriteriaLabel: t("popoverAddSearchCriteria"),
+    addNewLabel: t("addNew"),
+    addNewModalTitle: t("addNewModalTitle"),
     loadErrorMessage: t("pageLoadError"),
     runLabel: t("runSearch"),
+    editLabel: t("editSearch"),
     deleteLabel: t("deleteSearch"),
+    formModalTitle: editingRecord
+      ? t("modalUpdateTitle")
+      : t("addNewModalTitle"),
+    addModal: {
+      open: isFormModalOpen,
+      onOpen: openAddModal,
+      onClose: closeFormModal,
+      record: editingRecord ?? undefined,
+    },
     onRunSearch,
+    onEditSearch: openEditModal,
     onDeleteSearch,
     onAddSearchCriteria,
   };

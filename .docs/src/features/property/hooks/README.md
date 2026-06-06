@@ -6,7 +6,8 @@ Custom hooks that own property feature logic: fetching, store sync, handlers, an
 
 | File | Purpose |
 | --- | --- |
-| [usePropertyList.md](./usePropertyList.md) | Property list screen logic (URL params, store, fetch mutation) |
+| [usePropertyList.md](./usePropertyList.md) | Property list screen logic (URL params, fetch, toolbar, pagination) |
+| [usePropertySearchFilters.md](./usePropertySearchFilters.md) | Reusable filter state/handlers for `PropertyListFilters` |
 | [usePropertyDetails.md](./usePropertyDetails.md) | Property details screen logic (fetch by id, tabs, handlers) |
 
 ## Conventions

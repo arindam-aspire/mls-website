@@ -129,6 +129,23 @@ export function filterMaxSuggestions(
   );
 }
 
+export function filterBudgetSuggestionsByQuery(
+  suggestions: readonly string[],
+  query: string,
+) {
+  const sanitized = sanitizeBudgetValue(query);
+
+  if (!sanitized) {
+    return [...suggestions];
+  }
+
+  return suggestions.filter(
+    (value) =>
+      value.startsWith(sanitized) ||
+      formatBudgetAmount(value).replace(/,/g, "").includes(sanitized),
+  );
+}
+
 export function getInitialBudgetMin(searchParams: URLSearchParams): string {
   return (
     searchParams.get("budgetMin")?.trim() ??

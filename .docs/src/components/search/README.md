@@ -7,7 +7,9 @@ Property-search filter primitives: portaled budget range picker and anchored dro
 | File | Export | Role |
 | --- | --- | --- |
 | [BudgetField.md](./BudgetField.md) | `BudgetField` | Trigger + dropdown wiring |
+| [BudgetAutocompleteField.md](./BudgetAutocompleteField.md) | `BudgetAutocompleteField` | Single min/max field with suggestion dropdown |
 | [BudgetRangeInputs.md](./BudgetRangeInputs.md) | `BudgetRangeInputs` | Min/max inputs, suggestions, Reset/Done |
+| [BudgetSuggestionList.md](./BudgetSuggestionList.md) | `BudgetSuggestionList` | Shared suggestion listbox |
 | [AnchoredDropdown.md](./AnchoredDropdown.md) | `AnchoredDropdown` | Body-portaled popover anchored to trigger |
 | [budget.utils.md](./budget.utils.md) | helpers | Sanitize, format, URL hydrate, suggestion filters |
 

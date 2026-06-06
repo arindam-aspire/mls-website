@@ -10,7 +10,7 @@ import { Link } from "@/src/i18n/navigation";
 import { ProtectedMobileMenu } from "@/src/layouts/protected-layout/ProtectedMobileMenu";
 import { ProtectedNotificationsButton } from "@/src/layouts/protected-layout/ProtectedNotificationsButton";
 import { ProtectedProfileMenu } from "@/src/layouts/protected-layout/ProtectedProfileMenu";
-import { SaveSearchPopover } from "@/src/features/saved-searches/screens/SaveSearchPopover";
+import { SaveSearchPopover } from "@/src/features/saved-searches/popovers/SaveSearchPopover";
 import { ProtectedThemeButton } from "@/src/layouts/protected-layout/ProtectedThemeButton";
 import {
   protectedMobileHeaderBarClass,

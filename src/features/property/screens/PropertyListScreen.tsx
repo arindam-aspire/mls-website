@@ -1,7 +1,7 @@
 "use client";
 
 import { UpcomingFeatureModal } from "@/src/components/common/UpcomingFeatureModal";
-import { SaveSearchModal } from "@/src/features/saved-searches/screens/SaveSearchModal";
+import { SaveSearchModal } from "@/src/features/saved-searches/modals/SaveSearchModal";
 import { PropertyCardList } from "@abdoun/abdoun-library";
 import { PropertyListFilters } from "../components/PropertyListFilters";
 import { usePropertyList } from "../hooks/usePropertyList";

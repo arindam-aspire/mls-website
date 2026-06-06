@@ -28,7 +28,7 @@ Filter bar for the property list: primary row (status, category, type, location,
 - **Budget trigger** — opens min/max editor; **bottom sheet** below `md`, **anchored dropdown** on `md`+.
 - **Done** (budget) — commits `budgetMin` / `budgetMax` to URL.
 - **Reset Search** — clears URL filters to defaults and closes advanced panel; **`similar_to` is kept** when present.
-- **Save Search** — guest opens sign-in modal; authenticated users see upcoming-feature modal until save-search flow is defined (via `usePropertyList.onSaveSearch`).
+- **Save Search** — rendered only when `onSaveSearch` is defined; guest opens sign-in modal; authenticated users open save-search modal (via `usePropertyList.onSaveSearch`).
 
 # UI Details
 

@@ -40,6 +40,10 @@ export function isAmenityFilterItem(item: SaveSearchFilterItem) {
   return item.key.startsWith("amenity:");
 }
 
+export function isCombinedAmenityDisplayItem(item: SaveSearchFilterItem) {
+  return item.key.startsWith("amenities:combined:");
+}
+
 export function partitionSaveSearchFilterItems(items: SaveSearchFilterItem[]) {
   const standardItems: SaveSearchFilterItem[] = [];
   const amenityItems: SaveSearchFilterItem[] = [];
@@ -53,4 +57,37 @@ export function partitionSaveSearchFilterItems(items: SaveSearchFilterItem[]) {
   }
 
   return { standardItems, amenityItems };
+}
+
+/** Merges consecutive amenity rows in a visible slice for inline display. */
+export function groupConsecutiveAmenityItemsForInline(
+  items: SaveSearchFilterItem[],
+): SaveSearchFilterItem[] {
+  const result: SaveSearchFilterItem[] = [];
+  let amenityGroup: SaveSearchFilterItem[] = [];
+
+  const flushAmenities = () => {
+    if (amenityGroup.length === 0) {
+      return;
+    }
+
+    result.push({
+      key: `amenities:combined:${amenityGroup.map((item) => item.key).join(",")}`,
+      label: amenityGroup[0]!.label,
+      value: amenityGroup.map((item) => item.value).join(" · "),
+    });
+    amenityGroup = [];
+  };
+
+  for (const item of items) {
+    if (isAmenityFilterItem(item)) {
+      amenityGroup.push(item);
+    } else {
+      flushAmenities();
+      result.push(item);
+    }
+  }
+
+  flushAmenities();
+  return result;
 }

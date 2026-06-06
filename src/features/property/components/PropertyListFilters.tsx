@@ -409,17 +409,19 @@ export function PropertyListFilters({
           >
             {tPropertyList("resetSearch")}
           </Button>
-          <Button
-            type="button"
-            color="secondary"
-            variant="outline"
-            className={cn(mobileScrollItemClassName, "rounded-lg md:shrink")}
-            onClick={handleSaveSearchClick}
-            iconStart={<Bookmark className="size-4" aria-hidden />}
-            disabled={disabled}
-          >
-            {saveSearchActionLabel}
-          </Button>
+          {onSaveSearch ? (
+            <Button
+              type="button"
+              color="secondary"
+              variant="outline"
+              className={cn(mobileScrollItemClassName, "rounded-lg md:shrink")}
+              onClick={handleSaveSearchClick}
+              iconStart={<Bookmark className="size-4" aria-hidden />}
+              disabled={disabled}
+            >
+              {saveSearchActionLabel}
+            </Button>
+          ) : null}
         </div>
       </section>
 

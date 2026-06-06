@@ -12,6 +12,24 @@ export interface BudgetRangeInputsProps {
   variant?: "dropdown" | "sheet";
 }
 
+export type BudgetAutocompleteFieldMode = "min" | "max";
+
+export interface BudgetAutocompleteFieldProps {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  onCommit?: () => void;
+  mode: BudgetAutocompleteFieldMode;
+  peerValue?: string;
+  rentMode?: boolean;
+  suggestions?: readonly string[];
+  placeholder?: string;
+  disabled?: boolean;
+  className?: string;
+  size?: "sm" | "md" | "lg";
+  "aria-label"?: string;
+}
+
 export interface BudgetFieldProps {
   min: string;
   max: string;

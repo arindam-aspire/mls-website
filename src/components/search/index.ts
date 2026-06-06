@@ -1,9 +1,12 @@
 export { AnchoredDropdown } from "./AnchoredDropdown";
+export { BudgetAutocompleteField } from "./BudgetAutocompleteField";
 export { BudgetField } from "./BudgetField";
 export { BudgetRangeInputs } from "./BudgetRangeInputs";
+export { BudgetSuggestionList } from "./BudgetSuggestionList";
 export {
   BUY_BUDGET_SUGGESTIONS,
   RENT_BUDGET_SUGGESTIONS,
+  filterBudgetSuggestionsByQuery,
   filterMaxSuggestions,
   filterMinSuggestions,
   formatBudgetAmount,
@@ -15,5 +18,11 @@ export {
   preventNegativeInput,
   sanitizeBudgetValue,
 } from "./budget.utils";
-export type { BudgetFieldProps, BudgetRangeInputsProps } from "./types";
+export type {
+  BudgetAutocompleteFieldProps,
+  BudgetAutocompleteFieldMode,
+  BudgetFieldProps,
+  BudgetRangeInputsProps,
+} from "./types";
+export type { BudgetSuggestionListProps } from "./BudgetSuggestionList";
 export type { AnchoredDropdownProps } from "./AnchoredDropdown";

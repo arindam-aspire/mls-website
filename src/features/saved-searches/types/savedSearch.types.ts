@@ -89,6 +89,34 @@ export type SaveSearchFormValues = {
   name: string;
 };
 
+/** In-form filter state for SearchCriteriaForm (mirrors property list query fields). */
+export type SearchCriteriaParams = {
+  status: string;
+  category: string;
+  type?: string;
+  location?: string;
+  city?: string;
+  locations?: string;
+  budgetMin?: number;
+  budgetMax?: number;
+  furnitureStatus?: string;
+  bedrooms?: number;
+  rooms?: number;
+  bathrooms?: number;
+  parking?: number;
+  propertyAge?: string;
+  floorLevel?: string;
+  minArea?: number;
+  maxArea?: number;
+  minPlotArea?: number;
+  maxPlotArea?: number;
+  governorate?: string;
+  directorate?: string;
+  village?: string;
+  parcelName?: string;
+  amenities?: string;
+};
+
 export type SaveSearchSubmitPayload = {
   filterItems: SaveSearchFilterItem[];
   searchCriteria: SavedSearchCriteria;
