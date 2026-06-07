@@ -15,8 +15,8 @@ Next.js 16 App Router entry: layouts, pages, and locale segment.
 
 | Group | Layout | Routes |
 | --- | --- | --- |
-| `(main)` | `PublicLayout` | `/`, `/dashboard`, `/my-profile` |
-| `(property)` | `PublicLayout` | `/listing`, `/favourites`, `/saved-searches`, `/recently-viewed`, `/inquiries` |
+| `(main)` | `ProtectedLayout` | `/dashboard`, `/my-profile`, `/saved-searches`, `/favourites` |
+| `(property)` | `PublicLayout` | `/listing`, `/property-list`, `/propert-details/:id`, `/recently-viewed`, `/inquiries` |
 | `(auth)` | *(reserved)* | — |
 | `(public)` | *(reserved)* | — |
 

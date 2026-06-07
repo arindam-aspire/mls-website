@@ -190,7 +190,7 @@ Route groups `(landing)`, `(main)`, `(property)`, `(auth)`, `(public)` do **not*
 | Group | Layout | Purpose |
 | --- | --- | --- |
 | `(landing)` | `LandingLayout` | Locale root landing page |
-| `(main)` | `ProtectedLayout` | Home, dashboard, my-profile |
+| `(main)` | `ProtectedLayout` | Dashboard, my-profile, saved-searches, favourites |
 | `(property)` | `PublicLayout` | User property-related pages |
 | `(auth)` | *(empty — reserved)* | Future auth routes |
 | `(public)` | *(empty — reserved)* | Future public routes |
@@ -205,11 +205,11 @@ All paths below are **without** locale; prepend `/<locale>` (e.g. `/en/listing`)
 | `/` | `(landing)/page.tsx` | `LandingScreen` |
 | `/dashboard` | `(main)/dashboard/page.tsx` | `DashboardScreen` — guarded by `useAuthorize("DASHBOARD")` |
 | `/my-profile` | `(main)/my-profile/page.tsx` | `ProfileScreen` — guarded by `useAuthorize("PROFILE")` |
+| `/saved-searches` | `(main)/saved-searches/page.tsx` | `SavedSearchScreen` — guarded by `useAuthorize("PROFILE")` |
+| `/favourites` | `(main)/favourites/page.tsx` | `FavouritePropertyScreen` — guarded by `useAuthorize("PROFILE")` |
 | `/listing` | `(property)/listing/page.tsx` | `ListingPropertyScreen` (Coming Soon) |
 | `/property-list` | `(property)/property-list/page.tsx` | `PropertyListScreen` (`PropertyCardList`) |
 | `/propert-details/:id` | `(property)/propert-details/[id]/page.tsx` | `PropertyDetailsScreen` (`PropertyView`) |
-| `/favourites` | `(property)/favourites/page.tsx` | `FavouritePropertyScreen` (Coming Soon) |
-| `/saved-searches` | `(property)/saved-searches/page.tsx` | `SavedSearchesScreen` (Coming Soon) |
 | `/recently-viewed` | `(property)/recently-viewed/page.tsx` | `RecentlyViewedScreen` (Coming Soon) |
 | `/inquiries` | `(property)/inquiries/page.tsx` | `InquiriesScreen` (Coming Soon) |
 | `/unauthorized` | `(system)/unauthorized/page.tsx` | `UnauthorizedScreen` |
@@ -368,7 +368,6 @@ Used by `(main)` route group.
 | `PropertyDetailsScreen` | Property detail (`PropertyView`, `/propert-details/:id`) |
 | `ListingPropertyScreen` | Coming Soon |
 | `FavouritePropertyScreen` | Coming Soon |
-| `SavedSearchesScreen` | Coming Soon |
 | `RecentlyViewedScreen` | Coming Soon |
 | `InquiriesScreen` | Coming Soon |
 

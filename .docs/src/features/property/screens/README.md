@@ -6,7 +6,6 @@ Screens mounted by `app/[locale]/(property)/*/page.tsx`.
 | --- | --- | --- |
 | [ListingPropertyScreen.md](./ListingPropertyScreen.md) | `/en/listing` | Coming Soon |
 | [FavouritePropertyScreen.md](./FavouritePropertyScreen.md) | `/en/favourites` | Coming Soon |
-| [SavedSearchesScreen.md](./SavedSearchesScreen.md) | `/en/saved-searches` | Coming Soon |
 | [RecentlyViewedScreen.md](./RecentlyViewedScreen.md) | `/en/recently-viewed` | Coming Soon |
 | [InquiriesScreen.md](./InquiriesScreen.md) | `/en/inquiries` | Coming Soon |
 | [PropertyListScreen.md](./PropertyListScreen.md) | `/en/property-list` | `PropertyCardList` |

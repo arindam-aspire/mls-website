@@ -22,7 +22,6 @@ property/
 | --- | --- |
 | `/en/listing` | `ListingPropertyScreen` |
 | `/en/favourites` | `FavouritePropertyScreen` |
-| `/en/saved-searches` | `SavedSearchesScreen` |
 | `/en/recently-viewed` | `RecentlyViewedScreen` |
 | `/en/inquiries` | `InquiriesScreen` |
 

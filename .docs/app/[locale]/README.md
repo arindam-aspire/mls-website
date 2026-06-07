@@ -19,13 +19,13 @@ Dynamic segment `[locale]` must be one of `en`, `ar`, `es`, `fr`.
 ### `(main)` — [main documentation](./(main)/README.md)
 
 - `/[locale]/dashboard` — dashboard (`useAuthorize("DASHBOARD")`, Coming Soon screen)
-- `/[locale]/my-profile` — profile (`useAuthorize("PROFILE")`, Coming Soon screen)
+- `/[locale]/my-profile` — profile (`useAuthorize("PROFILE")`)
+- `/[locale]/saved-searches` — saved searches (`useAuthorize("PROFILE")`, `SavedSearchScreen`)
+- `/[locale]/favourites` — favourites (`useAuthorize("PROFILE")`, `FavouritePropertyScreen`)
 
 ### `(property)` — [property documentation](./(property)/README.md)
 
 - `/[locale]/listing`
-- `/[locale]/favourites`
-- `/[locale]/saved-searches`
 - `/[locale]/recently-viewed`
 - `/[locale]/inquiries`
 

@@ -1,15 +1,15 @@
+import LoadingScreen from "@/src/features/loading/screens";
 import ProtectedLayout from "@/src/layouts/protected-layout";
-//import { tokenStore } from "@/src/apis/core/token.store";
+import { useAuthorize } from "@/src/lib/auth/authorize";
 
 export default function MainLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // const hasTokens = tokenStore.hasAuthCredentials();
-  // if (!hasTokens) {
-  //   return <div>No tokens</div>;
-  // }
+
+  const { user, isLoadingUser } = useAuthorize("SAVED_SEARCHES");
+  if (!isLoadingUser && !user) return <LoadingScreen />;
 
   return <ProtectedLayout>{children}</ProtectedLayout>;
 }

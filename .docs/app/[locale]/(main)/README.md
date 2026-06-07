@@ -12,6 +12,8 @@ Primary authenticated-main routes with `ProtectedLayout`. Group name does **not*
 | --- | --- | --- | --- |
 | [dashboard/page.md](./dashboard/page.md) | `/en/dashboard` | `DashboardScreen` | `useAuthorize("DASHBOARD")` |
 | [my-profile/page.md](./my-profile/page.md) | `/en/my-profile` | `ProfileScreen` | `useAuthorize("PROFILE")` |
+| [saved-searches/page.md](./saved-searches/page.md) | `/en/saved-searches` | `SavedSearchScreen` | `useAuthorize("PROFILE")` |
+| [favourites/page.md](./favourites/page.md) | `/en/favourites` | `FavouritePropertyScreen` | `useAuthorize("PROFILE")` |
 
 Both pages are **client components** that return `null` until `user` is available. `proxy.ts` also requires an `access_token` cookie for these paths.
 
@@ -22,6 +24,8 @@ Both pages are **client components** that return `null` until `user` is availabl
   layout.tsx (ProtectedLayout)
   dashboard/page.tsx
   my-profile/page.tsx
+  saved-searches/page.tsx
+  favourites/page.tsx
 ```
 
 ## Related

@@ -39,13 +39,13 @@ mls_website/
 │   │       │   │   └── page.md
 │   │       │   ├── my-profile/
 │   │       │   │   └── page.md
-│   │       │   └── saved-searches/
+│   │       │   ├── saved-searches/
+│   │       │   │   └── page.md
+│   │       │   └── favourites/
 │   │       │       └── page.md
 │   │       └── (property)/
 │   │           ├── README.md
 │   │           ├── layout.md
-│   │           ├── favourites/
-│   │           │   └── page.md
 │   │           ├── inquiries/
 │   │           │   └── page.md
 │   │           ├── listing/
@@ -262,12 +262,12 @@ mls_website/
 │   │   │   ├── layout.tsx
 │   │   │   ├── my-profile/
 │   │   │   │   └── page.tsx
-│   │   │   └── saved-searches/
+│   │   │   ├── saved-searches/
+│   │   │   │   └── page.tsx
+│   │   │   └── favourites/
 │   │   │       └── page.tsx
 │   │   └── (property)/
 │   │       ├── layout.tsx
-│   │       ├── favourites/
-│   │       │   └── page.tsx
 │   │       ├── inquiries/
 │   │       │   └── page.tsx
 │   │       ├── listing/
