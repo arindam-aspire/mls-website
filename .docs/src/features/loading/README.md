@@ -1,6 +1,6 @@
 # Loading feature (`src/features/loading/`)
 
-Global App Router loading UI (root `app/loading.tsx`).
+Global App Router loading UI (`app/loading.tsx`, `app/[locale]/loading.tsx`, and route-group `loading.tsx` files).
 
 ## Files
 
@@ -8,6 +8,8 @@ Global App Router loading UI (root `app/loading.tsx`).
 | --- | --- |
 | [screens/index.md](./screens/index.md) | Full-screen branded loading screen |
 
-## Route
+## Routes
 
-- Imported by `app/loading.tsx` (Next.js root `loading` boundary).
+- `app/loading.tsx` — root loading boundary
+- `app/[locale]/loading.tsx` — locale segment loading
+- `app/[locale]/(main)/loading.tsx`, `app/[locale]/(property)/loading.tsx` — route-group loading

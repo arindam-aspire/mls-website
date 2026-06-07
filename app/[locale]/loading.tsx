@@ -1,5 +1,5 @@
-import LoadingComponent from "@/src/features/loading/components/LoadingComponent";
+import LoadingScreen from "@/src/features/loading/screens";
 
 export default function LocaleLoading() {
-  return <LoadingComponent />;
+  return <LoadingScreen />;
 }

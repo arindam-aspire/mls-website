@@ -1,19 +1,17 @@
-
-
 import Image from "next/image";
-import { getTranslations } from "next-intl/server";
 import mlsLogoDark from "@/src/assets/images/MLS_Dark_Logo.png";
 import mlsLogoLight from "@/src/assets/images/MLS_Light_Logo.png";
 
-export default async function LoadingScreen() {
-  const t = await getTranslations("common");
+const LOADING_LABEL = "Loading…";
+const BRAND_LABEL = "Multiple Listing Service";
 
+export default function LoadingScreen() {
   return (
     <div
       className="fixed inset-0 z-50 flex min-h-screen flex-col bg-page"
       role="status"
       aria-busy="true"
-      aria-label={t("loading")}
+      aria-label={LOADING_LABEL}
     >
       <div
         className="pointer-events-none absolute inset-0 bg-linear-to-b from-primary-light/40 via-page to-page dark:from-primary-light/20"
@@ -38,10 +36,10 @@ export default async function LoadingScreen() {
 
         <div className="flex max-w-lg flex-col items-center gap-3">
           <h1 className="font-serif text-3xl leading-tight text-text sm:text-4xl">
-            {t("brand")}
+            {BRAND_LABEL}
           </h1>
           <p className="text-xs font-medium tracking-[0.32em] text-muted uppercase sm:text-sm">
-            {t("loading")}
+            {LOADING_LABEL}
           </p>
         </div>
 

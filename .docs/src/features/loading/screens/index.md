@@ -7,16 +7,16 @@
 ## Responsibilities
 
 - Full-screen loading overlay with brand logo, title, animated dots, and progress bar.
-- Localized copy via `getTranslations("common")`.
+- Fixed English copy (`Multiple Listing Service`, `Loading…`) regardless of locale.
 
 ## Imports
 
-- `next/image`, `next-intl/server`
+- `next/image`
 - MLS logo assets from `src/assets/images/`
 
 ## Exports
 
-- Default export: `LoadingScreen` (async server component)
+- Default export: `LoadingScreen` (server component)
 
 ## UI Details
 

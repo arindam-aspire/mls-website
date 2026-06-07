@@ -31,7 +31,7 @@ _N/A — global loading overlay, not a route._
 
 # UI Details
 
-See [loading/screens/index.md](../src/features/loading/screens/index.md): full-screen `bg-page`, MLS logos, `common.loading` / `common.brand` copy, animated dots and progress bar.
+See [loading/screens/index.md](../src/features/loading/screens/index.md): full-screen `bg-page`, MLS logos, fixed English brand/loading copy, animated dots and progress bar.
 
 # Flow Description
 
