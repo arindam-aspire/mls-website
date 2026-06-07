@@ -2,9 +2,9 @@
 
 High-level layout of this repository (non-excluded paths only). Update this document when the on-disk tree changes in ways that affect listed paths.
 
-**Excluded:** `.cursor/`, `.expo/`, `.git/`, `.idea/`, `.next/`, `.turbo/`, `.vercel/`, `.vscode/`, `build/`, `coverage/`, `docs/`, `node_modules/`, `out/`, `scripts/`
+**Excluded:** `.cursor/`, `.expo/`, `.git/`, `.idea/`, `.next/`, `.turbo/`, `.vercel/`, `.vscode/`, `build/`, `coverage/`, `docs/`, `node_modules/`, `out/`
 
-**`.docs/`:** Mirrors `app/` and `src/` as markdown (`.md` per source file + folder `README.md`). Top-level indexes: `README.md`, `application.md`, `packages.md`. Regenerate scaffolding: `node scripts/bootstrap-docs.mjs`.
+**`.docs/`:** Mirrors `app/` and `src/` as markdown (`.md` per source file + folder `README.md`). Top-level indexes: `README.md`, `application.md`, `packages.md`.
 
 ```text
 mls_website/

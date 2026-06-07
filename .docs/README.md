@@ -34,15 +34,9 @@ Each major folder has a **README.md** describing architecture and flows. Each so
 | Layouts | [src/layouts/README.md](./src/layouts/README.md) |
 | Providers | [src/providers/README.md](./src/providers/README.md) |
 
-## Regenerating scaffolding
+## Maintaining documentation
 
-After adding many source files at once, run:
-
-```bash
-node scripts/bootstrap-docs.mjs
-```
-
-This refreshes auto-generated sections from source (imports/exports). **Always review and enrich** critical files (auth, layouts, routes) by hand—especially flows that changed recently.
+When adding many source files at once, create or update mirrored `.docs/` files by hand following `.cursor/rules/docs-sync.mdc`. **Always review and enrich** critical files (auth, layouts, routes)—especially flows that changed recently.
 
 ## Maintenance
 

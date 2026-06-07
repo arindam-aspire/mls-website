@@ -207,8 +207,6 @@ Docs must reflect the **current** codebase only.
 4. Update `.docs/folder-structure.md` if the on-disk tree changed (non-excluded paths).
 5. Update `.docs/packages.md` if `package.json` dependencies changed.
 
-**Bulk scaffold:** `node scripts/bootstrap-docs.mjs` — then review and enrich critical flows (auth, navigation, layouts); do not treat generated text as final without verification.
-
 ## 14. Quality bar
 
 Documentation consistency is **mandatory**. Prefer updating existing docs over adding duplicate summaries. Keep `.docs/application.md` as the index-level overview; use mirrored files for file-level depth. Doc index: `.docs/README.md`.

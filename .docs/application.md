@@ -10,7 +10,7 @@ Every `src/` and `app/` source file has (or should have) a matching doc under `.
 
 `src/features/auth/components/SignInForm.tsx` → `.docs/src/features/auth/components/SignInForm.md`
 
-Folder **README.md** files describe architecture per module. Regenerate scaffolding with `node scripts/bootstrap-docs.mjs`, then hand-enrich flows that change. Rule: `.cursor/rules/docs-sync.mdc`.
+Folder **README.md** files describe architecture per module. Update mirrored docs by hand when source changes. Rule: `.cursor/rules/docs-sync.mdc`.
 
 ---
 

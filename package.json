@@ -6,8 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "validate:i18n": "node scripts/validate-i18n-parity.mjs"
+    "lint": "eslint"
   },
   "dependencies": {
     "@abdoun/abdoun-library": "^0.1.34",
