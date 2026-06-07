@@ -57,4 +57,15 @@ export const propertyEndpoints = {
 
     return `/features?${search.toString()}`;
   },
+  FAVORITE_LIST: (params: { page: number; pageSize: number }): string => {
+    const search = new URLSearchParams({
+      page: String(params.page),
+      pageSize: String(params.pageSize),
+    });
+
+    return `/favorites?${search.toString()}`;
+  },
+  FAVORITES_ALL: (): string => "/favorites",
+  FAVORITE_REMOVE: (propertyHash: string | number): string =>
+    `/favorites/${encodeURIComponent(String(propertyHash))}`,
 } as const;

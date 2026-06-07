@@ -16,7 +16,10 @@ import type {
   SavedSearchCriteria,
   SaveSearchFilterItem,
 } from "@/src/features/saved-searches/types/savedSearch.types";
-import { useGetPropertyList } from "../mutations/property.mutation";
+import {
+  useGetPropertyList,
+} from "../mutations/property.mutation";
+import { usePropertyFavouriteToggle } from "./usePropertyFavouriteToggle";
 import { useGetSavedSearch } from "@/src/features/saved-searches/mutations/saved-search.mutation";
 import { getSavedSearchById } from "@/src/features/saved-searches/services/saved-search.service";
 import { buildSavedSearchPropertyListSearchParams } from "@/src/features/saved-searches/utils/buildSavedSearchPropertyListHref";
@@ -151,6 +154,13 @@ export function usePropertyList() {
   const searchParams = useSearchParams();
   const locale = useLocale() as AppLocale;
 
+  // 2. UI utilities
+  const {
+    withFavouriteFlags,
+    withFavouriteLoading,
+    toggleFavourite,
+  } = usePropertyFavouriteToggle();
+
   const listParams = useMemo(
     () => parseUrlListParams(searchParams),
     [searchParams],
@@ -224,8 +234,11 @@ export function usePropertyList() {
 
   // 6. Derived / memoized values
   const listings = useMemo(
-    () => propertyListings?.items ?? [],
-    [propertyListings?.items],
+    () =>
+      withFavouriteLoading(
+        withFavouriteFlags(propertyListings?.items ?? []),
+      ),
+    [propertyListings?.items, withFavouriteFlags, withFavouriteLoading],
   );
 
   const paginationMeta = propertyListings?.meta;
@@ -395,10 +408,6 @@ export function usePropertyList() {
     },
     [locale],
   );
-
-  const toggleFavourite = useCallback(() => {
-    openUpcomingFeature();
-  }, [openUpcomingFeature]);
 
   const onClickEmail = useCallback(() => {
     openUpcomingFeature();

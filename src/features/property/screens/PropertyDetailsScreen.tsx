@@ -22,6 +22,7 @@ export default function PropertyDetailsScreen({
     isLoading,
     isError,
     propertyDetails,
+    isFavouriteLoading,
     locale,
     applicationKey,
     featureCatalog,
@@ -55,6 +56,7 @@ export default function PropertyDetailsScreen({
         isLoading={isLoading}
         applicationKey={applicationKey}
         propertyDetails={propertyDetails}
+        isFavouriteLoading={isFavouriteLoading}
         locale={locale}
         showAgent
         showOwner
@@ -85,9 +87,7 @@ export default function PropertyDetailsScreen({
         onClick={(item) => {
           router.push(`/property-details/${item.id}`);
         }}
-        onClickFavourite={(item) => {
-          toggleFavourite(item.id);
-        }}
+        onClickFavourite={toggleFavourite}
       />
     </div>
   );

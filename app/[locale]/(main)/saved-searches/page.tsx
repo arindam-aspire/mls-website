@@ -5,7 +5,7 @@ import SavedSearchScreen from "@/src/features/saved-searches/screens/SavedSearch
 import { useAuthorize } from "@/src/lib/auth/authorize";
 
 export default function SavedSearchesPage() {
-  const { user, isLoadingUser } = useAuthorize("PROFILE");
+  const { user, isLoadingUser } = useAuthorize("SAVED_SEARCHES");
 
   if (!isLoadingUser && !user) return <LoadingScreen />;
 

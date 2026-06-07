@@ -367,7 +367,7 @@ Used by `(main)` route group.
 | `PropertyListScreen` | Stub |
 | `PropertyDetailsScreen` | Property detail (`PropertyView`, `/propert-details/:id`) |
 | `ListingPropertyScreen` | Coming Soon |
-| `FavouritePropertyScreen` | Coming Soon |
+| `FavouritePropertyScreen` | Favourites list (`GET /favorites`, `PropertyCardList`) |
 | `RecentlyViewedScreen` | Coming Soon |
 | `InquiriesScreen` | Coming Soon |
 
@@ -557,6 +557,8 @@ From `src/configs/environment.config.ts` → `API_BASE_URL` (env: `NEXT_PUBLIC_A
 | Constant | Path |
 | --- | --- |
 | `PROPERTY_LIST` | `/properties` — query may include `city`, `locations` (names from location taxonomy), plus existing filters |
+| `FAVORITE_LIST` | `/favorites` — `page`, `pageSize` (auth required) |
+| `FAVORITE_REMOVE` | `/favorites/:propertyHash` — DELETE (auth required) |
 
 Types: `src/features/property/types/property.types.ts` (`Property`, `PropertyListResponse`, …).
 

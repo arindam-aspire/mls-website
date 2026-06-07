@@ -45,7 +45,7 @@ Indirect via `usePropertyDetails` → `GET /properties/:id`, `GET /properties/:i
 | User action | Handler |
 | --- | --- |
 | Tab change | `tabs.onTabChange` → updates `?tab=` in URL |
-| Favourite | `onClickFavourite` → upcoming modal |
+| Favourite | `onClickFavourite` on `PropertyView` and `SimilarProperties` → add/remove favourite (guest → auth modal) |
 | Agent email | `onClickAgentEmail` → upcoming modal |
 
 # UI Details

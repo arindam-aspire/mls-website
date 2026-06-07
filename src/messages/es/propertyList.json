@@ -61,5 +61,30 @@
       "waterSource": "Fuente de agua",
       "electricityNearby": "Electricidad cercana"
     }
+  },
+  "details": {
+    "tabs": {
+      "overview": "Resumen",
+      "features": "Características",
+      "locations": "Ubicación",
+      "documents": "Documentos"
+    }
+  },
+  "favourites": {
+    "pageTitle": "Mis favoritos",
+    "pageSubtitle": "Consulta y gestiona las propiedades que has guardado.",
+    "listTitle": "Mis favoritos",
+    "listingsLabel": "Propiedades",
+    "sortNewest": "Más recientes",
+    "noDataTitle": "No has añadido propiedades favoritas.",
+    "noDataDescription": "Selecciona el icono del corazón para guardar favoritos.",
+    "noDataAction": "Explorar propiedades",
+    "fetchError": "No se pudieron cargar los favoritos",
+    "removeSuccessTitle": "Eliminado de favoritos",
+    "removeSuccessDescription": "La propiedad se eliminó de favoritos correctamente.",
+    "removeError": "No se pudo eliminar de favoritos",
+    "addSuccessTitle": "Añadido a favoritos",
+    "addSuccessDescription": "La propiedad se añadió a favoritos correctamente.",
+    "addError": "No se pudo añadir a favoritos"
   }
 }

@@ -61,5 +61,30 @@
       "waterSource": "مصدر مياه",
       "electricityNearby": "كهرباء قريبة"
     }
+  },
+  "details": {
+    "tabs": {
+      "overview": "نظرة عامة",
+      "features": "الميزات",
+      "locations": "الموقع",
+      "documents": "المستندات"
+    }
+  },
+  "favourites": {
+    "pageTitle": "مفضلاتي",
+    "pageSubtitle": "عرض وإدارة العقارات التي حفظتها.",
+    "listTitle": "مفضلاتي",
+    "listingsLabel": "العقارات",
+    "sortNewest": "الأحدث",
+    "noDataTitle": "لم تُضِف أي عقارات إلى المفضلة.",
+    "noDataDescription": "يرجى النقر على أيقونة القلب لحفظ العقارات في المفضلة.",
+    "noDataAction": "تصفح العقارات",
+    "fetchError": "تعذّر جلب المفضلة",
+    "removeSuccessTitle": "تمت الإزالة من المفضلة",
+    "removeSuccessDescription": "تمت إزالة العقار من المفضلة بنجاح.",
+    "removeError": "تعذّرت إزالة العقار من المفضلة",
+    "addSuccessTitle": "تمت الإضافة إلى المفضلة",
+    "addSuccessDescription": "تمت إضافة العقار إلى المفضلة بنجاح.",
+    "addError": "تعذّرت إضافة العقار إلى المفضلة"
   }
 }

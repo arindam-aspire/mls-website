@@ -37,7 +37,7 @@ Uses `useAuthorize("PROFILE")` — reads `user` / `isLoadingUser` from `useAuthS
 1. Next.js resolves locale-prefixed URL.
 2. `(main)/layout.tsx` applies `ProtectedLayout`.
 3. `useAuthorize("PROFILE")` waits for `isLoadingUser`, then checks roles.
-4. On success, `FavouritePropertyScreen` renders (Coming Soon placeholder).
+4. On success, `FavouritePropertyScreen` renders paginated favorites via `PropertyCardList`.
 
 # Dependencies
 

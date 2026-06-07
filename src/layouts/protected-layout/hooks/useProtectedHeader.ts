@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import mlsLogoDark from "@/src/assets/images/MLS_Dark_Logo.png";
 import mlsLogoLight from "@/src/assets/images/MLS_Light_Logo.png";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
+import { hasProtectedSidebarAccess } from "@/src/lib/auth/sidebarAccess";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
 import type { AppLocale } from "@/src/i18n/routing";
 import { useTheme } from "@/src/providers/ThemeProvider";
@@ -62,12 +63,18 @@ export function useProtectedHeader() {
     [t],
   );
 
+  const showHeaderLogo = useMemo(
+    () => Boolean(user) && !hasProtectedSidebarAccess(user),
+    [user],
+  );
+
   return {
     t,
     locale,
     localeOptions,
     user,
     isLoadingUser,
+    showHeaderLogo,
     headerLogoSrc,
     handleLocaleChange,
     upcomingFeatureModal,

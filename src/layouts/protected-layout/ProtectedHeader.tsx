@@ -19,6 +19,10 @@ import {
   protectedMobileLogoImageClass,
   protectedMobileLogoLinkClass,
 } from "@/src/layouts/protected-layout/protectedMobileHeaderStyles";
+import {
+  publicMobileLogoImageClass,
+  publicMobileLogoLinkClass,
+} from "@/src/layouts/public-layout/publicMobileHeaderStyles";
 import { useProtectedHeader } from "@/src/layouts/protected-layout/hooks/useProtectedHeader";
 import { cn } from "@/src/lib/cn";
 
@@ -29,6 +33,7 @@ export function ProtectedHeader() {
     localeOptions,
     user,
     isLoadingUser,
+    showHeaderLogo,
     headerLogoSrc,
     handleLocaleChange,
     upcomingFeatureModal,
@@ -96,7 +101,28 @@ export function ProtectedHeader() {
           </div>
         </div>
 
-        <div className="hidden h-16 items-center justify-end gap-2 px-4 md:flex sm:h-20 sm:gap-3 sm:px-6">
+        <div
+          className={cn(
+            "hidden h-16 items-center gap-2 px-4 md:flex sm:h-20 sm:gap-3 sm:px-6",
+            showHeaderLogo ? "justify-between" : "justify-end",
+          )}
+        >
+          {showHeaderLogo ? (
+            <Link
+              href="/"
+              className={cn(publicMobileLogoLinkClass, "max-w-none justify-self-start")}
+              aria-label={t("brand")}
+            >
+              <Image
+                src={headerLogoSrc}
+                alt={t("brand")}
+                priority
+                className={cn(publicMobileLogoImageClass, "h-16 md:h-20")}
+              />
+            </Link>
+          ) : null}
+
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           {isLoadingUser ? (
             <>
               <Skeleton variant="circular" className="size-9 shrink-0 sm:size-11" aria-hidden />
@@ -148,6 +174,7 @@ export function ProtectedHeader() {
               ) : null}
             </>
           )}
+          </div>
         </div>
       </header>
 

@@ -8,6 +8,8 @@ const handleI18nRouting = createMiddleware(routing);
 const PROTECTED_ROUTES = [
   "/dashboard",
   "/my-profile",
+  "/saved-searches",
+  "/favourites",
 ];
 
 export function proxy(request: NextRequest) {

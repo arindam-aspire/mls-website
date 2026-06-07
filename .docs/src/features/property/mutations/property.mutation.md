@@ -1,18 +1,18 @@
 # File Overview
 
-React Query mutation hooks for loading property lists and details on-demand.
+React Query hooks for loading property lists, details, and favourites.
 
 **Source:** `src/features/property/mutations/property.mutation.ts`
 
 # Responsibilities
 
-- Expose `useGetPropertyList` and `useGetPropertyDetails` hooks.
-- Call property services through TanStack Query mutation lifecycle.
-- Show toast feedback on API failure.
+- Expose mutation hooks for on-demand property fetches.
+- Expose `useGetAllFavorites` query for authenticated favourite lookup on the property list.
+- Show toast feedback on API failure (mutations and paginated favourite fetch).
 
 # Imports
 
-- `useMutation` from `@tanstack/react-query`
+- `useMutation`, `useQuery` from `@tanstack/react-query`
 - `ApiError` from `@/src/apis/core/error.normalizer`
 - `useToast` from `@/src/hooks/useToast`
 - `getPropertyDetails`, `getPropertyList` from `../services/property.service`
@@ -23,10 +23,16 @@ React Query mutation hooks for loading property lists and details on-demand.
 - `useGetPropertyDetails`
 - `useGetSimilarProperties`
 - `useGetPropertyFeatureCatalog`
+- `useGetAllFavorites`
+- `FAVORITES_ALL_QUERY_KEY`
+- `useGetFavoriteList`
+- `useRemoveFavorite`
+- `useAddFavorite`
 
 # State Management
 
-- TanStack Query mutation state: `isPending`, `isError`, `data`, `error`.
+- TanStack Query mutation state for list/detail fetches.
+- `useGetAllFavorites`: query state (`data`, `isFetching`) with `enabled` option; no error toast.
 
 # API Usage
 
@@ -36,6 +42,10 @@ React Query mutation hooks for loading property lists and details on-demand.
 | `useGetPropertyDetails` | `getPropertyDetails(id)` | `GET /properties/:id` |
 | `useGetSimilarProperties` | `getSimilarProperties(id)` | `GET /properties/:id/similar` |
 | `useGetPropertyFeatureCatalog` | `getPropertyFeatureCatalog()` | `GET /features?is_active=true` |
+| `useGetAllFavorites` | `getAllFavorites()` | `GET /favorites` (auth) |
+| `useGetFavoriteList` | `getFavoriteList(params)` | `GET /favorites?page=&pageSize=` |
+| `useAddFavorite` | `addFavorite({ property_hash })` | `POST /favorites` |
+| `useRemoveFavorite` | `removeFavorite(propertyHash)` | `DELETE /favorites/:propertyHash` |
 
 # Navigation
 

@@ -9,7 +9,8 @@ Client hook powering `ProtectedHeader` actions and state.
 - Locale switching on current pathname.
 - Upcoming-feature modal for notifications and search (`upcomingFeatureModal` source).
 - Mobile menu open/close state.
-- Theme-aware header logo source for mobile bar.
+- Theme-aware header logo source for mobile bar and desktop when sidebar is hidden.
+- `showHeaderLogo` when user has no protected sidebar (`registered_user`, `owner`) via `hasProtectedSidebarAccess`.
 - Expose auth user and locale option labels.
 
 # Exports
@@ -25,6 +26,7 @@ Client hook powering `ProtectedHeader` actions and state.
 | `localeOptions` | `{ value, label }[]` | Labels from `common.localeNames.*` |
 | `user` | `LoggedInUser \| null` | From auth store |
 | `isLoadingUser` | `boolean` | Profile hydration |
+| `showHeaderLogo` | `boolean` | Desktop left logo for user/owner (no sidebar) |
 | `headerLogoSrc` | `StaticImageData` | `MLS_Light_Logo` or `MLS_Dark_Logo` from `useTheme` |
 | `handleLocaleChange` | `(locale: string) => void` | `router.replace` with new locale |
 | `upcomingFeatureModal` | `"notifications" \| "search" \| null` | Which upcoming modal is open |

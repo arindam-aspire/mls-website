@@ -67,7 +67,7 @@ export type PropertyListResponse = {
 export type PropertyListings = {
   items?: PropertyListing[];
   meta?: PaginationMeta;
-}
+};
 
 export interface PropertyListing {
   id: number;
@@ -112,10 +112,71 @@ export interface PropertyListing {
 
   is_exclusive: boolean;
   is_favourite: boolean;
+  is_favourite_loading?: boolean;
   favourite_id?: string;
   property_hash?: string;
   user_id?: string;
 }
+
+// ── Favorites list (GET /favorites) ─────────────────────────────────────────
+
+export type FavoriteListParams = {
+  page: number;
+  pageSize: number;
+};
+
+/** Nested property payload inside a favorite list item (API shape). */
+export type FavoritePropertyPayload = Omit<
+  PropertyListing,
+  "is_favourite" | "favourite_id" | "property_hash" | "user_id"
+> & {
+  agency?: unknown | null;
+};
+
+export type FavoriteListItem = {
+  id: string;
+  user_id: string;
+  property_hash: number;
+  property: FavoritePropertyPayload;
+};
+
+export type FavoriteListResponse = {
+  success: boolean;
+  message: string | null;
+  data?: {
+    items?: FavoriteListItem[];
+    total?: number;
+    page?: number;
+    pageSize?: number;
+    totalPages?: number;
+    hasNext?: boolean;
+    hasPrevious?: boolean;
+  } | null;
+  error: unknown;
+  meta?: {
+    pagination?: PaginationMeta;
+  };
+};
+
+export type FavoriteRemoveResponse = {
+  success: boolean;
+  message: string | null;
+  data?: boolean | null;
+  error: unknown;
+  meta?: Record<string, unknown>;
+};
+
+export type FavoriteAddBody = {
+  property_hash: number;
+};
+
+export type FavoriteAddResponse = {
+  success: boolean;
+  message: string | null;
+  data?: FavoriteListItem | null;
+  error: unknown;
+  meta?: Record<string, unknown>;
+};
 
 export interface LocalizedText {
   en: string;

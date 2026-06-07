@@ -160,9 +160,11 @@ mls_website/
 │       │       │   ├── README.md
 │       │       │   ├── usePropertyDetails.md
 │       │       │   ├── usePropertyList.md
+│       │       │   ├── useFavouritePropertyList.md
 │       │       │   └── usePropertySearchFilters.md
 │       │       ├── mappers/
 │       │       │   ├── README.md
+│       │       │   ├── favoriteList.mapper.md
 │       │       │   ├── propertyFeatures.mapper.md
 │       │       │   └── propertyList.mapper.md
 │       │       ├── mutations/
@@ -415,6 +417,7 @@ mls_website/
 │   │   │   ├── authorize.ts
 │   │   │   ├── hasPermission.ts
 │   │   │   ├── permissions.ts
+│   │   │   ├── propertyDetailsTabAccess.ts
 │   │   │   ├── roles.ts
 │   │   │   └── sidebarAccess.ts
 │   │   ├── cn.ts
@@ -599,14 +602,18 @@ mls_website/
 │   │       │   ├── PropertyListAdvancedFilters.tsx
 │   │       │   ├── PropertyListFilters.tsx
 │   │       │   └── propertyListAdvancedFilters.constants.ts
+│   │       ├── constants/
+│   │       │   └── propertyDetailsTabs.constants.ts
 │   │       ├── hooks/
 │   │       │   ├── propertySearchFilter.constants.ts
 │   │       │   ├── usePropertyDetails.ts
+│   │       │   ├── usePropertyFavouriteToggle.ts
 │   │       │   ├── usePropertyList.ts
+│   │       │   ├── useFavouritePropertyList.ts
 │   │       │   └── usePropertySearchFilters.ts
 │   │       ├── mappers/
-│   │       │   ├── propertyFeatures.mapper.ts
-│   │       │   └── propertyList.mapper.ts
+│   │       │   ├── favoriteList.mapper.ts
+│   │       │   └── propertyFeatures.mapper.ts
 │   │       ├── mutations/
 │   │       │   └── property.mutation.ts
 │   │       ├── services/
@@ -624,7 +631,9 @@ mls_website/
 │   │       ├── types/
 │   │       │   └── property.types.ts
 │   │       └── utils/
-│   │           └── propertyAdvancedFieldVisibility.ts
+│   │           ├── applyFavoriteFlagsToListings.ts
+│   │           ├── propertyAdvancedFieldVisibility.ts
+│   │           └── resolveFavoriteResourceId.ts
 │   │   ├── saved-searches/
 │   │   │   ├── components/
 │   │   │   │   ├── SavedSearchFilterChips.tsx

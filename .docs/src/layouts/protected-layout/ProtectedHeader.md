@@ -1,6 +1,6 @@
 # File Overview
 
-Sticky top bar for authenticated `(main)` routes. **`< md`:** logo (left), notifications + menu (right). **`md+`:** theme → search (`lg+`) → language → notifications → profile (right). Search and notifications open the upcoming-feature modal (no redirect).
+Sticky top bar for authenticated `(main)` routes. **`< md`:** logo (left), notifications + menu (right). **`md+`:** theme → search → language → notifications → profile (right); **user/owner** (no sidebar) also show MLS logo on the **left**, matching `PublicHeader`.
 
 **Source:** `src/layouts/protected-layout/ProtectedHeader.tsx` (Client Component)
 
@@ -25,6 +25,7 @@ Sticky top bar for authenticated `(main)` routes. **`< md`:** logo (left), notif
 | Control | Breakpoint | Behavior |
 | --- | --- | --- |
 | Logo link | `< md` | Theme-aware MLS logo → home |
+| Logo link | `md+` when `showHeaderLogo` | Same as public header (user/owner without sidebar) |
 | Notifications | when signed in | Upcoming-feature modal |
 | Menu | `< md` | Opens mobile drawer (system settings) |
 | Theme / search / language / notifications | `md+` (`search` at `lg+`) | Search → `/property-list`; notifications → upcoming modal |
@@ -32,7 +33,7 @@ Sticky top bar for authenticated `(main)` routes. **`< md`:** logo (left), notif
 
 # UI Details
 
-- `protectedMobileHeaderBarClass`: flex `justify-between` on mobile; desktop row `justify-end`.
+- `protectedMobileHeaderBarClass`: flex `justify-between` on mobile; desktop row `justify-end`, or `justify-between` when `showHeaderLogo`.
 - Semantic tokens; theme-aware logo via hook.
 
 # Dependencies

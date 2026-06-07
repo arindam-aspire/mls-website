@@ -61,5 +61,30 @@
       "waterSource": "Water source",
       "electricityNearby": "Electricity nearby"
     }
+  },
+  "details": {
+    "tabs": {
+      "overview": "Overview",
+      "features": "Features",
+      "locations": "Location",
+      "documents": "Documents"
+    }
+  },
+  "favourites": {
+    "pageTitle": "My favourites",
+    "pageSubtitle": "View and manage your saved properties.",
+    "listTitle": "My favourites",
+    "listingsLabel": "Properties",
+    "sortNewest": "Newest",
+    "noDataTitle": "You haven't added any favourite properties.",
+    "noDataDescription": "Please select the love (heart) icon to save favourites.",
+    "noDataAction": "Browse properties",
+    "fetchError": "Failed to fetch favourites",
+    "removeSuccessTitle": "Removed from favourites",
+    "removeSuccessDescription": "Property removed from favourites successfully.",
+    "removeError": "Failed to remove favourite",
+    "addSuccessTitle": "Added to favourites",
+    "addSuccessDescription": "Property added to favourites successfully.",
+    "addError": "Failed to add favourite"
   }
 }

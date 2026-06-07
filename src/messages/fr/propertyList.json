@@ -61,5 +61,30 @@
       "waterSource": "Source d'eau",
       "electricityNearby": "Électricité à proximité"
     }
+  },
+  "details": {
+    "tabs": {
+      "overview": "Aperçu",
+      "features": "Caractéristiques",
+      "locations": "Emplacement",
+      "documents": "Documents"
+    }
+  },
+  "favourites": {
+    "pageTitle": "Mes favoris",
+    "pageSubtitle": "Consultez et gérez les biens que vous avez enregistrés.",
+    "listTitle": "Mes favoris",
+    "listingsLabel": "Biens",
+    "sortNewest": "Plus récents",
+    "noDataTitle": "Vous n'avez ajouté aucun bien favori.",
+    "noDataDescription": "Sélectionnez l'icône cœur pour enregistrer vos favoris.",
+    "noDataAction": "Parcourir les biens",
+    "fetchError": "Impossible de charger les favoris",
+    "removeSuccessTitle": "Retiré des favoris",
+    "removeSuccessDescription": "Le bien a été retiré de vos favoris.",
+    "removeError": "Impossible de retirer des favoris",
+    "addSuccessTitle": "Ajouté aux favoris",
+    "addSuccessDescription": "Le bien a été ajouté à vos favoris.",
+    "addError": "Impossible d'ajouter aux favoris"
   }
 }

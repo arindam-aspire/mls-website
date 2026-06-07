@@ -9,7 +9,9 @@ API service for listing and fetching a single property.
 - Call `GET /properties` with query params from `PropertyListParams`.
 - Call `GET /properties/:id` for a single property record.
 - Call `GET /properties/:id/similar` for related listings.
-- Call `GET /features?is_active=true` for the feature/amenity catalog.
+- Call `GET /favorites?page=&pageSize=` for paginated favourites (favourites screen).
+- Call `GET /favorites` with no query params for the full favourites list (property list heart state).
+- Call `DELETE /favorites/:propertyHash` to remove a favourite.
 
 # Imports
 
@@ -23,6 +25,10 @@ API service for listing and fetching a single property.
 - `getPropertyDetails`
 - `getSimilarProperties`
 - `getPropertyFeatureCatalog`
+- `getFavoriteList`
+- `getAllFavorites`
+- `addFavorite`
+- `removeFavorite`
 
 # State Management
 
@@ -36,6 +42,10 @@ _N/A — stateless service._
 | `getPropertyDetails` | GET | `/properties/:id` | no (`auth: false`) |
 | `getSimilarProperties` | GET | `/properties/:id/similar` | no (`auth: false`) |
 | `getPropertyFeatureCatalog` | GET | `/features?is_active=true` | no (`auth: false`) |
+| `getFavoriteList` | GET | `/favorites?page=&pageSize=` | yes |
+| `getAllFavorites` | GET | `/favorites` | yes |
+| `addFavorite` | POST | `/favorites` body `{ property_hash }` | yes |
+| `removeFavorite` | DELETE | `/favorites/:propertyHash` | yes |
 
 Query string built by `propertyEndpoints.PROPERTY_LIST(params)` (`page`, `pageSize`, `category`, `status`).
 

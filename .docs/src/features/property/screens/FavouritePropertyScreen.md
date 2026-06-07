@@ -1,72 +1,37 @@
 # File Overview
 
-Route-level screen component composing feature UI.
+Favourites route screen: paginated favorite properties via `PropertyCardList` (no filters).
 
 **Source:** `src/features/property/screens/FavouritePropertyScreen.tsx`
 
 # Responsibilities
 
-- Route-level screen component composing feature UI.
+- Compose `PropertyCardList` from `@abdoun/abdoun-library` with data from `useFavouritePropertyList`.
+- No filter bar (unlike `PropertyListScreen`).
+- `UpcomingFeatureModal` for contact/favourite actions not yet wired to API.
 
 # Imports
 
-- `import { ComingSoonCard } from "@/src/components/common/ComingSoonCard"`
-
-# Exports
-
-- `FavouritePropertyScreen`
-- `default`
-
-# State Management
-
-_No significant state; presentational or config module._
+- `PropertyCardList` from `@abdoun/abdoun-library`
+- `useFavouritePropertyList` from `../hooks/useFavouritePropertyList`
+- `UpcomingFeatureModal` from `@/src/components/common/UpcomingFeatureModal`
 
 # API Usage
 
-_N/A unless extended._
+Delegated to [useFavouritePropertyList.md](../hooks/useFavouritePropertyList.md) → `GET /favorites`.
 
 # Navigation
 
-_No direct navigation._
-
-# Props / Parameters
-
-- See component/handler props in source (TypeScript interfaces).
-
-# Actions / Inputs
-
-## Inputs
-
-_No explicit inputs detected._
-
-## Actions
-
-_No explicit actions detected._
-
-## Validations
-
-_No explicit validations detected._
-
-## Show/Hide Controls
-
-_No explicit show/hide controls detected._
-
-# UI Details
-
-- **Theme:** semantic tokens (`bg-page`, `bg-surface`, `text-text`, `text-muted`, `bg-primary`, `border-secondary/15`).
-- **Light/dark:** via `ThemeProvider` / `html.light` | `html.dark`.
-- **Radius:** `rounded-lg` controls; `rounded-xl` cards/modals/popovers; `rounded-full` avatars/pills.
-- **Responsive:** mobile-first (`sm:`, `md:`, `lg:`).
+- Mounted at `/en/favourites` via `app/[locale]/(main)/favourites/page.tsx` (`ProtectedLayout`, `useAuthorize("PROFILE")`).
 
 # Flow Description
 
-See source in `src/features/property/screens/FavouritePropertyScreen.tsx` for step-by-step behavior aligned with [application.md](../../application.md) (path relative may vary).
+1. Hook fetches favorites for current page/page size.
+2. Mapper converts nested `property` items to `PropertyListing`.
+3. `PropertyCardList` renders **grid-only** cards with pagination (no toolbar).
+4. Empty state copy via `propertyList.favourites` (`noDataTitle`, `noDataDescription`, `noDataAction`). **Browse properties** navigates to `/property-list`.
 
 # Dependencies
 
-- Parent feature or route that imports this file.
-- See **Imports** for direct module dependencies.
-
-# Notes
-
-- Keep in sync when `src/features/property/screens/FavouritePropertyScreen.tsx` changes.
+- [useFavouritePropertyList.md](../hooks/useFavouritePropertyList.md)
+- [favoriteList.mapper.md](../mappers/favoriteList.mapper.md)

@@ -1,6 +1,11 @@
 import { apiClient } from "@/src/apis/clients/api.client";
 import { propertyEndpoints } from "@/src/apis/endpoints/propertyEndpoints";
 import type {
+  FavoriteAddBody,
+  FavoriteAddResponse,
+  FavoriteListParams,
+  FavoriteListResponse,
+  FavoriteRemoveResponse,
   FeatureCatalogResponse,
   PropertyDetailsResponse,
   PropertyListParams,
@@ -43,5 +48,44 @@ export async function getPropertyFeatureCatalog(): Promise<FeatureCatalogRespons
     endpoint: propertyEndpoints.FEATURE_CATALOG(),
     method: "GET",
     auth: false,
+  });
+}
+
+export async function getFavoriteList(
+  params: FavoriteListParams,
+): Promise<FavoriteListResponse> {
+  return apiClient.request<FavoriteListResponse>({
+    endpoint: propertyEndpoints.FAVORITE_LIST(params),
+    method: "GET",
+    auth: true,
+  });
+}
+
+export async function getAllFavorites(): Promise<FavoriteListResponse> {
+  return apiClient.request<FavoriteListResponse>({
+    endpoint: propertyEndpoints.FAVORITES_ALL(),
+    method: "GET",
+    auth: true,
+  });
+}
+
+export async function addFavorite(
+  body: FavoriteAddBody,
+): Promise<FavoriteAddResponse> {
+  return apiClient.request<FavoriteAddResponse>({
+    endpoint: propertyEndpoints.FAVORITES_ALL(),
+    method: "POST",
+    auth: true,
+    body,
+  });
+}
+
+export async function removeFavorite(
+  propertyHash: string | number,
+): Promise<FavoriteRemoveResponse> {
+  return apiClient.request<FavoriteRemoveResponse>({
+    endpoint: propertyEndpoints.FAVORITE_REMOVE(propertyHash),
+    method: "DELETE",
+    auth: true,
   });
 }
