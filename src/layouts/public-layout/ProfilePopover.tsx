@@ -1,23 +1,23 @@
 "use client";
 
 import { ConfirmModal } from "@/src/components/common/ConfirmModal";
-import { UpcomingFeatureModal } from "@/src/components/common/UpcomingFeatureModal";
 import { Avatar } from "@/src/components/ui/avatar";
 import { Button } from "@/src/components/ui/button";
-import { PublicNotificationsButton } from "./PublicNotificationsButton";
 import { Link as UiLink } from "@/src/components/ui/link";
 import {
   Popover,
   PopoverButton,
   PopoverPanel,
 } from "@/src/components/ui/popover";
+import { NotificationsPopover } from "@/src/features/notifications/popovers/NotificationsPopover";
+import { useHeaderNotificationUnreadCount } from "@/src/features/notifications/hooks/useHeaderNotificationUnreadCount";
 import { useLogout } from "@/src/features/auth/mutations/auth.mutation";
 import type { LoggedInUser } from "@/src/features/auth/types/auth.types";
 import { useRouter } from "@/src/i18n/navigation";
 import { cn } from "@/src/lib/cn";
 import { profileEmailClasses, profileNameClasses } from "@/src/lib/typography";
 import { useClose } from "@headlessui/react";
-import { Bell, Eye, Heart, Home, LogOut, Search, Send, User } from "lucide-react";
+import { Eye, Heart, Home, LogOut, Search, Send, User } from "lucide-react";
 import { resolveProfileRoleLabel } from "@/src/features/auth/utils/resolveProfileRoleLabel";
 import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
@@ -90,7 +90,9 @@ export function ProfilePopover({
     [user, tAuth],
   );
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-  const [isUpcomingFeatureModalOpen, setIsUpcomingFeatureModalOpen] = useState(false);
+  const { hasUnread: hasUnreadNotifications } = useHeaderNotificationUnreadCount({
+    enabled: true,
+  });
   const { mutate: logout, isPending: isLoggingOut, isSuccess: isLoggedOut } = useLogout();
 
   useEffect(() => {
@@ -102,9 +104,10 @@ export function ProfilePopover({
   return (
     <div className="flex shrink-0 items-center gap-2 sm:gap-3">
       {showNotificationsButton ? (
-        <PublicNotificationsButton
+        <NotificationsPopover
+          enabled
+          hasUnread={hasUnreadNotifications}
           overHero={overHero}
-          onClick={() => setIsUpcomingFeatureModalOpen(true)}
         />
       ) : null}
 
@@ -210,11 +213,6 @@ export function ProfilePopover({
         cancelLabel={t("logoutCancel")}
       />
 
-      <UpcomingFeatureModal
-        open={isUpcomingFeatureModalOpen}
-        onClose={() => setIsUpcomingFeatureModalOpen(false)}
-        icon={<Bell className="size-7" aria-hidden />}
-      />
     </div>
   );
 }

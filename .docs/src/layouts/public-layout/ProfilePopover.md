@@ -51,7 +51,7 @@ _No explicit inputs detected._
 
 ## Actions
 
-- Notifications bell → opens `UpcomingFeatureModal` (coming soon)
+- Notifications bell → `NotificationsPopover` (with `overHero` on landing hero)
 - Profile menu links → navigate and close popover
 - Sign out → `ConfirmModal` then `useLogout`
 

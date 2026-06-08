@@ -16,12 +16,12 @@ Floating notification panels opened from the header bell (public and protected l
 - Panel shell: `@/src/components/ui/popover` with `rounded-xl` on `PopoverPanel`.
 - All visible copy from `notifications` namespace in `src/messages/`.
 
-## Expected files (when implemented)
+## Files
 
 | File | Role |
 | --- | --- |
-| `NotificationsPopover.tsx` | Bell-triggered popover for header |
-| Optional item component in `../components/` | Single notification row in the popover list |
+| [NotificationsPopover.md](./NotificationsPopover.md) | Bell-triggered popover for header |
+| `../components/NotificationPopoverItem.tsx` | Single notification row in the popover list |
 
 ## Related
 

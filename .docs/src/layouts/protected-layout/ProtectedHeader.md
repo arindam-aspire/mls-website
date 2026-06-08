@@ -13,8 +13,8 @@ Sticky top bar for authenticated `(main)` routes. **`< md`:** logo (left), notif
 # Imports
 
 - `useProtectedHeader`, `SelectDropdown`, `Skeleton`, `IconButton`, `Link`, `Image`
-- `ProtectedSearchButton`, `ProtectedThemeButton`, `ProtectedNotificationsButton`, `ProtectedProfileMenu`, `ProtectedMobileMenu`
-- `protectedMobileHeaderStyles`, `UpcomingFeatureModal`
+- `SaveSearchPopover`, `NotificationsPopover`, `ProtectedThemeButton`, `ProtectedProfileMenu`, `ProtectedMobileMenu`
+- `protectedMobileHeaderStyles`
 
 # Exports
 
@@ -26,9 +26,9 @@ Sticky top bar for authenticated `(main)` routes. **`< md`:** logo (left), notif
 | --- | --- | --- |
 | Logo link | `< md` | Theme-aware MLS logo → home |
 | Logo link | `md+` when `showHeaderLogo` | Same as public header (user/owner without sidebar) |
-| Notifications | when signed in | Upcoming-feature modal |
+| Notifications | when signed in | `NotificationsPopover` (bell + list popover) |
 | Menu | `< md` | Opens mobile drawer (system settings) |
-| Theme / search / language / notifications | `md+` (`search` at `lg+`) | Search → `/property-list`; notifications → upcoming modal |
+| Theme / search / language / notifications | `md+` | Saved-search popover; notifications popover |
 | Profile | `md+` when signed in | `ProtectedProfileMenu` |
 
 # UI Details

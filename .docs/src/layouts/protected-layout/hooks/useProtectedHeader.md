@@ -7,7 +7,6 @@ Client hook powering `ProtectedHeader` actions and state.
 # Responsibilities
 
 - Locale switching on current pathname.
-- Upcoming-feature modal for notifications and search (`upcomingFeatureModal` source).
 - Mobile menu open/close state.
 - Theme-aware header logo source for mobile bar and desktop when sidebar is hidden.
 - `showHeaderLogo` when user has no protected sidebar (`registered_user`, `owner`) via `hasProtectedSidebarAccess`.
@@ -26,13 +25,10 @@ Client hook powering `ProtectedHeader` actions and state.
 | `localeOptions` | `{ value, label }[]` | Labels from `common.localeNames.*` |
 | `user` | `LoggedInUser \| null` | From auth store |
 | `isLoadingUser` | `boolean` | Profile hydration |
+| `hasUnreadNotifications` | `boolean` | From `GET /notifications/unread-count` when user is ready |
 | `showHeaderLogo` | `boolean` | Desktop left logo for user/owner (no sidebar) |
 | `headerLogoSrc` | `StaticImageData` | `MLS_Light_Logo` or `MLS_Dark_Logo` from `useTheme` |
 | `handleLocaleChange` | `(locale: string) => void` | `router.replace` with new locale |
-| `upcomingFeatureModal` | `"notifications" \| "search" \| null` | Which upcoming modal is open |
-| `openNotifications` | `() => void` | Opens modal (bell icon) |
-| `openSearch` | `() => void` | Opens modal (search icon); no route change |
-| `closeUpcomingFeatureModal` | `() => void` | Closes modal |
 | `isMobileMenuOpen` | `boolean` | Mobile drawer visibility |
 | `openMobileMenu` | `() => void` | Opens `ProtectedMobileMenu` |
 | `closeMobileMenu` | `() => void` | Closes mobile drawer |
@@ -43,4 +39,4 @@ Client hook powering `ProtectedHeader` actions and state.
 
 # Notes
 
-- Header search uses `openSearch` until a dedicated search flow ships.
+- Notifications and saved-search popovers are self-contained feature components mounted in `ProtectedHeader`.

@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import mlsLogoDark from "@/src/assets/images/MLS_Dark_Logo.png";
 import mlsLogoLight from "@/src/assets/images/MLS_Light_Logo.png";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
+import { useHeaderNotificationUnreadCount } from "@/src/features/notifications/hooks/useHeaderNotificationUnreadCount";
 import { hasProtectedSidebarAccess } from "@/src/lib/auth/sidebarAccess";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
 import type { AppLocale } from "@/src/i18n/routing";
@@ -21,9 +22,13 @@ export function useProtectedHeader() {
   const locale = useLocale() as AppLocale;
   const { theme } = useTheme();
 
-  const { user, isLoadingUser } = useAuthStore();
+  const user = useAuthStore((state) => state.user);
+  const isLoadingUser = useAuthStore((state) => state.isLoadingUser);
 
-  const [upcomingFeatureModal, setUpcomingFeatureModal] = useState(false);
+  const { hasUnread: hasUnreadNotifications } = useHeaderNotificationUnreadCount({
+    enabled: Boolean(user),
+  });
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const headerLogoSrc: StaticImageData = useMemo(
@@ -37,14 +42,6 @@ export function useProtectedHeader() {
     },
     [pathname, router],
   );
-
-  const openNotifications = useCallback(() => {
-    setUpcomingFeatureModal(true);
-  }, []);
-
-  const closeUpcomingFeatureModal = useCallback(() => {
-    setUpcomingFeatureModal(false);
-  }, []);
 
   const openMobileMenu = useCallback(() => {
     setIsMobileMenuOpen(true);
@@ -74,12 +71,10 @@ export function useProtectedHeader() {
     localeOptions,
     user,
     isLoadingUser,
+    hasUnreadNotifications,
     showHeaderLogo,
     headerLogoSrc,
     handleLocaleChange,
-    upcomingFeatureModal,
-    openNotifications,
-    closeUpcomingFeatureModal,
     isMobileMenuOpen,
     openMobileMenu,
     closeMobileMenu,

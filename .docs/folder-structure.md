@@ -41,6 +41,8 @@ mls_website/
 │   │       │   │   └── page.md
 │   │       │   ├── saved-searches/
 │   │       │   │   └── page.md
+│   │       │   ├── notifications/
+│   │       │   │   └── page.md
 │   │       │   └── favourites/
 │   │       │       └── page.md
 │   │       └── (property)/
@@ -265,6 +267,8 @@ mls_website/
 │   │   │   ├── my-profile/
 │   │   │   │   └── page.tsx
 │   │   │   ├── saved-searches/
+│   │   │   │   └── page.tsx
+│   │   │   ├── notifications/
 │   │   │   │   └── page.tsx
 │   │   │   └── favourites/
 │   │   │       └── page.tsx
@@ -506,15 +510,39 @@ mls_website/
 │   │   │       └── NotFoundScreen.tsx
 │   │   ├── notifications/
 │   │   │   ├── components/
+│   │   │   │   ├── ArchivedNotificationListItem.tsx
+│   │   │   │   ├── ArchivedNotificationsPanel.tsx
+│   │   │   │   ├── ArchivedNotificationsPanelSkeleton.tsx
+│   │   │   │   ├── NotificationListGroup.tsx
+│   │   │   │   ├── NotificationListItem.tsx
+│   │   │   │   ├── NotificationPopoverItem.tsx
+│   │   │   │   ├── NotificationScreenSkeleton.tsx
+│   │   │   │   └── NotificationsPopoverPanel.tsx
 │   │   │   ├── constants/
+│   │   │   │   ├── notification-icons.ts
+│   │   │   │   └── notification.constants.ts
 │   │   │   ├── hooks/
+│   │   │   │   ├── useHeaderNotificationUnreadCount.ts
+│   │   │   │   ├── useNotificationArchivedPanel.ts
+│   │   │   │   ├── useNotificationScreen.ts
+│   │   │   │   └── useNotificationsPopover.ts
+│   │   │   ├── i18n/
+│   │   │   │   └── buildNotificationGroupLabels.ts
 │   │   │   ├── mutations/
+│   │   │   │   └── notification.mutation.ts
 │   │   │   ├── popovers/
+│   │   │   │   └── NotificationsPopover.tsx
 │   │   │   ├── screens/
+│   │   │   │   └── NotificationScreen.tsx
 │   │   │   ├── services/
-│   │   │   ├── store/
+│   │   │   │   └── notification.service.ts
 │   │   │   ├── types/
+│   │   │   │   └── notification.types.ts
 │   │   │   └── utils/
+│   │   │       ├── formatNotificationListTime.ts
+│   │   │       ├── formatNotificationRelativeTime.ts
+│   │   │       ├── groupNotificationsByTime.ts
+│   │   │       └── resolveNotificationHref.ts
 │   │   ├── unauthorized/
 │   │   │   └── screens/
 │   │   │       └── UnauthorizedScreen.tsx

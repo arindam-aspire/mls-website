@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Bell, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { cn } from "@/src/lib/cn";
@@ -9,7 +9,8 @@ import { Button } from "@/src/components/ui/button";
 import { IconButton } from "@/src/components/ui/icon-button";
 import { Skeleton } from "@/src/components/ui/skeleton";
 import { headerOverHeroIconClass } from "@/src/layouts/public-layout/PublicNotificationsButton";
-import { UpcomingFeatureModal } from "@/src/components/common/UpcomingFeatureModal";
+import { NotificationsPopover } from "@/src/features/notifications/popovers/NotificationsPopover";
+import { useHeaderNotificationUnreadCount } from "@/src/features/notifications/hooks/useHeaderNotificationUnreadCount";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { AUTH_VIEW } from "@/src/features/auth/authViews";
 import { Link, usePathname, useRouter } from "@/src/i18n/navigation";
@@ -19,7 +20,6 @@ import mlsLogoLight from "@/src/assets/images/MLS_Light_Logo.png";
 import { LandingDesktopNav } from "./LandingDesktopNav";
 import { LandingDesktopActions } from "./LandingDesktopActions";
 import { LandingMobileMenu } from "./LandingMobileMenu";
-import { LandingNotificationsButton } from "./LandingNotificationsButton";
 import {
   landingMobileHeaderIconButtonClass,
   landingMobileHeaderIconClass,
@@ -29,13 +29,16 @@ import {
 } from "./landingMobileHeaderStyles";
 
 export function LandingHeader() {
-  const { user, isLoadingUser } = useAuthStore();
+  const user = useAuthStore((state) => state.user);
+  const isLoadingUser = useAuthStore((state) => state.isLoadingUser);
+  const { hasUnread: hasUnreadNotifications } = useHeaderNotificationUnreadCount({
+    enabled: Boolean(user),
+  });
   const t = useTranslations("common");
   const locale = useLocale() as AppLocale;
   const router = useRouter();
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
-  const [isUpcomingFeatureModalOpen, setIsUpcomingFeatureModalOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -118,9 +121,10 @@ export function LandingHeader() {
               <Skeleton variant="circular" className="size-9 shrink-0 sm:size-11" />
             </>
           ) : user ? (
-            <LandingNotificationsButton
+            <NotificationsPopover
+              enabled
+              hasUnread={hasUnreadNotifications}
               overHero={overHero}
-              onClick={() => setIsUpcomingFeatureModalOpen(true)}
             />
           ) : (
             <Button
@@ -161,11 +165,6 @@ export function LandingHeader() {
         closeMenuLabel={t("closeMenu")}
       />
 
-      <UpcomingFeatureModal
-        open={isUpcomingFeatureModalOpen}
-        onClose={() => setIsUpcomingFeatureModalOpen(false)}
-        icon={<Bell className="size-7" aria-hidden />}
-      />
     </>
   );
 }

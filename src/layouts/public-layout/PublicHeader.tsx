@@ -1,14 +1,15 @@
 "use client";
 
 import Image from "next/image";
-import { Bell, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { cn } from "@/src/lib/cn";
 import { Button } from "@/src/components/ui/button";
 import { IconButton } from "@/src/components/ui/icon-button";
 import { Skeleton } from "@/src/components/ui/skeleton";
-import { UpcomingFeatureModal } from "@/src/components/common/UpcomingFeatureModal";
+import { NotificationsPopover } from "@/src/features/notifications/popovers/NotificationsPopover";
+import { useHeaderNotificationUnreadCount } from "@/src/features/notifications/hooks/useHeaderNotificationUnreadCount";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { AUTH_VIEW } from "@/src/features/auth/authViews";
 import { Link, usePathname, useRouter } from "@/src/i18n/navigation";
@@ -17,7 +18,6 @@ import mlsLogoLight from "@/src/assets/images/MLS_Light_Logo.png";
 import { DesktopNav } from "./DesktopNav";
 import { DesktopActions } from "./DesktopActions";
 import { PublicMobileMenu } from "./PublicMobileMenu";
-import { PublicNotificationsButton } from "./PublicNotificationsButton";
 import {
   publicMobileHeaderIconButtonClass,
   publicMobileHeaderIconClass,
@@ -27,12 +27,15 @@ import {
 } from "./publicMobileHeaderStyles";
 
 export function PublicHeader() {
-  const { user, isLoadingUser } = useAuthStore();
+  const user = useAuthStore((state) => state.user);
+  const isLoadingUser = useAuthStore((state) => state.isLoadingUser);
+  const { hasUnread: hasUnreadNotifications } = useHeaderNotificationUnreadCount({
+    enabled: Boolean(user),
+  });
   const t = useTranslations("common");
   const locale = useLocale() as AppLocale;
   const router = useRouter();
   const pathname = usePathname();
-  const [isUpcomingFeatureModalOpen, setIsUpcomingFeatureModalOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const openChooseAccount = () => {
@@ -90,8 +93,9 @@ export function PublicHeader() {
                 <Skeleton variant="circular" className="size-9 shrink-0 sm:size-11" />
               </>
             ) : user ? (
-              <PublicNotificationsButton
-                onClick={() => setIsUpcomingFeatureModalOpen(true)}
+              <NotificationsPopover
+                enabled
+                hasUnread={hasUnreadNotifications}
               />
             ) : (
               <Button
@@ -132,11 +136,6 @@ export function PublicHeader() {
         closeMenuLabel={t("closeMenu")}
       />
 
-      <UpcomingFeatureModal
-        open={isUpcomingFeatureModalOpen}
-        onClose={() => setIsUpcomingFeatureModalOpen(false)}
-        icon={<Bell className="size-7" aria-hidden />}
-      />
     </>
   );
 }

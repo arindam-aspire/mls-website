@@ -55,6 +55,7 @@ export interface ConfirmModalProps {
   description?: string;
   children?: ReactNode;
   icon?: ReactNode;
+  iconContainerClassName?: string;
   confirmLabel?: string;
   confirmIcon?: ReactNode;
   cancelLabel?: string;
@@ -79,6 +80,7 @@ export function ConfirmModal({
   description,
   children,
   icon,
+  iconContainerClassName,
   confirmLabel = "Confirm",
   confirmIcon,
   cancelLabel = "Cancel",
@@ -112,7 +114,7 @@ export function ConfirmModal({
                 <span
                   className={cn(
                     "inline-flex size-12 items-center justify-center rounded-full",
-                    variantIconStyles[variant],
+                    iconContainerClassName ?? variantIconStyles[variant],
                   )}
                 >
                   {icon ?? <Icon className="size-6" aria-hidden />}

@@ -42,7 +42,7 @@ Landing header module for the landing layout shell.
 
 # UI Details
 
-- **Mobile (`< md`):** logged-in notifications use `LandingNotificationsButton` — same primary rounded `IconButton` as desktop/lg. **`sm`:** proportional logo (`sm:h-[4.25rem]`), wider sign-in button.
+- **`NotificationsPopover`** when signed in (mobile, `overHero` when applicable); desktop via `ProfilePopover`.
 - **`md` / `lg`:** `grid grid-cols-[1fr_auto_1fr]` — centered desktop nav + `LandingDesktopActions`.
 - **Hero mode (`overHero`):** white menu icon, avatar ring on `sm`; logo swaps dark/light variant on scroll.
 

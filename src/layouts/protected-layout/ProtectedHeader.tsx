@@ -1,15 +1,14 @@
 "use client";
 
-import { Bell, Globe, Menu } from "lucide-react";
+import { Globe, Menu } from "lucide-react";
 import Image from "next/image";
-import { UpcomingFeatureModal } from "@/src/components/common/UpcomingFeatureModal";
 import { IconButton } from "@/src/components/ui/icon-button";
 import { SelectDropdown } from "@/src/components/ui/select-dropdown";
 import { Skeleton } from "@/src/components/ui/skeleton";
 import { Link } from "@/src/i18n/navigation";
 import { ProtectedMobileMenu } from "@/src/layouts/protected-layout/ProtectedMobileMenu";
-import { ProtectedNotificationsButton } from "@/src/layouts/protected-layout/ProtectedNotificationsButton";
 import { ProtectedProfileMenu } from "@/src/layouts/protected-layout/ProtectedProfileMenu";
+import { NotificationsPopover } from "@/src/features/notifications/popovers/NotificationsPopover";
 import { SaveSearchPopover } from "@/src/features/saved-searches/popovers/SaveSearchPopover";
 import { ProtectedThemeButton } from "@/src/layouts/protected-layout/ProtectedThemeButton";
 import {
@@ -33,12 +32,10 @@ export function ProtectedHeader() {
     localeOptions,
     user,
     isLoadingUser,
+    hasUnreadNotifications,
     showHeaderLogo,
     headerLogoSrc,
     handleLocaleChange,
-    upcomingFeatureModal,
-    openNotifications,
-    closeUpcomingFeatureModal,
     isMobileMenuOpen,
     openMobileMenu,
     closeMobileMenu,
@@ -82,7 +79,10 @@ export function ProtectedHeader() {
               </>
             ) : user ? (
               <>
-                <ProtectedNotificationsButton onClick={openNotifications} />
+                <NotificationsPopover
+                  enabled
+                  hasUnread={hasUnreadNotifications}
+                />
                 <IconButton
                   type="button"
                   icon={
@@ -168,7 +168,10 @@ export function ProtectedHeader() {
               />
               {user ? (
                 <>
-                  <ProtectedNotificationsButton onClick={openNotifications} />
+                  <NotificationsPopover
+                  enabled
+                  hasUnread={hasUnreadNotifications}
+                />
                   <ProtectedProfileMenu user={user} />
                 </>
               ) : null}
@@ -183,11 +186,6 @@ export function ProtectedHeader() {
         onClose={closeMobileMenu}
       />
 
-      <UpcomingFeatureModal
-        open={upcomingFeatureModal}
-        onClose={closeUpcomingFeatureModal}
-        icon={<Bell className="size-7" aria-hidden />}
-      />
     </>
   );
 }

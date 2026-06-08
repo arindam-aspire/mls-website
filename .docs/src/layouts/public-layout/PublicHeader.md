@@ -6,13 +6,14 @@ Public header module for the default app shell.
 
 # Responsibilities
 
-- Sticky header with logo, desktop nav/actions, mobile sign-in or notifications + hamburger.
+- Sticky header with logo, desktop nav/actions, mobile sign-in or notifications popover + hamburger.
 - Render [PublicMobileMenu.md](./PublicMobileMenu.md) outside `<header>` (drawer portaled, no blur trap).
-- Upcoming-feature modal for mobile notifications bell.
+- **`NotificationsPopover`** when signed in on mobile; desktop bell in `ProfilePopover`.
 
 # State Management
 
-- Local: `mobileMenuOpen`, `isUpcomingFeatureModalOpen`
+- Local: `mobileMenuOpen`
+- `useHeaderNotificationUnreadCount` for unread dot on mobile popover
 - Global: `useAuthStore` — `user`, `isLoadingUser`, `openAuth`
 
 # Navigation

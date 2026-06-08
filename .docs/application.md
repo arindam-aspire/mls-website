@@ -190,7 +190,7 @@ Route groups `(landing)`, `(main)`, `(property)`, `(auth)`, `(public)` do **not*
 | Group | Layout | Purpose |
 | --- | --- | --- |
 | `(landing)` | `LandingLayout` | Locale root landing page |
-| `(main)` | `ProtectedLayout` | Dashboard, my-profile, saved-searches, favourites |
+| `(main)` | `ProtectedLayout` | Dashboard, my-profile, saved-searches, notifications, favourites |
 | `(property)` | `PublicLayout` | User property-related pages |
 | `(auth)` | *(empty — reserved)* | Future auth routes |
 | `(public)` | *(empty — reserved)* | Future public routes |
@@ -205,8 +205,9 @@ All paths below are **without** locale; prepend `/<locale>` (e.g. `/en/listing`)
 | `/` | `(landing)/page.tsx` | `LandingScreen` |
 | `/dashboard` | `(main)/dashboard/page.tsx` | `DashboardScreen` — guarded by `useAuthorize("DASHBOARD")` |
 | `/my-profile` | `(main)/my-profile/page.tsx` | `ProfileScreen` — guarded by `useAuthorize("PROFILE")` |
-| `/saved-searches` | `(main)/saved-searches/page.tsx` | `SavedSearchScreen` — guarded by `useAuthorize("PROFILE")` |
-| `/favourites` | `(main)/favourites/page.tsx` | `FavouritePropertyScreen` — guarded by `useAuthorize("PROFILE")` |
+| `/saved-searches` | `(main)/saved-searches/page.tsx` | `SavedSearchScreen` — guarded by `useAuthorize("SAVED_SEARCHES")` |
+| `/notifications` | `(main)/notifications/page.tsx` | `NotificationScreen` (placeholder) — guarded by `useAuthorize("NOTIFICATIONS")` |
+| `/favourites` | `(main)/favourites/page.tsx` | `FavouritePropertyScreen` — guarded by `useAuthorize("FAVOURITES")` |
 | `/listing` | `(property)/listing/page.tsx` | `ListingPropertyScreen` (Coming Soon) |
 | `/property-list` | `(property)/property-list/page.tsx` | `PropertyListScreen` (`PropertyCardList`) |
 | `/propert-details/:id` | `(property)/propert-details/[id]/page.tsx` | `PropertyDetailsScreen` (`PropertyView`) |
