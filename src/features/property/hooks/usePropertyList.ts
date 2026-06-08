@@ -5,10 +5,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale } from "next-intl";
 import { getPathname, usePathname, useRouter } from "@/src/i18n/navigation";
 import type { AppLocale } from "@/src/i18n/routing";
-import {
-  getInitialBudgetMax,
-  getInitialBudgetMin,
-} from "@/src/components/search";
 import { tokenStore } from "@/src/apis/core/token.store";
 import { AUTH_VIEW } from "@/src/features/auth/authViews";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
@@ -22,21 +18,23 @@ import {
 import { usePropertyFavouriteToggle } from "./usePropertyFavouriteToggle";
 import { useGetSavedSearch } from "@/src/features/saved-searches/mutations/saved-search.mutation";
 import { getSavedSearchById } from "@/src/features/saved-searches/services/saved-search.service";
-import { buildSavedSearchPropertyListSearchParams } from "@/src/features/saved-searches/utils/buildSavedSearchPropertyListHref";
+import {
+  buildSearchParamsFromSavedSearchRecord,
+  needsSavedSearchUrlHydration,
+  resolvePropertyListRequestParams,
+} from "@/src/features/saved-searches/utils/savedSearchPropertyListParams";
 import { usePropertyStore } from "../store/property.store";
 import type { PropertyListParams, PropertyListing } from "../types/property.types";
-import { normalizeAmenitiesParam } from "../components/propertyListAdvancedFilters.constants";
+import {
+  DEFAULT_PROPERTY_LIST_PARAMS,
+  DEFAULT_PROPERTY_LIST_SORT,
+  parsePropertyListUrlParams,
+} from "../utils/parsePropertyListUrlParams";
 import { usePropertySearchFilters } from "./usePropertySearchFilters";
 
-const DEFAULT_SORT = "newest";
+const DEFAULT_SORT = DEFAULT_PROPERTY_LIST_SORT;
 
-const DEFAULT_SEARCH_PARAMS: PropertyListParams = {
-  page: 1,
-  pageSize: 10,
-  category: "residential",
-  status: "buy",
-  sort: DEFAULT_SORT,
-};
+const DEFAULT_SEARCH_PARAMS = DEFAULT_PROPERTY_LIST_PARAMS;
 
 const LIST_PARAM_KEYS = [
   "page",
@@ -86,54 +84,6 @@ function getListTitle(status: string) {
   return "Properties for sale";
 }
 
-function getOptionalString(value: string | null) {
-  return value || undefined;
-}
-
-function parseOptionalNumber(value: string | null) {
-  if (!value) {
-    return undefined;
-  }
-
-  const parsed = Number(value);
-
-  return Number.isFinite(parsed) ? parsed : undefined;
-}
-
-function parseUrlListParams(searchParams: URLSearchParams): PropertyListParams {
-  return {
-    page: Number(searchParams.get("page")) || 1,
-    pageSize: Number(searchParams.get("pageSize")) || 10,
-    category: searchParams.get("category") || "",
-    status: searchParams.get("status") || "",
-    sort: searchParams.get("sort") || DEFAULT_SORT,
-    type: getOptionalString(searchParams.get("type")),
-    location: getOptionalString(searchParams.get("location")),
-    city: getOptionalString(searchParams.get("city")),
-    locations: getOptionalString(searchParams.get("locations")),
-    budgetMin: parseOptionalNumber(getInitialBudgetMin(searchParams) || null),
-    budgetMax: parseOptionalNumber(getInitialBudgetMax(searchParams) || null),
-    furnitureStatus: getOptionalString(searchParams.get("furnitureStatus")),
-    bedrooms: parseOptionalNumber(searchParams.get("bedrooms")),
-    rooms: parseOptionalNumber(searchParams.get("rooms")),
-    bathrooms: parseOptionalNumber(searchParams.get("bathrooms")),
-    parking: parseOptionalNumber(searchParams.get("parking")),
-    propertyAge: getOptionalString(searchParams.get("propertyAge")),
-    floorLevel: getOptionalString(searchParams.get("floorLevel")),
-    minArea: parseOptionalNumber(searchParams.get("minArea")),
-    maxArea: parseOptionalNumber(searchParams.get("maxArea")),
-    minPlotArea: parseOptionalNumber(searchParams.get("minPlotArea")),
-    maxPlotArea: parseOptionalNumber(searchParams.get("maxPlotArea")),
-    governorate: getOptionalString(searchParams.get("governorate")),
-    directorate: getOptionalString(searchParams.get("directorate")),
-    village: getOptionalString(searchParams.get("village")),
-    parcelName: getOptionalString(searchParams.get("parcelName")),
-    amenities: normalizeAmenitiesParam(getOptionalString(searchParams.get("amenities"))),
-    similar_to: getOptionalString(searchParams.get("similar_to")),
-    savedSearchId: getOptionalString(searchParams.get("savedSearchId")),
-  };
-}
-
 function setSearchParamValue(
   params: URLSearchParams,
   key: (typeof LIST_PARAM_KEYS)[number],
@@ -162,8 +112,13 @@ export function usePropertyList() {
   } = usePropertyFavouriteToggle();
 
   const listParams = useMemo(
-    () => parseUrlListParams(searchParams),
+    () => parsePropertyListUrlParams(searchParams),
     [searchParams],
+  );
+
+  const isHydratingSavedSearch = useMemo(
+    () => needsSavedSearchUrlHydration(listParams),
+    [listParams],
   );
 
   // 3. Global state (Zustand)
@@ -232,6 +187,15 @@ export function usePropertyList() {
     [pathname, router, searchParams],
   );
 
+  const propertyListRequestParams = useMemo(
+    () =>
+      resolvePropertyListRequestParams(
+        listParams,
+        savedSearchDetail?.data ?? null,
+      ),
+    [listParams, savedSearchDetail?.data],
+  );
+
   // 6. Derived / memoized values
   const listings = useMemo(
     () =>
@@ -275,13 +239,9 @@ export function usePropertyList() {
           return;
         }
 
-        const params = new URLSearchParams(
-          buildSavedSearchPropertyListSearchParams(record),
-        );
-
-        if (listParams.similar_to) {
-          params.set("similar_to", listParams.similar_to);
-        }
+        const params = buildSearchParamsFromSavedSearchRecord(record, {
+          similarTo: listParams.similar_to,
+        });
 
         router.replace(`${pathname}?${params.toString()}`);
       } catch {
@@ -423,15 +383,80 @@ export function usePropertyList() {
 
   // 9. Effects
   useEffect(() => {
-    fetchProperties(listParams);
-  }, [fetchProperties, listParams]);
+    if (!isHydratingSavedSearch) {
+      return;
+    }
+
+    const savedSearchId = listParams.savedSearchId;
+
+    if (!savedSearchId) {
+      return;
+    }
+
+    let cancelled = false;
+
+    void (async () => {
+      try {
+        const response = await getSavedSearchById(savedSearchId);
+        const record = response.data;
+
+        if (cancelled || !record) {
+          return;
+        }
+
+        const params = buildSearchParamsFromSavedSearchRecord(record, {
+          similarTo: listParams.similar_to,
+        });
+
+        router.replace(`${pathname}?${params.toString()}`);
+      } catch {
+        if (!cancelled) {
+          const params = new URLSearchParams();
+
+          params.set("status", DEFAULT_SEARCH_PARAMS.status);
+          params.set("category", DEFAULT_SEARCH_PARAMS.category);
+          params.set("sort", DEFAULT_SEARCH_PARAMS.sort ?? DEFAULT_SORT);
+          params.set("page", String(DEFAULT_SEARCH_PARAMS.page));
+          params.set("pageSize", String(DEFAULT_SEARCH_PARAMS.pageSize));
+          params.set("savedSearchId", savedSearchId);
+
+          if (listParams.similar_to) {
+            params.set("similar_to", listParams.similar_to);
+          }
+
+          router.replace(`${pathname}?${params.toString()}`);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    isHydratingSavedSearch,
+    listParams.savedSearchId,
+    listParams.similar_to,
+    pathname,
+    router,
+  ]);
+
+  useEffect(() => {
+    if (isHydratingSavedSearch) {
+      return;
+    }
+
+    fetchProperties(propertyListRequestParams);
+  }, [fetchProperties, isHydratingSavedSearch, propertyListRequestParams]);
 
   // 10. Return values
   return {
     listings,
     layoutVariant,
     listTitle,
-    isLoading: propertyListings === null || isLoadingPropertyList,
+    isLoading:
+      isHydratingSavedSearch ||
+      propertyListings === null ||
+      isLoadingPropertyList,
     filters,
     toolbar,
     pagination,

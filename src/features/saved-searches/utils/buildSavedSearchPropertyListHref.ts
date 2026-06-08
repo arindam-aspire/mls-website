@@ -2,16 +2,19 @@ import type { SavedSearchRecord } from "../types/savedSearch.types";
 
 const PROPERTY_LIST_PATH = "/property-list";
 
-export function buildSavedSearchPropertyListSearchParams(
-  record: SavedSearchRecord,
-) {
-  const params = new URLSearchParams(record.query_string.trim());
+export function buildSavedSearchPropertyListSearchParams(savedSearchId: string) {
+  const params = new URLSearchParams();
 
-  params.set("savedSearchId", record.id);
+  params.set("savedSearchId", savedSearchId);
 
   return params.toString();
 }
 
-export function buildSavedSearchPropertyListHref(record: SavedSearchRecord) {
-  return `${PROPERTY_LIST_PATH}?${buildSavedSearchPropertyListSearchParams(record)}`;
+export function buildSavedSearchPropertyListHref(
+  recordOrId: SavedSearchRecord | string,
+) {
+  const savedSearchId =
+    typeof recordOrId === "string" ? recordOrId : recordOrId.id;
+
+  return `${PROPERTY_LIST_PATH}?${buildSavedSearchPropertyListSearchParams(savedSearchId)}`;
 }

@@ -633,6 +633,7 @@ mls_website/
 │   │       │   └── property.types.ts
 │   │       └── utils/
 │   │           ├── applyFavoriteFlagsToListings.ts
+│   │           ├── parsePropertyListUrlParams.ts
 │   │           ├── propertyAdvancedFieldVisibility.ts
 │   │           └── resolveFavoriteResourceId.ts
 │   │   ├── saved-searches/
@@ -673,7 +674,8 @@ mls_website/
 │   │   │       ├── searchCriteriaFieldVisibility.ts
 │   │   │       ├── buildSavedSearchCriteriaFilterItems.ts
 │   │   │       ├── buildSavedSearchFilterItems.ts
-│   │   │       └── buildSavedSearchPropertyListHref.ts
+│   │   │       ├── buildSavedSearchPropertyListHref.ts
+│   │   │       └── savedSearchPropertyListParams.ts
 │   ├── hooks/
 │   │   ├── useForm.ts
 │   │   ├── useMatchMedia.ts
