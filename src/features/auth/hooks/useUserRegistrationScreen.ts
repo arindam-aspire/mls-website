@@ -7,7 +7,8 @@ import {
   resolveSocialSignInViewForAccountType,
 } from "../authViews";
 import type { SocialAccountType } from "../components/SocialAuthForm";
-import type { SignUpFormValues } from "../types/auth.types";
+import { resolveSignInRole } from "../types/signIn.types";
+import type { SignUpFormValues, SignUpRequest } from "../types/auth.types";
 import { useSignUp } from "../mutations/auth.mutation";
 import { useAuthStore } from "../store/auth.store";
 import { useAuthModalNavigation } from "./useAuthPortal";
@@ -30,11 +31,16 @@ export function useUserRegistrationScreen({ type }: UseUserRegistrationScreenPar
 
   const onSubmit = useCallback(
     (values: SignUpFormValues) => {
-      setPendingSignUp(values);
+      const payload: SignUpRequest = {
+        ...values,
+        role: resolveSignInRole(type),
+      };
+
+      setPendingSignUp(payload);
       setPendingEmail(values.email);
-      signUpMutate(values);
+      signUpMutate(payload);
     },
-    [setPendingEmail, setPendingSignUp, signUpMutate],
+    [setPendingEmail, setPendingSignUp, signUpMutate, type],
   );
 
   const onSignInClick = useCallback(() => {

@@ -1,3 +1,5 @@
+import type { SignInRole } from "./signIn.types";
+
 export type SignUpFormValues = {
   full_name: string;
   email: string;
@@ -5,11 +7,8 @@ export type SignUpFormValues = {
   password: string;
 };
 
-export type SignUpRequest = {
-  full_name: string;
-  email: string;
-  phone_number: string;
-  password: string;
+export type SignUpRequest = SignUpFormValues & {
+  role: SignInRole;
 };
 
 export type SignUpResponse = {

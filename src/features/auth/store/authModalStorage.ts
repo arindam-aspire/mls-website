@@ -1,6 +1,6 @@
 import type { AuthOtpFlow } from "../authViews";
 import type { AuthView } from "../authViews";
-import type { AgencySignUpSubmitValues, SignUpFormValues } from "../types/auth.types";
+import type { AgencySignUpSubmitValues, SignUpRequest } from "../types/auth.types";
 
 export const AUTH_MODAL_SESSION_KEY = "auth_transient";
 
@@ -14,7 +14,7 @@ export type AuthModalPersistedState = {
   pendingPhoneCountry: string | null;
   otpSession: string | null;
   otpCode: string | null;
-  pendingSignUp: SignUpFormValues | null;
+  pendingSignUp: SignUpRequest | null;
   pendingAgencySignUp: AgencySignUpSubmitValues | null;
 };
 

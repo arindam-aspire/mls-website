@@ -29,7 +29,7 @@ Route-level screen component composing feature UI.
 
 # API Usage
 
-_N/A unless extended._
+- `useUserRegistrationScreen` → `POST /auth/signup` via `useSignUp` with `role` from account type (`user` → `registered_user`, `owner` → `owner`).
 
 # Navigation
 

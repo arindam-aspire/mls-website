@@ -4,7 +4,7 @@ import { type AuthOtpFlow, type AuthView } from "../authViews";
 import type {
   AgencySignUpSubmitValues,
   LoggedInUser,
-  SignUpFormValues,
+  SignUpRequest,
 } from "../types/auth.types";
 import {
   clearAuthModalSession,
@@ -38,7 +38,7 @@ interface AuthStore extends AuthModalPersistedState {
   setPendingPhoneCountry: (pendingPhoneCountry: string | null) => void;
   setOtpSession: (otpSession: string | null) => void;
   setOtpCode: (otpCode: string | null) => void;
-  setPendingSignUp: (pendingSignUp: SignUpFormValues | null) => void;
+  setPendingSignUp: (pendingSignUp: SignUpRequest | null) => void;
   setPendingAgencySignUp: (pendingAgencySignUp: AgencySignUpSubmitValues | null) => void;
   clearPendingSignUp: () => void;
   clearPendingAgencySignUp: () => void;

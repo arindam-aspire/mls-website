@@ -542,7 +542,7 @@ From `src/configs/environment.config.ts` → `API_BASE_URL` (env: `NEXT_PUBLIC_A
 | `CHANGE_PASSWORD` | POST | `/auth/change-password` — `{ password, previous_password }` (auth required) |
 | `REFRESH` | POST | `/auth/refresh` |
 | `LOGOUT` | POST | `/auth/logout` |
-| `USER_SIGN_UP` | POST | `/auth/signup` |
+| `USER_SIGN_UP` | POST | `/auth/signup` — `{ full_name, email, phone_number, password, role }` (`registered_user` or `owner`) |
 | `CONFIRM_SIGN_UP_OTP` | POST | `/auth/confirm-signup` |
 
 **Public** (`publicEndpoints.ts`):

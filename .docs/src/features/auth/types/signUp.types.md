@@ -6,14 +6,15 @@ Sign-up and confirm-sign-up API/form types.
 
 # Exports
 
-- `SignUpFormValues`, `SignUpRequest`, `SignUpResponse`
-- `ConfirmSignUpRequest`, `ConfirmSignUpResponse`
+- `SignUpFormValues` — form fields only (no `role`)
+- `SignUpRequest` — `SignUpFormValues` + `role: SignInRole` for `POST` signup
+- `SignUpResponse`, `ConfirmSignUpRequest`, `ConfirmSignUpResponse`
 
 # API Usage
 
 | Type | Flow |
 | --- | --- |
-| `SignUpRequest` / `SignUpResponse` | `POST` signup |
+| `SignUpRequest` / `SignUpResponse` | `POST` signup (`role`: `registered_user` for user, `owner` for owner) |
 | `ConfirmSignUpRequest` / `ConfirmSignUpResponse` | Confirm signup OTP |
 
 # Dependencies
