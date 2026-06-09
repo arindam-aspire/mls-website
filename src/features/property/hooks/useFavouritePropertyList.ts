@@ -5,6 +5,8 @@ import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
 import { getPathname, useRouter } from "@/src/i18n/navigation";
 import type { AppLocale } from "@/src/i18n/routing";
+import { canTrackRecentPropertyView } from "@/src/features/auth/utils/shouldShowRecentlyViewedMenu";
+import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { useToast } from "@/src/hooks/useToast";
 import { mapFavoriteListResponse } from "../mappers/favoriteList.mapper";
 import { useGetFavoriteList, useRemoveFavorite } from "../mutations/property.mutation";
@@ -23,6 +25,10 @@ export function useFavouritePropertyList() {
   const t = useTranslations("propertyList.favourites");
   const locale = useLocale() as AppLocale;
   const toast = useToast();
+
+  // 3. Global state (Zustand)
+  const user = useAuthStore((state) => state.user);
+  const loggedInUserRole = useAuthStore((state) => state.loggedInUserRole);
 
   // 4. Local state
   const [page, setPage] = useState(DEFAULT_PAGE);
@@ -56,6 +62,12 @@ export function useFavouritePropertyList() {
   // 6. Derived / memoized values
   const pageTitle = useMemo(() => t("pageTitle"), [t]);
   const pageSubtitle = useMemo(() => t("pageSubtitle"), [t]);
+
+  const cardButtonSize = useMemo(
+    () =>
+      canTrackRecentPropertyView(user, loggedInUserRole) ? ("md" as const) : ("sm" as const),
+    [loggedInUserRole, user],
+  );
 
   const displayListings = useMemo(() => {
     const items = listings ?? [];
@@ -189,6 +201,7 @@ export function useFavouritePropertyList() {
     pageTitle,
     pageSubtitle,
     isLoading: listings === null || isLoadingFavoriteList,
+    cardButtonSize,
     pagination,
     noDataFound,
     onBrowseProperties,

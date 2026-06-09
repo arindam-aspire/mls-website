@@ -11,13 +11,15 @@ Custom hook for the property details flow. Fetches a single property by id, expo
 - Map app locale (`es` → `esp`) for `@abdoun/abdoun-library` `PropertyView`.
 - Manage detail tabs synced to URL `tab`. **Overview** and **Features** are public; **Location** and **Documents** only for signed-in **admin** (agency), **agent**, and **owner**.
 - Expose favourite and agent email handlers (favourite → add/remove APIs via `usePropertyFavouriteToggle`; agent email → upcoming modal).
+- After details load, signed-in **registered_user** / **owner** POST `addRecentView` once per `propertyId` (silent; no UI).
 
 # Imports
 
 - `useLocale` from `next-intl`
 - `usePathname`, `useRouter` from `@/src/i18n/navigation`
 - `useSearchParams` from `next/navigation`
-- `useGetPropertyDetails`, `useGetPropertyFeatureCatalog`, `useGetSimilarProperties` from `../mutations/property.mutation`
+- `useAddRecentView`, `useGetPropertyDetails`, `useGetPropertyFeatureCatalog`, `useGetSimilarProperties` from `../mutations/property.mutation`
+- `canTrackRecentPropertyView` from `@/src/features/auth/utils/shouldShowRecentlyViewedMenu`
 - `mapFeatureCatalogItems` from `../mappers/propertyFeatures.mapper`
 - `useAuthStore` from `@/src/features/auth/store/auth.store`
 - `hasPropertyDetailsRestrictedTabsAccess` from `@/src/lib/auth/propertyDetailsTabAccess`
@@ -32,7 +34,7 @@ Custom hook for the property details flow. Fetches a single property by id, expo
 # State Management
 
 - **Local:** `propertyDetails`, `featureCatalog`, upcoming modal open flag
-- **Zustand:** `user` from auth store (tab visibility)
+- **Zustand:** `user`, `loggedInUserRole` from auth store (tab visibility; recent-view role gate)
 - **URL:** `tab` search param (default `overview`; omitted when overview)
 - **React Query:** details + feature catalog mutations; `isLoading` stays true until each request settles (avoids empty flash on refresh)
 
@@ -46,8 +48,9 @@ Custom hook for the property details flow. Fetches a single property by id, expo
 | `getSimilarProperties(id)` | GET | `/properties/:id/similar` |
 | `getAllFavorites()` | GET | `/favorites` (when signed in) |
 | `addFavorite` / `removeFavorite` | POST / DELETE | `/favorites` (heart toggle) |
+| `addRecentView` | POST | `/users/recent-views` body `{ property_hash }` (user/owner only) |
 
-On property success: `response.data` → favourite flags applied → `propertyDetails` for `PropertyView`.
+On property success: `response.data` → favourite flags applied → `propertyDetails` for `PropertyView`. When role allows, one `addRecentView` per visit.
 
 On features success: `response.data.items` → mapped via `mapFeatureCatalogItems` → `featureCatalog` for `PropertyView.features`.
 

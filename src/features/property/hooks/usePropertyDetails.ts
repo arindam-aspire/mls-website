@@ -2,11 +2,13 @@
 
 import type { ComponentProps } from "react";
 import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { PropertyView } from "@abdoun/abdoun-library";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
 import type { AppLocale } from "@/src/i18n/routing";
+import { tokenStore } from "@/src/apis/core/token.store";
+import { canTrackRecentPropertyView } from "@/src/features/auth/utils/shouldShowRecentlyViewedMenu";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { hasPropertyDetailsRestrictedTabsAccess } from "@/src/lib/auth/propertyDetailsTabAccess";
 import {
@@ -18,6 +20,7 @@ import {
 } from "../constants/propertyDetailsTabs.constants";
 import { mapFeatureCatalogItems } from "../mappers/propertyFeatures.mapper";
 import {
+  useAddRecentView,
   useGetPropertyDetails,
   useGetPropertyFeatureCatalog,
   useGetSimilarProperties,
@@ -90,6 +93,8 @@ export function usePropertyDetails(propertyId: string) {
 
   // 3. Global state (Zustand)
   const user = useAuthStore((state) => state.user);
+  const loggedInUserRole = useAuthStore((state) => state.loggedInUserRole);
+  const isLoadingUser = useAuthStore((state) => state.isLoadingUser);
 
   const canViewRestrictedTabs = useMemo(
     () => hasPropertyDetailsRestrictedTabsAccess(user),
@@ -159,6 +164,8 @@ export function usePropertyDetails(propertyId: string) {
     mutate: fetchSimilarProperties,
     isPending: isLoadingSimilar,
   } = useGetSimilarProperties();
+
+  const { mutate: addRecentView } = useAddRecentView();
 
   const loadPropertyDetails = useCallback(() => {
     fetchPropertyDetails(propertyId, {
@@ -310,7 +317,53 @@ export function usePropertyDetails(propertyId: string) {
     [openUpcomingFeature],
   );
 
+  // 8. Refs
+  const lastRecordedRecentViewIdRef = useRef<string | null>(null);
+
   // 9. Effects
+  useEffect(() => {
+    lastRecordedRecentViewIdRef.current = null;
+  }, [propertyId]);
+
+  useEffect(() => {
+    if (!isDetailsSettled || !propertyDetails) {
+      return;
+    }
+
+    if (!tokenStore.getAccessToken()) {
+      return;
+    }
+
+    if (isLoadingUser && !loggedInUserRole && !user?.roles?.[0]?.name) {
+      return;
+    }
+
+    if (!canTrackRecentPropertyView(user, loggedInUserRole)) {
+      return;
+    }
+
+    if (lastRecordedRecentViewIdRef.current === propertyId) {
+      return;
+    }
+
+    const propertyHash = Number(propertyId);
+
+    if (!Number.isFinite(propertyHash) || propertyHash <= 0) {
+      return;
+    }
+
+    lastRecordedRecentViewIdRef.current = propertyId;
+    addRecentView({ property_hash: propertyHash });
+  }, [
+    addRecentView,
+    isDetailsSettled,
+    isLoadingUser,
+    loggedInUserRole,
+    propertyDetails,
+    propertyId,
+    user,
+  ]);
+
   useEffect(() => {
     setIsFeaturesSettled(false);
     loadFeatureCatalog();

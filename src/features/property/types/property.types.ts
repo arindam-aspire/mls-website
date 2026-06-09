@@ -113,6 +113,7 @@ export interface PropertyListing {
   is_exclusive: boolean;
   is_favourite: boolean;
   is_favourite_loading?: boolean;
+  is_delete_loading?: boolean;
   favourite_id?: string;
   property_hash?: string;
   user_id?: string;
@@ -185,6 +186,32 @@ export type RecentViewsListParams = FavoriteListParams;
 export type RecentViewsListItem = FavoriteListItem;
 
 export type RecentViewsListResponse = FavoriteListResponse;
+
+export type RecentViewAddBody = FavoriteAddBody;
+
+export type RecentViewAddResponse = {
+  success: boolean;
+  message: string | null;
+  data?: RecentViewsListItem | null;
+  error: unknown;
+  meta?: Record<string, unknown>;
+};
+
+export type RecentViewsClearResponse = {
+  success: boolean;
+  message: string | null;
+  data?: boolean | null;
+  error: unknown;
+  meta?: Record<string, unknown>;
+};
+
+export type RecentViewRemoveResponse = {
+  success: boolean;
+  message: string | null;
+  data?: boolean | null;
+  error: unknown;
+  meta?: Record<string, unknown>;
+};
 
 export interface LocalizedText {
   en: string;

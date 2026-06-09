@@ -28,7 +28,10 @@ React Query hooks for loading property lists, details, and favourites.
 - `useGetFavoriteList`
 - `useRemoveFavorite`
 - `useAddFavorite`
+- `useAddRecentView`
 - `useGetRecentViewsList`
+- `useRemoveRecentView`
+- `useClearRecentViews`
 
 # State Management
 
@@ -46,6 +49,9 @@ React Query hooks for loading property lists, details, and favourites.
 | `useGetAllFavorites` | `getAllFavorites()` | `GET /favorites` (auth) |
 | `useGetFavoriteList` | `getFavoriteList(params)` | `GET /favorites?page=&pageSize=` |
 | `useAddFavorite` | `addFavorite({ property_hash })` | `POST /favorites` |
+| `useAddRecentView` | `addRecentView(body)` | `POST /users/recent-views` (silent; no toast) |
+| `useRemoveRecentView` | `removeRecentView(propertyId)` | `DELETE /users/recent-views/{propertyId}` |
+| `useClearRecentViews` | `clearRecentViews()` | `DELETE /users/recent-views` |
 | `useGetRecentViewsList` | `getRecentViewsList(params)` | `GET /users/recent-views?page=&pageSize=` |
 | `useRemoveFavorite` | `removeFavorite(propertyHash)` | `DELETE /favorites/:propertyHash` |
 

@@ -6,6 +6,8 @@ import type { ApiError } from "@/src/apis/core/error.normalizer";
 import { useToast } from "@/src/hooks/useToast";
 import {
   addFavorite,
+  addRecentView,
+  clearRecentViews,
   getAllFavorites,
   getFavoriteList,
   getPropertyDetails,
@@ -13,6 +15,7 @@ import {
   getPropertyList,
   getRecentViewsList,
   removeFavorite,
+  removeRecentView,
   getSimilarProperties,
 } from "../services/property.service";
 
@@ -121,6 +124,12 @@ export const useAddFavorite = () => {
   });
 };
 
+export const useAddRecentView = () => {
+  return useMutation({
+    mutationFn: addRecentView,
+  });
+};
+
 export const useGetRecentViewsList = () => {
   const t = useTranslations("propertyList");
   const toast = useToast();
@@ -129,6 +138,34 @@ export const useGetRecentViewsList = () => {
     mutationFn: getRecentViewsList,
     onError: (error: ApiError) => {
       toast.error(t("recentlyViewed.fetchError"), {
+        description: error.message,
+      });
+    },
+  });
+};
+
+export const useClearRecentViews = () => {
+  const t = useTranslations("propertyList");
+  const toast = useToast();
+
+  return useMutation({
+    mutationFn: clearRecentViews,
+    onError: (error: ApiError) => {
+      toast.error(t("recentlyViewed.clearError"), {
+        description: error.message,
+      });
+    },
+  });
+};
+
+export const useRemoveRecentView = () => {
+  const t = useTranslations("propertyList");
+  const toast = useToast();
+
+  return useMutation({
+    mutationFn: removeRecentView,
+    onError: (error: ApiError) => {
+      toast.error(t("recentlyViewed.deleteError"), {
         description: error.message,
       });
     },

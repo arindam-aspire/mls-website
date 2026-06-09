@@ -369,7 +369,7 @@ Used by `(main)` route group.
 | `PropertyDetailsScreen` | Property detail (`PropertyView`, `/propert-details/:id`) |
 | `ListingPropertyScreen` | Coming Soon |
 | `FavouritePropertyScreen` | Favourites list (`GET /favorites`, `PropertyCardList`) |
-| `RecentlyViewedScreen` | Coming Soon UI; prefetches `GET /users/recent-views` in hook |
+| `RecentlyViewedScreen` | Recent views list (`GET /users/recent-views`, `PropertyCardList`, clear all) |
 | `InquiriesScreen` | Coming Soon |
 
 `components/`, `hooks/` — reserved. `mutations/property.mutation.ts` — `useGetPropertyList`. `services/property.service.ts` — `getPropertyList`. `store/property.store.ts` — property list filters/response state. `types/property.types.ts` — list params/response for `/properties`.
@@ -565,6 +565,8 @@ From `src/configs/environment.config.ts` → `API_BASE_URL` (env: `NEXT_PUBLIC_A
 
 | Constant | Path |
 | --- | --- |
+| `RECENT_VIEWS` | `/users/recent-views` — POST `{ property_hash }`; DELETE clear all |
+| `RECENT_VIEW_REMOVE` | `/users/recent-views/{propertyId}` — DELETE single item (auth required) |
 | `RECENT_VIEWS_LIST` | `/users/recent-views` — `page`, `pageSize` (auth required) |
 
 Types: `src/features/property/types/property.types.ts` (`Property`, `PropertyListResponse`, `RecentViewsListResponse`, …).

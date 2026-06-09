@@ -85,7 +85,7 @@ export default function PropertyDetailsScreen({
         applicationKey="abdoun-web"
         canViewBadges
         onClick={(item) => {
-          router.push(`/property-details/${item.id}`);
+          router.push(`/propert-details/${item.id}`);
         }}
         onClickFavourite={toggleFavourite}
       />

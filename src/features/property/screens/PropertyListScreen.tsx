@@ -59,6 +59,7 @@ export default function PropertyListScreen() {
           canViewAgents
           canViewOwners
           canViewBadges
+          
           onClick={onClickProperty}
           onClickFavourite={toggleFavourite}
           onClickEmail={onClickEmail}

@@ -7,6 +7,7 @@ Role gate for **My Recently Viewed** in public/landing profile popover and mobil
 # Exports
 
 - `shouldShowRecentlyViewedMenuItem(user)` — `true` for `registered_user`, `owner`
+- `canTrackRecentPropertyView(user, loggedInUserRole)` — same roles; used on property details to POST recent view
 - `filterProfileMenuItemsWithRoleAccess(items, user)` — drops `myRecentlyViewed` when role is not allowed
 
 # Allowed roles

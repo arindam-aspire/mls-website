@@ -13,6 +13,9 @@ API service for listing and fetching a single property.
 - Call `GET /favorites` with no query params for the full favourites list (property list heart state).
 - Call `DELETE /favorites/:propertyHash` to remove a favourite.
 - Call `GET /users/recent-views?page=&pageSize=` for paginated recently viewed properties.
+- Call `POST /users/recent-views` with `{ property_hash }` to record a property view.
+- Call `DELETE /users/recent-views/{propertyId}` to remove one recent view.
+- Call `DELETE /users/recent-views` to clear all recent views.
 
 # Imports
 
@@ -32,6 +35,9 @@ API service for listing and fetching a single property.
 - `addFavorite`
 - `removeFavorite`
 - `getRecentViewsList`
+- `addRecentView`
+- `clearRecentViews`
+- `removeRecentView`
 
 # State Management
 
@@ -50,6 +56,9 @@ _N/A — stateless service._
 | `addFavorite` | POST | `/favorites` body `{ property_hash }` | yes |
 | `removeFavorite` | DELETE | `/favorites/:propertyHash` | yes |
 | `getRecentViewsList` | GET | `/users/recent-views?page=&pageSize=` | yes |
+| `addRecentView` | POST | `/users/recent-views` body `{ property_hash }` | yes |
+| `removeRecentView` | DELETE | `/users/recent-views/{propertyId}` | yes |
+| `clearRecentViews` | DELETE | `/users/recent-views` | yes |
 
 Query string built by `propertyEndpoints.PROPERTY_LIST(params)` (`page`, `pageSize`, `category`, `status`).
 

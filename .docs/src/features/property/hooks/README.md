@@ -8,7 +8,7 @@ Custom hooks that own property feature logic: fetching, store sync, handlers, an
 | --- | --- |
 | [usePropertyList.md](./usePropertyList.md) | Property list screen logic (URL params, fetch, toolbar, pagination) |
 | [useFavouritePropertyList.md](./useFavouritePropertyList.md) | Favourites screen logic (`GET /favorites`, pagination, `PropertyCardList`) |
-| [useRecentlyViewedScreen.md](./useRecentlyViewedScreen.md) | Recently viewed labels + `GET /users/recent-views` prefetch |
+| [useRecentlyViewedScreen.md](./useRecentlyViewedScreen.md) | Recently viewed list, pagination, favourites, clear-all |
 | [useSavedSearchesScreen.md](./useSavedSearchesScreen.md) | Property saved-searches stub screen labels (`propertyList.savedSearches`) |
 | [usePropertySearchFilters.md](./usePropertySearchFilters.md) | Reusable filter state/handlers for `PropertyListFilters` |
 | [usePropertyDetails.md](./usePropertyDetails.md) | Property details screen logic (fetch by id, tabs, handlers) |

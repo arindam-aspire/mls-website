@@ -1,27 +1,57 @@
-# File Overview
-
-Screen hook for `RecentlyViewedScreen`: localized labels and initial `GET /users/recent-views` fetch on mount.
-
-**Source:** `src/features/property/hooks/useRecentlyViewedScreen.ts`
-
-# Exports
-
-- `useRecentlyViewedScreen`
-
-# API Usage
-
-- `useGetRecentViewsList` → `getRecentViewsList` → `GET /users/recent-views?page=1&pageSize=10` (`auth: true`) on mount
-
-# Return values
-
-| Key | i18n | Purpose |
-| --- | --- | --- |
-| `pageTitle` | `propertyList.recentlyViewed.pageTitle` | Page `h1` and `ComingSoonCard` title |
-| `pageSubtitle` | `propertyList.recentlyViewed.pageSubtitle` | Muted subtitle under title |
-| `comingSoonEyebrow` | `propertyList.recentlyViewed.comingSoonEyebrow` | `ComingSoonCard` eyebrow |
-| `comingSoonDescription` | `propertyList.recentlyViewed.comingSoonDescription` | `ComingSoonCard` body |
-
-# Dependencies
-
-- `useTranslations("propertyList")` with `recentlyViewed.*` keys in `en`, `ar`, `es`, `fr`
-- [property.service.md](../services/property.service.md) — `getRecentViewsList`
+# File Overview
+
+
+
+Screen hook for `RecentlyViewedScreen`: paginated recent views, favourite flags, clear-all, and list handlers.
+
+
+
+**Source:** `src/features/property/hooks/useRecentlyViewedScreen.ts`
+
+
+
+# API Usage
+
+
+
+- `GET /users/recent-views?page=&pageSize=` — mapped via `mapRecentViewsListResponse`
+
+- `DELETE /users/recent-views/{propertyId}` — per-card delete (after `ConfirmModal` confirm)
+- `DELETE /users/recent-views` — clear all from toolbar (after `ConfirmModal` confirm)
+
+- Favourites: `usePropertyFavouriteToggle` (same add/remove flow as `usePropertyList`)
+
+
+
+# Return values
+
+
+
+| Key | Purpose |
+
+| --- | --- |
+
+| `listings` | `PropertyListing[]` with favourite flags |
+
+| `pageTitle` / `pageSubtitle` | Header copy |
+
+| `clearRecentViewsLabel` / `onClearRecentViews` / `clearConfirmModal` | Clear toolbar opens confirm modal; `isClearingRecentViews` on modal |
+
+| `isLoading` | Until first fetch or while list mutation pending |
+
+| `pagination` | Page/size controls |
+
+| `noDataFound` | Empty-state copy + browse CTA label |
+
+| `onBrowseProperties` / `onClickProperty` | Navigation |
+
+| `toggleFavourite` | Heart toggle via global favourites APIs |
+
+| `onClickDelete` | Opens delete confirm modal (`pendingDeleteItem`) |
+
+| `deleteConfirmModal` | `{ open, title, description, confirmLabel, cancelLabel, deletingLabel, isLoading, onClose, onConfirm }` |
+
+| `onClickEmail` / `onClickCall` / `onClickWhatsApp` | Upcoming feature modal |
+
+| `upcomingFeatureModal` | `{ open, onClose }` |
+

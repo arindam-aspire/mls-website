@@ -12,6 +12,10 @@ import type {
   PropertyListParams,
   PropertyListResponse,
   PropertySimilarResponse,
+  RecentViewAddBody,
+  RecentViewAddResponse,
+  RecentViewRemoveResponse,
+  RecentViewsClearResponse,
   RecentViewsListParams,
   RecentViewsListResponse,
 } from "../types/property.types";
@@ -99,6 +103,35 @@ export async function getRecentViewsList(
   return apiClient.request<RecentViewsListResponse>({
     endpoint: userEndpoints.RECENT_VIEWS_LIST(params),
     method: "GET",
+    auth: true,
+  });
+}
+
+export async function addRecentView(
+  body: RecentViewAddBody,
+): Promise<RecentViewAddResponse> {
+  return apiClient.request<RecentViewAddResponse>({
+    endpoint: userEndpoints.RECENT_VIEWS,
+    method: "POST",
+    auth: true,
+    body,
+  });
+}
+
+export async function clearRecentViews(): Promise<RecentViewsClearResponse> {
+  return apiClient.request<RecentViewsClearResponse>({
+    endpoint: userEndpoints.RECENT_VIEWS,
+    method: "DELETE",
+    auth: true,
+  });
+}
+
+export async function removeRecentView(
+  propertyId: string | number,
+): Promise<RecentViewRemoveResponse> {
+  return apiClient.request<RecentViewRemoveResponse>({
+    endpoint: userEndpoints.RECENT_VIEW_REMOVE(propertyId),
+    method: "DELETE",
     auth: true,
   });
 }

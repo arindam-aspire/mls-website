@@ -672,7 +672,8 @@ mls_website/
 │   │           ├── applyFavoriteFlagsToListings.ts
 │   │           ├── parsePropertyListUrlParams.ts
 │   │           ├── propertyAdvancedFieldVisibility.ts
-│   │           └── resolveFavoriteResourceId.ts
+│   │           ├── resolveFavoriteResourceId.ts
+│   │           └── resolveRecentViewPropertyId.ts
 │   │   ├── saved-searches/
 │   │   │   ├── components/
 │   │   │   │   ├── SavedSearchFilterChips.tsx

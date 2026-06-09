@@ -15,6 +15,7 @@ export default function FavouritePropertyScreen() {
     pageTitle,
     pageSubtitle,
     isLoading,
+    cardButtonSize,
     pagination,
     noDataFound,
     onBrowseProperties,
@@ -62,6 +63,7 @@ export default function FavouritePropertyScreen() {
           data={listings}
           isLoading={isLoading}
           layoutVariant="grid"
+          buttonSize={cardButtonSize}
           pagination={pagination}
           noDataFound={emptyState}
           canViewAgents

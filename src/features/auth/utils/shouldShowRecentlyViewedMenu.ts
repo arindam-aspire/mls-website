@@ -7,12 +7,23 @@ const RECENTLY_VIEWED_MENU_ROLE_NAMES = new Set<string>([
   UserRole.OWNER,
 ]);
 
+function hasRecentlyViewedRole(roleName: string | null | undefined): boolean {
+  if (!roleName) return false;
+  return RECENTLY_VIEWED_MENU_ROLE_NAMES.has(roleName);
+}
+
 export function shouldShowRecentlyViewedMenuItem(
   user: LoggedInUser | null | undefined,
 ): boolean {
-  const roleName = user?.roles?.[0]?.name;
-  if (!roleName) return false;
-  return RECENTLY_VIEWED_MENU_ROLE_NAMES.has(roleName);
+  return hasRecentlyViewedRole(user?.roles?.[0]?.name);
+}
+
+/** Whether property details should record a recent view (`registered_user` / `owner`). */
+export function canTrackRecentPropertyView(
+  user: LoggedInUser | null | undefined,
+  loggedInUserRole: string | null | undefined,
+): boolean {
+  return hasRecentlyViewedRole(user?.roles?.[0]?.name ?? loggedInUserRole);
 }
 
 export function filterProfileMenuItemsWithRoleAccess<
