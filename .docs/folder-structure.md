@@ -39,6 +39,8 @@ mls_website/
 │   │       │   │   └── page.md
 │   │       │   ├── my-profile/
 │   │       │   │   └── page.md
+│   │       │   ├── listing/
+│   │       │   │   └── page.md
 │   │       │   ├── saved-searches/
 │   │       │   │   └── page.md
 │   │       │   ├── notifications/
@@ -51,8 +53,6 @@ mls_website/
 │   │           ├── README.md
 │   │           ├── layout.md
 │   │           ├── inquiries/
-│   │           │   └── page.md
-│   │           ├── listing/
 │   │           │   └── page.md
 │   │           ├── property-list/
 │   │           │   └── page.md
@@ -268,6 +268,8 @@ mls_website/
 │   │   │   ├── layout.tsx
 │   │   │   ├── my-profile/
 │   │   │   │   └── page.tsx
+│   │   │   ├── listing/
+│   │   │   │   └── page.tsx
 │   │   │   ├── saved-searches/
 │   │   │   │   └── page.tsx
 │   │   │   ├── notifications/
@@ -279,8 +281,6 @@ mls_website/
 │   │   └── (property)/
 │   │       ├── layout.tsx
 │   │       ├── inquiries/
-│   │       │   └── page.tsx
-│   │       ├── listing/
 │   │       │   └── page.tsx
 │   │       ├── propert-details/
 │   │       │   └── [id]/

@@ -13,6 +13,7 @@ const handleI18nRouting = createMiddleware(routing);
 const PROTECTED_ROUTES = [
   "/dashboard",
   "/my-profile",
+  "/listing",
   "/saved-searches",
   "/favourites",
   "/recently-viewed",

@@ -190,8 +190,8 @@ Route groups `(landing)`, `(main)`, `(property)`, `(auth)`, `(public)` do **not*
 | Group | Layout | Purpose |
 | --- | --- | --- |
 | `(landing)` | `LandingLayout` | Locale root landing page |
-| `(main)` | `ProtectedLayout` | Dashboard, my-profile, saved-searches, notifications, favourites, recently-viewed |
-| `(property)` | `PublicLayout` | User property-related pages |
+| `(main)` | `ProtectedLayout` | Dashboard, my-profile, listing, saved-searches, notifications, favourites, recently-viewed |
+| `(property)` | `PublicLayout` | Public property browse (list, detail, inquiries) |
 | `(auth)` | *(empty — reserved)* | Future auth routes |
 | `(public)` | *(empty — reserved)* | Future public routes |
 | `(system)` | `PublicLayout` on unauthorized | Unauthorized / system pages |
@@ -208,8 +208,8 @@ All paths below are **without** locale; prepend `/<locale>` (e.g. `/en/listing`)
 | `/saved-searches` | `(main)/saved-searches/page.tsx` | `SavedSearchScreen` — guarded by `useAuthorize("SAVED_SEARCHES")` |
 | `/notifications` | `(main)/notifications/page.tsx` | `NotificationScreen` (placeholder) — guarded by `useAuthorize("NOTIFICATIONS")` |
 | `/favourites` | `(main)/favourites/page.tsx` | `FavouritePropertyScreen` — guarded by `useAuthorize("FAVOURITES")` |
+| `/listing` | `(main)/listing/page.tsx` | `ListingPropertyScreen` — guarded by `useAuthorize("PROFILE")` |
 | `/recently-viewed` | `(main)/recently-viewed/page.tsx` | `RecentlyViewedScreen` — guarded by `useAuthorize("RECENTLY_VIEWED")` |
-| `/listing` | `(property)/listing/page.tsx` | `ListingPropertyScreen` (Coming Soon) |
 | `/property-list` | `(property)/property-list/page.tsx` | `PropertyListScreen` (`PropertyCardList`) |
 | `/propert-details/:id` | `(property)/propert-details/[id]/page.tsx` | `PropertyDetailsScreen` (`PropertyView`) |
 | `/inquiries` | `(property)/inquiries/page.tsx` | `InquiriesScreen` (Coming Soon) |
@@ -733,7 +733,7 @@ Enforced via `.cursor/rules/`:
 Exports `proxy` (Next.js 16 middleware entry). Flow:
 
 1. Run **next-intl** middleware (`createMiddleware(routing)`).
-2. Strip locale prefix from pathname and check **protected routes**: `/dashboard`, `/my-profile`, `/saved-searches`, `/favourites`, `/recently-viewed`.
+2. Strip locale prefix from pathname and check **protected routes**: `/dashboard`, `/my-profile`, `/listing`, `/saved-searches`, `/favourites`, `/recently-viewed`.
 3. If protected and no `access_token` cookie → redirect to `/` (same origin).
 4. Otherwise return the i18n response.
 

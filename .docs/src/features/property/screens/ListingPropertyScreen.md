@@ -27,7 +27,7 @@ _N/A unless extended._
 
 # Navigation
 
-_No direct navigation._
+- Mounted at `/en/listing` via `app/[locale]/(main)/listing/page.tsx` (`ProtectedLayout`, `useAuthorize("PROFILE")`).
 
 # Props / Parameters
 

@@ -18,12 +18,13 @@ property/
 
 ## Routes (locale-prefixed)
 
-| URL | Screen |
-| --- | --- |
-| `/en/listing` | `ListingPropertyScreen` |
-| `/en/favourites` | `FavouritePropertyScreen` — route under `(main)` |
-| `/en/recently-viewed` | `RecentlyViewedScreen` — route under `(main)` |
-| `/en/inquiries` | `InquiriesScreen` |
+| URL | Screen | Route group |
+| --- | --- | --- |
+| `/en/listing` | `ListingPropertyScreen` | `(main)` — `useAuthorize("PROFILE")` |
+| `/en/favourites` | `FavouritePropertyScreen` | `(main)` — `useAuthorize("FAVOURITES")` |
+| `/en/recently-viewed` | `RecentlyViewedScreen` | `(main)` — `useAuthorize("RECENTLY_VIEWED")` |
+| `/en/property-list` | `PropertyListScreen` | `(property)` |
+| `/en/inquiries` | `InquiriesScreen` | `(property)` |
 
 Dynamic detail route: `/en/propert-details/:id` → `PropertyDetailsScreen`.
 

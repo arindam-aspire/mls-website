@@ -1,15 +1,15 @@
 # Property screens (`src/features/property/screens/`)
 
-Screens mounted by App Router pages under `(property)` or `(main)` as noted per screen.
+Screens mounted by `app/[locale]/(main)/*/page.tsx` or `app/[locale]/(property)/*/page.tsx`.
 
-| Screen | Route | Status |
-| --- | --- | --- |
-| [ListingPropertyScreen.md](./ListingPropertyScreen.md) | `/en/listing` | Coming Soon |
-| [FavouritePropertyScreen.md](./FavouritePropertyScreen.md) | `/en/favourites` | Favourites list (`PropertyCardList`) |
-| [RecentlyViewedScreen.md](./RecentlyViewedScreen.md) | `/en/recently-viewed` | Recent views `PropertyCardList` |
-| [InquiriesScreen.md](./InquiriesScreen.md) | `/en/inquiries` | Coming Soon |
-| [PropertyListScreen.md](./PropertyListScreen.md) | `/en/property-list` | `PropertyCardList` |
-| [PropertyDetailsScreen.md](./PropertyDetailsScreen.md) | `/en/propert-details/:id` | `PropertyView` |
+| Screen | Route | Route group | Status |
+| --- | --- | --- | --- |
+| [ListingPropertyScreen.md](./ListingPropertyScreen.md) | `/en/listing` | `(main)` | Coming Soon |
+| [FavouritePropertyScreen.md](./FavouritePropertyScreen.md) | `/en/favourites` | `(main)` | Favourites list (`PropertyCardList`) |
+| [RecentlyViewedScreen.md](./RecentlyViewedScreen.md) | `/en/recently-viewed` | `(main)` | Recent views `PropertyCardList` |
+| [InquiriesScreen.md](./InquiriesScreen.md) | `/en/inquiries` | `(property)` | Coming Soon |
+| [PropertyListScreen.md](./PropertyListScreen.md) | `/en/property-list` | `(property)` | `PropertyCardList` |
+| [PropertyDetailsScreen.md](./PropertyDetailsScreen.md) | `/en/propert-details/:id` | `(property)` | `PropertyView` |
 
 ## Conventions
 
