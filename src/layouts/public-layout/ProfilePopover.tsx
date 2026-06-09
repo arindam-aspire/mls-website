@@ -18,6 +18,7 @@ import { cn } from "@/src/lib/cn";
 import { profileEmailClasses, profileNameClasses } from "@/src/lib/typography";
 import { useClose } from "@headlessui/react";
 import { Eye, Heart, Home, LogOut, Search, Send, User } from "lucide-react";
+import { filterProfileMenuItemsWithRoleAccess } from "@/src/features/auth/utils/shouldShowRecentlyViewedMenu";
 import { resolveProfileRoleLabel } from "@/src/features/auth/utils/resolveProfileRoleLabel";
 import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
@@ -31,13 +32,24 @@ const PROFILE_MENU_ITEMS = [
   { labelKey: "myInquiries", icon: Send, path: "/inquiries" },
 ] as const;
 
-function ProfileMenuItems({ router }: { router: ReturnType<typeof useRouter> }) {
+function ProfileMenuItems({
+  user,
+  router,
+}: {
+  user: LoggedInUser;
+  router: ReturnType<typeof useRouter>;
+}) {
   const t = useTranslations("common");
   const close = useClose();
 
+  const menuItems = useMemo(
+    () => filterProfileMenuItemsWithRoleAccess(PROFILE_MENU_ITEMS, user),
+    [user],
+  );
+
   return (
     <div className="flex flex-col gap-0.5 py-2 px-2">
-      {PROFILE_MENU_ITEMS.map(({ labelKey, icon: Icon, path }) => (
+      {menuItems.map(({ labelKey, icon: Icon, path }) => (
         <UiLink
           key={path}
           color="muted"
@@ -180,7 +192,7 @@ export function ProfilePopover({
             </div>
           </div>
 
-          <ProfileMenuItems router={router} />
+          <ProfileMenuItems user={user} router={router} />
 
           <div className="border-t border-secondary/15 px-3 py-2">
             <Button

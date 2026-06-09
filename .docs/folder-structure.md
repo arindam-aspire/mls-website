@@ -488,7 +488,8 @@ mls_website/
 │   │   │   ├── utils/
 │   │   │   │   ├── getAccessTokenRoleName.ts
 │   │   │   │   ├── postSignInRedirect.ts
-│   │   │   │   └── resolveProfileRoleLabel.ts
+│   │   │   │   ├── resolveProfileRoleLabel.ts
+│   │   │   │   └── shouldShowRecentlyViewedMenu.ts
 │   │   │   └── types/
 │   │   │       ├── auth.types.ts
 │   │   │       ├── changePassword.types.ts

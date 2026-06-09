@@ -7,6 +7,7 @@ import { useLogout } from "@/src/features/auth/mutations/auth.mutation";
 import type { LoggedInUser } from "@/src/features/auth/types/auth.types";
 import { resolveProfileRoleLabel } from "@/src/features/auth/utils/resolveProfileRoleLabel";
 import { useRouter } from "@/src/i18n/navigation";
+import { UserRole } from "@/src/lib/auth/roles";
 
 const PROFILE_MENU_ITEMS = [
   { labelKey: "profile", path: "/my-profile" },
@@ -16,6 +17,23 @@ const PROFILE_MENU_ITEMS = [
   { labelKey: "myRecentlyViewed", path: "/recently-viewed" },
   { labelKey: "myInquiries", path: "/inquiries" },
 ] as const;
+
+/** Agency and agent popover: profile link only (logout is separate). */
+const AGENCY_AGENT_PROFILE_MENU_ROLE_NAMES = new Set<string>([
+  UserRole.AGENCY,
+  UserRole.AGENT,
+  "agency",
+]);
+
+function resolveProtectedProfileMenuItems(user: LoggedInUser) {
+  const roleName = user.roles?.[0]?.name;
+
+  if (roleName && AGENCY_AGENT_PROFILE_MENU_ROLE_NAMES.has(roleName)) {
+    return PROFILE_MENU_ITEMS.filter((item) => item.labelKey === "profile");
+  }
+
+  return PROFILE_MENU_ITEMS;
+}
 
 export function useProtectedProfileMenu(user: LoggedInUser) {
   const t = useTranslations("common");
@@ -31,14 +49,14 @@ export function useProtectedProfileMenu(user: LoggedInUser) {
     [user, tAuth],
   );
 
-  const menuItems = useMemo(
-    () =>
-      PROFILE_MENU_ITEMS.map((item) => ({
-        ...item,
-        label: t(item.labelKey),
-      })),
-    [t],
-  );
+  const menuItems = useMemo(() => {
+    const items = resolveProtectedProfileMenuItems(user);
+
+    return items.map((item) => ({
+      ...item,
+      label: t(item.labelKey),
+    }));
+  }, [t, user]);
 
   const openLogoutConfirm = useCallback(() => {
     setShowLogoutConfirm(true);

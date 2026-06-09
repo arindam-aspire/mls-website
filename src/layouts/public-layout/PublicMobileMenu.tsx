@@ -23,7 +23,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import mlsLogoDark from "@/src/assets/images/MLS_Dark_Logo.png";
 import mlsLogoLight from "@/src/assets/images/MLS_Light_Logo.png";
 import { ConfirmModal } from "@/src/components/common/ConfirmModal";
@@ -41,6 +41,7 @@ import {
   resolveDrawerAccountLabel,
   shouldShowDrawerNotificationSettings,
 } from "@/src/features/auth/utils/resolveDrawerAccountLabel";
+import { shouldShowRecentlyViewedMenuItem } from "@/src/features/auth/utils/shouldShowRecentlyViewedMenu";
 import { ChangePasswordModal } from "@/src/features/profile/screens/ChangePasswordModal";
 import { Link } from "@/src/i18n/navigation";
 import type { AppLocale } from "@/src/i18n/routing";
@@ -358,6 +359,16 @@ function MenuContent({
     sections.user,
   );
 
+  const activityItems = useMemo(
+    () =>
+      DRAWER_ACTIVITY_ITEMS.filter(
+        (item) =>
+          item.labelKey !== "myRecentlyViewed" ||
+          shouldShowRecentlyViewedMenuItem(sections.user),
+      ),
+    [sections.user],
+  );
+
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-page">
       <div className="sticky top-0 z-10 shrink-0 bg-surface">
@@ -444,8 +455,8 @@ function MenuContent({
               <MenuSectionCard title={t("mobileMenuMyActivity")}>
                 <nav aria-label={t("mobileMenuMyActivity")}>
                   <ul className="flex flex-col">
-                    {DRAWER_ACTIVITY_ITEMS.map((item, index) => {
-                      const isLast = index === DRAWER_ACTIVITY_ITEMS.length - 1;
+                    {activityItems.map((item, index) => {
+                      const isLast = index === activityItems.length - 1;
 
                       return (
                         <li key={item.path}>
