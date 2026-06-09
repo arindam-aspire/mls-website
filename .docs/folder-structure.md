@@ -786,6 +786,7 @@ mls_website/
 │   │   │   ├── auth.json
 │   │   │   ├── common.json
 │   │   │   ├── home.json
+│   │   │   ├── metadata.json
 │   │   │   ├── notFound.json
 │   │   │   ├── profile.json
 │   │   │   ├── savedSearches.json
@@ -795,6 +796,7 @@ mls_website/
 │   │   │   ├── auth.json
 │   │   │   ├── common.json
 │   │   │   ├── home.json
+│   │   │   ├── metadata.json
 │   │   │   ├── notFound.json
 │   │   │   ├── profile.json
 │   │   │   ├── savedSearches.json
@@ -804,6 +806,7 @@ mls_website/
 │   │   │   ├── auth.json
 │   │   │   ├── common.json
 │   │   │   ├── home.json
+│   │   │   ├── metadata.json
 │   │   │   ├── notFound.json
 │   │   │   ├── profile.json
 │   │   │   ├── savedSearches.json
@@ -813,6 +816,7 @@ mls_website/
 │   │       ├── auth.json
 │   │       ├── common.json
 │   │       ├── home.json
+│   │       ├── metadata.json
 │   │       ├── notFound.json
 │   │       ├── profile.json
 │   │       ├── savedSearches.json

@@ -12,8 +12,8 @@ Protected route for the full notifications page under `(main)` layout.
 
 ## Responsibilities
 
-- Guard with `useAuthorize("NOTIFICATIONS")` (same roles as favourites / saved searches).
-- Render `NotificationScreen` placeholder when authorized.
+- Client wrapper that calls `useAuthorize("NOTIFICATIONS")` before rendering `NotificationScreen`.
+- Shows `LoadingScreen` when auth finished loading and `user` is still absent (redirect pending).
 
 ## Exports
 

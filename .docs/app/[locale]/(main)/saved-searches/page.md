@@ -7,7 +7,7 @@ Next.js App Router page for route segment `[locale]/saved-searches`. Client wrap
 # Responsibilities
 
 - Next.js App Router page for route segment `[locale]/saved-searches`.
-- Client wrapper that calls `useAuthorize("PROFILE")` before rendering `SavedSearchScreen`.
+- Client wrapper that calls `useAuthorize("SAVED_SEARCHES")` before rendering `SavedSearchScreen`.
 - Shows `LoadingScreen` when auth finished loading and `user` is still absent (redirect pending).
 
 # Imports
@@ -23,13 +23,13 @@ Next.js App Router page for route segment `[locale]/saved-searches`. Client wrap
 
 # State Management
 
-Uses `useAuthorize("PROFILE")` — reads `user` / `isLoadingUser` from `useAuthStore` and runs redirect side effects.
+Uses `useAuthorize("SAVED_SEARCHES")` — reads `user` / `isLoadingUser` from `useAuthStore` and runs redirect side effects.
 
 # Navigation
 
 - Public URL: `/en/saved-searches` (and other locales).
 - Unauthenticated → `router.replace("/")`.
-- Missing `PROFILE` permission → `router.replace("/unauthorized")`.
+- Missing `SAVED_SEARCHES` permission → `router.replace("/unauthorized")`.
 - Allowed roles per `permissions.ts`: agency, agent, owner, user (`registered_user`).
 
 # Flow Description
@@ -37,7 +37,7 @@ Uses `useAuthorize("PROFILE")` — reads `user` / `isLoadingUser` from `useAuthS
 1. Next.js resolves locale-prefixed URL.
 2. `(main)/layout.tsx` applies `ProtectedLayout`.
 3. `proxy.ts` may redirect to `/` if `access_token` cookie is missing.
-4. `useAuthorize("PROFILE")` waits for `isLoadingUser`, then checks roles.
+4. `useAuthorize("SAVED_SEARCHES")` waits for `isLoadingUser`, then checks roles.
 5. On success, `SavedSearchScreen` renders the saved search list and modals.
 
 # Dependencies

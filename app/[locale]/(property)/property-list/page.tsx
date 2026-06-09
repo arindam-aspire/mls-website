@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import PropertyListScreen from "@/src/features/property/screens/PropertyListScreen";
+import { buildPageMetadata } from "@/src/lib/metadata/buildPageMetadata";
 
-export const metadata: Metadata = {
-  title: "Property List",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata("propertyList");
+}
 
 export default function PropertyListPage() {
   return <PropertyListScreen />;

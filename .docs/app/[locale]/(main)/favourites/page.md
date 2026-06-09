@@ -7,7 +7,7 @@ Next.js App Router page for route segment `[locale]/favourites`. Client wrapper 
 # Responsibilities
 
 - Next.js App Router page for route segment `[locale]/favourites`.
-- Client wrapper that calls `useAuthorize("PROFILE")` before rendering `FavouritePropertyScreen`.
+- Client wrapper that calls `useAuthorize("FAVOURITES")` before rendering `FavouritePropertyScreen`.
 - Shows `LoadingScreen` when auth finished loading and `user` is still absent (redirect pending).
 
 # Imports
@@ -23,20 +23,20 @@ Next.js App Router page for route segment `[locale]/favourites`. Client wrapper 
 
 # State Management
 
-Uses `useAuthorize("PROFILE")` — reads `user` / `isLoadingUser` from `useAuthStore` and runs redirect side effects.
+Uses `useAuthorize("FAVOURITES")` — reads `user` / `isLoadingUser` from `useAuthStore` and runs redirect side effects.
 
 # Navigation
 
 - Public URL: `/en/favourites` (and other locales).
 - Unauthenticated → `router.replace("/")`.
-- Missing `PROFILE` permission → `router.replace("/unauthorized")`.
+- Missing `FAVOURITES` permission → `router.replace("/unauthorized")`.
 - Allowed roles per `permissions.ts`: agency, agent, owner, user (`registered_user`).
 
 # Flow Description
 
 1. Next.js resolves locale-prefixed URL.
 2. `(main)/layout.tsx` applies `ProtectedLayout`.
-3. `useAuthorize("PROFILE")` waits for `isLoadingUser`, then checks roles.
+3. `useAuthorize("FAVOURITES")` waits for `isLoadingUser`, then checks roles.
 4. On success, `FavouritePropertyScreen` renders paginated favorites via `PropertyCardList`.
 
 # Dependencies

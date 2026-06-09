@@ -7,7 +7,8 @@ Next.js App Router page for route segment `[locale]/listing`. Client wrapper tha
 # Responsibilities
 
 - Next.js App Router page for route segment `[locale]/listing`.
-- Client wrapper that calls `useAuthorize("MY_LISTINGS")` before rendering `ListingPropertyScreen`.
+- `usePageTitle("listing")` sets the document title (e.g. `My Listings - MLS`).
+- Client wrapper calls `useAuthorize("MY_LISTINGS")` before rendering `ListingPropertyScreen`.
 - Shows `LoadingScreen` when auth finished loading and `user` is still absent (redirect pending).
 
 # Imports
