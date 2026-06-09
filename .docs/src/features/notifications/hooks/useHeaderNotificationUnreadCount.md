@@ -20,10 +20,11 @@ Header-only hook that fetches notification unread count for the bell indicator. 
 
 | Key | Description |
 | --- | --- |
-| `unreadCount` | Raw count from API |
+| `unreadCount` | Raw count from API when `enabled`; `0` when disabled (logged out) |
 | `hasUnread` | `unreadCount > 0` — drives header red dot |
 
 ## Dependencies
 
 - `notification.mutation.ts` — `useGetUnreadNotificationCount`
 - Invalidated when mark-read / mark-all-read mutations succeed
+- Cache cleared on logout via `clearNotificationQueryCache` (`useLogout`, failed `/auth/me`)

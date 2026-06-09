@@ -13,7 +13,7 @@ export function useHeaderNotificationUnreadCount({
 }: UseHeaderNotificationUnreadCountParams = {}) {
   const { data } = useGetUnreadNotificationCount({ enabled });
 
-  const unreadCount = data?.data?.unreadCount ?? 0;
+  const unreadCount = enabled ? (data?.data?.unreadCount ?? 0) : 0;
 
   const hasUnread = useMemo(() => unreadCount > 0, [unreadCount]);
 

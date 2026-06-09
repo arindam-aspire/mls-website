@@ -1,8 +1,9 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { confirmSignUp, agencySignUp, changePassword, forgotPassword, getLoggedInUser, logout, resetPassword, signInWithOtpRequest, signInWithOtpVerify, signInWithPassword, signUp } from "../services/auth.service";
 import { useToast } from "@/src/hooks/useToast";
+import { clearNotificationQueryCache } from "@/src/features/notifications/utils/clearNotificationQueryCache";
 import { type ApiError } from "@/src/apis/core/error.normalizer";
 import { useAuthStore } from "../store/auth.store";
 import type {
@@ -96,12 +97,14 @@ export const useSignInWithPassword = () => {
 
 export const useLogout = () => {
   const toast = useToast();
+  const queryClient = useQueryClient();
   const { clearAuth } = useAuthStore();
   const locale = useLocale() as AppLocale;
 
   return useMutation({
     mutationFn: logout,
     onSuccess: () => {
+      clearNotificationQueryCache(queryClient);
       clearAuth();
       navigateTo(`/${locale}`);
     },

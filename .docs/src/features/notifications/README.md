@@ -15,7 +15,7 @@ notifications/
   services/    GET /notifications, mark-read endpoints
   store/       Optional client state (unread count cache)
   types/       Notification API types
-  utils/       Mappers and formatters
+  utils/       Mappers, formatters, query cache helpers
 ```
 
 ## Related app code (outside this folder)
@@ -63,3 +63,4 @@ Header popover and full list screen at `/notifications` with grouped list, archi
 | `constants/notification-icons.ts` | Semantic notification type → Lucide icon map (`notificationIcons`) |
 | `utils/resolveNotificationHref.ts` | `actionUrl` / metadata path resolution |
 | `utils/formatNotificationRelativeTime.ts` | Locale-relative timestamps |
+| `utils/clearNotificationQueryCache.ts` | Clears React Query notification cache on logout |

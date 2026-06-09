@@ -1,12 +1,15 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import { useLayoutEffect, type ReactNode } from "react";
 import { tokenStore } from "@/src/apis/core/token.store";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { getLoggedInUser } from "@/src/features/auth/services/auth.service";
 import { getAccessTokenRoleName } from "@/src/features/auth/utils/getAccessTokenRoleName";
+import { clearNotificationQueryCache } from "@/src/features/notifications/utils/clearNotificationQueryCache";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const queryClient = useQueryClient();
   const user = useAuthStore((state) => state.user);
   const setUser = useAuthStore((state) => state.setUser);
   const setLoggedInUserRole = useAuthStore((state) => state.setLoggedInUserRole);
@@ -40,6 +43,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       })
       .catch(() => {
         if (!cancelled) {
+          clearNotificationQueryCache(queryClient);
           useAuthStore.getState().clearAuth();
         }
       })
@@ -52,7 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [user, setUser, setLoggedInUserRole, setIsLoadingUser]);
+  }, [queryClient, user, setUser, setLoggedInUserRole, setIsLoadingUser]);
 
   return <>{children}</>;
 }
