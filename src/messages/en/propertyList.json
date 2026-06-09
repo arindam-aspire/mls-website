@@ -71,7 +71,7 @@
     }
   },
   "favourites": {
-    "pageTitle": "My favourites",
+    "pageTitle": "My Favourites",
     "pageSubtitle": "View and manage your saved properties.",
     "listTitle": "My favourites",
     "listingsLabel": "Properties",
@@ -86,5 +86,18 @@
     "addSuccessTitle": "Added to favourites",
     "addSuccessDescription": "Property added to favourites successfully.",
     "addError": "Failed to add favourite"
+  },
+  "recentlyViewed": {
+    "pageTitle": "Recently Viewed",
+    "pageSubtitle": "Browse properties you've recently viewed.",
+    "comingSoonEyebrow": "Under development",
+    "comingSoonDescription": "We're working on this feature. Check back later.",
+    "fetchError": "Failed to fetch recently viewed properties"
+  },
+  "savedSearches": {
+    "pageTitle": "Saved Searches",
+    "pageSubtitle": "Run or manage your saved property searches.",
+    "comingSoonEyebrow": "Under development",
+    "comingSoonDescription": "Access and manage your saved property searches here. This feature is coming soon!"
   }
 }

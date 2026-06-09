@@ -71,7 +71,7 @@
     }
   },
   "favourites": {
-    "pageTitle": "Mis favoritos",
+    "pageTitle": "Mis Favoritos",
     "pageSubtitle": "Consulta y gestiona las propiedades que has guardado.",
     "listTitle": "Mis favoritos",
     "listingsLabel": "Propiedades",
@@ -86,5 +86,18 @@
     "addSuccessTitle": "Añadido a favoritos",
     "addSuccessDescription": "La propiedad se añadió a favoritos correctamente.",
     "addError": "No se pudo añadir a favoritos"
+  },
+  "recentlyViewed": {
+    "pageTitle": "Vistos Recientemente",
+    "pageSubtitle": "Consulta las propiedades que has visto recientemente.",
+    "comingSoonEyebrow": "En desarrollo",
+    "comingSoonDescription": "Estamos trabajando en esta función. Vuelve más tarde.",
+    "fetchError": "No se pudieron cargar las propiedades vistas recientemente"
+  },
+  "savedSearches": {
+    "pageTitle": "Búsquedas Guardadas",
+    "pageSubtitle": "Ejecuta o gestiona tus búsquedas de propiedades guardadas.",
+    "comingSoonEyebrow": "En desarrollo",
+    "comingSoonDescription": "Accede y gestiona tus búsquedas de propiedades guardadas aquí. ¡Esta función llegará pronto!"
   }
 }

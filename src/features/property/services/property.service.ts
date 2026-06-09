@@ -1,5 +1,6 @@
 import { apiClient } from "@/src/apis/clients/api.client";
 import { propertyEndpoints } from "@/src/apis/endpoints/propertyEndpoints";
+import { userEndpoints } from "@/src/apis/endpoints/userEndpoints";
 import type {
   FavoriteAddBody,
   FavoriteAddResponse,
@@ -11,6 +12,8 @@ import type {
   PropertyListParams,
   PropertyListResponse,
   PropertySimilarResponse,
+  RecentViewsListParams,
+  RecentViewsListResponse,
 } from "../types/property.types";
 
 export async function getPropertyList(
@@ -86,6 +89,16 @@ export async function removeFavorite(
   return apiClient.request<FavoriteRemoveResponse>({
     endpoint: propertyEndpoints.FAVORITE_REMOVE(propertyHash),
     method: "DELETE",
+    auth: true,
+  });
+}
+
+export async function getRecentViewsList(
+  params: RecentViewsListParams,
+): Promise<RecentViewsListResponse> {
+  return apiClient.request<RecentViewsListResponse>({
+    endpoint: userEndpoints.RECENT_VIEWS_LIST(params),
+    method: "GET",
     auth: true,
   });
 }

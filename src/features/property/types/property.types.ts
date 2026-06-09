@@ -178,6 +178,14 @@ export type FavoriteAddResponse = {
   meta?: Record<string, unknown>;
 };
 
+// ── Recent views list (GET /users/recent-views) ───────────────────────────────
+
+export type RecentViewsListParams = FavoriteListParams;
+
+export type RecentViewsListItem = FavoriteListItem;
+
+export type RecentViewsListResponse = FavoriteListResponse;
+
 export interface LocalizedText {
   en: string;
   ar: string;

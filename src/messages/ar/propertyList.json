@@ -86,5 +86,18 @@
     "addSuccessTitle": "تمت الإضافة إلى المفضلة",
     "addSuccessDescription": "تمت إضافة العقار إلى المفضلة بنجاح.",
     "addError": "تعذّرت إضافة العقار إلى المفضلة"
+  },
+  "recentlyViewed": {
+    "pageTitle": "شوهد مؤخراً",
+    "pageSubtitle": "تصفح العقارات التي شاهدتها مؤخراً.",
+    "comingSoonEyebrow": "قيد التطوير",
+    "comingSoonDescription": "نعمل على هذه الميزة. تفضل بالعودة لاحقاً.",
+    "fetchError": "تعذّر جلب العقارات التي شوهدت مؤخراً"
+  },
+  "savedSearches": {
+    "pageTitle": "عمليات البحث المحفوظة",
+    "pageSubtitle": "شغّل أو أدر عمليات البحث المحفوظة للعقارات.",
+    "comingSoonEyebrow": "قيد التطوير",
+    "comingSoonDescription": "يمكنك الوصول إلى عمليات البحث المحفوظة وإدارتها هنا. هذه الميزة قادمة قريباً!"
   }
 }

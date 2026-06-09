@@ -6,7 +6,7 @@ Screens mounted by App Router pages under `(property)` or `(main)` as noted per 
 | --- | --- | --- |
 | [ListingPropertyScreen.md](./ListingPropertyScreen.md) | `/en/listing` | Coming Soon |
 | [FavouritePropertyScreen.md](./FavouritePropertyScreen.md) | `/en/favourites` | Favourites list (`PropertyCardList`) |
-| [RecentlyViewedScreen.md](./RecentlyViewedScreen.md) | `/en/recently-viewed` | Coming Soon |
+| [RecentlyViewedScreen.md](./RecentlyViewedScreen.md) | `/en/recently-viewed` | Coming Soon (API wired in hook) |
 | [InquiriesScreen.md](./InquiriesScreen.md) | `/en/inquiries` | Coming Soon |
 | [PropertyListScreen.md](./PropertyListScreen.md) | `/en/property-list` | `PropertyCardList` |
 | [PropertyDetailsScreen.md](./PropertyDetailsScreen.md) | `/en/propert-details/:id` | `PropertyView` |

@@ -11,6 +11,7 @@ import {
   getPropertyDetails,
   getPropertyFeatureCatalog,
   getPropertyList,
+  getRecentViewsList,
   removeFavorite,
   getSimilarProperties,
 } from "../services/property.service";
@@ -114,6 +115,20 @@ export const useAddFavorite = () => {
       addFavorite({ property_hash: propertyHash }),
     onError: (error: ApiError) => {
       toast.error(t("addError"), {
+        description: error.message,
+      });
+    },
+  });
+};
+
+export const useGetRecentViewsList = () => {
+  const t = useTranslations("propertyList");
+  const toast = useToast();
+
+  return useMutation({
+    mutationFn: getRecentViewsList,
+    onError: (error: ApiError) => {
+      toast.error(t("recentlyViewed.fetchError"), {
         description: error.message,
       });
     },

@@ -163,6 +163,8 @@ mls_website/
 │       │       │   ├── usePropertyDetails.md
 │       │       │   ├── usePropertyList.md
 │       │       │   ├── useFavouritePropertyList.md
+│       │       │   ├── useRecentlyViewedScreen.md
+│       │       │   ├── useSavedSearchesScreen.md
 │       │       │   └── usePropertySearchFilters.md
 │       │       ├── mappers/
 │       │       │   ├── README.md
@@ -315,6 +317,7 @@ mls_website/
 │   │       ├── index.ts
 │   │       ├── profileEndpoints.ts
 │   │       ├── propertyEndpoints.ts
+│   │       ├── userEndpoints.ts
 │   │       └── publicEndpoints.ts
 │   ├── assets/
 │   │   └── images/
@@ -642,9 +645,12 @@ mls_website/
 │   │       │   ├── usePropertyFavouriteToggle.ts
 │   │       │   ├── usePropertyList.ts
 │   │       │   ├── useFavouritePropertyList.ts
+│   │       │   ├── useRecentlyViewedScreen.ts
+│   │       │   ├── useSavedSearchesScreen.ts
 │   │       │   └── usePropertySearchFilters.ts
 │   │       ├── mappers/
 │   │       │   ├── favoriteList.mapper.ts
+│   │       │   ├── recentViewsList.mapper.ts
 │   │       │   └── propertyFeatures.mapper.ts
 │   │       ├── mutations/
 │   │       │   └── property.mutation.ts

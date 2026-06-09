@@ -71,7 +71,7 @@
     }
   },
   "favourites": {
-    "pageTitle": "Mes favoris",
+    "pageTitle": "Mes Favoris",
     "pageSubtitle": "Consultez et gérez les biens que vous avez enregistrés.",
     "listTitle": "Mes favoris",
     "listingsLabel": "Biens",
@@ -86,5 +86,18 @@
     "addSuccessTitle": "Ajouté aux favoris",
     "addSuccessDescription": "Le bien a été ajouté à vos favoris.",
     "addError": "Impossible d'ajouter aux favoris"
+  },
+  "recentlyViewed": {
+    "pageTitle": "Vus Récemment",
+    "pageSubtitle": "Parcourez les biens que vous avez consultés récemment.",
+    "comingSoonEyebrow": "En cours de développement",
+    "comingSoonDescription": "Nous travaillons sur cette fonctionnalité. Revenez bientôt.",
+    "fetchError": "Impossible de charger les biens consultés récemment"
+  },
+  "savedSearches": {
+    "pageTitle": "Recherches Enregistrées",
+    "pageSubtitle": "Lancez ou gérez vos recherches de biens enregistrées.",
+    "comingSoonEyebrow": "En cours de développement",
+    "comingSoonDescription": "Accédez à vos recherches enregistrées et gérez-les ici. Cette fonctionnalité arrive bientôt !"
   }
 }

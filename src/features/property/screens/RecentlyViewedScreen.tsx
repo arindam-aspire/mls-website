@@ -1,11 +1,26 @@
+"use client";
+
 import { ComingSoonCard } from "@/src/components/common/ComingSoonCard";
+import { useRecentlyViewedScreen } from "@/src/features/property/hooks/useRecentlyViewedScreen";
+import { cn } from "@/src/lib/cn";
+import { bodyLargeTextClasses, headingPageClasses } from "@/src/lib/typography";
 
 export default function RecentlyViewedScreen() {
+  const { pageTitle, pageSubtitle, comingSoonEyebrow, comingSoonDescription } =
+    useRecentlyViewedScreen();
+
   return (
-    <ComingSoonCard
-      title="Recently Viewed"
-      subtitle="Under Development"
-      description="Browse properties you've recently viewed. This feature is coming soon!"
-    />
+    <div className="flex w-full min-w-0 flex-col gap-2 md:gap-4 lg:gap-6">
+      <div className="min-w-0">
+        <h1 className={headingPageClasses}>{pageTitle}</h1>
+        <p className={cn("text-muted", bodyLargeTextClasses)}>{pageSubtitle}</p>
+      </div>
+
+      <ComingSoonCard
+        title={pageTitle}
+        subtitle={comingSoonEyebrow}
+        description={comingSoonDescription}
+      />
+    </div>
   );
 }

@@ -4,3 +4,4 @@ export * from "./profileEndpoints";
 export * from "./propertyEndpoints";
 export * from "./publicEndpoints";
 export * from "./savedSearchEndpoints";
+export * from "./userEndpoints";
