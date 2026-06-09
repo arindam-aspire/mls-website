@@ -19,6 +19,10 @@
 | --- | --- |
 | `PROFILE` | agency, agent, owner, user |
 | `DASHBOARD` | agency, agent, owner |
+| `SAVED_SEARCHES` | agency, agent, owner, user |
+| `FAVOURITES` | agency, agent, owner, user |
+| `NOTIFICATIONS` | agency, agent, owner, user |
+| `RECENTLY_VIEWED` | owner, user (`registered_user`) |
 
 ## Notes
 

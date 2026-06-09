@@ -15,6 +15,7 @@ const PROTECTED_ROUTES = [
   "/my-profile",
   "/saved-searches",
   "/favourites",
+  "/recently-viewed",
 ];
 
 export function proxy(request: NextRequest) {

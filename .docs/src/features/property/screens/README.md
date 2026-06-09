@@ -1,6 +1,6 @@
 # Property screens (`src/features/property/screens/`)
 
-Screens mounted by `app/[locale]/(property)/*/page.tsx`.
+Screens mounted by App Router pages under `(property)` or `(main)` as noted per screen.
 
 | Screen | Route | Status |
 | --- | --- | --- |

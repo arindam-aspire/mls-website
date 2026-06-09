@@ -27,7 +27,7 @@ _N/A unless extended._
 
 # Navigation
 
-_No direct navigation._
+- Mounted at `/en/recently-viewed` via `app/[locale]/(main)/recently-viewed/page.tsx` (`ProtectedLayout`, `useAuthorize("RECENTLY_VIEWED")`).
 
 # Props / Parameters
 

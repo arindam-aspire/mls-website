@@ -52,7 +52,7 @@ _No explicit inputs detected._
 ## Actions
 
 - Notifications bell → `NotificationsPopover` (with `overHero` on landing hero)
-- Profile menu links → navigate and close popover (`filterProfileMenuItemsWithRoleAccess`; **My Recently Viewed** only for `registered_user` and `admin`/`agency`)
+- Profile menu links → navigate and close popover (`filterProfileMenuItemsWithRoleAccess`; **My Recently Viewed** only for `registered_user` and `owner`)
 - Sign out → `ConfirmModal` then `useLogout`
 
 ## Show/Hide Controls

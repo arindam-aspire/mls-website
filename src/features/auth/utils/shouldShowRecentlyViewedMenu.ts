@@ -4,8 +4,7 @@ import { UserRole } from "@/src/lib/auth/roles";
 /** Roles that see My Recently Viewed in public/landing profile and mobile menus. */
 const RECENTLY_VIEWED_MENU_ROLE_NAMES = new Set<string>([
   UserRole.USER,
-  UserRole.AGENCY,
-  "agency",
+  UserRole.OWNER,
 ]);
 
 export function shouldShowRecentlyViewedMenuItem(

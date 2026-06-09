@@ -43,7 +43,9 @@ mls_website/
 │   │       │   │   └── page.md
 │   │       │   ├── notifications/
 │   │       │   │   └── page.md
-│   │       │   └── favourites/
+│   │       │   ├── favourites/
+│   │       │   │   └── page.md
+│   │       │   └── recently-viewed/
 │   │       │       └── page.md
 │   │       └── (property)/
 │   │           ├── README.md
@@ -57,8 +59,6 @@ mls_website/
 │   │           ├── propert-details/
 │   │           │   └── [id]/
 │   │           │       └── page.md
-│   │           ├── recently-viewed/
-│   │           │   └── page.md
 │   └── src/
 │       ├── README.md
 │       ├── apis/
@@ -270,7 +270,9 @@ mls_website/
 │   │   │   │   └── page.tsx
 │   │   │   ├── notifications/
 │   │   │   │   └── page.tsx
-│   │   │   └── favourites/
+│   │   │   ├── favourites/
+│   │   │   │   └── page.tsx
+│   │   │   └── recently-viewed/
 │   │   │       └── page.tsx
 │   │   └── (property)/
 │   │       ├── layout.tsx
@@ -282,8 +284,6 @@ mls_website/
 │   │       │   └── [id]/
 │   │       │       └── page.tsx
 │   │       ├── property-list/
-│   │       │   └── page.tsx
-│   │       ├── recently-viewed/
 │   │       │   └── page.tsx
 │   ├── globals.css
 │   ├── icon.png

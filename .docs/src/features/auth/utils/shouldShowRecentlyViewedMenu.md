@@ -6,7 +6,7 @@ Role gate for **My Recently Viewed** in public/landing profile popover and mobil
 
 # Exports
 
-- `shouldShowRecentlyViewedMenuItem(user)` — `true` for `registered_user`, `admin`, `agency`
+- `shouldShowRecentlyViewedMenuItem(user)` — `true` for `registered_user`, `owner`
 - `filterProfileMenuItemsWithRoleAccess(items, user)` — drops `myRecentlyViewed` when role is not allowed
 
 # Allowed roles
@@ -14,8 +14,8 @@ Role gate for **My Recently Viewed** in public/landing profile popover and mobil
 | API role | Shown |
 | --- | --- |
 | `registered_user` | Yes |
-| `admin`, `agency` | Yes |
-| `owner`, `agent` | No |
+| `owner` | Yes |
+| `admin`, `agency`, `agent` | No |
 
 # Dependencies
 

@@ -21,12 +21,12 @@ Dynamic segment `[locale]` must be one of `en`, `ar`, `es`, `fr`.
 - `/[locale]/dashboard` — dashboard (`useAuthorize("DASHBOARD")`, Coming Soon screen)
 - `/[locale]/my-profile` — profile (`useAuthorize("PROFILE")`)
 - `/[locale]/saved-searches` — saved searches (`useAuthorize("PROFILE")`, `SavedSearchScreen`)
-- `/[locale]/favourites` — favourites (`useAuthorize("PROFILE")`, `FavouritePropertyScreen`)
+- `/[locale]/favourites` — favourites (`useAuthorize("FAVOURITES")`, `FavouritePropertyScreen`)
+- `/[locale]/recently-viewed` — recently viewed (`useAuthorize("RECENTLY_VIEWED")`, `RecentlyViewedScreen`)
 
 ### `(property)` — [property documentation](./(property)/README.md)
 
 - `/[locale]/listing`
-- `/[locale]/recently-viewed`
 - `/[locale]/inquiries`
 
 Reserved folders (no `page.tsx` yet): none under `(property)/`.

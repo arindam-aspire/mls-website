@@ -11,6 +11,7 @@ export const PERMISSIONS = {
   SAVED_SEARCHES: [UserRole.AGENCY, UserRole.AGENT, UserRole.OWNER, UserRole.USER],
   FAVOURITES: [UserRole.AGENCY, UserRole.AGENT, UserRole.OWNER, UserRole.USER],
   NOTIFICATIONS: [UserRole.AGENCY, UserRole.AGENT, UserRole.OWNER, UserRole.USER],
+  RECENTLY_VIEWED: [UserRole.OWNER, UserRole.USER],
 } as const;
 
 export type PermissionKey = keyof typeof PERMISSIONS;

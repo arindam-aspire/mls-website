@@ -20,4 +20,4 @@ Landing profile popover module for authenticated desktop header actions.
 
 # Notes
 
-- Wrapper only; behavior lives in [ProfilePopover.md](../public-layout/ProfilePopover.md) (including role-filtered **My Recently Viewed** for user/admin).
+- Wrapper only; behavior lives in [ProfilePopover.md](../public-layout/ProfilePopover.md) (including role-filtered **My Recently Viewed** for user/owner).

@@ -12,7 +12,7 @@ Rendered from [LandingHeader.md](./LandingHeader.md) with `open` / `onClose` sta
 - Primary header and account footer on `bg-surface`; theme-aware logo; outline `IconButton` close (matches header menu open button).
 - Drawer width `w-[90vw]` (max `36rem`).
 - Scrollable card sections (title above `Card`): **Account** (logged in), **Preferences**, **My Activity** (logged in).
-- Account: profile link, Change Password, Notification Settings (`owner` / `registered_user` only). Preferences: Language, Theme Mode. Activity: Listings, Favourites, Saved Searches; **Recently Viewed** only for `registered_user` and `admin`/`agency` (`shouldShowRecentlyViewedMenuItem`).
+- Account: profile link, Change Password, Notification Settings (`owner` / `registered_user` only). Preferences: Language, Theme Mode. Activity: Listings, Favourites, Saved Searches; **Recently Viewed** only for `registered_user` and `owner` (`shouldShowRecentlyViewedMenuItem`).
 - Pinned account footer: profile + logout, or sign-in row.
 - Inline **General → Language**: `SettingField` + compact `SelectDropdown` (En / Ar / Sp / Fr).
 - **Theme** row uses `SwitchField` with Sun/Moon icon, title `common.darkMode`, dynamic subtitle, primary pill switch.

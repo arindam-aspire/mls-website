@@ -13,9 +13,10 @@ Primary authenticated-main routes with `ProtectedLayout`. Group name does **not*
 | [dashboard/page.md](./dashboard/page.md) | `/en/dashboard` | `DashboardScreen` | `useAuthorize("DASHBOARD")` |
 | [my-profile/page.md](./my-profile/page.md) | `/en/my-profile` | `ProfileScreen` | `useAuthorize("PROFILE")` |
 | [saved-searches/page.md](./saved-searches/page.md) | `/en/saved-searches` | `SavedSearchScreen` | `useAuthorize("PROFILE")` |
-| [favourites/page.md](./favourites/page.md) | `/en/favourites` | `FavouritePropertyScreen` | `useAuthorize("PROFILE")` |
+| [favourites/page.md](./favourites/page.md) | `/en/favourites` | `FavouritePropertyScreen` | `useAuthorize("FAVOURITES")` |
+| [recently-viewed/page.md](./recently-viewed/page.md) | `/en/recently-viewed` | `RecentlyViewedScreen` | `useAuthorize("RECENTLY_VIEWED")` |
 
-Both pages are **client components** that return `null` until `user` is available. `proxy.ts` also requires an `access_token` cookie for these paths.
+Pages are **client components** that show `LoadingScreen` while redirect is pending. `proxy.ts` requires an `access_token` cookie for these paths (including `/recently-viewed`).
 
 ## Architecture
 
@@ -26,6 +27,7 @@ Both pages are **client components** that return `null` until `user` is availabl
   my-profile/page.tsx
   saved-searches/page.tsx
   favourites/page.tsx
+  recently-viewed/page.tsx
 ```
 
 ## Related

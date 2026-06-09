@@ -21,8 +21,8 @@ property/
 | URL | Screen |
 | --- | --- |
 | `/en/listing` | `ListingPropertyScreen` |
-| `/en/favourites` | `FavouritePropertyScreen` |
-| `/en/recently-viewed` | `RecentlyViewedScreen` |
+| `/en/favourites` | `FavouritePropertyScreen` — route under `(main)` |
+| `/en/recently-viewed` | `RecentlyViewedScreen` — route under `(main)` |
 | `/en/inquiries` | `InquiriesScreen` |
 
 Dynamic detail route: `/en/propert-details/:id` → `PropertyDetailsScreen`.
