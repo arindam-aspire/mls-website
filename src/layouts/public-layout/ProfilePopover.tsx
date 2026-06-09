@@ -17,7 +17,15 @@ import { useRouter } from "@/src/i18n/navigation";
 import { cn } from "@/src/lib/cn";
 import { profileEmailClasses, profileNameClasses } from "@/src/lib/typography";
 import { useClose } from "@headlessui/react";
-import { Eye, Heart, Home, LogOut, Search, Send, User } from "lucide-react";
+import {
+  Eye,
+  Heart,
+  List,
+  LogOut,
+  Search,
+  Send,
+  User,
+} from "lucide-react";
 import { filterProfileMenuItemsWithRoleAccess } from "@/src/features/auth/utils/shouldShowRecentlyViewedMenu";
 import { resolveProfileRoleLabel } from "@/src/features/auth/utils/resolveProfileRoleLabel";
 import { useTranslations } from "next-intl";
@@ -25,7 +33,8 @@ import { useEffect, useMemo, useState } from "react";
 
 const PROFILE_MENU_ITEMS = [
   { labelKey: "profile", icon: User, path: "/my-profile" },
-  { labelKey: "myListings", icon: Home, path: "/listing" },
+  { labelKey: "myListings", icon: List, path: "/listing" },
+  { labelKey: "manageListings", icon: List, path: "/manage-listings" },
   { labelKey: "myFavourites", icon: Heart, path: "/favourites" },
   { labelKey: "mySavedSearches", icon: Search, path: "/saved-searches" },
   { labelKey: "myRecentlyViewed", icon: Eye, path: "/recently-viewed" },

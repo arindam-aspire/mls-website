@@ -353,7 +353,7 @@ export function usePropertyDetails(propertyId: string) {
     }
 
     lastRecordedRecentViewIdRef.current = propertyId;
-    addRecentView({ property_hash: propertyHash });
+    addRecentView({ property_hash_id: propertyHash });
   }, [
     addRecentView,
     isDetailsSettled,

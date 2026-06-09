@@ -19,6 +19,8 @@
 | --- | --- |
 | `PROFILE` | agency, agent, owner, user |
 | `DASHBOARD` | agency, agent, owner |
+| `MY_LISTINGS` | owner |
+| `MANAGE_LISTINGS` | agency, agent |
 | `SAVED_SEARCHES` | agency, agent, owner, user |
 | `FAVOURITES` | agency, agent, owner, user |
 | `NOTIFICATIONS` | agency, agent, owner, user |

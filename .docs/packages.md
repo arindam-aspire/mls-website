@@ -50,6 +50,7 @@
 | Package | Version | Purpose |
 | --- | --- | --- |
 | js-cookie | ^3.0.7 | Lightweight cookie read/write helper |
+| patch-package | ^8.0.1 | Applies `patches/` overrides after npm install |
 
 ## TypeScript & types
 

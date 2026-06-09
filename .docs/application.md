@@ -190,7 +190,7 @@ Route groups `(landing)`, `(main)`, `(property)`, `(auth)`, `(public)` do **not*
 | Group | Layout | Purpose |
 | --- | --- | --- |
 | `(landing)` | `LandingLayout` | Locale root landing page |
-| `(main)` | `ProtectedLayout` | Dashboard, my-profile, listing, saved-searches, notifications, favourites, recently-viewed |
+| `(main)` | `ProtectedLayout` | Dashboard, manage-listings, my-profile, listing, saved-searches, notifications, favourites, recently-viewed |
 | `(property)` | `PublicLayout` | Public property browse (list, detail, inquiries) |
 | `(auth)` | *(empty — reserved)* | Future auth routes |
 | `(public)` | *(empty — reserved)* | Future public routes |
@@ -204,11 +204,12 @@ All paths below are **without** locale; prepend `/<locale>` (e.g. `/en/listing`)
 | --- | --- | --- |
 | `/` | `(landing)/page.tsx` | `LandingScreen` |
 | `/dashboard` | `(main)/dashboard/page.tsx` | `DashboardScreen` — guarded by `useAuthorize("DASHBOARD")` |
+| `/manage-listings` | `(main)/manage-listings/page.tsx` | `ManageListingsScreen` — guarded by `useAuthorize("MANAGE_LISTINGS")` |
 | `/my-profile` | `(main)/my-profile/page.tsx` | `ProfileScreen` — guarded by `useAuthorize("PROFILE")` |
 | `/saved-searches` | `(main)/saved-searches/page.tsx` | `SavedSearchScreen` — guarded by `useAuthorize("SAVED_SEARCHES")` |
 | `/notifications` | `(main)/notifications/page.tsx` | `NotificationScreen` (placeholder) — guarded by `useAuthorize("NOTIFICATIONS")` |
 | `/favourites` | `(main)/favourites/page.tsx` | `FavouritePropertyScreen` — guarded by `useAuthorize("FAVOURITES")` |
-| `/listing` | `(main)/listing/page.tsx` | `ListingPropertyScreen` — guarded by `useAuthorize("PROFILE")` |
+| `/listing` | `(main)/listing/page.tsx` | `ListingPropertyScreen` — guarded by `useAuthorize("MY_LISTINGS")` |
 | `/recently-viewed` | `(main)/recently-viewed/page.tsx` | `RecentlyViewedScreen` — guarded by `useAuthorize("RECENTLY_VIEWED")` |
 | `/property-list` | `(property)/property-list/page.tsx` | `PropertyListScreen` (`PropertyCardList`) |
 | `/propert-details/:id` | `(property)/propert-details/[id]/page.tsx` | `PropertyDetailsScreen` (`PropertyView`) |
@@ -565,8 +566,8 @@ From `src/configs/environment.config.ts` → `API_BASE_URL` (env: `NEXT_PUBLIC_A
 
 | Constant | Path |
 | --- | --- |
-| `RECENT_VIEWS` | `/users/recent-views` — POST `{ property_hash }`; DELETE clear all |
-| `RECENT_VIEW_REMOVE` | `/users/recent-views/{propertyId}` — DELETE single item (auth required) |
+| `RECENT_VIEWS` | `/users/recent-views` — POST `{ property_hash_id }`; DELETE clear all |
+| `RECENT_VIEW_REMOVE` | `/users/recent-views/{propertyHashId}` — DELETE single item (auth required) |
 | `RECENT_VIEWS_LIST` | `/users/recent-views` — `page`, `pageSize` (auth required) |
 
 Types: `src/features/property/types/property.types.ts` (`Property`, `PropertyListResponse`, `RecentViewsListResponse`, …).
@@ -733,7 +734,7 @@ Enforced via `.cursor/rules/`:
 Exports `proxy` (Next.js 16 middleware entry). Flow:
 
 1. Run **next-intl** middleware (`createMiddleware(routing)`).
-2. Strip locale prefix from pathname and check **protected routes**: `/dashboard`, `/my-profile`, `/listing`, `/saved-searches`, `/favourites`, `/recently-viewed`.
+2. Strip locale prefix from pathname and check **protected routes**: `/dashboard`, `/manage-listings`, `/my-profile`, `/listing`, `/saved-searches`, `/favourites`, `/recently-viewed`.
 3. If protected and no `access_token` cookie → redirect to `/` (same origin).
 4. Otherwise return the i18n response.
 

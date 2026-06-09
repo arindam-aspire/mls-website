@@ -1,4 +1,10 @@
-import { Heart, Home, LayoutDashboard, Search, type LucideIcon } from "lucide-react";
+import {
+  Heart,
+  LayoutDashboard,
+  List,
+  Search,
+  type LucideIcon,
+} from "lucide-react";
 import type { PermissionKey } from "@/src/lib/auth/permissions";
 
 export type ProtectedSidebarNavItemConfig = {
@@ -30,10 +36,10 @@ export const PROTECTED_SIDEBAR_NAV_SECTIONS: ProtectedSidebarNavSectionConfig[] 
       titleKey: "sidebarSectionProperty",
       items: [
         {
-          labelKey: "myListings",
-          href: "/listing",
-          icon: Home,
-          permission: "PROFILE",
+          labelKey: "manageListings",
+          href: "/manage-listings",
+          icon: List,
+          permission: "MANAGE_LISTINGS",
         },
         {
           labelKey: "myFavourites",

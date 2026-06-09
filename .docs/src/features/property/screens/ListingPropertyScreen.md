@@ -27,7 +27,7 @@ _N/A unless extended._
 
 # Navigation
 
-- Mounted at `/en/listing` via `app/[locale]/(main)/listing/page.tsx` (`ProtectedLayout`, `useAuthorize("PROFILE")`).
+- Mounted at `/en/listing` via `app/[locale]/(main)/listing/page.tsx` (`ProtectedLayout`, `useAuthorize("MY_LISTINGS")`).
 
 # Props / Parameters
 

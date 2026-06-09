@@ -1,0 +1,24 @@
+diff --git a/node_modules/@abdoun/abdoun-library/dist/index.cjs b/node_modules/@abdoun/abdoun-library/dist/index.cjs
+index d9b868b..1bab207 100644
+--- a/node_modules/@abdoun/abdoun-library/dist/index.cjs
++++ b/node_modules/@abdoun/abdoun-library/dist/index.cjs
+@@ -4623,6 +4623,7 @@ function PropertyView({
+             listingType: resolveListingType(propertyDetails.listing_type),
+             isExclusive: propertyDetails.is_exclusive,
+             brokerName: propertyDetails.agency?.agency_name ?? propertyDetails.agent?.name,
++            isFavourite: Boolean(propertyDetails.is_favourite),
+             isFavouriteLoading,
+             onFavourite: onClickFavourite ? () => onClickFavourite(propertyDetails.id) : void 0,
+             buttonSize
+diff --git a/node_modules/@abdoun/abdoun-library/dist/index.js b/node_modules/@abdoun/abdoun-library/dist/index.js
+index c099be1..450ceb3 100644
+--- a/node_modules/@abdoun/abdoun-library/dist/index.js
++++ b/node_modules/@abdoun/abdoun-library/dist/index.js
+@@ -4621,6 +4621,7 @@ function PropertyView({
+             listingType: resolveListingType(propertyDetails.listing_type),
+             isExclusive: propertyDetails.is_exclusive,
+             brokerName: propertyDetails.agency?.agency_name ?? propertyDetails.agent?.name,
++            isFavourite: Boolean(propertyDetails.is_favourite),
+             isFavouriteLoading,
+             onFavourite: onClickFavourite ? () => onClickFavourite(propertyDetails.id) : void 0,
+             buttonSize

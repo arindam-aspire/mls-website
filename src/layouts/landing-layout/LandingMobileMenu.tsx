@@ -9,14 +9,10 @@ import Image from "next/image";
 import {
   Bell,
   ChevronRight,
-  ClipboardList,
   Globe,
-  Heart,
-  History,
   Lock,
   LogOut,
   Moon,
-  Search,
   Sun,
   User,
   X,
@@ -41,7 +37,8 @@ import {
   resolveDrawerAccountLabel,
   shouldShowDrawerNotificationSettings,
 } from "@/src/features/auth/utils/resolveDrawerAccountLabel";
-import { shouldShowRecentlyViewedMenuItem } from "@/src/features/auth/utils/shouldShowRecentlyViewedMenu";
+import { filterProfileMenuItemsWithRoleAccess } from "@/src/features/auth/utils/shouldShowRecentlyViewedMenu";
+import { DRAWER_ACTIVITY_ITEMS } from "@/src/layouts/shared/drawerActivityItems.config";
 import { ChangePasswordModal } from "@/src/features/profile/screens/ChangePasswordModal";
 import { Link } from "@/src/i18n/navigation";
 import type { AppLocale } from "@/src/i18n/routing";
@@ -69,13 +66,6 @@ const MOBILE_MENU_LOCALE_OPTIONS: { value: AppLocale; label: string }[] = [
 
 const MOBILE_MENU_LANGUAGE_SELECT_WIDTH_CLASS = "w-14";
 const MOBILE_MENU_LANGUAGE_TRIGGER_CLASS = "gap-0.5 px-1.5";
-
-const DRAWER_ACTIVITY_ITEMS = [
-  { labelKey: "myListings", path: "/listing", icon: ClipboardList },
-  { labelKey: "myFavourites", path: "/favourites", icon: Heart },
-  { labelKey: "mySavedSearches", path: "/saved-searches", icon: Search },
-  { labelKey: "myRecentlyViewed", path: "/recently-viewed", icon: History },
-] as const;
 
 const DRAWER_DURATION = "duration-700";
 
@@ -361,11 +351,12 @@ function MenuContent({
 
   const activityItems = useMemo(
     () =>
-      DRAWER_ACTIVITY_ITEMS.filter(
-        (item) =>
-          item.labelKey !== "myRecentlyViewed" ||
-          shouldShowRecentlyViewedMenuItem(sections.user),
-      ),
+      sections.user
+        ? filterProfileMenuItemsWithRoleAccess(
+            DRAWER_ACTIVITY_ITEMS,
+            sections.user,
+          )
+        : [],
     [sections.user],
   );
 
@@ -459,7 +450,7 @@ function MenuContent({
                       const isLast = index === activityItems.length - 1;
 
                       return (
-                        <li key={item.path}>
+                        <li key={item.labelKey}>
                           <MenuRow
                             icon={item.icon}
                             label={t(item.labelKey)}

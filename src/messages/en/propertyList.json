@@ -116,5 +116,11 @@
     "pageSubtitle": "Run or manage your saved property searches.",
     "comingSoonEyebrow": "Under development",
     "comingSoonDescription": "Access and manage your saved property searches here. This feature is coming soon!"
+  },
+  "manageListings": {
+    "pageTitle": "Manage Listings",
+    "pageSubtitle": "Create, edit, and publish your property listings.",
+    "comingSoonEyebrow": "Under development",
+    "comingSoonDescription": "Create, edit, and manage your property listings in one place. This feature is coming soon!"
   }
 }

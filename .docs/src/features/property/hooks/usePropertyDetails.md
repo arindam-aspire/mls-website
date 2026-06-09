@@ -48,7 +48,7 @@ Custom hook for the property details flow. Fetches a single property by id, expo
 | `getSimilarProperties(id)` | GET | `/properties/:id/similar` |
 | `getAllFavorites()` | GET | `/favorites` (when signed in) |
 | `addFavorite` / `removeFavorite` | POST / DELETE | `/favorites` (heart toggle) |
-| `addRecentView` | POST | `/users/recent-views` body `{ property_hash }` (user/owner only) |
+| `addRecentView` | POST | `/users/recent-views` body `{ property_hash_id }` (user/owner only) |
 
 On property success: `response.data` → favourite flags applied → `propertyDetails` for `PropertyView`. When role allows, one `addRecentView` per visit.
 

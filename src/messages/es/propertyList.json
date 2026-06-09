@@ -116,5 +116,11 @@
     "pageSubtitle": "Ejecuta o gestiona tus búsquedas de propiedades guardadas.",
     "comingSoonEyebrow": "En desarrollo",
     "comingSoonDescription": "Accede y gestiona tus búsquedas de propiedades guardadas aquí. ¡Esta función llegará pronto!"
+  },
+  "manageListings": {
+    "pageTitle": "Gestionar listados",
+    "pageSubtitle": "Crea, edita y publica tus anuncios de propiedades.",
+    "comingSoonEyebrow": "En desarrollo",
+    "comingSoonDescription": "Crea, edita y gestiona tus anuncios de propiedades en un solo lugar. ¡Esta función llegará pronto!"
   }
 }

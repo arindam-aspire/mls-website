@@ -16,7 +16,7 @@ Screen hook for `RecentlyViewedScreen`: paginated recent views, favourite flags,
 
 - `GET /users/recent-views?page=&pageSize=` — mapped via `mapRecentViewsListResponse`
 
-- `DELETE /users/recent-views/{propertyId}` — per-card delete (after `ConfirmModal` confirm)
+- `DELETE /users/recent-views/{propertyHashId}` — per-card delete via `resolveRecentViewPropertyId` (`property_hash_id` on listing; after `ConfirmModal` confirm)
 - `DELETE /users/recent-views` — clear all from toolbar (after `ConfirmModal` confirm)
 
 - Favourites: `usePropertyFavouriteToggle` (same add/remove flow as `usePropertyList`)

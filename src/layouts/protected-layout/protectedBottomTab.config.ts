@@ -1,7 +1,7 @@
 import {
-  ClipboardList,
   Heart,
   Home,
+  List,
   MessageCircle,
   Search,
   type LucideIcon,
@@ -30,7 +30,7 @@ export const PROTECTED_BOTTOM_TAB_ITEMS: ProtectedBottomTabItemConfig[] = [
   {
     path: "/listing",
     labelKey: "protectedTabListings",
-    icon: ClipboardList,
+    icon: List,
   },
   {
     path: "/property-list",

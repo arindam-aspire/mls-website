@@ -5,7 +5,7 @@ import ListingPropertyScreen from "@/src/features/property/screens/ListingProper
 import { useAuthorize } from "@/src/lib/auth/authorize";
 
 export default function ListingPage() {
-  const { user, isLoadingUser } = useAuthorize("PROFILE");
+  const { user, isLoadingUser } = useAuthorize("MY_LISTINGS");
 
   if (!isLoadingUser && !user) return <LoadingScreen />;
 

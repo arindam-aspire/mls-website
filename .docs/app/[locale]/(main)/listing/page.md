@@ -7,7 +7,7 @@ Next.js App Router page for route segment `[locale]/listing`. Client wrapper tha
 # Responsibilities
 
 - Next.js App Router page for route segment `[locale]/listing`.
-- Client wrapper that calls `useAuthorize("PROFILE")` before rendering `ListingPropertyScreen`.
+- Client wrapper that calls `useAuthorize("MY_LISTINGS")` before rendering `ListingPropertyScreen`.
 - Shows `LoadingScreen` when auth finished loading and `user` is still absent (redirect pending).
 
 # Imports
@@ -23,20 +23,20 @@ Next.js App Router page for route segment `[locale]/listing`. Client wrapper tha
 
 # State Management
 
-Uses `useAuthorize("PROFILE")` — reads `user` / `isLoadingUser` from `useAuthStore` and runs redirect side effects.
+Uses `useAuthorize("MY_LISTINGS")` — reads `user` / `isLoadingUser` from `useAuthStore` and runs redirect side effects.
 
 # Navigation
 
 - Public URL: `/en/listing` (and other locales).
 - Unauthenticated → `router.replace("/")`.
-- Missing `PROFILE` permission → `router.replace("/unauthorized")`.
-- Allowed roles per `permissions.ts`: agency, agent, owner, user (`registered_user`).
+- Missing `MY_LISTINGS` permission → `router.replace("/unauthorized")`.
+- Allowed roles per `permissions.ts`: owner only.
 
 # Flow Description
 
 1. Next.js resolves locale-prefixed URL.
 2. `(main)/layout.tsx` applies `ProtectedLayout`.
-3. `useAuthorize("PROFILE")` waits for `isLoadingUser`, then checks roles.
+3. `useAuthorize("MY_LISTINGS")` waits for `isLoadingUser`, then checks roles.
 4. On success, `ListingPropertyScreen` renders (Coming Soon placeholder).
 
 # Dependencies

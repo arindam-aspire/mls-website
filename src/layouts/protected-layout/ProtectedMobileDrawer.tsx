@@ -8,14 +8,10 @@ import {
 import {
   Bell,
   ChevronRight,
-  ClipboardList,
   Globe,
-  Heart,
-  History,
   Lock,
   LogOut,
   Moon,
-  Search,
   Sun,
   User,
   X,
@@ -42,7 +38,8 @@ import {
 } from "@/src/features/auth/utils/resolveDrawerAccountLabel";
 import { resolveProfileRoleLabel } from "@/src/features/auth/utils/resolveProfileRoleLabel";
 import { ChangePasswordModal } from "@/src/features/profile/screens/ChangePasswordModal";
-import { hasPermission } from "@/src/lib/auth/hasPermission";
+import { filterProfileMenuItemsWithRoleAccess } from "@/src/features/auth/utils/shouldShowRecentlyViewedMenu";
+import { DRAWER_ACTIVITY_ITEMS } from "@/src/layouts/shared/drawerActivityItems.config";
 import { Link, usePathname, useRouter } from "@/src/i18n/navigation";
 import type { AppLocale } from "@/src/i18n/routing";
 import { isRtlLocale } from "@/src/i18n/routing";
@@ -70,13 +67,6 @@ const DRAWER_LOCALE_OPTIONS: { value: AppLocale; label: string }[] = [
 ];
 
 const PROFILE_PATH = "/my-profile";
-
-const DRAWER_ACTIVITY_ITEMS = [
-  { labelKey: "myListings", href: "/listing", icon: ClipboardList },
-  { labelKey: "myFavourites", href: "/favourites", icon: Heart },
-  { labelKey: "mySavedSearches", href: "/saved-searches", icon: Search },
-  { labelKey: "myRecentlyViewed", href: "/recently-viewed", icon: History },
-] as const;
 
 const rowLinkClass =
   "flex w-full min-h-14 items-center gap-3 px-4 py-3 text-start transition-colors hover:bg-page focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-secondary/40 sm:min-h-[3.75rem] sm:px-4";
@@ -330,9 +320,9 @@ function DrawerMyActivitySection({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
   const user = useAuthStore((state) => state.user);
 
-  const items = DRAWER_ACTIVITY_ITEMS.filter(() =>
-    hasPermission(user, "PROFILE"),
-  );
+  const items = user
+    ? filterProfileMenuItemsWithRoleAccess(DRAWER_ACTIVITY_ITEMS, user)
+    : [];
 
   if (items.length === 0) {
     return null;
@@ -345,12 +335,12 @@ function DrawerMyActivitySection({ onNavigate }: { onNavigate?: () => void }) {
           {items.map((item, index) => {
             const isLast = index === items.length - 1;
             const isActive =
-              pathname === item.href || pathname.startsWith(`${item.href}/`);
+              pathname === item.path || pathname.startsWith(`${item.path}/`);
 
             return (
-              <li key={item.href}>
+              <li key={item.labelKey}>
                 <DrawerNavLink
-                  href={item.href}
+                  href={item.path}
                   icon={item.icon}
                   label={t(item.labelKey)}
                   isActive={isActive}

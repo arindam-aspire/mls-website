@@ -11,7 +11,7 @@ Single-file off-canvas drawer for protected routes below `md`. Mirrors the publi
 - Internal sections (not separate files), each in a `DrawerSectionCard` (title above `Card`):
   - **Account** — role-based profile label (`personalAndBusinessProfile` for admin/agency, else `profile` → `/my-profile`), Change Password, Notification Settings (`owner` / `registered_user` only)
   - **Preferences** — Language, Theme Mode
-  - **My Activity** — My Listings, My Favourites, My Saved Searches, My Recently Viewed (`PROFILE` permission)
+  - **My Activity** — **My Listings** (`owner`), **Manage Listings** (`admin` / `agency` / `agent`), Favourites, Saved Searches, Recently Viewed (`registered_user` / `owner`) via `filterProfileMenuItemsWithRoleAccess` (`List` icon)
   - `DrawerFooter` — avatar, name, role, logout
 - Logout: close drawer → `ConfirmModal` → `useLogout`.
 

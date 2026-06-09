@@ -1,6 +1,6 @@
 # File Overview
 
-Maps all five config tabs when `user` is set; resolves Home path by role; computes active state.
+Maps bottom tabs when `user` is set; resolves Home and Listings paths by role; computes active state.
 
 **Source:** `src/layouts/protected-layout/hooks/useProtectedBottomTabBar.ts`
 
@@ -14,4 +14,4 @@ Maps all five config tabs when `user` is set; resolves Home path by role; comput
 | Key | Description |
 | --- | --- |
 | `t` | `useTranslations("common")` |
-| `tabs` | Filtered items with `label` and `isActive` |
+| `tabs` | Items with `label` and `isActive`; Listings tab omitted when user has no listing access; agency/agent → `/manage-listings` + `manageListings` label; owner → `/listing` + `protectedTabListings` |

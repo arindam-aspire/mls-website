@@ -20,7 +20,8 @@ property/
 
 | URL | Screen | Route group |
 | --- | --- | --- |
-| `/en/listing` | `ListingPropertyScreen` | `(main)` — `useAuthorize("PROFILE")` |
+| `/en/manage-listings` | `ManageListingsScreen` | `(main)` — `useAuthorize("MANAGE_LISTINGS")` |
+| `/en/listing` | `ListingPropertyScreen` | `(main)` — `useAuthorize("MY_LISTINGS")` |
 | `/en/favourites` | `FavouritePropertyScreen` | `(main)` — `useAuthorize("FAVOURITES")` |
 | `/en/recently-viewed` | `RecentlyViewedScreen` | `(main)` — `useAuthorize("RECENTLY_VIEWED")` |
 | `/en/property-list` | `PropertyListScreen` | `(property)` |

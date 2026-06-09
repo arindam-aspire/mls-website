@@ -4,6 +4,7 @@ Screens mounted by `app/[locale]/(main)/*/page.tsx` or `app/[locale]/(property)/
 
 | Screen | Route | Route group | Status |
 | --- | --- | --- | --- |
+| [ManageListingsScreen.md](./ManageListingsScreen.md) | `/en/manage-listings` | `(main)` | Coming Soon |
 | [ListingPropertyScreen.md](./ListingPropertyScreen.md) | `/en/listing` | `(main)` | Coming Soon |
 | [FavouritePropertyScreen.md](./FavouritePropertyScreen.md) | `/en/favourites` | `(main)` | Favourites list (`PropertyCardList`) |
 | [RecentlyViewedScreen.md](./RecentlyViewedScreen.md) | `/en/recently-viewed` | `(main)` | Recent views `PropertyCardList` |

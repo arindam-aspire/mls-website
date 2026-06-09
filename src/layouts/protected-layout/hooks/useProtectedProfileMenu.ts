@@ -6,12 +6,14 @@ import { useTranslations } from "next-intl";
 import { useLogout } from "@/src/features/auth/mutations/auth.mutation";
 import type { LoggedInUser } from "@/src/features/auth/types/auth.types";
 import { resolveProfileRoleLabel } from "@/src/features/auth/utils/resolveProfileRoleLabel";
+import { filterProfileMenuItemsWithRoleAccess } from "@/src/features/auth/utils/shouldShowRecentlyViewedMenu";
 import { useRouter } from "@/src/i18n/navigation";
 import { UserRole } from "@/src/lib/auth/roles";
 
 const PROFILE_MENU_ITEMS = [
   { labelKey: "profile", path: "/my-profile" },
   { labelKey: "myListings", path: "/listing" },
+  { labelKey: "manageListings", path: "/manage-listings" },
   { labelKey: "myFavourites", path: "/favourites" },
   { labelKey: "mySavedSearches", path: "/saved-searches" },
   { labelKey: "myRecentlyViewed", path: "/recently-viewed" },
@@ -28,11 +30,12 @@ const AGENCY_AGENT_PROFILE_MENU_ROLE_NAMES = new Set<string>([
 function resolveProtectedProfileMenuItems(user: LoggedInUser) {
   const roleName = user.roles?.[0]?.name;
 
-  if (roleName && AGENCY_AGENT_PROFILE_MENU_ROLE_NAMES.has(roleName)) {
-    return PROFILE_MENU_ITEMS.filter((item) => item.labelKey === "profile");
-  }
+  const baseItems =
+    roleName && AGENCY_AGENT_PROFILE_MENU_ROLE_NAMES.has(roleName)
+      ? PROFILE_MENU_ITEMS.filter((item) => item.labelKey === "profile")
+      : PROFILE_MENU_ITEMS;
 
-  return PROFILE_MENU_ITEMS;
+  return filterProfileMenuItemsWithRoleAccess(baseItems, user);
 }
 
 export function useProtectedProfileMenu(user: LoggedInUser) {

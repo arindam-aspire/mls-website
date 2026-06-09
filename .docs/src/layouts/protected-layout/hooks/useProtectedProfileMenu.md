@@ -39,10 +39,11 @@ Unknown roles return an empty subtitle.
 
 | Roles | Menu links in popover |
 | --- | --- |
-| `owner`, `registered_user` | Profile, My Listings, Favourites, Saved Searches, Recently Viewed, Inquiries |
-| `admin`, `agency`, `agent` | Profile only (+ Sign out button) |
+| `owner` | Profile, My Listings, Favourites, Saved Searches, Recently Viewed, Inquiries |
+| `registered_user` | Profile, Favourites, Saved Searches, Recently Viewed, Inquiries |
+| `admin`, `agency`, `agent` | Profile only (+ Sign out; Manage Listings in sidebar / mobile drawer) |
 
-Mobile drawer menu is unchanged (`ProtectedMobileDrawer`).
+Items pass through `filterProfileMenuItemsWithRoleAccess` after the agency/agent base filter.
 
 # Dependencies
 

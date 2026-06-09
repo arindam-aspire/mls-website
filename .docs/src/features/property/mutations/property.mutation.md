@@ -50,7 +50,7 @@ React Query hooks for loading property lists, details, and favourites.
 | `useGetFavoriteList` | `getFavoriteList(params)` | `GET /favorites?page=&pageSize=` |
 | `useAddFavorite` | `addFavorite({ property_hash })` | `POST /favorites` |
 | `useAddRecentView` | `addRecentView(body)` | `POST /users/recent-views` (silent; no toast) |
-| `useRemoveRecentView` | `removeRecentView(propertyId)` | `DELETE /users/recent-views/{propertyId}` |
+| `useRemoveRecentView` | `removeRecentView(propertyHashId)` | `DELETE /users/recent-views/{propertyHashId}` |
 | `useClearRecentViews` | `clearRecentViews()` | `DELETE /users/recent-views` |
 | `useGetRecentViewsList` | `getRecentViewsList(params)` | `GET /users/recent-views?page=&pageSize=` |
 | `useRemoveFavorite` | `removeFavorite(propertyHash)` | `DELETE /favorites/:propertyHash` |

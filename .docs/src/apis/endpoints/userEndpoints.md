@@ -18,7 +18,7 @@ User-scoped API path builders (authenticated).
 
 | --- | --- | --- | --- |
 
-| `RECENT_VIEWS` | POST | `/users/recent-views` body `{ property_hash }` | Yes |
+| `RECENT_VIEWS` | POST | `/users/recent-views` body `{ property_hash_id }` | Yes |
 | `RECENT_VIEWS` | DELETE | `/users/recent-views` (clear all) | Yes |
 | `RECENT_VIEW_REMOVE(propertyId)` | DELETE | `/users/recent-views/{propertyId}` | Yes |
 | `RECENT_VIEWS_LIST(params)` | GET | `/users/recent-views?page=&pageSize=` | Yes |

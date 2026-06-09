@@ -37,6 +37,8 @@ mls_website/
 │   │       │   ├── layout.md
 │   │       │   ├── dashboard/
 │   │       │   │   └── page.md
+│   │       │   ├── manage-listings/
+│   │       │   │   └── page.md
 │   │       │   ├── my-profile/
 │   │       │   │   └── page.md
 │   │       │   ├── listing/
@@ -264,6 +266,8 @@ mls_website/
 │   │   │   └── page.tsx
 │   │   ├── (main)/
 │   │   │   ├── dashboard/
+│   │   │   │   └── page.tsx
+│   │   │   ├── manage-listings/
 │   │   │   │   └── page.tsx
 │   │   │   ├── layout.tsx
 │   │   │   ├── my-profile/
@@ -660,6 +664,7 @@ mls_website/
 │   │       │   ├── FavouritePropertyScreen.tsx
 │   │       │   ├── InquiriesScreen.tsx
 │   │       │   ├── ListingPropertyScreen.tsx
+│   │       │   ├── ManageListingsScreen.tsx
 │   │       │   ├── RecentlyViewedScreen.tsx
 │   │       │   ├── SavedSearchesScreen.tsx
 │   │       │   ├── PropertyDetailsScreen.tsx
@@ -724,6 +729,7 @@ mls_website/
 │   │   └── routing.ts
 │   ├── layouts/
 │   │   ├── shared/
+│   │   │   ├── drawerActivityItems.config.ts
 │   │   │   └── notificationsButtonStyles.ts
 │   │   ├── landing-layout/
 │   │   │   ├── index.tsx

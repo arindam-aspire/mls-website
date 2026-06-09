@@ -44,7 +44,7 @@ Recently viewed properties screen: page header with clear action + paginated `Pr
 
 | Favourite toggle | `usePropertyFavouriteToggle` (add/remove like property list) |
 
-| Card delete | Opens `ConfirmModal`; on confirm `DELETE /users/recent-views/{propertyId}`; `is_delete_loading` on item |
+| Card delete | Opens `ConfirmModal`; on confirm `DELETE /users/recent-views/{propertyHashId}` (`property_hash_id` from list item); `is_delete_loading` on item |
 
 | Clear All | Opens `ConfirmModal`; on confirm `DELETE /users/recent-views` (clear all); refetch list |
 

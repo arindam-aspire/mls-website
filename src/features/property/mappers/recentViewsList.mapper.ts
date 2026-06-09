@@ -4,14 +4,16 @@ import type {
   RecentViewsListItem,
   RecentViewsListResponse,
 } from "../types/property.types";
+import { resolveRecentViewHashIdFromApiItem } from "../utils/resolveRecentViewPropertyId";
 
 export function mapRecentViewsListItem(item: RecentViewsListItem): PropertyListing {
   const { agency: _agency, ...property } = item.property;
+  const propertyHashId = resolveRecentViewHashIdFromApiItem(item);
 
   return {
     ...property,
     is_favourite: false,
-    property_hash: String(item.property_hash),
+    ...(propertyHashId ? { property_hash_id: propertyHashId } : {}),
     user_id: item.user_id,
   };
 }

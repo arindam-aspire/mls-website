@@ -19,8 +19,9 @@ Dynamic segment `[locale]` must be one of `en`, `ar`, `es`, `fr`.
 ### `(main)` — [main documentation](./(main)/README.md)
 
 - `/[locale]/dashboard` — dashboard (`useAuthorize("DASHBOARD")`, Coming Soon screen)
+- `/[locale]/manage-listings` — manage listings (`useAuthorize("MANAGE_LISTINGS")`, `ManageListingsScreen`)
 - `/[locale]/my-profile` — profile (`useAuthorize("PROFILE")`)
-- `/[locale]/listing` — my listings (`useAuthorize("PROFILE")`, `ListingPropertyScreen`)
+- `/[locale]/listing` — my listings (`useAuthorize("MY_LISTINGS")`, `ListingPropertyScreen`)
 - `/[locale]/saved-searches` — saved searches (`useAuthorize("SAVED_SEARCHES")`, `SavedSearchScreen`)
 - `/[locale]/notifications` — notifications (`useAuthorize("NOTIFICATIONS")`, `NotificationScreen`)
 - `/[locale]/favourites` — favourites (`useAuthorize("FAVOURITES")`, `FavouritePropertyScreen`)

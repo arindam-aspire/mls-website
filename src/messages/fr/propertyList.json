@@ -116,5 +116,11 @@
     "pageSubtitle": "Lancez ou gérez vos recherches de biens enregistrées.",
     "comingSoonEyebrow": "En cours de développement",
     "comingSoonDescription": "Accédez à vos recherches enregistrées et gérez-les ici. Cette fonctionnalité arrive bientôt !"
+  },
+  "manageListings": {
+    "pageTitle": "Gérer les annonces",
+    "pageSubtitle": "Créez, modifiez et publiez vos annonces immobilières.",
+    "comingSoonEyebrow": "En cours de développement",
+    "comingSoonDescription": "Créez, modifiez et gérez vos annonces immobilières au même endroit. Cette fonctionnalité arrive bientôt !"
   }
 }

@@ -12,7 +12,10 @@ import {
   useRemoveRecentView,
 } from "../mutations/property.mutation";
 import type { PaginationMeta, PropertyListing } from "../types/property.types";
-import { resolveRecentViewPropertyId } from "../utils/resolveRecentViewPropertyId";
+import {
+  normalizeRecentViewHashId,
+  resolveRecentViewPropertyId,
+} from "../utils/resolveRecentViewPropertyId";
 import { usePropertyFavouriteToggle } from "./usePropertyFavouriteToggle";
 
 const DEFAULT_PAGE = 1;
@@ -194,10 +197,15 @@ export function useRecentlyViewedScreen() {
       return;
     }
 
-    const propertyId = resolveRecentViewPropertyId(pendingDeleteItem);
-    setDeletingRecentViewId(propertyId);
+    const propertyHashId = resolveRecentViewPropertyId(pendingDeleteItem);
 
-    removeRecentView(propertyId, {
+    if (!normalizeRecentViewHashId(propertyHashId)) {
+      return;
+    }
+
+    setDeletingRecentViewId(propertyHashId);
+
+    removeRecentView(propertyHashId, {
       onSuccess: (response) => {
         toast.success(t("recentlyViewed.deleteSuccessTitle"), {
           description:

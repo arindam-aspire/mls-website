@@ -116,6 +116,7 @@ export interface PropertyListing {
   is_delete_loading?: boolean;
   favourite_id?: string;
   property_hash?: string;
+  property_hash_id?: string;
   user_id?: string;
 }
 
@@ -183,11 +184,44 @@ export type FavoriteAddResponse = {
 
 export type RecentViewsListParams = FavoriteListParams;
 
-export type RecentViewsListItem = FavoriteListItem;
+/** Nested property payload inside a recent-view list item (API shape). */
+export type RecentViewsPropertyPayload = Omit<
+  PropertyListing,
+  "is_favourite" | "favourite_id" | "property_hash" | "property_hash_id" | "user_id"
+> & {
+  agency?: unknown | null;
+};
 
-export type RecentViewsListResponse = FavoriteListResponse;
+export type RecentViewsListItem = {
+  id: string;
+  user_id: string;
+  property_hash_id?: number;
+  /** Legacy list payload; mapped to `property_hash_id` when the new key is absent. */
+  property_hash?: number;
+  property: RecentViewsPropertyPayload;
+};
 
-export type RecentViewAddBody = FavoriteAddBody;
+export type RecentViewsListResponse = {
+  success: boolean;
+  message: string | null;
+  data?: {
+    items?: RecentViewsListItem[];
+    total?: number;
+    page?: number;
+    pageSize?: number;
+    totalPages?: number;
+    hasNext?: boolean;
+    hasPrevious?: boolean;
+  } | null;
+  error: unknown;
+  meta?: {
+    pagination?: PaginationMeta;
+  };
+};
+
+export type RecentViewAddBody = {
+  property_hash_id: number;
+};
 
 export type RecentViewAddResponse = {
   success: boolean;

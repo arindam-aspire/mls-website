@@ -3,6 +3,10 @@
 import { useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
+import {
+  resolveListingsMenuPath,
+  shouldShowManageListingsMenuItem,
+} from "@/src/features/auth/utils/shouldShowRecentlyViewedMenu";
 import { hasPermission } from "@/src/lib/auth/hasPermission";
 import { usePathname } from "@/src/i18n/navigation";
 import {
@@ -29,19 +33,43 @@ export function useProtectedBottomTabBar() {
       return [];
     }
 
-    return PROTECTED_BOTTOM_TAB_ITEMS.map((item) => {
+    return PROTECTED_BOTTOM_TAB_ITEMS.flatMap((item) => {
+      if (item.labelKey === "protectedTabListings") {
+        const listingsPath = resolveListingsMenuPath(user);
+
+        if (!listingsPath) {
+          return [];
+        }
+
+        const path = listingsPath;
+        const label = shouldShowManageListingsMenuItem(user)
+          ? t("manageListings")
+          : t(item.labelKey);
+
+        return [
+          {
+            ...item,
+            path,
+            label,
+            isActive: isTabActive(pathname, path),
+          },
+        ];
+      }
+
       const path =
         item.labelKey === "protectedTabHome" &&
         !hasPermission(user, "DASHBOARD")
           ? "/my-profile"
           : item.path;
 
-      return {
-        ...item,
-        path,
-        label: t(item.labelKey),
-        isActive: isTabActive(pathname, path),
-      };
+      return [
+        {
+          ...item,
+          path,
+          label: t(item.labelKey),
+          isActive: isTabActive(pathname, path),
+        },
+      ];
     });
   }, [pathname, t, user]);
 
