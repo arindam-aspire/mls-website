@@ -13,7 +13,6 @@ import { cn } from "@/src/lib/cn";
 export function ProtectedSidebar() {
   const {
     isVisible,
-    isLoadingUser,
     isCollapsed,
     toggleCollapsed,
     collapseLabel,
@@ -28,7 +27,7 @@ export function ProtectedSidebar() {
   const CollapseIcon = isRtl ? ChevronRight : ChevronLeft;
   const ExpandIcon = isRtl ? ChevronLeft : ChevronRight;
 
-  if (isLoadingUser || !isVisible) {
+  if (!isVisible) {
     return null;
   }
 

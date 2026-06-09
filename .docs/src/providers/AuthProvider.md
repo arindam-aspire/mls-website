@@ -13,6 +13,7 @@ React context provider.
 - `import { tokenStore } from "@/src/apis/core/token.store"`
 - `import { useAuthStore } from "@/src/features/auth/store/auth.store"`
 - `import { getLoggedInUser } from "@/src/features/auth/services/auth.service"`
+- `import { getAccessTokenRoleName } from "@/src/features/auth/utils/getAccessTokenRoleName"`
 
 # Exports
 
@@ -62,10 +63,14 @@ _No explicit show/hide controls detected._
 
 # Flow Description
 
-1. On mount (`useLayoutEffect`, before child effects), if access token cookie exists and no user, set `isLoadingUser` true.
-2. `GET /auth/me` hydrates user into Zustand.
-3. On failure, `clearAuth()`.
-4. Guards like `useAuthorize` must not redirect while step 1–2 is in progress or while `hasAuthCredentials()` is true without a user.
+1. On mount (`useLayoutEffect`, before child effects), read `access_token` cookie.
+2. No token → `setLoggedInUserRole(null)`, `setIsLoadingUser(false)`.
+3. Token present → decode JWT payload (`role.role_name`) via `getAccessTokenRoleName` → `setLoggedInUserRole` (enables role-based UI such as protected sidebar before `/auth/me`).
+4. If no `user` yet, set `isLoadingUser` true and `GET /auth/me` hydrates profile into Zustand (`setUser` also syncs `loggedInUserRole`).
+5. On failure, `clearAuth()`.
+6. Guards like `useAuthorize` must not redirect while step 3–4 is in progress or while `hasAuthCredentials()` is true without a user.
+
+**Note:** Edge `proxy.ts` only checks cookie presence; it cannot update Zustand. Role hydration is client-only here.
 
 # Dependencies
 

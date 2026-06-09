@@ -2,6 +2,11 @@ import createMiddleware from "next-intl/middleware";
 import { NextRequest, NextResponse } from "next/server";
 import { routing } from "@/src/i18n/routing";
 
+/**
+ * Edge middleware checks for an `access_token` cookie only (presence, not role).
+ * JWT role decoding and `loggedInUserRole` in Zustand happen client-side in
+ * `AuthProvider` — middleware cannot update the client auth store.
+ */
 
 const handleI18nRouting = createMiddleware(routing);
 

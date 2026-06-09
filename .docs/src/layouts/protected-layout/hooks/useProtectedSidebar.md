@@ -8,8 +8,8 @@ Client hook: protected sidebar visibility, collapse state, and brand image sourc
 
 | Key | Description |
 | --- | --- |
-| `isVisible` | Agency/agent only |
-| `isLoadingUser` | Auth hydration |
+| `isVisible` | Agency/agent — from `user.roles` or JWT `loggedInUserRole` before profile loads |
+| `isLoadingUser` | Auth hydration (passed through; sidebar no longer waits on this) |
 | `isCollapsed` | Narrow vs expanded rail |
 | `toggleCollapsed` | Toggle + `localStorage` |
 | `collapseLabel` / `expandLabel` | Toggle `aria-label` |
@@ -27,4 +27,4 @@ else → MLS_Light_Logo.png
 
 # Dependencies
 
-- `useAuthStore`, `useTheme`, `hasProtectedSidebarAccess`, asset imports
+- `useAuthStore` (`user`, `loggedInUserRole`), `useTheme`, `hasProtectedSidebarAccess`, `hasProtectedSidebarAccessFromRoleName`, asset imports

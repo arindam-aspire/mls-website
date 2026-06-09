@@ -49,6 +49,7 @@ Zustand client store for **logged-in session** and **auth modal** state (screen 
 | Field | Purpose |
 | --- | --- |
 | `user` | Logged-in profile |
+| `loggedInUserRole` | Primary API role name from JWT (`role.role_name`) or `/auth/me`; used before full profile hydrates (e.g. protected sidebar) |
 | `access_token`, `refresh_token` | In-memory token mirror |
 | `isLoadingUser` | `/auth/me` loading |
 
@@ -81,9 +82,12 @@ _N/A — store only; mutations update store via setters._
 
 ## Session lifecycle
 
-- `setAuth(access, refresh, { rememberMeCookie, username })` — uses `tokenStore.setSessionTokens` from API `remember_me_cookie` + optional `refresh_token`
-- `setUser`, `setIsLoadingUser`
-- `clearAuth()` — logout; clears user/tokens only (not modal)
+- `setAuth(access, refresh, { rememberMeCookie, username })` — uses `tokenStore.setSessionTokens`; decodes JWT → `loggedInUserRole`
+- `setAccessToken` — updates cookie + decodes JWT → `loggedInUserRole`
+- `setUser` — sets `loggedInUserRole` from `user.roles[0].name`
+- `setLoggedInUserRole(role)` — explicit role hint (used by `AuthProvider` on boot)
+- `setIsLoadingUser`
+- `clearAuth()` — logout; clears user/tokens/role (not modal)
 
 # UI Details
 

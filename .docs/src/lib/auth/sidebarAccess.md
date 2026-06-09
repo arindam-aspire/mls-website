@@ -7,10 +7,13 @@ Pure helper to decide whether the authenticated user should see the protected la
 # Exports
 
 - `hasProtectedSidebarAccess(user)`
+- `hasProtectedSidebarAccessFromRoleName(roleName)`
 
 # Logic
 
-Returns `true` when any `user.roles[].name` is:
+`hasProtectedSidebarAccessFromRoleName` returns `true` when `roleName` is one of the sidebar roles below (used with JWT-derived `loggedInUserRole` before `/auth/me`).
+
+`hasProtectedSidebarAccess` returns `true` when any `user.roles[].name` is:
 
 - `admin` (agency portal)
 - `agent`
@@ -25,4 +28,4 @@ Owner (`owner`) and user (`registered_user`) do **not** get the sidebar.
 
 # Notes
 
-- Used by `useProtectedSidebar` and `ProtectedSidebar`.
+- Used by `useProtectedSidebar` (full user **or** `loggedInUserRole` from JWT) and `ProtectedSidebar`.

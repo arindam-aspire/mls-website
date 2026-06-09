@@ -8,6 +8,13 @@ const PROTECTED_SIDEBAR_ROLE_NAMES = new Set<string>([
   "agency",
 ]);
 
+export function hasProtectedSidebarAccessFromRoleName(
+  roleName: string | null | undefined,
+): boolean {
+  if (!roleName) return false;
+  return PROTECTED_SIDEBAR_ROLE_NAMES.has(roleName);
+}
+
 export function hasProtectedSidebarAccess(
   user: LoggedInUser | null | undefined,
 ): boolean {

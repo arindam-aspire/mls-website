@@ -486,6 +486,7 @@ mls_website/
 │   │   │   │   ├── auth.store.ts
 │   │   │   │   └── authModalStorage.ts
 │   │   │   ├── utils/
+│   │   │   │   ├── getAccessTokenRoleName.ts
 │   │   │   │   ├── postSignInRedirect.ts
 │   │   │   │   └── resolveProfileRoleLabel.ts
 │   │   │   └── types/

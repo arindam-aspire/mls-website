@@ -4,19 +4,24 @@ import { useLayoutEffect, type ReactNode } from "react";
 import { tokenStore } from "@/src/apis/core/token.store";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { getLoggedInUser } from "@/src/features/auth/services/auth.service";
+import { getAccessTokenRoleName } from "@/src/features/auth/utils/getAccessTokenRoleName";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const user = useAuthStore((state) => state.user);
   const setUser = useAuthStore((state) => state.setUser);
+  const setLoggedInUserRole = useAuthStore((state) => state.setLoggedInUserRole);
   const setIsLoadingUser = useAuthStore((state) => state.setIsLoadingUser);
 
   useLayoutEffect(() => {
     const accessToken = tokenStore.getAccessToken();
 
     if (!accessToken) {
+      setLoggedInUserRole(null);
       setIsLoadingUser(false);
       return;
     }
+
+    setLoggedInUserRole(getAccessTokenRoleName(accessToken));
 
     if (user) {
       setIsLoadingUser(false);
@@ -47,7 +52,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [user, setUser, setIsLoadingUser]);
+  }, [user, setUser, setLoggedInUserRole, setIsLoadingUser]);
 
   return <>{children}</>;
 }

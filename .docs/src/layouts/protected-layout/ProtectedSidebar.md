@@ -6,7 +6,7 @@ Optional collapsible left rail for **agency** and **agent** users (`md+`).
 
 ## Responsibilities
 
-- Render only when `hasProtectedSidebarAccess(user)`.
+- Render when `useProtectedSidebar().isVisible` (agency/agent from `/auth/me` **or** JWT `loggedInUserRole`); does not wait for `/auth/me` when JWT already carries the role.
 - Brand link to `/` with theme-aware MLS logo or favicon when collapsed.
 - Collapse toggle straddling the sidebar border.
 

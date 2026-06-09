@@ -6,7 +6,10 @@ import mlsLogoDark from "@/src/assets/images/MLS_Dark_Logo.png";
 import mlsLogoLight from "@/src/assets/images/MLS_Light_Logo.png";
 import favicon from "@/src/assets/images/favicon.png";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
-import { hasProtectedSidebarAccess } from "@/src/lib/auth/sidebarAccess";
+import {
+  hasProtectedSidebarAccess,
+  hasProtectedSidebarAccessFromRoleName,
+} from "@/src/lib/auth/sidebarAccess";
 import { useTheme } from "@/src/providers/ThemeProvider";
 import type { StaticImageData } from "next/image";
 
@@ -15,14 +18,16 @@ const COLLAPSED_STORAGE_KEY = "protected-sidebar-collapsed";
 export function useProtectedSidebar() {
   const t = useTranslations("common");
   const { theme } = useTheme();
-  const { user, isLoadingUser } = useAuthStore();
+  const { user, loggedInUserRole, isLoadingUser } = useAuthStore();
 
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  const isVisible = useMemo(
-    () => hasProtectedSidebarAccess(user),
-    [user],
-  );
+  const isVisible = useMemo(() => {
+    if (hasProtectedSidebarAccess(user)) {
+      return true;
+    }
+    return hasProtectedSidebarAccessFromRoleName(loggedInUserRole);
+  }, [user, loggedInUserRole]);
 
   const logoSrc: StaticImageData = useMemo(() => {
     if (isCollapsed) {

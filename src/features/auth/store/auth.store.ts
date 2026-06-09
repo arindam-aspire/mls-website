@@ -21,9 +21,12 @@ import {
   CHOOSE_ACCOUNT_SCREEN,
   type AuthFlow,
 } from "./auth.navigation";
+import { getAccessTokenRoleName } from "../utils/getAccessTokenRoleName";
 
 interface AuthStore extends AuthModalPersistedState {
   user: LoggedInUser | null;
+  /** Primary API role name from JWT or `/auth/me` — used before full profile hydrates. */
+  loggedInUserRole: string | null;
   isLoadingUser: boolean;
   access_token: string | null;
   refresh_token: string | null;
@@ -51,6 +54,7 @@ interface AuthStore extends AuthModalPersistedState {
   setAccessToken: (access_token: string) => void;
   setRefreshToken: (refresh_token: string) => void;
   setUser: (user: LoggedInUser) => void;
+  setLoggedInUserRole: (role: string | null) => void;
   setIsLoadingUser: (loading: boolean) => void;
   clearAuth: () => void;
 }
@@ -134,6 +138,7 @@ function buildCleanupPatch(flow: AuthFlow): Partial<FlowOwnedState> {
 
 export const useAuthStore = create<AuthStore>((set, get) => ({
   user: null,
+  loggedInUserRole: null,
   isLoadingUser: false,
   access_token: null,
   refresh_token: null,
@@ -330,12 +335,19 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       rememberMeCookie: options.rememberMeCookie,
       username: options.username,
     });
-    set({ access_token, refresh_token });
+    set({
+      access_token,
+      refresh_token,
+      loggedInUserRole: getAccessTokenRoleName(access_token),
+    });
   },
 
   setAccessToken: (access_token) => {
     tokenStore.setAccessToken(access_token);
-    set({ access_token });
+    set({
+      access_token,
+      loggedInUserRole: getAccessTokenRoleName(access_token),
+    });
   },
 
   setRefreshToken: (refresh_token) => {
@@ -345,7 +357,15 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   },
 
   setUser: (user) => {
-    set({ user, isLoadingUser: false });
+    set({
+      user,
+      isLoadingUser: false,
+      loggedInUserRole: user.roles?.[0]?.name ?? null,
+    });
+  },
+
+  setLoggedInUserRole: (role) => {
+    set({ loggedInUserRole: role });
   },
 
   setIsLoadingUser: (loading) => {
@@ -354,6 +374,12 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
 
   clearAuth: () => {
     tokenStore.clearTokens();
-    set({ user: null, isLoadingUser: false, access_token: null, refresh_token: null });
+    set({
+      user: null,
+      loggedInUserRole: null,
+      isLoadingUser: false,
+      access_token: null,
+      refresh_token: null,
+    });
   },
 }));

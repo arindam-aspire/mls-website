@@ -1,6 +1,9 @@
 import type { LoggedInUser } from "@/src/features/auth/types/auth.types";
 import type { SignInRole } from "@/src/features/auth/types/signIn.types";
 import type { AppLocale } from "@/src/i18n/routing";
+import { getAccessTokenRoleName } from "./getAccessTokenRoleName";
+
+export { getAccessTokenRoleName };
 
 /** API role names that should land on the dashboard after sign-in. */
 const DASHBOARD_ROLE_NAMES = new Set(["admin", "agency"]);
@@ -8,26 +11,6 @@ const DASHBOARD_ROLE_NAMES = new Set(["admin", "agency"]);
 function shouldRedirectToDashboardForRoleName(roleName: string | null | undefined): boolean {
   if (!roleName) return false;
   return DASHBOARD_ROLE_NAMES.has(roleName.toLowerCase());
-}
-
-/** Read `role.role_name` from the access JWT (available immediately after login). */
-export function getAccessTokenRoleName(accessToken: string): string | null {
-  try {
-    const segment = accessToken.split(".")[1];
-    if (!segment) return null;
-
-    const normalized = segment.replace(/-/g, "+").replace(/_/g, "/");
-    const padded =
-      normalized + "=".repeat((4 - (normalized.length % 4)) % 4);
-    const payload = JSON.parse(atob(padded)) as {
-      role?: { role_name?: string };
-    };
-
-    const roleName = payload.role?.role_name;
-    return typeof roleName === "string" ? roleName : null;
-  } catch {
-    return null;
-  }
 }
 
 export function shouldRedirectToDashboardAfterSignIn(user: LoggedInUser): boolean {
