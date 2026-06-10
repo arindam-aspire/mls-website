@@ -11,9 +11,9 @@ Primary authenticated-main routes with `ProtectedLayout`. Group name does **not*
 | File | URL | Screen | Guard |
 | --- | --- | --- | --- |
 | [dashboard/page.md](./dashboard/page.md) | `/en/dashboard` | `DashboardScreen` | `useAuthorize("DASHBOARD")` |
-| [manage-listings/page.md](./manage-listings/page.md) | `/en/manage-listings` | `ManageListingsScreen` | `useAuthorize("MANAGE_LISTINGS")` |
+| [(listings)/my-listings/page.md](./(listings)/my-listings/page.md) | `/en/my-listings` | `ListingPropertyScreen` | `useAuthorize("MY_LISTINGS")` |
+| [(listings)/manage-listings/page.md](./(listings)/manage-listings/page.md) | `/en/manage-listings` | `ManageListingsScreen` | `useAuthorize("MANAGE_LISTINGS")` |
 | [my-profile/page.md](./my-profile/page.md) | `/en/my-profile` | `ProfileScreen` | `useAuthorize("PROFILE")` |
-| [listing/page.md](./listing/page.md) | `/en/listing` | `ListingPropertyScreen` | `useAuthorize("MY_LISTINGS")` |
 | [saved-searches/page.md](./saved-searches/page.md) | `/en/saved-searches` | `SavedSearchScreen` | `useAuthorize("SAVED_SEARCHES")` |
 | [notifications/page.md](./notifications/page.md) | `/en/notifications` | `NotificationScreen` | `useAuthorize("NOTIFICATIONS")` |
 | [favourites/page.md](./favourites/page.md) | `/en/favourites` | `FavouritePropertyScreen` | `useAuthorize("FAVOURITES")` |
@@ -26,10 +26,11 @@ Pages are **client components** that show `LoadingScreen` while auth resolves. `
 ```
 /en/*
   layout.tsx (ProtectedLayout)
+  (listings)/
+    my-listings/page.tsx
+    manage-listings/page.tsx
   dashboard/page.tsx
-  manage-listings/page.tsx
   my-profile/page.tsx
-  listing/page.tsx
   saved-searches/page.tsx
   notifications/page.tsx
   favourites/page.tsx
@@ -38,5 +39,6 @@ Pages are **client components** that show `LoadingScreen` while auth resolves. `
 
 ## Related
 
+- [(listings) route group](./(listings)/README.md)
 - [property route group](../(property)/README.md)
 - [locale layout](../layout.md)

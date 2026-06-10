@@ -10,5 +10,7 @@
   "propertyDetails": "Property Details",
   "inquiries": "Inquiries",
   "listing": "My Listings",
-  "manageListings": "Manage Listings"
+  "manageListings": "Manage Listings",
+  "propertyCreate": "Create Property",
+  "propertyUpdate": "Update Property"
 }

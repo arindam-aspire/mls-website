@@ -29,4 +29,6 @@ export interface SearchInputProps
   iconClassName?: string;
   /** Fired after the value is cleared (in addition to `onChange` when applicable). */
   onClear?: () => void;
+  /** Debounce delay for `onChange` in ms. `0` disables debouncing. Default `300`. */
+  debounceMs?: number;
 }

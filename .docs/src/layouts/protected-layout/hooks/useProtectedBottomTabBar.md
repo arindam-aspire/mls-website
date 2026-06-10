@@ -14,4 +14,4 @@ Maps bottom tabs when `user` is set; resolves Home and Listings paths by role; c
 | Key | Description |
 | --- | --- |
 | `t` | `useTranslations("common")` |
-| `tabs` | Items with `label` and `isActive`; Listings tab omitted when user has no listing access; agency/agent → `/manage-listings` + `manageListings` label; owner → `/listing` + `protectedTabListings` |
+| `tabs` | Items with `label` and `isActive`; Listings tab omitted when user has no listing access; agency/agent → `/manage-listings` + `manageListings` label; owner → `/my-listings` + `protectedTabListings` |

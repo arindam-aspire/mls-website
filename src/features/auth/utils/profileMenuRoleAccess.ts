@@ -16,6 +16,10 @@ function hasRecentlyViewedRole(roleName: string | null | undefined): boolean {
   return RECENTLY_VIEWED_MENU_ROLE_NAMES.has(roleName);
 }
 
+export function isAgentUser(user: LoggedInUser | null | undefined): boolean {
+  return user?.roles?.some((role) => role.name === UserRole.AGENT) ?? false;
+}
+
 export function shouldShowRecentlyViewedMenuItem(
   user: LoggedInUser | null | undefined,
 ): boolean {
@@ -44,13 +48,13 @@ export function shouldShowManageListingsMenuItem(
 
 export function resolveListingsMenuPath(
   user: LoggedInUser | null | undefined,
-): "/listing" | "/manage-listings" | null {
+): "/my-listings" | "/manage-listings" | null {
   if (shouldShowManageListingsMenuItem(user)) {
     return "/manage-listings";
   }
 
   if (shouldShowMyListingsMenuItem(user)) {
-    return "/listing";
+    return "/my-listings";
   }
 
   return null;

@@ -120,7 +120,42 @@
   "manageListings": {
     "pageTitle": "Gestionar listados",
     "pageSubtitle": "Crea, edita y publica tus anuncios de propiedades.",
+    "addProperty": "Añadir propiedad",
     "comingSoonEyebrow": "En desarrollo",
     "comingSoonDescription": "Crea, edita y gestiona tus anuncios de propiedades en un solo lugar. ¡Esta función llegará pronto!"
+  },
+  "myListings": {
+    "pageTitle": "Mis Listados",
+    "pageSubtitle": "Gestiona y consulta todos tus anuncios de propiedades en un solo lugar.",
+    "fetchError": "No se pudieron cargar tus listados",
+    "statusFilter": {
+      "all": "Todos",
+      "ariaLabel": "Filtrar por estado",
+      "draft": "Borrador",
+      "in_progress": "En progreso",
+      "submitted": "Enviado",
+      "pending_approval": "Pendiente de aprobación",
+      "pending_admin_approval": "Pendiente de aprobación del administrador",
+      "changes_requested": "Cambios solicitados",
+      "approved": "Aprobado",
+      "verified": "Verificado",
+      "rejected": "Rechazado"
+    },
+    "addProperty": "Añadir propiedad",
+    "tableViewAriaLabel": "Vista de tabla",
+    "comingSoonEyebrow": "En desarrollo",
+    "comingSoonDescription": "Gestiona y consulta todos tus anuncios de propiedades en un solo lugar. ¡Esta función llegará pronto!"
+  },
+  "propertyCreate": {
+    "pageTitle": "Crear propiedad",
+    "pageSubtitle": "Añade un nuevo anuncio con fotos, detalles y precio.",
+    "breadcrumbCreate": "Crear",
+    "comingSoonEyebrow": "En desarrollo",
+    "comingSoonDescription": "Añade un nuevo anuncio con fotos, detalles y precio. ¡Esta función llegará pronto!"
+  },
+  "propertyUpdate": {
+    "pageTitle": "Actualizar propiedad",
+    "comingSoonEyebrow": "En desarrollo",
+    "comingSoonDescription": "Edita los detalles, medios y estado de tu anuncio. ¡Esta función llegará pronto!"
   }
 }

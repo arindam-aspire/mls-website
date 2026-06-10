@@ -120,7 +120,42 @@
   "manageListings": {
     "pageTitle": "Manage Listings",
     "pageSubtitle": "Create, edit, and publish your property listings.",
+    "addProperty": "Add Property",
     "comingSoonEyebrow": "Under development",
     "comingSoonDescription": "Create, edit, and manage your property listings in one place. This feature is coming soon!"
+  },
+  "myListings": {
+    "pageTitle": "My Listings",
+    "pageSubtitle": "Manage and view all your property listings in one place.",
+    "fetchError": "Failed to fetch your listings",
+    "statusFilter": {
+      "all": "All",
+      "ariaLabel": "Filter by status",
+      "draft": "Draft",
+      "in_progress": "In Progress",
+      "submitted": "Submitted",
+      "pending_approval": "Pending Approval",
+      "pending_admin_approval": "Pending Admin Approval",
+      "changes_requested": "Changes Requested",
+      "approved": "Approved",
+      "verified": "Verified",
+      "rejected": "Rejected"
+    },
+    "addProperty": "Add Property",
+    "tableViewAriaLabel": "Table view",
+    "comingSoonEyebrow": "Under development",
+    "comingSoonDescription": "Manage and view all your property listings in one place. This feature is coming soon!"
+  },
+  "propertyCreate": {
+    "pageTitle": "Create Property",
+    "pageSubtitle": "Add a new property listing with photos, details, and pricing.",
+    "breadcrumbCreate": "Create",
+    "comingSoonEyebrow": "Under development",
+    "comingSoonDescription": "Add a new property listing with photos, details, and pricing. This feature is coming soon!"
+  },
+  "propertyUpdate": {
+    "pageTitle": "Update Property",
+    "comingSoonEyebrow": "Under development",
+    "comingSoonDescription": "Edit your property listing details, media, and status. This feature is coming soon!"
   }
 }

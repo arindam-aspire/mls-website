@@ -8,7 +8,7 @@ export type DrawerActivityItemConfig = {
 
 /** Shared My Activity rows for public, landing, and protected mobile drawers. */
 export const DRAWER_ACTIVITY_ITEMS: readonly DrawerActivityItemConfig[] = [
-  { labelKey: "myListings", path: "/listing", icon: List },
+  { labelKey: "myListings", path: "/my-listings", icon: List },
   { labelKey: "manageListings", path: "/manage-listings", icon: List },
   { labelKey: "myFavourites", path: "/favourites", icon: Heart },
   { labelKey: "mySavedSearches", path: "/saved-searches", icon: Search },

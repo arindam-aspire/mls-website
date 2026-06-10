@@ -83,6 +83,8 @@ export type {
   PopoverTitleProps,
   PopoverTriggerProps,
 } from "./popover";
+export { Breadcrumb } from "./breadcrumb";
+export type { BreadcrumbItem, BreadcrumbProps } from "./breadcrumb";
 export { Link } from "./link";
 export type {
   LinkColor,

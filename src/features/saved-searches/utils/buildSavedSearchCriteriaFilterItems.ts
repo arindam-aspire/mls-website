@@ -1,4 +1,4 @@
-import { PROPERTY_AGE_OPTIONS } from "@/src/features/property/components/propertyListAdvancedFilters.constants";
+import { PROPERTY_AGE_OPTIONS } from "@/src/features/property/constants/propertyListAdvancedFilters.constants";
 import type {
   SavedSearchCriteria,
   SaveSearchFilterItem,

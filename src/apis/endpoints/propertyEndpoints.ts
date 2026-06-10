@@ -1,4 +1,7 @@
-import type { PropertyListParams } from "@/src/features/property/types/property.types";
+import type {
+  AgentPropertiesListParams,
+  PropertyListParams,
+} from "@/src/features/property/types/property.types";
 
 function appendOptionalParam(
   search: URLSearchParams,
@@ -68,4 +71,28 @@ export const propertyEndpoints = {
   FAVORITES_ALL: (): string => "/favorites",
   FAVORITE_REMOVE: (propertyHash: string | number): string =>
     `/favorites/${encodeURIComponent(String(propertyHash))}`,
+  AGENT_PROPERTIES: (params: AgentPropertiesListParams): string => {
+    const search = new URLSearchParams({
+      page: String(params.page),
+      pageSize: String(params.pageSize),
+    });
+
+    appendOptionalParam(search, "search", params.search);
+    appendOptionalParam(search, "status", params.status);
+
+    for (const [key, value] of Object.entries(params)) {
+      if (
+        key === "page" ||
+        key === "pageSize" ||
+        key === "search" ||
+        key === "status"
+      ) {
+        continue;
+      }
+
+      appendOptionalParam(search, key, value);
+    }
+
+    return `/agent-properties?${search.toString()}`;
+  },
 } as const;

@@ -14,7 +14,7 @@ Shared client-side authorization helpers: role constants, permission map, and th
 
 ## Usage
 
-Protected App Router pages under `(main)` call `useAuthorize(<permission>)` before rendering screens. Server edge guard: `proxy.ts` redirects unauthenticated requests (no `access_token` cookie) away from `/dashboard`, `/manage-listings`, `/my-profile`, `/listing`, `/saved-searches`, `/favourites`, and `/recently-viewed`.
+Protected App Router pages under `(main)` call `useAuthorize(<permission>)` before rendering screens. Server edge guard: `proxy.ts` redirects unauthenticated requests (no `access_token` cookie) away from `/dashboard`, `/manage-listings`, `/my-profile`, `/my-listings`, `/saved-searches`, `/favourites`, and `/recently-viewed`.
 
 ## Notes
 

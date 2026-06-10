@@ -1,6 +1,6 @@
 import { SELECT_DROPDOWN_EMPTY_VALUE } from "@/src/components/ui";
 import { parseLocationOptionValue } from "@/src/features/landing/utils/locationTaxonomy.utils";
-import { serializeAmenitiesParam } from "@/src/features/property/components/propertyListAdvancedFilters.constants";
+import { serializeAmenitiesParam } from "@/src/features/property/constants/propertyListAdvancedFilters.constants";
 import type { SavedSearchCriteria } from "../types/savedSearch.types";
 import type { BuildSaveSearchFilterItemsInput } from "./buildSaveSearchFilterItems";
 

@@ -2,7 +2,7 @@
 
 Next.js App Router page for route segment `[locale]/manage-listings`. Client wrapper that enforces authorization before rendering the manage listings screen.
 
-**Source:** `app/[locale]/(main)/manage-listings/page.tsx`
+**Source:** `app/[locale]/(main)/(listings)/manage-listings/page.tsx`
 
 # Responsibilities
 
@@ -37,7 +37,7 @@ Uses `useAuthorize("MANAGE_LISTINGS")` — reads `user` / `isLoadingUser` from `
 1. Next.js resolves locale-prefixed URL.
 2. `(main)/layout.tsx` applies `ProtectedLayout`.
 3. `useAuthorize("MANAGE_LISTINGS")` waits for `isLoadingUser`, then checks roles.
-4. On success, `ManageListingsScreen` renders (Coming Soon placeholder).
+4. On success, `ManageListingsScreen` renders page title/subtitle, optional **Add Property** for agents, and Coming Soon placeholder.
 
 # Dependencies
 
@@ -47,6 +47,6 @@ Uses `useAuthorize("MANAGE_LISTINGS")` — reads `user` / `isLoadingUser` from `
 
 # Notes
 
-- Keep in sync when `app/[locale]/(main)/manage-listings/page.tsx` changes.
+- Keep in sync when `app/[locale]/(main)/(listings)/manage-listings/page.tsx` changes.
 - `proxy.ts` requires an `access_token` cookie for `/manage-listings`.
 - Sidebar link: `protectedSidebarNav.config.ts` → `manageListings` → `/manage-listings`.

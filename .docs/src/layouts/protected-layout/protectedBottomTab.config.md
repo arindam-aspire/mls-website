@@ -7,7 +7,7 @@ Fixed five bottom tabs for `ProtectedBottomTabBar` (no per-tab permission filter
 # Tab order
 
 1. Home → `/dashboard` (or `/my-profile` when user lacks `DASHBOARD` — resolved in hook)
-2. Listings → `/listing`
+2. Listings → `/my-listings`
 3. Search → `/property-list`
 4. Favourites → `/favourites`
 5. Enquiry → `/inquiries`

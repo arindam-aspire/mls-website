@@ -25,6 +25,11 @@ TypeScript types for property list and detail APIs, aligned with `@abdoun/abdoun
 - `PropertySimilarResponse`
 - `FeatureCatalogItem`
 - `FeatureCatalogResponse`
+- `AgentPropertiesListParams`
+- `AgentPropertyListItem`
+- `AgentPropertiesListData`
+- `AgentPropertiesListResponse`
+- `AgentPropertiesListings`
 
 # State Management
 
@@ -38,10 +43,38 @@ _N/A — type-only module._
 | `PropertyDetailsResponse` | `/properties/:id` | GET |
 | `PropertySimilarResponse` | `/properties/:id/similar` | GET |
 | `FeatureCatalogResponse` | `/features?is_active=true` | GET |
+| `AgentPropertiesListResponse` | `/agent-properties` | GET |
 
 Request query shape: `PropertyListParams` — required: `page`, `pageSize`, `category`, `status`; optional: `sort`, `type`, `location`, `budgetMin`, `budgetMax`, `furnitureStatus`, `bedrooms`, `bathrooms`, `parking`, `propertyAge`, `minArea`, `maxArea`, `amenities`, `similar_to`, `savedSearchId`.
 
 URL-synced filters: all `PropertyListParams` fields (see [property.types.md](./property.types.md)).
+
+## Agent properties (`GET /agent-properties`)
+
+`AgentPropertyListItem` — one row in `data.items`:
+
+| Field | API example |
+| --- | --- |
+| `property_id` | UUID |
+| `property_hash` | numeric hash |
+| `title` | plain string |
+| `listing_purpose` | e.g. `sale` |
+| `type_name` / `type_slug` | e.g. Building / `building` |
+| `category_name` / `category_slug` | e.g. Residential / `residential` |
+| `status_name` / `status_slug` | e.g. Verified / `verified` |
+| `price` / `currency` | e.g. `12000.00` / `JOD` |
+| `reference_number` | e.g. `REF-0056` |
+| `created_at` / `updated_at` | ISO timestamps |
+| `submission_*` | submission workflow fields |
+| `submission_workflow_label` | e.g. `pending_admin_approval` |
+| `can_edit_submission` / `can_delete_submission` | booleans |
+| `agency` | `null` or agency object (typed `unknown` until API shape is fixed) |
+
+`AgentPropertiesListData` also includes pagination fields (`total`, `page`, `pageSize`, `totalPages`, `hasNext`, `hasPrevious`) duplicated under `meta.pagination`.
+
+`AgentPropertiesListParams`: required `page`, `pageSize`; optional `search`, `status` (omitted when empty / “All”).
+
+Mapping to UI/`PropertyListing` is not implemented yet.
 
 # Navigation
 

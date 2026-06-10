@@ -39,6 +39,6 @@ PublicLayout (index.tsx)
 
 ## Navigation paths
 
-Profile menu → `/en/my-profile`, `/en/listing`, `/en/favourites`, etc. (locale from router).
+Profile menu → `/en/my-profile`, `/en/my-listings`, `/en/favourites`, etc. (locale from router).
 
 Buy/Rent/Sell/Off-Plan on mobile: bottom tab bar; drawer holds account, general, preferences.

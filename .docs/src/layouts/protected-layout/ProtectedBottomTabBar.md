@@ -20,7 +20,7 @@ Fixed bottom tab navigation for protected routes on viewports below `md`. Always
 | Tab | Path | Notes |
 | --- | --- | --- |
 | Home | `/dashboard` | `/my-profile` if user lacks `DASHBOARD` |
-| Listings | `/listing` | |
+| Listings | `/my-listings` | |
 | Search | `/property-list` | Center of five tabs |
 | Favourites | `/favourites` | |
 | Enquiry | `/inquiries` | |

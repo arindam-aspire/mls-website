@@ -5,7 +5,7 @@ import {
   normalizeAmenitySlug,
   parseAmenitiesParam,
   serializeAmenitiesParam,
-} from "../components/propertyListAdvancedFilters.constants";
+} from "../constants/propertyListAdvancedFilters.constants";
 
 const RESIDENTIAL_TYPE = {
   apartment: "apartment",

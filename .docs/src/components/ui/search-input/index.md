@@ -28,14 +28,22 @@ Mirrors `Input` plus search-specific props:
 | `placeholder`, `clearLabel` | Required |
 | `aria-label` | Required when `label` is omitted |
 | `onClear` | Optional callback after clear |
+| `debounceMs` | Debounce delay for `onChange` (default `300`; `0` = immediate) |
 
 # UI Details
 
 - Variant styles from `fieldVariants` + same classes as `src/components/ui/input/index.tsx`.
 - Clear button: `rounded-lg`, `hover:bg-page`, `focus-visible:ring-secondary/40`.
 
+# Flow Description
+
+1. User input updates the visible value immediately (`draftValue`).
+2. `useDebounce` delays propagating the value to `onChange` (default 300ms).
+3. Clear resets immediately and calls `onChange` / `onClear` without waiting.
+
 # Dependencies
 
+- `@/src/hooks/useDebounce`
 - `../input/types`, `../fieldVariants`, `../responsiveSizes`
 - `src/layouts/protected-layout/ProtectedHeader.tsx`
 

@@ -26,14 +26,14 @@ import {
   Send,
   User,
 } from "lucide-react";
-import { filterProfileMenuItemsWithRoleAccess } from "@/src/features/auth/utils/shouldShowRecentlyViewedMenu";
+import { filterProfileMenuItemsWithRoleAccess } from "@/src/features/auth/utils/profileMenuRoleAccess";
 import { resolveProfileRoleLabel } from "@/src/features/auth/utils/resolveProfileRoleLabel";
 import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 
 const PROFILE_MENU_ITEMS = [
   { labelKey: "profile", icon: User, path: "/my-profile" },
-  { labelKey: "myListings", icon: List, path: "/listing" },
+  { labelKey: "myListings", icon: List, path: "/my-listings" },
   { labelKey: "manageListings", icon: List, path: "/manage-listings" },
   { labelKey: "myFavourites", icon: Heart, path: "/favourites" },
   { labelKey: "mySavedSearches", icon: Search, path: "/saved-searches" },

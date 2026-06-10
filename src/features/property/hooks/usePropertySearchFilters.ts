@@ -22,7 +22,7 @@ import {
   hasAdvancedFilters,
   parseAmenitiesParam,
   serializeAmenitiesParam,
-} from "../components/propertyListAdvancedFilters.constants";
+} from "../constants/propertyListAdvancedFilters.constants";
 import { usePropertyStore } from "../store/property.store";
 import type { PropertyListParams } from "../types/property.types";
 import { pruneAdvancedParamsForContext } from "../utils/propertyAdvancedFieldVisibility";

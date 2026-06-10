@@ -19,7 +19,7 @@ Custom hook for the property details flow. Fetches a single property by id, expo
 - `usePathname`, `useRouter` from `@/src/i18n/navigation`
 - `useSearchParams` from `next/navigation`
 - `useAddRecentView`, `useGetPropertyDetails`, `useGetPropertyFeatureCatalog`, `useGetSimilarProperties` from `../mutations/property.mutation`
-- `canTrackRecentPropertyView` from `@/src/features/auth/utils/shouldShowRecentlyViewedMenu`
+- `canTrackRecentPropertyView` from `@/src/features/auth/utils/profileMenuRoleAccess`
 - `mapFeatureCatalogItems` from `../mappers/propertyFeatures.mapper`
 - `useAuthStore` from `@/src/features/auth/store/auth.store`
 - `hasPropertyDetailsRestrictedTabsAccess` from `@/src/lib/auth/propertyDetailsTabAccess`

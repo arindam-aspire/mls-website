@@ -26,7 +26,7 @@ import {
   PARKING_OPTIONS,
   PROPERTY_AGE_OPTIONS,
   ROOM_OPTIONS,
-} from "./propertyListAdvancedFilters.constants";
+} from "../constants/propertyListAdvancedFilters.constants";
 import {
   getVisibleAmenitySlugs,
   showBathrooms,

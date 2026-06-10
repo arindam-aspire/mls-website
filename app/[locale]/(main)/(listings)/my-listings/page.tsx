@@ -5,7 +5,7 @@ import ListingPropertyScreen from "@/src/features/property/screens/ListingProper
 import { usePageTitle } from "@/src/hooks/usePageTitle";
 import { useAuthorize } from "@/src/lib/auth/authorize";
 
-export default function ListingPage() {
+export default function MyListingsPage() {
   usePageTitle("listing");
   const { user, isLoadingUser } = useAuthorize("MY_LISTINGS");
 

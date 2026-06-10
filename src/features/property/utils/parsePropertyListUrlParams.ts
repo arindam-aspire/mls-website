@@ -2,7 +2,7 @@ import {
   getInitialBudgetMax,
   getInitialBudgetMin,
 } from "@/src/components/search";
-import { normalizeAmenitiesParam } from "../components/propertyListAdvancedFilters.constants";
+import { normalizeAmenitiesParam } from "../constants/propertyListAdvancedFilters.constants";
 import type { PropertyListParams } from "../types/property.types";
 
 export const DEFAULT_PROPERTY_LIST_SORT = "newest";

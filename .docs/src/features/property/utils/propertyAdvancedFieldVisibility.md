@@ -14,7 +14,7 @@ Category- and property-type-aware visibility rules for **Advanced Search** field
 
 - `SELECT_DROPDOWN_EMPTY_VALUE` from `@/src/components/ui`
 - `PropertyListParams` from `../types/property.types`
-- Amenity parse/serialize helpers from `../components/propertyListAdvancedFilters.constants`
+- Amenity parse/serialize helpers from `../constants/propertyListAdvancedFilters.constants`
 
 # Exports
 

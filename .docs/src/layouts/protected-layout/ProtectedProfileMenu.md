@@ -27,7 +27,7 @@ Protected-header profile control: vertical divider, name + role, avatar trigger,
 
 # Navigation
 
-- Menu paths: `/my-profile`, `/listing`, `/favourites`, etc. (locale-prefixed via `useRouter`).
+- Menu paths: `/my-profile`, `/my-listings`, `/favourites`, etc. (locale-prefixed via `useRouter`).
 
 # Props / Parameters
 

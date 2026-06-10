@@ -10,5 +10,7 @@
   "propertyDetails": "Détails du Bien",
   "inquiries": "Mes Demandes",
   "listing": "Mes Annonces",
-  "manageListings": "Gérer les annonces"
+  "manageListings": "Gérer les annonces",
+  "propertyCreate": "Créer un bien",
+  "propertyUpdate": "Modifier le bien"
 }

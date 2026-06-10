@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
 import { getPathname, useRouter } from "@/src/i18n/navigation";
 import type { AppLocale } from "@/src/i18n/routing";
-import { canTrackRecentPropertyView } from "@/src/features/auth/utils/shouldShowRecentlyViewedMenu";
+import { canTrackRecentPropertyView } from "@/src/features/auth/utils/profileMenuRoleAccess";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { useToast } from "@/src/hooks/useToast";
 import { mapFavoriteListResponse } from "../mappers/favoriteList.mapper";

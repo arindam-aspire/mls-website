@@ -15,7 +15,7 @@ Expandable **Advanced Search** panel for the property list filter bar. Fields ar
 
 - `Input`, `SelectDropdown` from `@/src/components/ui`
 - `useMatchMedia`, Headless UI dialog primitives
-- Option presets from `./propertyListAdvancedFilters.constants`
+- Option presets from `../constants/propertyListAdvancedFilters.constants`
 - Visibility helpers from `../utils/propertyAdvancedFieldVisibility`
 
 # Props / Parameters

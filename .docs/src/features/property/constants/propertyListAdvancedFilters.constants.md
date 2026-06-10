@@ -2,7 +2,7 @@
 
 Shared option lists and amenity URL helpers for advanced property list filters.
 
-**Source:** `src/features/property/components/propertyListAdvancedFilters.constants.ts`
+**Source:** `src/features/property/constants/propertyListAdvancedFilters.constants.ts`
 
 # Exports
 
@@ -21,3 +21,7 @@ Shared option lists and amenity URL helpers for advanced property list filters.
 - **Property age:** `new`, `1-5`, `5-10`, `10-20`, `20+` (labels: New, 1-5 years, …).
 - URL and API use **comma-separated slugs** for amenities only (no spaces around commas required; trimmed on read).
 - Amenity order is fixed: `alarm-system` then `parking-available` when both are selected.
+
+# Dependencies
+
+- Used by `PropertyListAdvancedFilters`, `usePropertySearchFilters`, URL param utils, and saved-search builders.

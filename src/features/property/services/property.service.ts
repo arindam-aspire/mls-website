@@ -2,6 +2,8 @@ import { apiClient } from "@/src/apis/clients/api.client";
 import { propertyEndpoints } from "@/src/apis/endpoints/propertyEndpoints";
 import { userEndpoints } from "@/src/apis/endpoints/userEndpoints";
 import type {
+  AgentPropertiesListParams,
+  AgentPropertiesListResponse,
   FavoriteAddBody,
   FavoriteAddResponse,
   FavoriteListParams,
@@ -55,6 +57,16 @@ export async function getPropertyFeatureCatalog(): Promise<FeatureCatalogRespons
     endpoint: propertyEndpoints.FEATURE_CATALOG(),
     method: "GET",
     auth: false,
+  });
+}
+
+export async function getAgentProperties(
+  params: AgentPropertiesListParams,
+): Promise<AgentPropertiesListResponse> {
+  return apiClient.request<AgentPropertiesListResponse>({
+    endpoint: propertyEndpoints.AGENT_PROPERTIES(params),
+    method: "GET",
+    auth: true,
   });
 }
 

@@ -28,7 +28,7 @@ export const PROTECTED_BOTTOM_TAB_ITEMS: ProtectedBottomTabItemConfig[] = [
     icon: Home,
   },
   {
-    path: "/listing",
+    path: "/my-listings",
     labelKey: "protectedTabListings",
     icon: List,
   },

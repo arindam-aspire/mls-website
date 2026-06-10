@@ -1,10 +1,13 @@
 "use client";
 
+import { useDebounce } from "@/src/hooks/useDebounce";
 import { Field, Label } from "@headlessui/react";
 import { Search, X } from "lucide-react";
 import {
   forwardRef,
+  useEffect,
   useId,
+  useRef,
   useState,
   type ChangeEvent,
   type ReactNode,
@@ -26,6 +29,8 @@ import type {
   SearchInputSize,
   SearchInputVariant,
 } from "./types";
+
+const DEFAULT_DEBOUNCE_MS = 300;
 
 const wrapperSizeClasses = fieldControlSizeClasses;
 
@@ -78,6 +83,13 @@ function SearchInputIcon({
   );
 }
 
+function createChangeEvent(value: string): ChangeEvent<HTMLInputElement> {
+  return {
+    target: { value },
+    currentTarget: { value },
+  } as ChangeEvent<HTMLInputElement>;
+}
+
 export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
   function SearchInput(
     {
@@ -101,6 +113,7 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
       defaultValue,
       onChange,
       onClear,
+      debounceMs = DEFAULT_DEBOUNCE_MS,
       disabled,
       id: idProp,
       ...rest
@@ -118,31 +131,96 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
         .filter(Boolean)
         .join(" ") || undefined;
 
+    const isControlled = valueProp !== undefined;
+    const isDebounced = debounceMs > 0;
+
     const [uncontrolledValue, setUncontrolledValue] = useState(
       () => (defaultValue != null ? String(defaultValue) : ""),
     );
 
-    const isControlled = valueProp !== undefined;
-    const value = isControlled ? String(valueProp ?? "") : uncontrolledValue;
-    const showClear = value.length > 0 && !disabled;
+    const [draftValue, setDraftValue] = useState(() =>
+      isControlled ? String(valueProp ?? "") : uncontrolledValue,
+    );
+
+    const lastEmittedValueRef = useRef(
+      isControlled ? String(valueProp ?? "") : String(defaultValue ?? ""),
+    );
+
+    const debouncedDraftValue = useDebounce(
+      isDebounced ? draftValue : "",
+      isDebounced ? debounceMs : 0,
+    );
+
+    const displayValue = isDebounced
+      ? draftValue
+      : isControlled
+        ? String(valueProp ?? "")
+        : uncontrolledValue;
+
+    const showClear = displayValue.length > 0 && !disabled;
+
+    useEffect(() => {
+      if (!isControlled) {
+        return;
+      }
+
+      const nextValue = String(valueProp ?? "");
+      setDraftValue(nextValue);
+      lastEmittedValueRef.current = nextValue;
+    }, [isControlled, valueProp]);
+
+    useEffect(() => {
+      if (!isDebounced || !onChange) {
+        return;
+      }
+
+      if (debouncedDraftValue === lastEmittedValueRef.current) {
+        return;
+      }
+
+      lastEmittedValueRef.current = debouncedDraftValue;
+      onChange(createChangeEvent(debouncedDraftValue));
+    }, [debouncedDraftValue, isDebounced, onChange]);
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-      if (!isControlled) {
-        setUncontrolledValue(event.target.value);
+      const nextValue = event.target.value;
+
+      if (isDebounced) {
+        setDraftValue(nextValue);
+
+        if (!isControlled) {
+          setUncontrolledValue(nextValue);
+        }
+
+        return;
       }
+
+      if (!isControlled) {
+        setUncontrolledValue(nextValue);
+      }
+
       onChange?.(event);
     };
 
     const handleClear = () => {
+      if (isDebounced) {
+        setDraftValue("");
+
+        if (!isControlled) {
+          setUncontrolledValue("");
+        }
+
+        lastEmittedValueRef.current = "";
+        onChange?.(createChangeEvent(""));
+        onClear?.();
+        return;
+      }
+
       if (!isControlled) {
         setUncontrolledValue("");
       }
 
-      onChange?.({
-        target: { value: "" },
-        currentTarget: { value: "" },
-      } as ChangeEvent<HTMLInputElement>);
-
+      onChange?.(createChangeEvent(""));
       onClear?.();
     };
 
@@ -191,7 +269,7 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
             aria-required={isRequired || undefined}
             aria-invalid={hasError || undefined}
             aria-describedby={describedBy}
-            value={value}
+            value={displayValue}
             onChange={handleChange}
             className={cn(inputClasses, inputClassName)}
             {...rest}

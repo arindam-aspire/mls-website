@@ -10,7 +10,7 @@ import {
   PARKING_OPTIONS,
   PROPERTY_AGE_OPTIONS,
   ROOM_OPTIONS,
-} from "@/src/features/property/components/propertyListAdvancedFilters.constants";
+} from "@/src/features/property/constants/propertyListAdvancedFilters.constants";
 import type { SaveSearchFilterItem } from "../types/savedSearch.types";
 import {
   appendAmenityFilterItems,

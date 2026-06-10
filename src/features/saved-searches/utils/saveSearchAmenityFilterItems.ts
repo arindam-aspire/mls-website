@@ -1,4 +1,4 @@
-import { normalizeAmenitySlug } from "@/src/features/property/components/propertyListAdvancedFilters.constants";
+import { normalizeAmenitySlug } from "@/src/features/property/constants/propertyListAdvancedFilters.constants";
 import type { SaveSearchFilterItem } from "../types/savedSearch.types";
 
 export function humanizeAmenitySlug(slug: string) {

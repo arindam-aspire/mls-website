@@ -10,5 +10,7 @@
   "propertyDetails": "تفاصيل العقار",
   "inquiries": "استفساراتي",
   "listing": "إعلاناتي",
-  "manageListings": "إدارة الإعلانات"
+  "manageListings": "إدارة الإعلانات",
+  "propertyCreate": "إضافة عقار",
+  "propertyUpdate": "تحديث العقار"
 }

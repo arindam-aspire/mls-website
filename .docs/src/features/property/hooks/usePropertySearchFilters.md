@@ -18,7 +18,7 @@ Reusable hook that owns property search **filter** UI state and handlers. Return
 - Location taxonomy utils from `@/src/features/landing/utils/locationTaxonomy.utils`
 - `usePropertyStore` from `../store/property.store`
 - `PropertyListFiltersProps` from `../components/PropertyListFilters`
-- Advanced filter helpers from `../components/propertyListAdvancedFilters.constants`
+- Advanced filter helpers from `../constants/propertyListAdvancedFilters.constants`
 - `PROPERTY_SEARCH_STATUS_OPTIONS` from `./propertySearchFilter.constants`
 - Types: `PropertyListParams`, `SaveSearchSubmitPayload`
 

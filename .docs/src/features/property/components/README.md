@@ -7,6 +7,7 @@ UI building blocks for property feature screens.
 | File | Role |
 | --- | --- |
 | [PropertyListFilters.md](./PropertyListFilters.md) | Buy/Rent, category, type filter bar |
+| [MyListingFilters.md](./MyListingFilters.md) | My Listings screen filter placeholder |
 
 ## Notes
 

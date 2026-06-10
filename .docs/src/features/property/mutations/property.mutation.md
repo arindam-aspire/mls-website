@@ -25,6 +25,7 @@ React Query hooks for loading property lists, details, and favourites.
 - `useGetPropertyFeatureCatalog`
 - `useGetAllFavorites`
 - `FAVORITES_ALL_QUERY_KEY`
+- `useGetAgentProperties`
 - `useGetFavoriteList`
 - `useRemoveFavorite`
 - `useAddFavorite`
@@ -47,6 +48,7 @@ React Query hooks for loading property lists, details, and favourites.
 | `useGetSimilarProperties` | `getSimilarProperties(id)` | `GET /properties/:id/similar` |
 | `useGetPropertyFeatureCatalog` | `getPropertyFeatureCatalog()` | `GET /features?is_active=true` |
 | `useGetAllFavorites` | `getAllFavorites()` | `GET /favorites` (auth) |
+| `useGetAgentProperties` | `getAgentProperties(params)` | `GET /agent-properties?page=&pageSize=` |
 | `useGetFavoriteList` | `getFavoriteList(params)` | `GET /favorites?page=&pageSize=` |
 | `useAddFavorite` | `addFavorite({ property_hash })` | `POST /favorites` |
 | `useAddRecentView` | `addRecentView(body)` | `POST /users/recent-views` (silent; no toast) |

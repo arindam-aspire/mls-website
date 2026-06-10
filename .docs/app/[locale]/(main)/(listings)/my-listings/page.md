@@ -1,12 +1,12 @@
 # File Overview
 
-Next.js App Router page for route segment `[locale]/listing`. Client wrapper that enforces authorization before rendering the my-listings screen.
+Next.js App Router page for route segment `[locale]/my-listings`. Client wrapper that enforces authorization before rendering the my-listings screen.
 
-**Source:** `app/[locale]/(main)/listing/page.tsx`
+**Source:** `app/[locale]/(main)/(listings)/my-listings/page.tsx`
 
 # Responsibilities
 
-- Next.js App Router page for route segment `[locale]/listing`.
+- Next.js App Router page for route segment `[locale]/my-listings`.
 - `usePageTitle("listing")` sets the document title (e.g. `My Listings - MLS`).
 - Client wrapper calls `useAuthorize("MY_LISTINGS")` before rendering `ListingPropertyScreen`.
 - Shows `LoadingScreen` when auth finished loading and `user` is still absent (redirect pending).
@@ -19,7 +19,7 @@ Next.js App Router page for route segment `[locale]/listing`. Client wrapper tha
 
 # Exports
 
-- `ListingPage`
+- `MyListingsPage`
 - `default`
 
 # State Management
@@ -28,7 +28,7 @@ Uses `useAuthorize("MY_LISTINGS")` — reads `user` / `isLoadingUser` from `useA
 
 # Navigation
 
-- Public URL: `/en/listing` (and other locales).
+- Public URL: `/en/my-listings` (and other locales).
 - Unauthenticated → `router.replace("/")`.
 - Missing `MY_LISTINGS` permission → `router.replace("/unauthorized")`.
 - Allowed roles per `permissions.ts`: owner only.
@@ -38,7 +38,7 @@ Uses `useAuthorize("MY_LISTINGS")` — reads `user` / `isLoadingUser` from `useA
 1. Next.js resolves locale-prefixed URL.
 2. `(main)/layout.tsx` applies `ProtectedLayout`.
 3. `useAuthorize("MY_LISTINGS")` waits for `isLoadingUser`, then checks roles.
-4. On success, `ListingPropertyScreen` renders (Coming Soon placeholder).
+4. On success, `ListingPropertyScreen` renders.
 
 # Dependencies
 
@@ -48,5 +48,5 @@ Uses `useAuthorize("MY_LISTINGS")` — reads `user` / `isLoadingUser` from `useA
 
 # Notes
 
-- Keep in sync when `app/[locale]/(main)/listing/page.tsx` changes.
-- `proxy.ts` requires an `access_token` cookie for `/listing`.
+- Keep in sync when `app/[locale]/(main)/(listings)/my-listings/page.tsx` changes.
+- `proxy.ts` requires an `access_token` cookie for `/my-listings`.

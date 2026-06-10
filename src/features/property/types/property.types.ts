@@ -120,6 +120,69 @@ export interface PropertyListing {
   user_id?: string;
 }
 
+// ── Agent properties list (GET /agent-properties) ───────────────────────────
+
+export type AgentPropertiesListParams = {
+  page: number;
+  pageSize: number;
+  search?: string;
+  status?: string;
+  [key: string]: string | number | undefined;
+};
+
+/** Single row from `GET /agent-properties` (`data.items[]`). */
+export type AgentPropertyListItem = {
+  property_id: string;
+  property_hash: number;
+  title: string;
+  listing_purpose: string;
+  type_name: string;
+  type_slug: string;
+  category_name: string;
+  category_slug: string;
+  status_name: string;
+  status_slug: string;
+  price: string;
+  currency: string;
+  reference_number: string;
+  created_at: string;
+  updated_at: string;
+  submission_id: string;
+  submission_status: string;
+  submission_submitted_at: string | null;
+  submission_reviewed_at: string | null;
+  submission_review_reason: string | null;
+  submission_workflow_label: string;
+  can_edit_submission: boolean;
+  can_delete_submission: boolean;
+  agency: unknown | null;
+};
+
+export type AgentPropertiesListData = {
+  items: AgentPropertyListItem[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrevious: boolean;
+};
+
+export type AgentPropertiesListResponse = {
+  success: boolean;
+  message: string | null;
+  data: AgentPropertiesListData | null;
+  error: unknown;
+  meta?: {
+    pagination?: PaginationMeta;
+  };
+};
+
+export type AgentPropertiesListings = {
+  items: AgentPropertyListItem[];
+  meta?: PaginationMeta;
+};
+
 // ── Favorites list (GET /favorites) ─────────────────────────────────────────
 
 export type FavoriteListParams = {

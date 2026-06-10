@@ -120,7 +120,42 @@
   "manageListings": {
     "pageTitle": "إدارة الإعلانات",
     "pageSubtitle": "أنشئ وعدّل وانشر إعلاناتك العقارية.",
+    "addProperty": "إضافة عقار",
     "comingSoonEyebrow": "قيد التطوير",
     "comingSoonDescription": "أنشئ وعدّل وأدر إعلاناتك العقارية في مكان واحد. هذه الميزة قادمة قريباً!"
+  },
+  "myListings": {
+    "pageTitle": "إعلاناتي",
+    "pageSubtitle": "أدر واعرض جميع إعلاناتك العقارية في مكان واحد.",
+    "fetchError": "تعذّر جلب إعلاناتك",
+    "statusFilter": {
+      "all": "الكل",
+      "ariaLabel": "تصفية حسب الحالة",
+      "draft": "مسودة",
+      "in_progress": "قيد التنفيذ",
+      "submitted": "مُرسَل",
+      "pending_approval": "بانتظار الموافقة",
+      "pending_admin_approval": "بانتظار موافقة المسؤول",
+      "changes_requested": "طُلبت تعديلات",
+      "approved": "موافق عليه",
+      "verified": "موثّق",
+      "rejected": "مرفوض"
+    },
+    "addProperty": "إضافة عقار",
+    "tableViewAriaLabel": "عرض الجدول",
+    "comingSoonEyebrow": "قيد التطوير",
+    "comingSoonDescription": "أدر واعرض جميع إعلاناتك العقارية في مكان واحد. هذه الميزة قادمة قريباً!"
+  },
+  "propertyCreate": {
+    "pageTitle": "إضافة عقار",
+    "pageSubtitle": "أضف إعلان عقار جديد مع الصور والتفاصيل والسعر.",
+    "breadcrumbCreate": "إنشاء",
+    "comingSoonEyebrow": "قيد التطوير",
+    "comingSoonDescription": "أضف إعلان عقار جديد مع الصور والتفاصيل والسعر. هذه الميزة قادمة قريباً!"
+  },
+  "propertyUpdate": {
+    "pageTitle": "تحديث العقار",
+    "comingSoonEyebrow": "قيد التطوير",
+    "comingSoonDescription": "عدّل تفاصيل إعلانك العقاري والوسائط والحالة. هذه الميزة قادمة قريباً!"
   }
 }

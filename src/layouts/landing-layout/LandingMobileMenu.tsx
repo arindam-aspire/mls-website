@@ -37,7 +37,7 @@ import {
   resolveDrawerAccountLabel,
   shouldShowDrawerNotificationSettings,
 } from "@/src/features/auth/utils/resolveDrawerAccountLabel";
-import { filterProfileMenuItemsWithRoleAccess } from "@/src/features/auth/utils/shouldShowRecentlyViewedMenu";
+import { filterProfileMenuItemsWithRoleAccess } from "@/src/features/auth/utils/profileMenuRoleAccess";
 import { DRAWER_ACTIVITY_ITEMS } from "@/src/layouts/shared/drawerActivityItems.config";
 import { ChangePasswordModal } from "@/src/features/profile/screens/ChangePasswordModal";
 import { Link } from "@/src/i18n/navigation";

@@ -33,7 +33,7 @@ _N/A unless extended._
 
 # Navigation
 
-- Use **`Link`**, **`useRouter`**, **`redirect`** from `@/src/i18n/navigation` for locale-prefixed paths (e.g. `/en/listing`).
+- Use **`Link`**, **`useRouter`**, **`redirect`** from `@/src/i18n/navigation` for locale-prefixed paths (e.g. `/en/my-listings`).
 
 # Props / Parameters
 
@@ -52,7 +52,7 @@ _No explicit inputs detected._
 ## Actions
 
 - Notifications bell → `NotificationsPopover` (with `overHero` on landing hero)
-- Profile menu links → navigate and close popover (`filterProfileMenuItemsWithRoleAccess`): **My Listings** (`owner` → `/listing`), **Manage Listings** (`admin` / `agency` / `agent` → `/manage-listings`), **My Recently Viewed** (`registered_user` / `owner`)
+- Profile menu links → navigate and close popover (`filterProfileMenuItemsWithRoleAccess`): **My Listings** (`owner` → `/my-listings`), **Manage Listings** (`admin` / `agency` / `agent` → `/manage-listings`), **My Recently Viewed** (`registered_user` / `owner`)
 - Sign out → `ConfirmModal` then `useLogout`
 
 ## Show/Hide Controls

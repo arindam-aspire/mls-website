@@ -6,7 +6,7 @@ import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import {
   resolveListingsMenuPath,
   shouldShowManageListingsMenuItem,
-} from "@/src/features/auth/utils/shouldShowRecentlyViewedMenu";
+} from "@/src/features/auth/utils/profileMenuRoleAccess";
 import { hasPermission } from "@/src/lib/auth/hasPermission";
 import { usePathname } from "@/src/i18n/navigation";
 import {

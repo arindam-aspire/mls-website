@@ -38,7 +38,7 @@ import {
 } from "@/src/features/auth/utils/resolveDrawerAccountLabel";
 import { resolveProfileRoleLabel } from "@/src/features/auth/utils/resolveProfileRoleLabel";
 import { ChangePasswordModal } from "@/src/features/profile/screens/ChangePasswordModal";
-import { filterProfileMenuItemsWithRoleAccess } from "@/src/features/auth/utils/shouldShowRecentlyViewedMenu";
+import { filterProfileMenuItemsWithRoleAccess } from "@/src/features/auth/utils/profileMenuRoleAccess";
 import { DRAWER_ACTIVITY_ITEMS } from "@/src/layouts/shared/drawerActivityItems.config";
 import { Link, usePathname, useRouter } from "@/src/i18n/navigation";
 import type { AppLocale } from "@/src/i18n/routing";

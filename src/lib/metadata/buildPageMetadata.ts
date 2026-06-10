@@ -13,6 +13,8 @@ const PAGE_METADATA_KEYS = [
   "inquiries",
   "listing",
   "manageListings",
+  "propertyCreate",
+  "propertyUpdate",
 ] as const;
 
 export type PageMetadataKey = (typeof PAGE_METADATA_KEYS)[number];

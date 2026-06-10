@@ -120,7 +120,42 @@
   "manageListings": {
     "pageTitle": "Gérer les annonces",
     "pageSubtitle": "Créez, modifiez et publiez vos annonces immobilières.",
+    "addProperty": "Ajouter une annonce",
     "comingSoonEyebrow": "En cours de développement",
     "comingSoonDescription": "Créez, modifiez et gérez vos annonces immobilières au même endroit. Cette fonctionnalité arrive bientôt !"
+  },
+  "myListings": {
+    "pageTitle": "Mes Annonces",
+    "pageSubtitle": "Gérez et consultez toutes vos annonces immobilières au même endroit.",
+    "fetchError": "Impossible de charger vos annonces",
+    "statusFilter": {
+      "all": "Tous",
+      "ariaLabel": "Filtrer par statut",
+      "draft": "Brouillon",
+      "in_progress": "En cours",
+      "submitted": "Soumis",
+      "pending_approval": "En attente d'approbation",
+      "pending_admin_approval": "En attente d'approbation admin",
+      "changes_requested": "Modifications demandées",
+      "approved": "Approuvé",
+      "verified": "Vérifié",
+      "rejected": "Rejeté"
+    },
+    "addProperty": "Ajouter un bien",
+    "tableViewAriaLabel": "Vue tableau",
+    "comingSoonEyebrow": "En cours de développement",
+    "comingSoonDescription": "Gérez et consultez toutes vos annonces immobilières au même endroit. Cette fonctionnalité arrive bientôt !"
+  },
+  "propertyCreate": {
+    "pageTitle": "Créer un bien",
+    "pageSubtitle": "Ajoutez une nouvelle annonce avec photos, détails et prix.",
+    "breadcrumbCreate": "Créer",
+    "comingSoonEyebrow": "En cours de développement",
+    "comingSoonDescription": "Ajoutez une nouvelle annonce avec photos, détails et prix. Cette fonctionnalité arrive bientôt !"
+  },
+  "propertyUpdate": {
+    "pageTitle": "Modifier le bien",
+    "comingSoonEyebrow": "En cours de développement",
+    "comingSoonDescription": "Modifiez les détails, médias et statut de votre annonce. Cette fonctionnalité arrive bientôt !"
   }
 }

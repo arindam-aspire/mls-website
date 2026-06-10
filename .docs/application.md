@@ -168,7 +168,7 @@ const t = useTranslations("common");
 
 ```tsx
 import { Link, useRouter } from "@/src/i18n/navigation";
-router.push("/listing");
+router.push("/my-listings");
 router.replace("/");
 ```
 
@@ -190,7 +190,7 @@ Route groups `(landing)`, `(main)`, `(property)`, `(auth)`, `(public)` do **not*
 | Group | Layout | Purpose |
 | --- | --- | --- |
 | `(landing)` | `LandingLayout` | Locale root landing page |
-| `(main)` | `ProtectedLayout` | Dashboard, manage-listings, my-profile, listing, saved-searches, notifications, favourites, recently-viewed |
+| `(main)` | `ProtectedLayout` | Dashboard, manage-listings, my-profile, my-listings, saved-searches, notifications, favourites, recently-viewed |
 | `(property)` | `PublicLayout` | Public property browse (list, detail, inquiries) |
 | `(auth)` | *(empty — reserved)* | Future auth routes |
 | `(public)` | *(empty — reserved)* | Future public routes |
@@ -198,18 +198,20 @@ Route groups `(landing)`, `(main)`, `(property)`, `(auth)`, `(public)` do **not*
 
 ### Implemented pages
 
-All paths below are **without** locale; prepend `/<locale>` (e.g. `/en/listing`).
+All paths below are **without** locale; prepend `/<locale>` (e.g. `/en/my-listings`).
 
 | URL path | App route file | Screen / component |
 | --- | --- | --- |
 | `/` | `(landing)/page.tsx` | `LandingScreen` |
 | `/dashboard` | `(main)/dashboard/page.tsx` | `DashboardScreen` — guarded by `useAuthorize("DASHBOARD")` |
-| `/manage-listings` | `(main)/manage-listings/page.tsx` | `ManageListingsScreen` — guarded by `useAuthorize("MANAGE_LISTINGS")` |
+| `/manage-listings` | `(main)/(listings)/manage-listings/page.tsx` | `ManageListingsScreen` — guarded by `useAuthorize("MANAGE_LISTINGS")` |
 | `/my-profile` | `(main)/my-profile/page.tsx` | `ProfileScreen` — guarded by `useAuthorize("PROFILE")` |
 | `/saved-searches` | `(main)/saved-searches/page.tsx` | `SavedSearchScreen` — guarded by `useAuthorize("SAVED_SEARCHES")` |
 | `/notifications` | `(main)/notifications/page.tsx` | `NotificationScreen` (placeholder) — guarded by `useAuthorize("NOTIFICATIONS")` |
 | `/favourites` | `(main)/favourites/page.tsx` | `FavouritePropertyScreen` — guarded by `useAuthorize("FAVOURITES")` |
-| `/listing` | `(main)/listing/page.tsx` | `ListingPropertyScreen` — guarded by `useAuthorize("MY_LISTINGS")` |
+| `/my-listings` | `(main)/(listings)/my-listings/page.tsx` | `ListingPropertyScreen` — guarded by `useAuthorize("MY_LISTINGS")` |
+| `/property-create` | `(main)/(listings)/property-create/page.tsx` | `PropertyCreateScreen` — guarded by `useAuthorize("PROPERTY_CREATE")` (owner, agent) |
+| `/property-update` | `(main)/(listings)/property-update/page.tsx` | `PropertyUpdateScreen` — guarded by `useAuthorize("MY_LISTINGS")` |
 | `/recently-viewed` | `(main)/recently-viewed/page.tsx` | `RecentlyViewedScreen` — guarded by `useAuthorize("RECENTLY_VIEWED")` |
 | `/property-list` | `(property)/property-list/page.tsx` | `PropertyListScreen` (`PropertyCardList`) |
 | `/propert-details/:id` | `(property)/propert-details/[id]/page.tsx` | `PropertyDetailsScreen` (`PropertyView`) |
@@ -243,7 +245,7 @@ Defined in `ProfilePopover.tsx` (`PROFILE_MENU_ITEMS`):
 | Menu label (i18n key) | Path |
 | --- | --- |
 | `profile` | `/my-profile` |
-| `myListings` | `/listing` |
+| `myListings` | `/my-listings` |
 | `myFavourites` | `/favourites` |
 | `mySavedSearches` | `/saved-searches` |
 | `myRecentlyViewed` | `/recently-viewed` |
@@ -734,7 +736,7 @@ Enforced via `.cursor/rules/`:
 Exports `proxy` (Next.js 16 middleware entry). Flow:
 
 1. Run **next-intl** middleware (`createMiddleware(routing)`).
-2. Strip locale prefix from pathname and check **protected routes**: `/dashboard`, `/manage-listings`, `/my-profile`, `/listing`, `/saved-searches`, `/favourites`, `/recently-viewed`.
+2. Strip locale prefix from pathname and check **protected routes**: `/dashboard`, `/manage-listings`, `/my-profile`, `/my-listings`, `/property-create`, `/property-update`, `/saved-searches`, `/favourites`, `/recently-viewed`.
 3. If protected and no `access_token` cookie → redirect to `/` (same origin).
 4. Otherwise return the i18n response.
 

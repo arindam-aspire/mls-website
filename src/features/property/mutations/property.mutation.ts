@@ -8,6 +8,7 @@ import {
   addFavorite,
   addRecentView,
   clearRecentViews,
+  getAgentProperties,
   getAllFavorites,
   getFavoriteList,
   getPropertyDetails,
@@ -80,6 +81,20 @@ export function useGetAllFavorites(options?: { enabled?: boolean }) {
     enabled: options?.enabled ?? true,
   });
 }
+
+export const useGetAgentProperties = () => {
+  const t = useTranslations("propertyList.myListings");
+  const toast = useToast();
+
+  return useMutation({
+    mutationFn: getAgentProperties,
+    onError: (error: ApiError) => {
+      toast.error(t("fetchError"), {
+        description: error.message,
+      });
+    },
+  });
+};
 
 export const useGetFavoriteList = () => {
   const t = useTranslations("propertyList.favourites");

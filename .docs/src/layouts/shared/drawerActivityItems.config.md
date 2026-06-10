@@ -13,7 +13,7 @@ Shared **My Activity** drawer rows for public, landing, and protected mobile men
 
 | `labelKey` | Path | Icon |
 | --- | --- | --- |
-| `myListings` | `/listing` | `List` |
+| `myListings` | `/my-listings` | `List` |
 | `manageListings` | `/manage-listings` | `List` |
 | `myFavourites` | `/favourites` | `Heart` |
 | `mySavedSearches` | `/saved-searches` | `Search` |
@@ -30,4 +30,4 @@ Consumers pass `DRAWER_ACTIVITY_ITEMS` through `filterProfileMenuItemsWithRoleAc
 # Dependencies
 
 - `PublicMobileMenu`, `LandingMobileMenu`, `ProtectedMobileDrawer`
-- `filterProfileMenuItemsWithRoleAccess` in `shouldShowRecentlyViewedMenu.ts`
+- `filterProfileMenuItemsWithRoleAccess` in `profileMenuRoleAccess.ts`

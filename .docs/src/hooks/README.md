@@ -6,6 +6,7 @@ Shared React hooks.
 | --- | --- | --- |
 | [useForm.md](./useForm.md) | `useForm` | Controlled form state, validate on blur/submit |
 | [useMatchMedia.md](./useMatchMedia.md) | `useMatchMedia` | Subscribe to a CSS media query match |
+| [useDebounce.md](./useDebounce.md) | `useDebounce` | Debounce a value by delay (ms) |
 | [useToast.md](./useToast.md) | `useToast`, `ToastProvider` | Toast queue + `success` / `error` / `promise` helpers |
 
 ## Providers
