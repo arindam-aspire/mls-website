@@ -12,6 +12,7 @@ Headless UI–based design system for MLS. Exported from [index.md](./index.md).
 | [breadcrumb/](./breadcrumb/index.md) | `Breadcrumb` |
 | [budget-select/](./budget-select/index.md) | `BudgetSelect`, Buy/Rent range presets |
 | [card/](./card/index.md) | `Card`, `CardHeader`, … |
+| [checkbox/](./checkbox/index.md) | `Checkbox`, `CheckboxField` |
 | [icon-button/](./icon-button/index.md) | `IconButton` |
 | [toggle-button/](./toggle-button/index.md) | `ToggleButton` |
 | [otp-verification/](./otp-verification/README.md) | `OtpVerificationForm`, `OtpVerificationTitle`, label hooks |

@@ -142,6 +142,22 @@
       "rejected": "Rejected"
     },
     "addProperty": "Add Property",
+    "noDataTitle": "No listings found",
+    "noDataDescription": "Try adjusting your search or status filter, or add a new property.",
+    "columns": {
+      "propertyName": "Property Name",
+      "reference": "Reference",
+      "status": "Status",
+      "submittedOn": "Submitted on",
+      "submittedOnEmpty": "—",
+      "actions": "Actions"
+    },
+    "columnPickerTitle": "Toggle Columns",
+    "columnPickerAriaLabel": "Choose table columns",
+    "workflow": {
+      "view": "View",
+      "continue": "Continue"
+    },
     "tableViewAriaLabel": "Table view",
     "comingSoonEyebrow": "Under development",
     "comingSoonDescription": "Manage and view all your property listings in one place. This feature is coming soon!"

@@ -432,6 +432,9 @@ mls_website/
 │   │       │   ├── ToastIcons.tsx
 │   │       │   ├── index.tsx
 │   │       │   └── types.ts
+│   │       ├── checkbox/
+│   │       │   ├── index.tsx
+│   │       │   └── types.ts
 │   │       ├── switch/
 │   │       │   ├── index.tsx
 │   │       │   └── types.ts
@@ -657,9 +660,11 @@ mls_website/
 │   │       ├── components/
 │   │       │   ├── PropertyListAdvancedFilters.tsx
 │   │       │   ├── PropertyListFilters.tsx
-│   │       │   └── MyListingFilters.tsx
+│   │       │   ├── MyListingFilters.tsx
+│   │       │   └── PropertyCreateScreenSkeleton.tsx
 │   │       ├── constants/
 │   │       │   ├── myListingStatusFilters.constants.ts
+│   │       │   ├── myListingTableColumns.constants.ts
 │   │       │   ├── propertyDetailsTabs.constants.ts
 │   │       │   └── propertyListAdvancedFilters.constants.ts
 │   │       ├── hooks/
@@ -672,6 +677,7 @@ mls_website/
 │   │       │   ├── useSavedSearchesScreen.ts
 │   │       │   └── usePropertySearchFilters.ts
 │   │       ├── mappers/
+│   │       │   ├── agentPropertiesList.mapper.ts
 │   │       │   ├── favoriteList.mapper.ts
 │   │       │   ├── recentViewsList.mapper.ts
 │   │       │   └── propertyFeatures.mapper.ts
@@ -696,6 +702,8 @@ mls_website/
 │   │       │   └── property.types.ts
 │   │       └── utils/
 │   │           ├── applyFavoriteFlagsToListings.ts
+│   │           ├── buildMyListingTableColumns.tsx
+│   │           ├── formatListingSubmittedDate.ts
 │   │           ├── parsePropertyListUrlParams.ts
 │   │           ├── propertyAdvancedFieldVisibility.ts
 │   │           ├── resolveFavoriteResourceId.ts

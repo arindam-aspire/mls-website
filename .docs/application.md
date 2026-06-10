@@ -553,7 +553,9 @@ From `src/configs/environment.config.ts` → `API_BASE_URL` (env: `NEXT_PUBLIC_A
 
 | Constant | Path |
 | --- | --- |
-| `CATEGORY_PROPERTY_LIST` | `/property-taxonomy` |
+| `PROPERTY_TAXONOMY` | `/property-taxonomy` |
+| `LOCATION_TAXONOMY` | `/location-taxonomy` |
+| `FEATURE_CATALOG()` | `/features?is_active=true` |
 | `LOCATION_TAXONOMY` | `/location-taxonomy` |
 
 **Property** (`propertyEndpoints.ts`):

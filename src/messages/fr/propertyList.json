@@ -142,6 +142,22 @@
       "rejected": "Rejeté"
     },
     "addProperty": "Ajouter un bien",
+    "noDataTitle": "Aucune annonce trouvée",
+    "noDataDescription": "Essayez d'ajuster la recherche ou le filtre de statut, ou ajoutez un nouveau bien.",
+    "columns": {
+      "propertyName": "Nom du bien",
+      "reference": "Référence",
+      "status": "Statut",
+      "submittedOn": "Soumis le",
+      "submittedOnEmpty": "—",
+      "actions": "Actions"
+    },
+    "columnPickerTitle": "Afficher les colonnes",
+    "columnPickerAriaLabel": "Choisir les colonnes du tableau",
+    "workflow": {
+      "view": "Voir",
+      "continue": "Continuer"
+    },
     "tableViewAriaLabel": "Vue tableau",
     "comingSoonEyebrow": "En cours de développement",
     "comingSoonDescription": "Gérez et consultez toutes vos annonces immobilières au même endroit. Cette fonctionnalité arrive bientôt !"

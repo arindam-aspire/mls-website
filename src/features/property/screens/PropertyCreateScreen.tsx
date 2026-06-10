@@ -2,6 +2,7 @@
 
 import { ComingSoonCard } from "@/src/components/common/ComingSoonCard";
 import { Breadcrumb } from "@/src/components/ui/breadcrumb";
+import { PropertyCreateScreenSkeleton } from "@/src/features/property/components/PropertyCreateScreenSkeleton";
 import { usePropertyCreateScreen } from "@/src/features/property/hooks/usePropertyCreateScreen";
 import { cn } from "@/src/lib/cn";
 import { bodyLargeTextClasses, headingPageClasses } from "@/src/lib/typography";
@@ -14,7 +15,12 @@ export default function PropertyCreateScreen() {
     comingSoonDescription,
     breadcrumbItems,
     breadcrumbAriaLabel,
+    isCatalogLoading,
   } = usePropertyCreateScreen();
+
+  if (isCatalogLoading) {
+    return <PropertyCreateScreenSkeleton />;
+  }
 
   return (
     <div className="flex w-full min-w-0 flex-col gap-2 md:gap-4 lg:gap-6">

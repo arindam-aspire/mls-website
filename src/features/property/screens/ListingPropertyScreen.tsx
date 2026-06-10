@@ -6,6 +6,7 @@ import { useListingPropertyScreen } from "@/src/features/property/hooks/useListi
 import { useRouter } from "@/src/i18n/navigation";
 import { cn } from "@/src/lib/cn";
 import { bodyLargeTextClasses, headingPageClasses } from "@/src/lib/typography";
+import { ListTableView } from "@abdoun/abdoun-library";
 import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback } from "react";
@@ -14,7 +15,19 @@ const listingsCardClassName =
   "w-full min-w-0 rounded-xl border border-secondary/15 shadow-none";
 
 export default function ListingPropertyScreen() {
-  const { filters } = useListingPropertyScreen();
+  const {
+    filters,
+    tableListings,
+    isLoading,
+    sortConfig,
+    onSort,
+    tableLocale,
+    pagination,
+    noDataFound,
+    columns,
+    pinnedColumns,
+    listTitle,
+  } = useListingPropertyScreen();
   const t = useTranslations("propertyList.myListings");
   const router = useRouter();
 
@@ -46,6 +59,20 @@ export default function ListingPropertyScreen() {
       <Card className={listingsCardClassName}>
         <CardContent className="p-4 sm:p-6">
           <MyListingFilters {...filters} />
+
+          <ListTableView
+            className="mt-4 min-w-0 sm:mt-6"
+            data={tableListings}
+            isLoading={isLoading}
+            listTitle={listTitle}
+            sortConfig={sortConfig}
+            onSort={onSort}
+            locale={tableLocale}
+            pagination={pagination}
+            noDataFound={noDataFound}
+            columns={columns}
+            pinnedColumns={pinnedColumns}
+          />
         </CardContent>
       </Card>
     </div>

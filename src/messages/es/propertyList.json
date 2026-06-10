@@ -142,6 +142,22 @@
       "rejected": "Rechazado"
     },
     "addProperty": "Añadir propiedad",
+    "noDataTitle": "No se encontraron listados",
+    "noDataDescription": "Prueba a ajustar la búsqueda o el filtro de estado, o añade una nueva propiedad.",
+    "columns": {
+      "propertyName": "Nombre de la propiedad",
+      "reference": "Referencia",
+      "status": "Estado",
+      "submittedOn": "Enviado el",
+      "submittedOnEmpty": "—",
+      "actions": "Acciones"
+    },
+    "columnPickerTitle": "Alternar columnas",
+    "columnPickerAriaLabel": "Elegir columnas de la tabla",
+    "workflow": {
+      "view": "Ver",
+      "continue": "Continuar"
+    },
     "tableViewAriaLabel": "Vista de tabla",
     "comingSoonEyebrow": "En desarrollo",
     "comingSoonDescription": "Gestiona y consulta todos tus anuncios de propiedades en un solo lugar. ¡Esta función llegará pronto!"

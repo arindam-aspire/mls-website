@@ -142,6 +142,22 @@
       "rejected": "مرفوض"
     },
     "addProperty": "إضافة عقار",
+    "noDataTitle": "لا توجد إعلانات",
+    "noDataDescription": "جرّب تعديل البحث أو تصفية الحالة، أو أضف عقاراً جديداً.",
+    "columns": {
+      "propertyName": "اسم العقار",
+      "reference": "المرجع",
+      "status": "الحالة",
+      "submittedOn": "تاريخ الإرسال",
+      "submittedOnEmpty": "—",
+      "actions": "الإجراءات"
+    },
+    "columnPickerTitle": "تبديل الأعمدة",
+    "columnPickerAriaLabel": "اختيار أعمدة الجدول",
+    "workflow": {
+      "view": "عرض",
+      "continue": "متابعة"
+    },
     "tableViewAriaLabel": "عرض الجدول",
     "comingSoonEyebrow": "قيد التطوير",
     "comingSoonDescription": "أدر واعرض جميع إعلاناتك العقارية في مكان واحد. هذه الميزة قادمة قريباً!"

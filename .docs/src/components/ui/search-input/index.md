@@ -40,6 +40,7 @@ Mirrors `Input` plus search-specific props:
 1. User input updates the visible value immediately (`draftValue`).
 2. `useDebounce` delays propagating the value to `onChange` (default 300ms).
 3. Clear resets immediately and calls `onChange` / `onClear` without waiting.
+4. Debounced `onChange` only fires when `debouncedDraftValue` matches current `draftValue` (avoids stale emissions after clear).
 
 # Dependencies
 

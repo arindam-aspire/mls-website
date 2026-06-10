@@ -174,13 +174,18 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
         return;
       }
 
+      // Ignore stale debounced values (e.g. user cleared before debounce caught up).
+      if (debouncedDraftValue !== draftValue) {
+        return;
+      }
+
       if (debouncedDraftValue === lastEmittedValueRef.current) {
         return;
       }
 
       lastEmittedValueRef.current = debouncedDraftValue;
       onChange(createChangeEvent(debouncedDraftValue));
-    }, [debouncedDraftValue, isDebounced, onChange]);
+    }, [debouncedDraftValue, draftValue, isDebounced, onChange]);
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
       const nextValue = event.target.value;

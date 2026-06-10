@@ -3,6 +3,14 @@ export type { AvatarProps, AvatarSize } from "./avatar";
 export { AVATAR_SIZES } from "./avatar/types";
 export { Button } from "./button";
 export { ToggleButton } from "./toggle-button";
+export { Checkbox, CheckboxField } from "./checkbox";
+export type {
+  CheckboxColor,
+  CheckboxFieldProps,
+  CheckboxProps,
+  CheckboxSize,
+} from "./checkbox";
+export { CHECKBOX_COLORS, CHECKBOX_SIZES } from "./checkbox";
 export { Switch, SettingField, SwitchField } from "./switch";
 export type {
   SettingFieldProps,
