@@ -1,0 +1,39 @@
+---
+description: Never patch or edit @abdoun/abdoun-library in this repo; suggest fixes upstream
+alwaysApply: true
+---
+
+# `@abdoun/abdoun-library` — upstream only
+
+This app **consumes** `@abdoun/abdoun-library`. The library is maintained in a **separate repository**. Do **not** change library behavior from this repo.
+
+## Forbidden in `mls_website`
+
+- Editing files under `node_modules/@abdoun/abdoun-library/` (or any path inside that package).
+- Adding or keeping **`patch-package`** patches (or similar) targeting `@abdoun/abdoun-library`.
+- Copying library source into `src/` to “fix” or extend components.
+- Adding `postinstall` scripts whose purpose is to modify the installed library.
+- Pinning/overriding library builds via hacks when the correct fix belongs in the library.
+
+## When the library is missing something or behaves wrongly
+
+1. **Stop** — do not patch or edit the package in this repo.
+2. **Work only in app code** if a safe boundary fix exists (e.g. map props/data before passing into library components, wrap with local UI, guard nulls). Do not alter library internals.
+3. **Suggest an upstream change** for the library repo: what to change, why, file/component/API names if known, and a short code sketch or prop contract. The user will implement and publish a new library version.
+4. **Prefer upgrading** `@abdoun/abdoun-library` in `package.json` when a fix is already released; update `.docs/packages.md` per `packages-docs-sync`.
+
+## Example response pattern
+
+```text
+The favourite heart state should come from PropertyView reading `propertyDetails.is_favourite`.
+
+Suggested change in @abdoun/abdoun-library (PropertyView):
+- Pass `isFavourite: Boolean(propertyDetails.is_favourite)` to the card/header component.
+
+After you publish e.g. 0.1.41, bump the dependency here.
+```
+
+## Notes
+
+- Import library components from `@abdoun/abdoun-library` only; keep MLS-specific logic in `src/features/` and `src/components/`.
+- If unsure whether a fix belongs here or upstream, **default to upstream suggestion**.
