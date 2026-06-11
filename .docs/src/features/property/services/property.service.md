@@ -10,6 +10,8 @@ API service for listing and fetching a single property.
 - Call `GET /properties/:id` for a single property record.
 - Call `GET /properties/:id/similar` for related listings.
 - Call `GET /agent-properties?page=&pageSize=` for the owner's my-listings screen.
+- Call `POST /property-submissions` with `{ payload, current_step }` to create a property draft.
+- Call `PATCH /property-submissions/{submissionId}` with `{ action: "save_draft", current_step, payload }` to update an existing draft.
 - Call `GET /favorites?page=&pageSize=` for paginated favourites (favourites screen).
 - Call `GET /favorites` with no query params for the full favourites list (property list heart state).
 - Call `DELETE /favorites/:propertyHash` to remove a favourite.
@@ -32,6 +34,9 @@ API service for listing and fetching a single property.
 - `getSimilarProperties`
 - `getPropertyFeatureCatalog`
 - `getAgentProperties`
+- `getAgentPropertyDrafts`
+- `savePropertyDraftSubmission`
+- `updatePropertyDraftSubmission`
 - `getFavoriteList`
 - `getAllFavorites`
 - `addFavorite`
@@ -54,6 +59,7 @@ _N/A — stateless service._
 | `getSimilarProperties` | GET | `/properties/:id/similar` | no (`auth: false`) |
 | `getPropertyFeatureCatalog` | GET | `/features?is_active=true` | no (`auth: false`) |
 | `getAgentProperties` | GET | `/agent-properties?page=&pageSize=` | yes |
+| `getAgentPropertyDrafts` | GET | `/agent-properties/drafts?page=&pageSize=` | yes |
 | `getFavoriteList` | GET | `/favorites?page=&pageSize=` | yes |
 | `getAllFavorites` | GET | `/favorites` | yes |
 | `addFavorite` | POST | `/favorites` body `{ property_hash }` | yes |

@@ -4,8 +4,8 @@ import { cn } from "@/src/lib/cn";
 const headerRowClassName =
   "flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between md:gap-4 lg:gap-6";
 
-const cardClassName =
-  "w-full min-w-0 rounded-xl border border-secondary/15 bg-surface p-6 sm:p-8 md:p-10";
+const formShellClassName =
+  "w-full min-w-0 rounded-xl border border-secondary/15 bg-surface";
 
 export function PropertyCreateScreenSkeleton() {
   return (
@@ -27,11 +27,43 @@ export function PropertyCreateScreenSkeleton() {
         </div>
       </div>
 
-      <div className={cn(cardClassName, "flex flex-col items-center gap-4 text-center")}>
-        <Skeleton variant="block" className="size-14 rounded-xl sm:size-16" />
-        <Skeleton variant="text" className="h-6 w-40 sm:w-48" />
-        <Skeleton variant="text" className="h-4 w-full max-w-md" />
-        <Skeleton variant="text" className="h-4 w-full max-w-sm" />
+      <div className={cn(formShellClassName, "flex flex-col lg:flex-row")}>
+        <aside className="hidden w-full max-w-xs shrink-0 border-b border-secondary/15 p-4 lg:block lg:border-b-0 lg:border-e">
+          <div className="space-y-3">
+            {Array.from({ length: 8 }).map((_, index) => (
+              <div key={index} className="flex items-center gap-3">
+                <Skeleton variant="block" className="size-8 rounded-lg" />
+                <Skeleton variant="text" className="h-4 w-28" />
+              </div>
+            ))}
+          </div>
+        </aside>
+
+        <div className="min-w-0 flex-1 p-4 sm:p-6">
+          <div className="mb-4 flex gap-2 overflow-hidden lg:hidden">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <Skeleton key={index} variant="block" className="h-9 w-20 shrink-0 rounded-lg" />
+            ))}
+          </div>
+
+          <div className="space-y-4 sm:space-y-6">
+            <Skeleton variant="text" className="h-6 w-40 sm:w-48" />
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <Skeleton variant="block" className="h-11 w-full rounded-lg" />
+              <Skeleton variant="block" className="h-11 w-full rounded-lg" />
+              <Skeleton variant="block" className="h-11 w-full rounded-lg md:col-span-2" />
+              <Skeleton variant="block" className="h-28 w-full rounded-lg md:col-span-2" />
+            </div>
+          </div>
+
+          <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
+            <Skeleton variant="block" className="h-11 w-full rounded-lg sm:w-28" />
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Skeleton variant="block" className="h-11 w-full rounded-lg sm:w-28" />
+              <Skeleton variant="block" className="h-11 w-full rounded-lg sm:w-28" />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

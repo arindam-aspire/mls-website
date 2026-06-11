@@ -20,6 +20,47 @@ export function isAgentUser(user: LoggedInUser | null | undefined): boolean {
   return user?.roles?.some((role) => role.name === UserRole.AGENT) ?? false;
 }
 
+export function isOwnerUser(user: LoggedInUser | null | undefined): boolean {
+  return user?.roles?.some((role) => role.name === UserRole.OWNER) ?? false;
+}
+
+export function shouldShowDraftListingsInSidebar(
+  user: LoggedInUser | null | undefined,
+): boolean {
+  return isAgentUser(user);
+}
+
+/** Protected layout profile popover — owners only. */
+export function shouldShowDraftListingsInProtectedPopover(
+  user: LoggedInUser | null | undefined,
+): boolean {
+  return shouldShowMyListingsMenuItem(user);
+}
+
+/** Public/landing profile popover and mobile drawers — owners and agents. */
+export function shouldShowDraftListingsInPublicMenu(
+  user: LoggedInUser | null | undefined,
+): boolean {
+  return isOwnerUser(user) || isAgentUser(user);
+}
+
+export type ProfileMenuAccessContext = "publicMenu" | "protectedPopover" | "protectedDrawer";
+
+function shouldShowDraftListingsMenuItem(
+  user: LoggedInUser | null | undefined,
+  context: ProfileMenuAccessContext,
+): boolean {
+  switch (context) {
+    case "protectedPopover":
+      return shouldShowDraftListingsInProtectedPopover(user);
+    case "protectedDrawer":
+    case "publicMenu":
+      return shouldShowDraftListingsInPublicMenu(user);
+    default:
+      return shouldShowDraftListingsInPublicMenu(user);
+  }
+}
+
 export function shouldShowRecentlyViewedMenuItem(
   user: LoggedInUser | null | undefined,
 ): boolean {
@@ -70,7 +111,11 @@ export function canTrackRecentPropertyView(
 
 export function filterProfileMenuItemsWithRoleAccess<
   T extends { labelKey: string },
->(items: readonly T[], user: LoggedInUser): T[] {
+>(
+  items: readonly T[],
+  user: LoggedInUser,
+  context: ProfileMenuAccessContext = "publicMenu",
+): T[] {
   return items.filter((item) => {
     switch (item.labelKey) {
       case "myRecentlyViewed":
@@ -79,6 +124,8 @@ export function filterProfileMenuItemsWithRoleAccess<
         return shouldShowMyListingsMenuItem(user);
       case "manageListings":
         return shouldShowManageListingsMenuItem(user);
+      case "draftListings":
+        return shouldShowDraftListingsMenuItem(user, context);
       default:
         return true;
     }

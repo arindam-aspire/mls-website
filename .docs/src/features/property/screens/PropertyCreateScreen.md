@@ -1,6 +1,6 @@
 # File Overview
 
-Create-property screen at `/en/property-create`. Loads taxonomy/feature catalog on mount; form UI coming soon.
+Create-property screen at `/en/property-create`. Loads taxonomy/feature catalog on mount, then renders `@abdoun/abdoun-library` `PropertyForm`.
 
 **Source:** `src/features/property/screens/PropertyCreateScreen.tsx`
 
@@ -9,11 +9,11 @@ Create-property screen at `/en/property-create`. Loads taxonomy/feature catalog 
 - Render localized page title and subtitle.
 - Show role-aware breadcrumb on `md+` (hidden on `sm`) in the header row right section.
 - Show `PropertyCreateScreenSkeleton` while catalog APIs load.
-- Render `ComingSoonCard` after catalog data is ready (form UI TBD).
+- Render `PropertyForm` with mapped catalog data and step navigation from `usePropertyCreateScreen`.
 
 # Imports
 
-- `usePropertyCreateScreen`, `PropertyCreateScreenSkeleton`, `Breadcrumb`, `ComingSoonCard`, typography helpers
+- `usePropertyCreateScreen`, `PropertyCreateScreenSkeleton`, `Breadcrumb`, `PropertyForm` from `@abdoun/abdoun-library`, typography helpers
 
 # Navigation
 
@@ -22,24 +22,32 @@ Create-property screen at `/en/property-create`. Loads taxonomy/feature catalog 
 
 # API Usage
 
-Catalog prefetch is owned by [usePropertyCreateScreen.md](../hooks/usePropertyCreateScreen.md) (`is_active=true` on features only).
+Catalog prefetch and draft save are owned by [usePropertyCreateScreen.md](../hooks/usePropertyCreateScreen.md). Draft: `POST /property-submissions`. Submit and upload handlers remain stubbed until those APIs exist.
+
+# Props / Parameters
+
+Screen receives all form props from `usePropertyCreateScreen()` — see hook doc for `activeStep`, catalog mappers, and callbacks.
 
 # UI Details
 
 - Header row matches `ListingPropertyScreen` / `ManageListingsScreen` layout.
-- Loading skeleton mirrors header + coming-soon card layout at all breakpoints.
+- Loading skeleton mirrors header + multi-step form shell (vertical step list on `lg`, horizontal step pills on smaller viewports, field grid, footer actions).
 - Breadcrumb: `hidden md:flex` on the right; Home icon, List icon + listings label, Create (current).
-- Light/dark semantic tokens; i18n in all four locales.
+- `PropertyForm` owns step content and validation; host controls `activeStep`, `maxReachedStep`, persisted `propertyDetails`, and navigation callbacks.
+- Light/dark semantic tokens; i18n in all four locales for page chrome (form labels live in the library).
+- Requires `@abdoun/abdoun-library` v0.1.46+ for controlled `PropertyForm` API.
 
 # Flow Description
 
 1. Page guard passes user with `PROPERTY_CREATE`.
-2. Hook fetches property taxonomy, category taxonomy, and active features in parallel.
+2. Hook fetches property taxonomy, location taxonomy, and active features in parallel.
 3. Screen shows skeleton until catalog load completes.
-4. Screen renders header + Coming Soon card (catalog available to future form).
+4. Screen renders header + `PropertyForm` with mapped `categoryTaxonomy`, `locationTaxonomy`, and `featuresAndAmenities`.
+5. User moves through steps via library validation + host `onNext` / `onPrevious` / `onStepClick`; submit/draft/upload callbacks are no-ops until APIs exist.
 
 # Dependencies
 
 - [usePropertyCreateScreen.md](../hooks/usePropertyCreateScreen.md)
 - [PropertyCreateScreenSkeleton.md](../components/PropertyCreateScreenSkeleton.md)
+- [propertyForm.mapper.md](../mappers/propertyForm.mapper.md)
 - [breadcrumb/index.md](../../../components/ui/breadcrumb/index.md)

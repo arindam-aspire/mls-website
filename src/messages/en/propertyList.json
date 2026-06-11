@@ -124,6 +124,18 @@
     "comingSoonEyebrow": "Under development",
     "comingSoonDescription": "Create, edit, and manage your property listings in one place. This feature is coming soon!"
   },
+  "draftListings": {
+    "pageTitle": "Draft Listings",
+    "pageSubtitle": "Resume and manage property listings saved as drafts.",
+    "fetchError": "Failed to fetch draft listings",
+    "resume": "Resume",
+    "createNew": "Create new listing",
+    "updatedAt": "Updated {time}",
+    "listingPurposeSale": "For Sale",
+    "listingPurposeRent": "For Rent",
+    "emptyTitle": "No draft listings yet",
+    "emptyDescription": "Start a new property listing and save it as a draft to see it here."
+  },
   "myListings": {
     "pageTitle": "My Listings",
     "pageSubtitle": "Manage and view all your property listings in one place.",
@@ -166,6 +178,8 @@
     "pageTitle": "Create Property",
     "pageSubtitle": "Add a new property listing with photos, details, and pricing.",
     "breadcrumbCreate": "Create",
+    "draftSaveSuccess": "Draft saved",
+    "draftSaveError": "Could not save draft",
     "comingSoonEyebrow": "Under development",
     "comingSoonDescription": "Add a new property listing with photos, details, and pricing. This feature is coming soon!"
   },

@@ -9,6 +9,7 @@ import {
   addRecentView,
   clearRecentViews,
   getAgentProperties,
+  getAgentPropertyDrafts,
   getAllFavorites,
   getFavoriteList,
   getPropertyDetails,
@@ -18,7 +19,10 @@ import {
   removeFavorite,
   removeRecentView,
   getSimilarProperties,
+  savePropertyDraftSubmission,
+  updatePropertyDraftSubmission,
 } from "../services/property.service";
+import type { PropertyDraftSubmissionUpdateRequestBody } from "../types/propertyDraftSubmission.types";
 
 export const FAVORITES_ALL_QUERY_KEY = ["property", "favorites", "all"] as const;
 
@@ -82,12 +86,44 @@ export function useGetAllFavorites(options?: { enabled?: boolean }) {
   });
 }
 
+export const useSavePropertyDraftSubmission = () => {
+  return useMutation({
+    mutationFn: savePropertyDraftSubmission,
+  });
+};
+
+export const useUpdatePropertyDraftSubmission = () => {
+  return useMutation({
+    mutationFn: ({
+      submissionId,
+      body,
+    }: {
+      submissionId: string;
+      body: PropertyDraftSubmissionUpdateRequestBody;
+    }) => updatePropertyDraftSubmission(submissionId, body),
+  });
+};
+
 export const useGetAgentProperties = () => {
   const t = useTranslations("propertyList.myListings");
   const toast = useToast();
 
   return useMutation({
     mutationFn: getAgentProperties,
+    onError: (error: ApiError) => {
+      toast.error(t("fetchError"), {
+        description: error.message,
+      });
+    },
+  });
+};
+
+export const useGetAgentPropertyDrafts = () => {
+  const t = useTranslations("propertyList.draftListings");
+  const toast = useToast();
+
+  return useMutation({
+    mutationFn: getAgentPropertyDrafts,
     onError: (error: ApiError) => {
       toast.error(t("fetchError"), {
         description: error.message,

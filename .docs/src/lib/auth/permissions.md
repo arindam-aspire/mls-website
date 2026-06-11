@@ -21,6 +21,8 @@
 | `DASHBOARD` | agency, agent, owner |
 | `MY_LISTINGS` | owner |
 | `MANAGE_LISTINGS` | agency, agent |
+| `DRAFT_LISTINGS` | owner, agent |
+| `DRAFT_LISTINGS_SIDEBAR` | agent (sidebar nav only) |
 | `PROPERTY_CREATE` | owner, agent |
 | `SAVED_SEARCHES` | agency, agent, owner, user |
 | `FAVOURITES` | agency, agent, owner, user |

@@ -4,18 +4,19 @@ import type {
   RecentViewsListItem,
   RecentViewsListResponse,
 } from "../types/property.types";
+import { normalizePropertyListing } from "../utils/normalizePropertyListingStatus";
 import { resolveRecentViewHashIdFromApiItem } from "../utils/resolveRecentViewPropertyId";
 
 export function mapRecentViewsListItem(item: RecentViewsListItem): PropertyListing {
   const { agency: _agency, ...property } = item.property;
   const propertyHashId = resolveRecentViewHashIdFromApiItem(item);
 
-  return {
+  return normalizePropertyListing({
     ...property,
     is_favourite: false,
     ...(propertyHashId ? { property_hash_id: propertyHashId } : {}),
     user_id: item.user_id,
-  };
+  });
 }
 
 export function mapRecentViewsListItems(

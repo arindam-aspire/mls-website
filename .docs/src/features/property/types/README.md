@@ -7,6 +7,7 @@ TypeScript definitions for property API payloads and list responses.
 | File | Contents |
 | --- | --- |
 | [property.types.md](./property.types.md) | `PropertyListParams`, `PropertyListResponse` |
+| [propertyDraftSubmission.types.md](./propertyDraftSubmission.types.md) | `PropertyDraftSubmissionRequestBody` (`payload` + `current_step`) and nested payload sections |
 
 ## Usage
 

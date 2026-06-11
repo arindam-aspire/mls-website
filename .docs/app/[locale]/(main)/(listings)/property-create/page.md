@@ -11,7 +11,7 @@ Next.js App Router page for `[locale]/property-create`. Create-listing route for
 
 # Navigation
 
-- Public URL: `/en/property-create`
+- Public URL: `/en/property-create` (new draft) or `/en/property-create?submission_id={uuid}` after first draft save
 - Guard: owner or agent (`PROPERTY_CREATE`)
 
 # Dependencies

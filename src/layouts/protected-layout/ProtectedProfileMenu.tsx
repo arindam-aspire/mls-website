@@ -16,12 +16,13 @@ import {
 } from "@/src/layouts/protected-layout/hooks/useProtectedProfileMenu";
 import { cn } from "@/src/lib/cn";
 import { profileEmailClasses, profileNameClasses } from "@/src/lib/typography";
-import { Eye, Heart, List, LogOut, Search, Send, User } from "lucide-react";
+import { Eye, FilePenLine, Heart, List, LogOut, Search, Send, User } from "lucide-react";
 
 const MENU_ICONS = {
   profile: User,
   myListings: List,
   manageListings: List,
+  draftListings: FilePenLine,
   myFavourites: Heart,
   mySavedSearches: Search,
   myRecentlyViewed: Eye,

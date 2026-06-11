@@ -37,32 +37,26 @@
   --danger: #c62828;
   --info: #1565c0;
   --card-background: #ffffff;
+  --horizontal-stepper-active-text: var(--white);
+  --horizontal-stepper-active-bg: var(--primary);
+  --horizontal-stepper-active-label-text: var(--primary-dark);
+  --horizontal-stepper-completed-text: var(--white);
+  --horizontal-stepper-completed-bg: var(--primary-dark);
+  --horizontal-stepper-completed-label-text: var(--primary-dark);
+  --horizontal-stepper-default-text: var(--inherit);
+  --horizontal-stepper-default-bg: var(--inherit-light);
+  --horizontal-stepper-default-label-text: var(--inherit);
+  --vertical-stepper-active-row-bg: var(--primary);
+  --vertical-stepper-active-label-text: var(--white);
+  --vertical-stepper-active-circle-bg: var(--white);
+  --vertical-stepper-active-circle-text: var(--primary);
+  --vertical-stepper-completed-text: var(--white);
+  --vertical-stepper-completed-bg: var(--primary-dark);
+  --vertical-stepper-completed-label-text: var(--primary-dark);
+  --vertical-stepper-default-text: var(--inherit);
+  --vertical-stepper-default-bg: var(--inherit-light);
+  --vertical-stepper-default-label-text: var(--inherit);
   color-scheme: light;
-}
-
-/* Dark theme — system preference when no explicit light class */
-@media (prefers-color-scheme: dark) {
-  :root:not(.light) {
-    --primary: #a3d96a;
-    --primary-dark: #5a8230;
-    --primary-light: #1e2b16;
-    --accent: #f5e726;
-    --secondary: #7ec8e0;
-    --secondary-light: #142a32;
-    --secondary-dark: #2e6b80;
-    --tertiary: #d4b056;
-    --tertiary-dark: #a8873a;
-    --tertiary-light: #2a2618;
-    --page: #0c1810;
-    --surface: #152318;
-    --text: #e8f0ea;
-    --muted: #94a3b8;
-    --success: #66bb6a;
-    --danger: #ef5350;
-    --info: #42a5f5;
-    --card-background: #152318;
-    color-scheme: dark;
-  }
 }
 
 /* Dark theme — explicit class (setTheme('dark') or resolved system) */
@@ -84,6 +78,9 @@
   --success: #66bb6a;
   --danger: #ef5350;
   --info: #42a5f5;
+  --inherit: #5f5e5a;
+  --inherit-light: #e9eae8;
+  --inherit-dark: #5f5e5a;
   --card-background: #152318;
   color-scheme: dark;
 }
@@ -107,8 +104,49 @@
   --success: #2e7d32;
   --danger: #c62828;
   --info: #1565c0;
+  --inherit: #5f5e5a;
+  --inherit-light: #e8e9e8;
+  --inherit-dark: #5f5e5a;
   --card-background: #ffffff;
   color-scheme: light;
+}
+
+/* Dark theme — system preference when no explicit light class */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --primary: #a3d96a;
+    --primary-dark: #5a8230;
+    --primary-light: #1e2b16;
+    --accent: #f5e726;
+    --secondary: #7ec8e0;
+    --secondary-light: #142a32;
+    --secondary-dark: #2e6b80;
+    --tertiary: #d4b056;
+    --tertiary-dark: #a8873a;
+    --tertiary-light: #2a2618;
+    --page: #0c1810;
+    --surface: #152318;
+    --text: #e8f0ea;
+    --muted: #94a3b8;
+    --success: #66bb6a;
+    --danger: #ef5350;
+    --info: #42a5f5;
+    --inherit: #5f5e5a;
+    --inherit-light: #1e2b16;
+    --inherit-dark: #5f5e5a;
+    --stepper-active-text: var(--white);
+    --card-background: #152318;
+    --stepper-active-text: var(--white);
+    --stepper-active-bg: var(--primary);
+    --stepper-active-label-text: var(--primary-dark);
+    --stepper-completed-text: var(--white);
+    --stepper-completed-bg: var(--primary-dark);
+    --stepper-completed-label-text: var(--white);
+    --stepper-default-text: var(--inherit);
+    --stepper-default-bg: var(--inherit-light);
+    --stepper-default-label-text: var(--muted);
+    color-scheme: dark;
+  }
 }
 
 @theme inline {
@@ -143,6 +181,16 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-arabic: var(--font-tajawal);
+    /* PropertyForm stepper + library UI */
+  --color-stepper-active-text: var(--stepper-active-text, var(--text));
+  --color-stepper-active-bg: var(--stepper-active-bg, var(--accent));
+  --color-stepper-completed-text: var(--stepper-completed-text, var(--page));
+  --color-stepper-completed-bg: var(--stepper-completed-bg, var(--secondary));
+  --color-stepper-default-text: var(--stepper-default-text, var(--muted));
+  --color-stepper-default-bg: var(--stepper-default-bg, var(--primary-light));
+  --color-stepper-active-label-text: var(--stepper-active-label-text, var(--secondary));
+  --color-stepper-completed-label-text: var(--stepper-completed-label-text, var(--text));
+  --color-stepper-default-label-text: var(--stepper-default-label-text, var(--muted));
 }
 
 body {

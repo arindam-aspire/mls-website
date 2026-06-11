@@ -1,4 +1,11 @@
-import { Heart, History, List, Search, type LucideIcon } from "lucide-react";
+import {
+  FilePenLine,
+  Heart,
+  History,
+  List,
+  Search,
+  type LucideIcon,
+} from "lucide-react";
 
 export type DrawerActivityItemConfig = {
   labelKey: string;
@@ -10,6 +17,7 @@ export type DrawerActivityItemConfig = {
 export const DRAWER_ACTIVITY_ITEMS: readonly DrawerActivityItemConfig[] = [
   { labelKey: "myListings", path: "/my-listings", icon: List },
   { labelKey: "manageListings", path: "/manage-listings", icon: List },
+  { labelKey: "draftListings", path: "/draft-listings", icon: FilePenLine },
   { labelKey: "myFavourites", path: "/favourites", icon: Heart },
   { labelKey: "mySavedSearches", path: "/saved-searches", icon: Search },
   { labelKey: "myRecentlyViewed", path: "/recently-viewed", icon: History },

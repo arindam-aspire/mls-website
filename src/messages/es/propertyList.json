@@ -124,6 +124,18 @@
     "comingSoonEyebrow": "En desarrollo",
     "comingSoonDescription": "Crea, edita y gestiona tus anuncios de propiedades en un solo lugar. ¡Esta función llegará pronto!"
   },
+  "draftListings": {
+    "pageTitle": "Borradores de listados",
+    "pageSubtitle": "Reanuda y gestiona anuncios de propiedades guardados como borrador.",
+    "fetchError": "Error al obtener los borradores de listados",
+    "resume": "Reanudar",
+    "createNew": "Crear nuevo listado",
+    "updatedAt": "Actualizado {time}",
+    "listingPurposeSale": "En venta",
+    "listingPurposeRent": "En alquiler",
+    "emptyTitle": "Aún no hay borradores",
+    "emptyDescription": "Crea un nuevo anuncio y guárdalo como borrador para verlo aquí."
+  },
   "myListings": {
     "pageTitle": "Mis Listados",
     "pageSubtitle": "Gestiona y consulta todos tus anuncios de propiedades en un solo lugar.",
@@ -166,6 +178,8 @@
     "pageTitle": "Crear propiedad",
     "pageSubtitle": "Añade un nuevo anuncio con fotos, detalles y precio.",
     "breadcrumbCreate": "Crear",
+    "draftSaveSuccess": "Borrador guardado",
+    "draftSaveError": "No se pudo guardar el borrador",
     "comingSoonEyebrow": "En desarrollo",
     "comingSoonDescription": "Añade un nuevo anuncio con fotos, detalles y precio. ¡Esta función llegará pronto!"
   },

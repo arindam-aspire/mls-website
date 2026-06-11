@@ -1,4 +1,5 @@
 import {
+  FilePenLine,
   Heart,
   LayoutDashboard,
   List,
@@ -40,6 +41,12 @@ export const PROTECTED_SIDEBAR_NAV_SECTIONS: ProtectedSidebarNavSectionConfig[] 
           href: "/manage-listings",
           icon: List,
           permission: "MANAGE_LISTINGS",
+        },
+        {
+          labelKey: "draftListings",
+          href: "/draft-listings",
+          icon: FilePenLine,
+          permission: "DRAFT_LISTINGS_SIDEBAR",
         },
         {
           labelKey: "myFavourites",

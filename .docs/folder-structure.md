@@ -41,6 +41,8 @@ mls_website/
 │   │       │   │   │   └── page.md
 │   │       │   │   ├── manage-listings/
 │   │       │   │   │   └── page.md
+│   │       │   │   ├── draft-listings/
+│   │       │   │   │   └── page.md
 │   │       │   │   ├── property-create/
 │   │       │   │   │   └── page.md
 │   │       │   │   └── property-update/
@@ -279,6 +281,8 @@ mls_website/
 │   │   │   │   ├── my-listings/
 │   │   │   │   │   └── page.tsx
 │   │   │   │   ├── manage-listings/
+│   │   │   │   │   └── page.tsx
+│   │   │   │   ├── draft-listings/
 │   │   │   │   │   └── page.tsx
 │   │   │   │   ├── property-create/
 │   │   │   │   │   └── page.tsx
@@ -665,10 +669,13 @@ mls_website/
 │   │       ├── constants/
 │   │       │   ├── myListingStatusFilters.constants.ts
 │   │       │   ├── myListingTableColumns.constants.ts
+│   │       │   ├── propertyCreate.constants.ts
 │   │       │   ├── propertyDetailsTabs.constants.ts
+│   │       │   ├── propertyForm.constants.ts
 │   │       │   └── propertyListAdvancedFilters.constants.ts
 │   │       ├── hooks/
 │   │       │   ├── propertySearchFilter.constants.ts
+│   │       │   ├── useDraftListingsScreen.ts
 │   │       │   ├── usePropertyDetails.ts
 │   │       │   ├── usePropertyFavouriteToggle.ts
 │   │       │   ├── usePropertyList.ts
@@ -678,7 +685,10 @@ mls_website/
 │   │       │   └── usePropertySearchFilters.ts
 │   │       ├── mappers/
 │   │       │   ├── agentPropertiesList.mapper.ts
+│   │       │   ├── agentPropertyDraftsList.mapper.ts
 │   │       │   ├── favoriteList.mapper.ts
+│   │       │   ├── propertyDraftSubmission.mapper.ts
+│   │       │   ├── propertyForm.mapper.ts
 │   │       │   ├── recentViewsList.mapper.ts
 │   │       │   └── propertyFeatures.mapper.ts
 │   │       ├── mutations/
@@ -689,6 +699,7 @@ mls_website/
 │   │       │   ├── FavouritePropertyScreen.tsx
 │   │       │   ├── InquiriesScreen.tsx
 │   │       │   ├── ListingPropertyScreen.tsx
+│   │       │   ├── DraftListingsScreen.tsx
 │   │       │   ├── ManageListingsScreen.tsx
 │   │       │   ├── PropertyCreateScreen.tsx
 │   │       │   ├── PropertyUpdateScreen.tsx
@@ -699,7 +710,8 @@ mls_website/
 │   │       ├── store/
 │   │       │   └── property.store.ts
 │   │       ├── types/
-│   │       │   └── property.types.ts
+│   │       │   ├── property.types.ts
+│   │       │   └── propertyDraftSubmission.types.ts
 │   │       └── utils/
 │   │           ├── applyFavoriteFlagsToListings.ts
 │   │           ├── buildMyListingTableColumns.tsx

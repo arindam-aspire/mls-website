@@ -30,6 +30,7 @@ import type {
   PropertyFeatureDefinition,
   PropertyListing,
 } from "../types/property.types";
+import { normalizePropertyListing } from "../utils/normalizePropertyListingStatus";
 import { usePropertyFavouriteToggle } from "./usePropertyFavouriteToggle";
 
 type PropertyViewProps = ComponentProps<typeof PropertyView>;
@@ -194,7 +195,9 @@ export function usePropertyDetails(propertyId: string) {
   const loadSimilarProperties = useCallback(() => {
     fetchSimilarProperties(propertyId, {
       onSuccess: (response) => {
-        setSimilarListings(response.data?.items ?? []);
+        setSimilarListings(
+          (response.data?.items ?? []).map((item) => normalizePropertyListing(item)),
+        );
       },
       onSettled: () => {
         setIsSimilarSettled(true);

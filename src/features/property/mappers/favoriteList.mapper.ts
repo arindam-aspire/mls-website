@@ -4,17 +4,18 @@ import type {
   PaginationMeta,
   PropertyListing,
 } from "../types/property.types";
+import { normalizePropertyListing } from "../utils/normalizePropertyListingStatus";
 
 export function mapFavoriteListItem(item: FavoriteListItem): PropertyListing {
   const { agency: _agency, ...property } = item.property;
 
-  return {
+  return normalizePropertyListing({
     ...property,
     is_favourite: true,
     favourite_id: item.id,
     property_hash: String(item.property_hash),
     user_id: item.user_id,
-  };
+  });
 }
 
 export function mapFavoriteListItems(

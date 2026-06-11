@@ -25,6 +25,8 @@ React Query hooks for loading property lists, details, and favourites.
 - `useGetPropertyFeatureCatalog`
 - `useGetAllFavorites`
 - `FAVORITES_ALL_QUERY_KEY`
+- `useSavePropertyDraftSubmission`
+- `useUpdatePropertyDraftSubmission`
 - `useGetAgentProperties`
 - `useGetFavoriteList`
 - `useRemoveFavorite`
@@ -47,8 +49,11 @@ React Query hooks for loading property lists, details, and favourites.
 | `useGetPropertyDetails` | `getPropertyDetails(id)` | `GET /properties/:id` |
 | `useGetSimilarProperties` | `getSimilarProperties(id)` | `GET /properties/:id/similar` |
 | `useGetPropertyFeatureCatalog` | `getPropertyFeatureCatalog()` | `GET /features?is_active=true` |
+| `useSavePropertyDraftSubmission` | `savePropertyDraftSubmission(body)` | `POST /property-submissions` (auth); toasts in `usePropertyCreateScreen` |
+| `useUpdatePropertyDraftSubmission` | `updatePropertyDraftSubmission(id, body)` | `PATCH /property-submissions/{id}` (`action: save_draft`) |
 | `useGetAllFavorites` | `getAllFavorites()` | `GET /favorites` (auth) |
 | `useGetAgentProperties` | `getAgentProperties(params)` | `GET /agent-properties?page=&pageSize=` |
+| `useGetAgentPropertyDrafts` | `getAgentPropertyDrafts(params)` | `GET /agent-properties/drafts?page=&pageSize=` (auth) |
 | `useGetFavoriteList` | `getFavoriteList(params)` | `GET /favorites?page=&pageSize=` |
 | `useAddFavorite` | `addFavorite({ property_hash })` | `POST /favorites` |
 | `useAddRecentView` | `addRecentView(body)` | `POST /users/recent-views` (silent; no toast) |

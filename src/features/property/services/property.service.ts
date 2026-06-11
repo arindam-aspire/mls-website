@@ -2,8 +2,15 @@ import { apiClient } from "@/src/apis/clients/api.client";
 import { propertyEndpoints } from "@/src/apis/endpoints/propertyEndpoints";
 import { userEndpoints } from "@/src/apis/endpoints/userEndpoints";
 import type {
+  PropertyDraftSubmissionRequestBody,
+  PropertyDraftSubmissionResponse,
+  PropertyDraftSubmissionUpdateRequestBody,
+} from "../types/propertyDraftSubmission.types";
+import type {
   AgentPropertiesListParams,
   AgentPropertiesListResponse,
+  AgentPropertyDraftsListParams,
+  AgentPropertyDraftsListResponse,
   FavoriteAddBody,
   FavoriteAddResponse,
   FavoriteListParams,
@@ -67,6 +74,39 @@ export async function getAgentProperties(
     endpoint: propertyEndpoints.AGENT_PROPERTIES(params),
     method: "GET",
     auth: true,
+  });
+}
+
+export async function getAgentPropertyDrafts(
+  params: AgentPropertyDraftsListParams,
+): Promise<AgentPropertyDraftsListResponse> {
+  return apiClient.request<AgentPropertyDraftsListResponse>({
+    endpoint: propertyEndpoints.AGENT_PROPERTY_DRAFTS(params),
+    method: "GET",
+    auth: true,
+  });
+}
+
+export async function savePropertyDraftSubmission(
+  body: PropertyDraftSubmissionRequestBody,
+): Promise<PropertyDraftSubmissionResponse> {
+  return apiClient.request<PropertyDraftSubmissionResponse>({
+    endpoint: propertyEndpoints.PROPERTY_SUBMISSIONS(),
+    method: "POST",
+    auth: true,
+    body,
+  });
+}
+
+export async function updatePropertyDraftSubmission(
+  submissionId: string,
+  body: PropertyDraftSubmissionUpdateRequestBody,
+): Promise<PropertyDraftSubmissionResponse> {
+  return apiClient.request<PropertyDraftSubmissionResponse>({
+    endpoint: propertyEndpoints.PROPERTY_SUBMISSION_BY_ID(submissionId),
+    method: "PATCH",
+    auth: true,
+    body,
   });
 }
 

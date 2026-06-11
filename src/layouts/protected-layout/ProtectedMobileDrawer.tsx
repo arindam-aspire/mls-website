@@ -321,7 +321,11 @@ function DrawerMyActivitySection({ onNavigate }: { onNavigate?: () => void }) {
   const user = useAuthStore((state) => state.user);
 
   const items = user
-    ? filterProfileMenuItemsWithRoleAccess(DRAWER_ACTIVITY_ITEMS, user)
+    ? filterProfileMenuItemsWithRoleAccess(
+        DRAWER_ACTIVITY_ITEMS,
+        user,
+        "protectedDrawer",
+      )
     : [];
 
   if (items.length === 0) {

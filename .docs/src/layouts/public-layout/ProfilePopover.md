@@ -52,7 +52,7 @@ _No explicit inputs detected._
 ## Actions
 
 - Notifications bell → `NotificationsPopover` (with `overHero` on landing hero)
-- Profile menu links → navigate and close popover (`filterProfileMenuItemsWithRoleAccess`): **My Listings** (`owner` → `/my-listings`), **Manage Listings** (`admin` / `agency` / `agent` → `/manage-listings`), **My Recently Viewed** (`registered_user` / `owner`)
+- Profile menu links → navigate and close popover (`filterProfileMenuItemsWithRoleAccess`, `publicMenu`): **My Listings** (`owner` → `/my-listings`), **Manage Listings** (`admin` / `agency` / `agent` → `/manage-listings`), **Draft Listings** (`owner` / `agent` → `/draft-listings`), **My Recently Viewed** (`registered_user` / `owner`)
 - Sign out → `ConfirmModal` then `useLogout`
 
 ## Show/Hide Controls

@@ -13,6 +13,7 @@ const PAGE_METADATA_KEYS = [
   "inquiries",
   "listing",
   "manageListings",
+  "draftListings",
   "propertyCreate",
   "propertyUpdate",
 ] as const;

@@ -1,21 +1,34 @@
 "use client";
 
-import { ComingSoonCard } from "@/src/components/common/ComingSoonCard";
 import { Breadcrumb } from "@/src/components/ui/breadcrumb";
 import { PropertyCreateScreenSkeleton } from "@/src/features/property/components/PropertyCreateScreenSkeleton";
 import { usePropertyCreateScreen } from "@/src/features/property/hooks/usePropertyCreateScreen";
 import { cn } from "@/src/lib/cn";
 import { bodyLargeTextClasses, headingPageClasses } from "@/src/lib/typography";
+import { PropertyForm } from "@abdoun/abdoun-library";
 
 export default function PropertyCreateScreen() {
   const {
     pageTitle,
     pageSubtitle,
-    comingSoonEyebrow,
-    comingSoonDescription,
     breadcrumbItems,
     breadcrumbAriaLabel,
+    activeStep,
+    maxReachedStep,
+    categoryTaxonomy,
+    locationTaxonomyForForm,
+    featuresAndAmenities,
+    propertyDetails,
     isCatalogLoading,
+    submissionId,
+    onNext,
+    onPrevious,
+    onStepClick,
+    onSubmit,
+    onDraft,
+    onUploadOwnerDocument,
+    onUploadPropertyMedia,
+    onUploadPropertyDocument,
   } = usePropertyCreateScreen();
 
   if (isCatalogLoading) {
@@ -37,10 +50,24 @@ export default function PropertyCreateScreen() {
         />
       </div>
 
-      <ComingSoonCard
+      <PropertyForm
+        activeStep={activeStep}
+        stickyTopOffset="5.1rem"
+        maxReachedStep={maxReachedStep}
+        categoryTaxonomy={categoryTaxonomy}
+        locationTaxonomy={locationTaxonomyForForm}
+        featuresAndAmenities={featuresAndAmenities}
+        propertyDetails={propertyDetails}
+        draftId={submissionId ?? undefined}
         title={pageTitle}
-        subtitle={comingSoonEyebrow}
-        description={comingSoonDescription}
+        onPrevious={onPrevious}
+        onNext={onNext}
+        onSubmit={onSubmit}
+        onDraft={onDraft}
+        onStepClick={onStepClick}
+        onUploadOwnerDocument={onUploadOwnerDocument}
+        onUploadPropertyMedia={onUploadPropertyMedia}
+        onUploadPropertyDocument={onUploadPropertyDocument}
       />
     </div>
   );

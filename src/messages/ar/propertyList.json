@@ -124,6 +124,18 @@
     "comingSoonEyebrow": "قيد التطوير",
     "comingSoonDescription": "أنشئ وعدّل وأدر إعلاناتك العقارية في مكان واحد. هذه الميزة قادمة قريباً!"
   },
+  "draftListings": {
+    "pageTitle": "مسودات الإعلانات",
+    "pageSubtitle": "استأنف وأدر إعلاناتك العقارية المحفوظة كمسودات.",
+    "fetchError": "فشل في جلب مسودات الإعلانات",
+    "resume": "استئناف",
+    "createNew": "إنشاء إعلان جديد",
+    "updatedAt": "تم التحديث {time}",
+    "listingPurposeSale": "للبيع",
+    "listingPurposeRent": "للإيجار",
+    "emptyTitle": "لا توجد مسودات إعلانات بعد",
+    "emptyDescription": "ابدأ إعلان عقار جديد واحفظه كمسودة ليظهر هنا."
+  },
   "myListings": {
     "pageTitle": "إعلاناتي",
     "pageSubtitle": "أدر واعرض جميع إعلاناتك العقارية في مكان واحد.",
@@ -166,6 +178,8 @@
     "pageTitle": "إضافة عقار",
     "pageSubtitle": "أضف إعلان عقار جديد مع الصور والتفاصيل والسعر.",
     "breadcrumbCreate": "إنشاء",
+    "draftSaveSuccess": "تم حفظ المسودة",
+    "draftSaveError": "تعذر حفظ المسودة",
     "comingSoonEyebrow": "قيد التطوير",
     "comingSoonDescription": "أضف إعلان عقار جديد مع الصور والتفاصيل والسعر. هذه الميزة قادمة قريباً!"
   },

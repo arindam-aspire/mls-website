@@ -124,6 +124,18 @@
     "comingSoonEyebrow": "En cours de développement",
     "comingSoonDescription": "Créez, modifiez et gérez vos annonces immobilières au même endroit. Cette fonctionnalité arrive bientôt !"
   },
+  "draftListings": {
+    "pageTitle": "Annonces brouillon",
+    "pageSubtitle": "Reprenez et gérez les annonces immobilières enregistrées en brouillon.",
+    "fetchError": "Échec du chargement des annonces brouillon",
+    "resume": "Reprendre",
+    "createNew": "Créer une nouvelle annonce",
+    "updatedAt": "Mis à jour {time}",
+    "listingPurposeSale": "À vendre",
+    "listingPurposeRent": "À louer",
+    "emptyTitle": "Aucun brouillon pour le moment",
+    "emptyDescription": "Créez une nouvelle annonce et enregistrez-la en brouillon pour la voir ici."
+  },
   "myListings": {
     "pageTitle": "Mes Annonces",
     "pageSubtitle": "Gérez et consultez toutes vos annonces immobilières au même endroit.",
@@ -166,6 +178,8 @@
     "pageTitle": "Créer un bien",
     "pageSubtitle": "Ajoutez une nouvelle annonce avec photos, détails et prix.",
     "breadcrumbCreate": "Créer",
+    "draftSaveSuccess": "Brouillon enregistré",
+    "draftSaveError": "Impossible d'enregistrer le brouillon",
     "comingSoonEyebrow": "En cours de développement",
     "comingSoonDescription": "Ajoutez une nouvelle annonce avec photos, détails et prix. Cette fonctionnalité arrive bientôt !"
   },

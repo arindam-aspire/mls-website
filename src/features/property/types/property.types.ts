@@ -1,5 +1,5 @@
 import type { ComponentProps } from "react";
-import type { PropertyView } from "@abdoun/abdoun-library";
+import type { PropertyListingStatus, PropertyView } from "@abdoun/abdoun-library";
 
 type PropertyViewProps = ComponentProps<typeof PropertyView>;
 
@@ -78,7 +78,7 @@ export interface PropertyListing {
   description: LocalizedNullableText;
 
   price: string;
-  status: string;
+  status: PropertyListingStatus;
   category: string;
 
   searchPropertyType: string;
@@ -183,6 +183,45 @@ export type AgentPropertiesListings = {
   meta?: PaginationMeta;
 };
 
+// ── Agent property drafts (GET /agent-properties/drafts) ────────────────────
+
+export type AgentPropertyDraftsListParams = {
+  page: number;
+  pageSize: number;
+};
+
+/** Single row from `GET /agent-properties/drafts` (`data.items[]`). */
+export type AgentPropertyDraftListItem = {
+  submission_id: string;
+  status: string;
+  current_step: number;
+  last_completed_step: number;
+  title: string | null;
+  updated_at: string;
+  can_edit: boolean;
+  can_delete: boolean;
+};
+
+export type AgentPropertyDraftsListData = {
+  items: AgentPropertyDraftListItem[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrevious: boolean;
+};
+
+export type AgentPropertyDraftsListResponse = {
+  success: boolean;
+  message: string | null;
+  data: AgentPropertyDraftsListData | null;
+  error: unknown;
+  meta?: {
+    pagination?: PaginationMeta;
+  };
+};
+
 // ── Favorites list (GET /favorites) ─────────────────────────────────────────
 
 export type FavoriteListParams = {
@@ -193,8 +232,9 @@ export type FavoriteListParams = {
 /** Nested property payload inside a favorite list item (API shape). */
 export type FavoritePropertyPayload = Omit<
   PropertyListing,
-  "is_favourite" | "favourite_id" | "property_hash" | "user_id"
+  "is_favourite" | "favourite_id" | "property_hash" | "user_id" | "status"
 > & {
+  status: string | PropertyListingStatus;
   agency?: unknown | null;
 };
 
@@ -250,8 +290,14 @@ export type RecentViewsListParams = FavoriteListParams;
 /** Nested property payload inside a recent-view list item (API shape). */
 export type RecentViewsPropertyPayload = Omit<
   PropertyListing,
-  "is_favourite" | "favourite_id" | "property_hash" | "property_hash_id" | "user_id"
+  | "is_favourite"
+  | "favourite_id"
+  | "property_hash"
+  | "property_hash_id"
+  | "user_id"
+  | "status"
 > & {
+  status: string | PropertyListingStatus;
   agency?: unknown | null;
 };
 

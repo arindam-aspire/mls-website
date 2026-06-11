@@ -13,6 +13,7 @@ const handleI18nRouting = createMiddleware(routing);
 const PROTECTED_ROUTES = [
   "/dashboard",
   "/manage-listings",
+  "/draft-listings",
   "/my-profile",
   "/my-listings",
   "/property-create",

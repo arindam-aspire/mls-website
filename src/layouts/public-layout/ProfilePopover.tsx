@@ -19,6 +19,7 @@ import { profileEmailClasses, profileNameClasses } from "@/src/lib/typography";
 import { useClose } from "@headlessui/react";
 import {
   Eye,
+  FilePenLine,
   Heart,
   List,
   LogOut,
@@ -35,6 +36,7 @@ const PROFILE_MENU_ITEMS = [
   { labelKey: "profile", icon: User, path: "/my-profile" },
   { labelKey: "myListings", icon: List, path: "/my-listings" },
   { labelKey: "manageListings", icon: List, path: "/manage-listings" },
+  { labelKey: "draftListings", icon: FilePenLine, path: "/draft-listings" },
   { labelKey: "myFavourites", icon: Heart, path: "/favourites" },
   { labelKey: "mySavedSearches", icon: Search, path: "/saved-searches" },
   { labelKey: "myRecentlyViewed", icon: Eye, path: "/recently-viewed" },

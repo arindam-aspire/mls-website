@@ -1,5 +1,6 @@
 import type {
   AgentPropertiesListParams,
+  AgentPropertyDraftsListParams,
   PropertyListParams,
 } from "@/src/features/property/types/property.types";
 
@@ -95,4 +96,15 @@ export const propertyEndpoints = {
 
     return `/agent-properties?${search.toString()}`;
   },
+  AGENT_PROPERTY_DRAFTS: (params: AgentPropertyDraftsListParams): string => {
+    const search = new URLSearchParams({
+      page: String(params.page),
+      pageSize: String(params.pageSize),
+    });
+
+    return `/agent-properties/drafts?${search.toString()}`;
+  },
+  PROPERTY_SUBMISSIONS: (): string => "/property-submissions",
+  PROPERTY_SUBMISSION_BY_ID: (submissionId: string): string =>
+    `/property-submissions/${encodeURIComponent(submissionId)}`,
 } as const;

@@ -11,6 +11,7 @@
   "inquiries": "Mes Demandes",
   "listing": "Mes Annonces",
   "manageListings": "Gérer les annonces",
+  "draftListings": "Annonces brouillon",
   "propertyCreate": "Créer un bien",
   "propertyUpdate": "Modifier le bien"
 }

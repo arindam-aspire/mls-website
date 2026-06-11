@@ -1,11 +1,7 @@
 import type { ComponentProps } from "react";
-import {
-  createListingStatus,
-  PROPERTY_LISTING_STATUS_KEYS,
-  type ListTableView,
-  type PropertyListingStatusKey,
-} from "@abdoun/abdoun-library";
+import { type ListTableView } from "@abdoun/abdoun-library";
 import type { AgentPropertyListItem } from "../types/property.types";
+import { normalizePropertyListingStatus } from "../utils/normalizePropertyListingStatus";
 
 type LibraryPropertyListing = ComponentProps<typeof ListTableView>["data"][number];
 
@@ -54,16 +50,6 @@ function toLocalizedText(value: string) {
   };
 }
 
-function resolveStatusKey(statusSlug: string): PropertyListingStatusKey {
-  if (
-    PROPERTY_LISTING_STATUS_KEYS.includes(statusSlug as PropertyListingStatusKey)
-  ) {
-    return statusSlug as PropertyListingStatusKey;
-  }
-
-  return "draft";
-}
-
 function formatListingPrice(price: string, currency: string): string {
   if (!price) {
     return "";
@@ -79,7 +65,7 @@ function formatListingPrice(price: string, currency: string): string {
 export function mapAgentPropertyListItem(
   item: AgentPropertyListItem,
 ): LibraryPropertyListing {
-  const statusKey = resolveStatusKey(item.status_slug);
+  const status = normalizePropertyListingStatus(item.status_slug, item.status_name);
 
   return {
     id: item.property_hash,
@@ -88,7 +74,7 @@ export function mapAgentPropertyListItem(
     title: toLocalizedText(item.title),
     description: EMPTY_LOCALIZED_NULLABLE_TEXT,
     price: formatListingPrice(item.price, item.currency),
-    status: createListingStatus(statusKey, item.status_name),
+    status,
     category: item.category_name,
     searchPropertyType: item.type_slug,
     city: "",

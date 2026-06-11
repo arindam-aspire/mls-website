@@ -14,6 +14,7 @@ const PROFILE_MENU_ITEMS = [
   { labelKey: "profile", path: "/my-profile" },
   { labelKey: "myListings", path: "/my-listings" },
   { labelKey: "manageListings", path: "/manage-listings" },
+  { labelKey: "draftListings", path: "/draft-listings" },
   { labelKey: "myFavourites", path: "/favourites" },
   { labelKey: "mySavedSearches", path: "/saved-searches" },
   { labelKey: "myRecentlyViewed", path: "/recently-viewed" },
@@ -35,7 +36,7 @@ function resolveProtectedProfileMenuItems(user: LoggedInUser) {
       ? PROFILE_MENU_ITEMS.filter((item) => item.labelKey === "profile")
       : PROFILE_MENU_ITEMS;
 
-  return filterProfileMenuItemsWithRoleAccess(baseItems, user);
+  return filterProfileMenuItemsWithRoleAccess(baseItems, user, "protectedPopover");
 }
 
 export function useProtectedProfileMenu(user: LoggedInUser) {

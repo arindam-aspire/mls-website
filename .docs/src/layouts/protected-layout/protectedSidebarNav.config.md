@@ -9,7 +9,7 @@ Static config for protected sidebar sections and items.
 | Section key | Items |
 | --- | --- |
 | `sidebarSectionMain` | Dashboard → `/dashboard` (`DASHBOARD`) |
-| `sidebarSectionProperty` | Manage Listings → `/manage-listings` (`MANAGE_LISTINGS`), My Favourites → `/favourites`, My Saved Searches → `/saved-searches` (`PROFILE`) |
+| `sidebarSectionProperty` | Manage Listings → `/manage-listings` (`MANAGE_LISTINGS`), Draft Listings → `/draft-listings` (`DRAFT_LISTINGS_SIDEBAR`, agent only), My Favourites → `/favourites`, My Saved Searches → `/saved-searches` (`PROFILE`) |
 
 # Extending
 

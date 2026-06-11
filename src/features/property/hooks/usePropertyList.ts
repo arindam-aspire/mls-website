@@ -25,6 +25,7 @@ import {
 } from "@/src/features/saved-searches/utils/savedSearchPropertyListParams";
 import { usePropertyStore } from "../store/property.store";
 import type { PropertyListParams, PropertyListing } from "../types/property.types";
+import { normalizePropertyListing } from "../utils/normalizePropertyListingStatus";
 import {
   DEFAULT_PROPERTY_LIST_PARAMS,
   DEFAULT_PROPERTY_LIST_SORT,
@@ -158,8 +159,11 @@ export function usePropertyList() {
       setPropertyListParams(params);
       getPropertyList(params, {
         onSuccess: (response) => {
+          const items = (response.data?.items ?? []).map((item) =>
+            normalizePropertyListing(item),
+          );
           setPropertyListings({
-            items: response.data?.items ?? [],
+            items,
             meta: response.meta?.pagination,
           });
         },
