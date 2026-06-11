@@ -27,6 +27,7 @@ React Query hooks for loading property lists, details, and favourites.
 - `FAVORITES_ALL_QUERY_KEY`
 - `useSavePropertyDraftSubmission`
 - `useUpdatePropertyDraftSubmission`
+- `useSubmitPropertyDraftSubmission`
 - `useGetAgentProperties`
 - `useGetFavoriteList`
 - `useRemoveFavorite`
@@ -49,8 +50,10 @@ React Query hooks for loading property lists, details, and favourites.
 | `useGetPropertyDetails` | `getPropertyDetails(id)` | `GET /properties/:id` |
 | `useGetSimilarProperties` | `getSimilarProperties(id)` | `GET /properties/:id/similar` |
 | `useGetPropertyFeatureCatalog` | `getPropertyFeatureCatalog()` | `GET /features?is_active=true` |
+| `useGetPropertyDraftSubmission` | `getPropertyDraftSubmission(submissionId)` | `GET /property-submissions/{id}` (auth) |
 | `useSavePropertyDraftSubmission` | `savePropertyDraftSubmission(body)` | `POST /property-submissions` (auth); toasts in `usePropertyCreateScreen` |
 | `useUpdatePropertyDraftSubmission` | `updatePropertyDraftSubmission(id, body)` | `PATCH /property-submissions/{id}` (`action: save_draft`) |
+| `useSubmitPropertyDraftSubmission` | `submitPropertyDraftSubmission(id, body)` | `POST /property-submissions/{id}/submit` (`confirm_submit: true`); toasts in `usePropertyCreateScreen` |
 | `useGetAllFavorites` | `getAllFavorites()` | `GET /favorites` (auth) |
 | `useGetAgentProperties` | `getAgentProperties(params)` | `GET /agent-properties?page=&pageSize=` |
 | `useGetAgentPropertyDrafts` | `getAgentPropertyDrafts(params)` | `GET /agent-properties/drafts?page=&pageSize=` (auth) |

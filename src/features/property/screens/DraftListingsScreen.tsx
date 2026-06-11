@@ -1,6 +1,5 @@
 "use client";
 
-import { Card, CardContent } from "@/src/components/ui/card";
 import { useDraftListingsScreen } from "@/src/features/property/hooks/useDraftListingsScreen";
 import { cn } from "@/src/lib/cn";
 import { bodyLargeTextClasses, headingPageClasses } from "@/src/lib/typography";
@@ -11,13 +10,14 @@ export default function DraftListingsScreen() {
   const t = useTranslations("propertyList.draftListings");
   const {
     draftListItems,
+    isLoading,
     pagination,
     onCreateNew,
     onDelete,
     onResume,
     resumeLabel,
     createLabel,
-    emptyStateContent
+    emptyStateContent,
   } = useDraftListingsScreen();
 
   return (
@@ -31,21 +31,18 @@ export default function DraftListingsScreen() {
         </p>
       </div>
 
-      <Card>
-        <CardContent>
-          <DraftList
-            items={draftListItems}
-            onCreateNew={onCreateNew}
-            onDelete={onDelete}
-            onResume={onResume}
-            pagination={pagination}
-            resumeLabel={resumeLabel}
-            createLabel={createLabel}
-            emptyStateContent={emptyStateContent}
-            size="md"
-          />
-        </CardContent>
-      </Card>
+      <DraftList
+        items={draftListItems}
+        isLoading={isLoading}
+        onCreateNew={onCreateNew}
+        onDelete={onDelete}
+        onResume={onResume}
+        pagination={pagination}
+        resumeLabel={resumeLabel}
+        createLabel={createLabel}
+        emptyStateContent={emptyStateContent}
+        size="md"
+      />
     </div>
   );
 }

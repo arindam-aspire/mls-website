@@ -29,6 +29,11 @@ export type PropertyDraftSubmissionOwner = {
   email?: string;
   /** `country_code` + `phone_number` from `PropertyForm` owner row. */
   phone?: string;
+  nationality?: string;
+  /** From `PropertyForm` `social_security_id`. */
+  ssi?: string;
+  /** From `PropertyForm` `owner_address`. */
+  address?: string;
   documents?: PropertyDraftSubmissionOwnerDocument[];
 };
 
@@ -63,7 +68,7 @@ export type PropertyDraftSubmissionPricing = {
 };
 
 export type PropertyDraftSubmissionAmenities = {
-  /** 1-based index from amenity option labels (not catalog feature ids). */
+  /** Feature catalog ids (`featuresAndAmenities[].id`), e.g. `[47, 54, 60]`. */
   feature_ids?: number[];
 };
 
@@ -118,6 +123,8 @@ export type PropertyDraftSubmissionRequestBody = {
   payload: PropertyDraftSubmissionPayload;
   /** Active `PropertyForm` step index when saving. */
   current_step: number;
+  /** Furthest step the user has completed when saving. */
+  last_completed_step: number;
 };
 
 export type PropertyDraftSubmissionSaveAction = "save_draft";
@@ -126,6 +133,8 @@ export type PropertyDraftSubmissionSaveAction = "save_draft";
 export type PropertyDraftSubmissionUpdateRequestBody = {
   action: PropertyDraftSubmissionSaveAction;
   current_step: number;
+  /** Furthest step the user has completed when saving. */
+  last_completed_step: number;
   payload: PropertyDraftSubmissionPayload;
 };
 
@@ -147,9 +156,25 @@ export type PropertyDraftSubmissionData = {
   last_completed_step: number;
   step_completion: PropertyDraftSubmissionStepCompletion;
   payload: PropertyDraftSubmissionPayload;
+  reviewed_by?: string | null;
+  reviewed_at?: string | null;
+  review_reason?: string | null;
 };
 
 export type PropertyDraftSubmissionResponse = {
+  success: boolean;
+  message: string | null;
+  data: PropertyDraftSubmissionData | null;
+  error: unknown;
+  meta?: Record<string, unknown>;
+};
+
+/** Request body for `POST /property-submissions/{submissionId}/submit`. */
+export type PropertyDraftSubmissionSubmitRequestBody = {
+  confirm_submit: true;
+};
+
+export type PropertyDraftSubmissionSubmitResponse = {
   success: boolean;
   message: string | null;
   data: PropertyDraftSubmissionData | null;

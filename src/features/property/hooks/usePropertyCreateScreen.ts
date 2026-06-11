@@ -24,15 +24,20 @@ import { usePathname, useRouter } from "@/src/i18n/navigation";
 import {
   buildPropertyDraftSubmissionRequestBody,
   buildPropertyDraftSubmissionUpdateRequestBody,
+  mapPropertyDraftSubmissionToPropertyFormValues,
 } from "@/src/features/property/mappers/propertyDraftSubmission.mapper";
 import {
   mapFeatureCatalogForPropertyForm,
   mapLocationTaxonomyForPropertyForm,
   mapPropertyCategoriesForPropertyForm,
 } from "@/src/features/property/mappers/propertyForm.mapper";
+import { useOwnerDocumentUpload } from "@/src/features/property/hooks/useOwnerDocumentUpload";
+import { usePropertyMediaUpload } from "@/src/features/property/hooks/usePropertyMediaUpload";
 import {
+  useGetPropertyDraftSubmission,
   useGetPropertyFeatureCatalog,
   useSavePropertyDraftSubmission,
+  useSubmitPropertyDraftSubmission,
   useUpdatePropertyDraftSubmission,
 } from "@/src/features/property/mutations/property.mutation";
 import type { FeatureCatalogItem } from "@/src/features/property/types/property.types";
@@ -45,7 +50,7 @@ import { useToast } from "@/src/hooks/useToast";
 import { Home, List } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 function getLocationTaxonomyTotal(
   taxonomy: LocationTaxonomyResponse | null,
@@ -74,7 +79,6 @@ export function usePropertyCreateScreen() {
   const user = useAuthStore((state) => state.user);
 
   // 4. Local state
-  const submissionIdFromUrl = searchParams.get(PROPERTY_CREATE_SUBMISSION_ID_PARAM);
   const [propertyTaxonomy, setPropertyTaxonomy] =
     useState<PropertyTaxonomyResponse | null>(null);
   const [locationTaxonomy, setLocationTaxonomy] =
@@ -88,17 +92,29 @@ export function usePropertyCreateScreen() {
     INITIAL_PROPERTY_FORM_VALUES,
   );
   const [isCatalogLoading, setIsCatalogLoading] = useState(true);
-  const [submissionId, setSubmissionId] = useState<string | null>(submissionIdFromUrl);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submissionId, setSubmissionId] = useState<string | null>(() =>
+    searchParams.get(PROPERTY_CREATE_SUBMISSION_ID_PARAM),
+  );
+  // Set only after a successful fetch or first draft save — not from URL on mount,
+  // otherwise resume-from-draft-list skips hydration.
+  const draftHydratedForRef = useRef<string | null>(null);
+  const hasInitializedRef = useRef(false);
 
   // 5. Data fetching / queries
   const { mutateAsync: fetchPropertyTaxonomy } = useGetPropertyTaxonomy();
   const { mutateAsync: fetchLocationTaxonomy } = useGetLocationTaxonomy();
   const { mutateAsync: fetchFeatureCatalog } = useGetPropertyFeatureCatalog();
+  const { mutateAsync: fetchPropertyDraftSubmission } = useGetPropertyDraftSubmission();
   const { mutateAsync: saveDraftSubmission, isPending: isCreateDraftSaving } =
     useSavePropertyDraftSubmission();
   const { mutateAsync: updateDraftSubmission, isPending: isUpdateDraftSaving } =
     useUpdatePropertyDraftSubmission();
+  const { mutateAsync: submitDraftSubmission } = useSubmitPropertyDraftSubmission();
   const isDraftSaving = isCreateDraftSaving || isUpdateDraftSaving;
+  const { onUploadOwnerDocument } = useOwnerDocumentUpload();
+  const { onUploadPropertyMedia, onUploadPropertyDocument } =
+    usePropertyMediaUpload(submissionId);
 
   // 6. Derived / memoized values
   const breadcrumbItems = useMemo((): BreadcrumbItem[] => {
@@ -170,25 +186,69 @@ export function usePropertyCreateScreen() {
     [pathname, router, searchParams],
   );
 
+  const hydrateDraftSubmission = useCallback(
+    async (submissionIdToLoad: string, catalogItems: FeatureCatalogItem[]) => {
+      if (draftHydratedForRef.current === submissionIdToLoad) {
+        return;
+      }
+
+      const draftResponse = await fetchPropertyDraftSubmission(submissionIdToLoad);
+
+      if (draftResponse.success && draftResponse.data) {
+        const featuresForForm = mapFeatureCatalogForPropertyForm(catalogItems);
+        const hydratedDetails = mapPropertyDraftSubmissionToPropertyFormValues(
+          draftResponse.data,
+          featuresForForm,
+        );
+
+        setPropertyDetails(hydratedDetails);
+        setActiveStep(draftResponse.data.current_step);
+        setMaxReachedStep(
+          Math.max(
+            draftResponse.data.current_step,
+            draftResponse.data.last_completed_step,
+          ),
+        );
+        setSubmissionId(draftResponse.data.submission_id);
+        draftHydratedForRef.current = draftResponse.data.submission_id;
+      }
+    },
+    [fetchPropertyDraftSubmission],
+  );
+
   // 7. Callbacks
-  const loadCreateCatalog = useCallback(async () => {
-    setIsCatalogLoading(true);
+  const loadCreateCatalog = useCallback(
+    async (initialSubmissionId?: string | null) => {
+      setIsCatalogLoading(true);
 
-    try {
-      const [propertyTaxonomyResponse, locationTaxonomyResponse, featureCatalogResponse] =
-        await Promise.all([
-          fetchPropertyTaxonomy(),
-          fetchLocationTaxonomy(),
-          fetchFeatureCatalog(),
-        ]);
+      try {
+        const [propertyTaxonomyResponse, locationTaxonomyResponse, featureCatalogResponse] =
+          await Promise.all([
+            fetchPropertyTaxonomy(),
+            fetchLocationTaxonomy(),
+            fetchFeatureCatalog(),
+          ]);
 
-      setPropertyTaxonomy(propertyTaxonomyResponse);
-      setLocationTaxonomy(locationTaxonomyResponse);
-      setFeatureCatalogItems(featureCatalogResponse.data?.items ?? []);
-    } finally {
-      setIsCatalogLoading(false);
-    }
-  }, [fetchFeatureCatalog, fetchLocationTaxonomy, fetchPropertyTaxonomy]);
+        setPropertyTaxonomy(propertyTaxonomyResponse);
+        setLocationTaxonomy(locationTaxonomyResponse);
+
+        const catalogItems = featureCatalogResponse.data?.items ?? [];
+        setFeatureCatalogItems(catalogItems);
+
+        if (initialSubmissionId) {
+          await hydrateDraftSubmission(initialSubmissionId, catalogItems);
+        }
+      } finally {
+        setIsCatalogLoading(false);
+      }
+    },
+    [
+      fetchFeatureCatalog,
+      fetchLocationTaxonomy,
+      fetchPropertyTaxonomy,
+      hydrateDraftSubmission,
+    ],
+  );
 
   const onNext = useCallback(
     (nextPropertyDetails: PropertyFormValues) => {
@@ -216,15 +276,115 @@ export function usePropertyCreateScreen() {
     [],
   );
 
-  const onSubmit = useCallback(() => {
-    // TODO: connect create-property submit API when available.
-  }, []);
+  const onSubmit = useCallback(async () => {
+    const currentStep = activeStep;
+    const lastCompletedStep = Math.max(maxReachedStep, currentStep);
+    const detailsForSubmit: PropertyFormValues = {
+      ...propertyDetails,
+      active_step: currentStep,
+      max_reached_step: lastCompletedStep,
+    };
+    const submitPayloadOptions = { forSubmit: true } as const;
+    const listingsPath = resolveListingsMenuPath(user) ?? "/my-listings";
+
+    setIsSubmitting(true);
+
+    try {
+      let submissionIdToSubmit = submissionId;
+
+      if (submissionIdToSubmit) {
+        const saveResponse = await updateDraftSubmission({
+          submissionId: submissionIdToSubmit,
+          body: buildPropertyDraftSubmissionUpdateRequestBody(
+            detailsForSubmit,
+            featuresAndAmenities,
+            currentStep,
+            lastCompletedStep,
+            submitPayloadOptions,
+          ),
+        });
+
+        if (!saveResponse.success) {
+          toast.error(t("submitSaveError"), {
+            description: saveResponse.message ?? undefined,
+          });
+          return;
+        }
+      } else {
+        const saveResponse = await saveDraftSubmission(
+          buildPropertyDraftSubmissionRequestBody(
+            detailsForSubmit,
+            featuresAndAmenities,
+            currentStep,
+            lastCompletedStep,
+            submitPayloadOptions,
+          ),
+        );
+
+        if (!saveResponse.success) {
+          toast.error(t("submitSaveError"), {
+            description: saveResponse.message ?? undefined,
+          });
+          return;
+        }
+
+        const nextSubmissionId = saveResponse.data?.submission_id;
+
+        if (!nextSubmissionId) {
+          toast.error(t("submitSaveError"));
+          return;
+        }
+
+        submissionIdToSubmit = nextSubmissionId;
+        draftHydratedForRef.current = nextSubmissionId;
+        syncSubmissionIdInUrl(nextSubmissionId);
+      }
+
+      const submitResponse = await submitDraftSubmission({
+        submissionId: submissionIdToSubmit,
+        body: { confirm_submit: true },
+      });
+
+      if (submitResponse.success) {
+        toast.success(t("submitSuccess"), {
+          description: submitResponse.message ?? undefined,
+        });
+        router.push(listingsPath);
+        return;
+      }
+
+      toast.error(t("submitError"), {
+        description: submitResponse.message ?? undefined,
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : undefined;
+      toast.error(t("submitError"), { description: message });
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [
+    activeStep,
+    featuresAndAmenities,
+    maxReachedStep,
+    propertyDetails,
+    router,
+    saveDraftSubmission,
+    submissionId,
+    submitDraftSubmission,
+    syncSubmissionIdInUrl,
+    t,
+    toast,
+    updateDraftSubmission,
+    user,
+  ]);
 
   const onDraft = useCallback(
     async (nextPropertyDetails: PropertyFormValues) => {
       setPropertyDetails(nextPropertyDetails);
 
       const currentStep = nextPropertyDetails.active_step ?? activeStep;
+      const lastCompletedStep =
+        nextPropertyDetails.max_reached_step ?? maxReachedStep ?? currentStep;
 
       try {
         const response = submissionId
@@ -234,6 +394,7 @@ export function usePropertyCreateScreen() {
                 nextPropertyDetails,
                 featuresAndAmenities,
                 currentStep,
+                lastCompletedStep,
               ),
             })
           : await saveDraftSubmission(
@@ -241,12 +402,14 @@ export function usePropertyCreateScreen() {
                 nextPropertyDetails,
                 featuresAndAmenities,
                 currentStep,
+                lastCompletedStep,
               ),
             );
 
         if (response.success) {
           const nextSubmissionId = response.data?.submission_id;
           if (nextSubmissionId && nextSubmissionId !== submissionId) {
+            draftHydratedForRef.current = nextSubmissionId;
             syncSubmissionIdInUrl(nextSubmissionId);
           }
 
@@ -267,6 +430,7 @@ export function usePropertyCreateScreen() {
     [
       activeStep,
       featuresAndAmenities,
+      maxReachedStep,
       saveDraftSubmission,
       submissionId,
       syncSubmissionIdInUrl,
@@ -276,22 +440,17 @@ export function usePropertyCreateScreen() {
     ],
   );
 
-  const onUploadOwnerDocument = useCallback(async (_file: File) => null, []);
-
-  const onUploadPropertyMedia = useCallback(async (_file: File) => null, []);
-
-  const onUploadPropertyDocument = useCallback(async (_file: File) => null, []);
-
   // 9. Effects
   useEffect(() => {
-    if (submissionIdFromUrl) {
-      setSubmissionId(submissionIdFromUrl);
+    if (hasInitializedRef.current) {
+      return;
     }
-  }, [submissionIdFromUrl]);
 
-  useEffect(() => {
-    void loadCreateCatalog();
-  }, [loadCreateCatalog]);
+    hasInitializedRef.current = true;
+    void loadCreateCatalog(
+      searchParams.get(PROPERTY_CREATE_SUBMISSION_ID_PARAM),
+    );
+  }, [loadCreateCatalog, searchParams]);
 
   // 10. Return values
   return {
@@ -307,6 +466,7 @@ export function usePropertyCreateScreen() {
     propertyDetails,
     isCatalogLoading,
     isDraftSaving,
+    isSubmitting,
     submissionId,
     onNext,
     onPrevious,
@@ -316,6 +476,7 @@ export function usePropertyCreateScreen() {
     onUploadOwnerDocument,
     onUploadPropertyMedia,
     onUploadPropertyDocument,
-    reloadCreateCatalog: loadCreateCatalog,
+    reloadCreateCatalog: () =>
+      loadCreateCatalog(searchParams.get(PROPERTY_CREATE_SUBMISSION_ID_PARAM)),
   };
 }

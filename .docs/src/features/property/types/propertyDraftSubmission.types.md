@@ -8,7 +8,7 @@ TypeScript request-body shapes for property **draft submission** (create / save 
 
 - Define nested submission sections under `payload`: `basic_information`, `location`, `owner_information`, `property_details`, `pricing`, `amenities`, `media_documents`, `review_submit`.
 - Document field renames and transforms vs `PropertyForm` (e.g. `area_ids[0]` → `area_id`, `permit_dld_number` → `permit_number`, `total_floor` → `total_floors`).
-- Export `PropertyDraftSubmissionPayload` (mapped form data; **every key optional** for partial drafts) and `PropertyDraftSubmissionRequestBody` (`{ payload, current_step }`).
+- Export `PropertyDraftSubmissionPayload` (mapped form data; **every key optional** for partial drafts) and `PropertyDraftSubmissionRequestBody` (`{ payload, current_step, last_completed_step }`).
 
 # Exports
 
@@ -18,21 +18,21 @@ TypeScript request-body shapes for property **draft submission** (create / save 
 | `PropertyDraftSubmissionCurrency` | `"JOD"` |
 | `PropertyDraftSubmissionBasicInformation` | Title, description, taxonomy ids |
 | `PropertyDraftSubmissionLocation` | City, first area, address |
-| `PropertyDraftSubmissionOwnerInformation` | Owners with merged phone and document urls |
+| `PropertyDraftSubmissionOwnerInformation` | Owners with merged phone, `nationality`, `ssi`, `address`, and document urls |
 | `PropertyDraftSubmissionPropertyDetails` | Bedrooms, area, permit, etc. |
 | `PropertyDraftSubmissionPricing` | Numeric price fields + currency |
-| `PropertyDraftSubmissionAmenities` | `feature_ids` (1-based amenity option indices) |
+| `PropertyDraftSubmissionAmenities` | `feature_ids` (feature catalog ids) |
 | `PropertyDraftSubmissionMediaDocuments` | Images, empty `videos`, documents, urls |
 | `PropertyDraftSubmissionReviewSubmit` | Terms / privacy / display / fees flags |
 | `PropertyDraftSubmissionPayload` | Mapped submission data (`payload` object) |
-| `PropertyDraftSubmissionRequestBody` | `{ payload, current_step }` POST body (create) |
-| `PropertyDraftSubmissionUpdateRequestBody` | `{ action: "save_draft", current_step, payload }` PATCH body |
+| `PropertyDraftSubmissionRequestBody` | `{ payload, current_step, last_completed_step }` POST body (create) |
+| `PropertyDraftSubmissionUpdateRequestBody` | `{ action: "save_draft", current_step, last_completed_step, payload }` PATCH body |
 | `PropertyDraftSubmissionData` | Draft save payload: `submission_id`, `status`, `current_step`, `step_completion`, `payload` |
 | `PropertyDraftSubmissionResponse` | `{ success, message, data: PropertyDraftSubmissionData, error, meta }` |
 
 # Notes
 
-- Request shape: `{ "payload": { … }, "current_step": 1 }` on the first form step — `current_step` matches `activeStep` (1-based, same as the library).
+- Request shape: `{ "payload": { … }, "current_step": 1, "last_completed_step": 1 }` on the first form step — `current_step` matches `activeStep`; `last_completed_step` matches `max_reached_step` (1-based, same as the library).
 - Draft `payload`: omit any section or field the user has not filled yet; nested objects and array items also use optional keys.
 - `videos` is typed as `PropertyDraftSubmissionMediaVideo[]` but the app always sends `[]` until video upload exists.
 - `review_submit` booleans default to `false` on draft unless the UI sets them explicitly.

@@ -4,6 +4,8 @@ import { userEndpoints } from "@/src/apis/endpoints/userEndpoints";
 import type {
   PropertyDraftSubmissionRequestBody,
   PropertyDraftSubmissionResponse,
+  PropertyDraftSubmissionSubmitRequestBody,
+  PropertyDraftSubmissionSubmitResponse,
   PropertyDraftSubmissionUpdateRequestBody,
 } from "../types/propertyDraftSubmission.types";
 import type {
@@ -105,6 +107,28 @@ export async function updatePropertyDraftSubmission(
   return apiClient.request<PropertyDraftSubmissionResponse>({
     endpoint: propertyEndpoints.PROPERTY_SUBMISSION_BY_ID(submissionId),
     method: "PATCH",
+    auth: true,
+    body,
+  });
+}
+
+export async function getPropertyDraftSubmission(
+  submissionId: string,
+): Promise<PropertyDraftSubmissionResponse> {
+  return apiClient.request<PropertyDraftSubmissionResponse>({
+    endpoint: propertyEndpoints.PROPERTY_SUBMISSION_BY_ID(submissionId),
+    method: "GET",
+    auth: true,
+  });
+}
+
+export async function submitPropertyDraftSubmission(
+  submissionId: string,
+  body: PropertyDraftSubmissionSubmitRequestBody,
+): Promise<PropertyDraftSubmissionSubmitResponse> {
+  return apiClient.request<PropertyDraftSubmissionSubmitResponse>({
+    endpoint: propertyEndpoints.PROPERTY_SUBMISSION_SUBMIT(submissionId),
+    method: "POST",
     auth: true,
     body,
   });

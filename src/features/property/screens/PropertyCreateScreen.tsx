@@ -20,6 +20,8 @@ export default function PropertyCreateScreen() {
     featuresAndAmenities,
     propertyDetails,
     isCatalogLoading,
+    isDraftSaving,
+    isSubmitting,
     submissionId,
     onNext,
     onPrevious,
@@ -64,6 +66,8 @@ export default function PropertyCreateScreen() {
         onNext={onNext}
         onSubmit={onSubmit}
         onDraft={onDraft}
+        isDraftLoading={isDraftSaving}
+        isSubmitting={isSubmitting}
         onStepClick={onStepClick}
         onUploadOwnerDocument={onUploadOwnerDocument}
         onUploadPropertyMedia={onUploadPropertyMedia}

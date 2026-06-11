@@ -32,6 +32,7 @@ _N/A — no local/global state in this module._
 | `AGENT_PROPERTY_DRAFTS` | `/agent-properties/drafts?page=&pageSize=` |
 | `PROPERTY_SUBMISSIONS` | `/property-submissions` |
 | `PROPERTY_SUBMISSION_BY_ID` | `/property-submissions/:submissionId` |
+| `PROPERTY_SUBMISSION_SUBMIT` | `/property-submissions/:submissionId/submit` |
 
 Consumed by [property.service.ts](../../features/property/services/property.service.ts); types in `src/features/property/types/property.types.ts`.
 

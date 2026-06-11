@@ -13,6 +13,7 @@ import {
   getAllFavorites,
   getFavoriteList,
   getPropertyDetails,
+  getPropertyDraftSubmission,
   getPropertyFeatureCatalog,
   getPropertyList,
   getRecentViewsList,
@@ -20,9 +21,13 @@ import {
   removeRecentView,
   getSimilarProperties,
   savePropertyDraftSubmission,
+  submitPropertyDraftSubmission,
   updatePropertyDraftSubmission,
 } from "../services/property.service";
-import type { PropertyDraftSubmissionUpdateRequestBody } from "../types/propertyDraftSubmission.types";
+import type {
+  PropertyDraftSubmissionSubmitRequestBody,
+  PropertyDraftSubmissionUpdateRequestBody,
+} from "../types/propertyDraftSubmission.types";
 
 export const FAVORITES_ALL_QUERY_KEY = ["property", "favorites", "all"] as const;
 
@@ -86,6 +91,20 @@ export function useGetAllFavorites(options?: { enabled?: boolean }) {
   });
 }
 
+export const useGetPropertyDraftSubmission = () => {
+  const t = useTranslations("propertyList.propertyCreate");
+  const toast = useToast();
+
+  return useMutation({
+    mutationFn: getPropertyDraftSubmission,
+    onError: (error: ApiError) => {
+      toast.error(t("draftLoadError"), {
+        description: error.message,
+      });
+    },
+  });
+};
+
 export const useSavePropertyDraftSubmission = () => {
   return useMutation({
     mutationFn: savePropertyDraftSubmission,
@@ -101,6 +120,18 @@ export const useUpdatePropertyDraftSubmission = () => {
       submissionId: string;
       body: PropertyDraftSubmissionUpdateRequestBody;
     }) => updatePropertyDraftSubmission(submissionId, body),
+  });
+};
+
+export const useSubmitPropertyDraftSubmission = () => {
+  return useMutation({
+    mutationFn: ({
+      submissionId,
+      body,
+    }: {
+      submissionId: string;
+      body: PropertyDraftSubmissionSubmitRequestBody;
+    }) => submitPropertyDraftSubmission(submissionId, body),
   });
 };
 

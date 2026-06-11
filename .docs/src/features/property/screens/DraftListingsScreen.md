@@ -7,7 +7,7 @@ Draft listings screen using `@abdoun/abdoun-library` **`DraftList`** fed by `use
 # Responsibilities
 
 - Page heading from `propertyList.draftListings`.
-- Render `DraftList` with API-backed `items`, pagination, resume/create/delete handlers, and localized empty state.
+- Render `DraftList` with API-backed `items`, `isLoading`, pagination, resume/create/delete handlers, and localized empty state.
 
 # Imports
 

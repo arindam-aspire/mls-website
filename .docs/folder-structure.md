@@ -676,6 +676,9 @@ mls_website/
 │   │       ├── hooks/
 │   │       │   ├── propertySearchFilter.constants.ts
 │   │       │   ├── useDraftListingsScreen.ts
+│   │       │   ├── useOwnerDocumentUpload.ts
+│   │       │   ├── usePropertyMediaUpload.ts
+│   │       │   ├── usePropertyCreateScreen.ts
 │   │       │   ├── usePropertyDetails.ts
 │   │       │   ├── usePropertyFavouriteToggle.ts
 │   │       │   ├── usePropertyList.ts
@@ -694,7 +697,8 @@ mls_website/
 │   │       ├── mutations/
 │   │       │   └── property.mutation.ts
 │   │       ├── services/
-│   │       │   └── property.service.ts
+│   │       │   ├── property.service.ts
+│   │       │   └── upload.service.ts
 │   │       ├── screens/
 │   │       │   ├── FavouritePropertyScreen.tsx
 │   │       │   ├── InquiriesScreen.tsx
@@ -711,7 +715,8 @@ mls_website/
 │   │       │   └── property.store.ts
 │   │       ├── types/
 │   │       │   ├── property.types.ts
-│   │       │   └── propertyDraftSubmission.types.ts
+│   │       │   ├── propertyDraftSubmission.types.ts
+│   │       │   └── upload.types.ts
 │   │       └── utils/
 │   │           ├── applyFavoriteFlagsToListings.ts
 │   │           ├── buildMyListingTableColumns.tsx
