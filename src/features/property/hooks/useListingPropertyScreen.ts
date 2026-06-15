@@ -20,7 +20,9 @@ import {
   type MyListingStatusFilterValue,
 } from "../constants/myListingStatusFilters.constants";
 import { mapAgentPropertyListItems } from "../mappers/agentPropertiesList.mapper";
+import { buildMyListingTableColumns } from "../utils/buildMyListingTableColumns";
 import {
+  type PropertyListingsNamespace,
   useDeletePropertySubmission,
   useGetAgentProperties,
 } from "../mutations/property.mutation";
@@ -29,7 +31,6 @@ import type {
   AgentPropertyListItem,
   PaginationMeta,
 } from "../types/property.types";
-import { buildMyListingTableColumns } from "../utils/buildMyListingTableColumns";
 import { useToast } from "@/src/hooks/useToast";
 
 type LibraryPropertyListing = ComponentProps<typeof ListTableView>["data"][number];
@@ -73,13 +74,21 @@ function isMyListingStatusFilterValue(value: string): value is MyListingStatusFi
   return (MY_LISTING_STATUS_FILTER_VALUES as readonly string[]).includes(value);
 }
 
-export function useListingPropertyScreen() {
+type UseListingPropertyScreenOptions = {
+  listingsNamespace?: PropertyListingsNamespace;
+};
+
+export function useListingPropertyScreen(
+  options: UseListingPropertyScreenOptions = {},
+) {
+  const listingsNamespace = options.listingsNamespace ?? "myListings";
+
   // 1. Router & navigation
   const router = useRouter();
 
   // 2. UI utilities
-  const t = useTranslations("propertyList.myListings");
-  const tStatus = useTranslations("propertyList.myListings.statusFilter");
+  const t = useTranslations(`propertyList.${listingsNamespace}`);
+  const tStatus = useTranslations(`propertyList.${listingsNamespace}.statusFilter`);
   const locale = useLocale() as AppLocale;
   const toast = useToast();
 
@@ -105,7 +114,7 @@ export function useListingPropertyScreen() {
 
   // 5. Data fetching / queries
   const { mutate: getAgentProperties, isPending: isLoadingAgentProperties } =
-    useGetAgentProperties();
+    useGetAgentProperties(listingsNamespace);
   const { mutate: deletePropertySubmission, isPending: isDeletingSubmission } =
     useDeletePropertySubmission();
 
@@ -497,6 +506,7 @@ export function useListingPropertyScreen() {
       onStatusChange,
       columnOptions,
       onColumnVisibilityChange,
+      listingsNamespace,
     },
     sortConfig: activeSortConfig,
     onSort,

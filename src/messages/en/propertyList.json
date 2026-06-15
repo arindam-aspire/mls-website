@@ -120,7 +120,55 @@
   "manageListings": {
     "pageTitle": "Manage Listings",
     "pageSubtitle": "Create, edit, and publish your property listings.",
+    "fetchError": "Failed to fetch listings",
+    "statusFilter": {
+      "all": "All",
+      "ariaLabel": "Filter by status",
+      "draft": "Draft",
+      "in_progress": "In Progress",
+      "submitted": "Submitted",
+      "pending_approval": "Pending Approval",
+      "pending_admin_approval": "Pending Admin Approval",
+      "changes_requested": "Changes Requested",
+      "approved": "Approved",
+      "verified": "Verified",
+      "rejected": "Rejected"
+    },
     "addProperty": "Add Property",
+    "noDataTitle": "No listings found",
+    "noDataDescription": "Try adjusting your search or status filter, or add a new property.",
+    "columns": {
+      "propertyName": "Property Name",
+      "reference": "Reference",
+      "status": "Status",
+      "submittedOn": "Submitted on",
+      "submittedOnEmpty": "—",
+      "reviewedOn": "Reviewed on",
+      "reviewedOnEmpty": "—",
+      "actions": "Actions"
+    },
+    "columnPickerTitle": "Toggle Columns",
+    "columnPickerAriaLabel": "Choose table columns",
+    "workflow": {
+      "view": "View",
+      "continue": "Continue",
+      "edit": "Edit",
+      "viewRejectedReason": "View Rejected Reason",
+      "delete": "Delete"
+    },
+    "rejectedReasonModal": {
+      "title": "Rejected reason",
+      "empty": "No rejection reason was provided for this listing.",
+      "close": "Close"
+    },
+    "cancelLabel": "Cancel",
+    "deleteConfirmTitle": "Delete listing?",
+    "deleteConfirmDescription": "\"{title}\" will be permanently deleted. This cannot be undone.",
+    "deletingLabel": "Deleting…",
+    "deleteSuccessTitle": "Listing deleted",
+    "deleteSuccessDescription": "The listing was deleted successfully.",
+    "deleteError": "Failed to delete listing",
+    "tableViewAriaLabel": "Table view",
     "comingSoonEyebrow": "Under development",
     "comingSoonDescription": "Create, edit, and manage your property listings in one place. This feature is coming soon!"
   },

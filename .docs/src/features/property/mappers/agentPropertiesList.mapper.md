@@ -7,7 +7,7 @@ Maps `GET /agent-properties` rows (`AgentPropertyListItem`) into `@abdoun/abdoun
 # Responsibilities
 
 - Convert API list items to library `PropertyListing` rows for `ListTableView`.
-- Delegate status, title, price, and `submission_review_reason` mapping to `mapSubmissionApiListingToPropertyListing`.
+- Delegate status, title, price, and `submission_review_reason` mapping to `mapSubmissionApiListingToPropertyListing` (uses `submission_workflow_label` from the API).
 - Override `validatedDate` with `submission_submitted_at` for the **Submitted on** column and set `reviewedDate` from `submission_reviewed_at` for **Reviewed on**.
 - When `submission_workflow_label === "rejected"`, attach per-row `actions` from `buildRejectedListingRowActions` (View, Edit, View Rejected Reason, Delete) with visibility from `can_edit_submission`, `can_delete_submission`, and `submission_review_reason`.
 - Other workflow statuses omit `actions` so row menus follow `STATUS_WORKFLOW_ACTION_MATRIX` in the library.

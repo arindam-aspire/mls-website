@@ -159,8 +159,12 @@ export const useSubmitPropertySubmission = () => {
   });
 };
 
-export const useGetAgentProperties = () => {
-  const t = useTranslations("propertyList.myListings");
+export type PropertyListingsNamespace = "myListings" | "manageListings";
+
+export const useGetAgentProperties = (
+  listingsNamespace: PropertyListingsNamespace = "myListings",
+) => {
+  const t = useTranslations(`propertyList.${listingsNamespace}`);
   const toast = useToast();
 
   return useMutation({

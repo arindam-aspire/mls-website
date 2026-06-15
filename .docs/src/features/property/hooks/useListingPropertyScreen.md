@@ -1,6 +1,6 @@
 # File Overview
 
-Screen hook for `ListingPropertyScreen`: fetches agent properties, maps rows for `ListTableView`, and exposes filters, sort, and pagination.
+Screen hook for `ListingPropertyScreen` and `ManageListingsScreen`: fetches agent properties, maps rows for `ListTableView`, and exposes filters, sort, and pagination.
 
 **Source:** `src/features/property/hooks/useListingPropertyScreen.ts`
 
@@ -34,9 +34,15 @@ Screen hook for `ListingPropertyScreen`: fetches agent properties, maps rows for
 - Local state for listings, pagination meta, request params, page, pageSize, sort.
 - `isLoading` true until first response or while mutation is pending.
 
+# Props / Parameters
+
+| Option | Type | Default | Purpose |
+| --- | --- | --- | --- |
+| `listingsNamespace` | `"myListings" \| "manageListings"` | `"myListings"` | i18n namespace under `propertyList.*` for labels, errors, and filter copy |
+
 # Exports
 
-- `useListingPropertyScreen()`
+- `useListingPropertyScreen(options?)`
 
 # Return values (selected)
 

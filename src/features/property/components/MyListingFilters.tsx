@@ -5,6 +5,7 @@ import { iconButtonSizeClasses } from "@/src/components/ui/responsiveSizes";
 import { Popover, PopoverButton, PopoverPanel } from "@/src/components/ui/popover";
 import { MY_LISTING_STATUS_FILTER_VALUES } from "@/src/features/property/constants/myListingStatusFilters.constants";
 import type { MyListingToggleableColumnId } from "@/src/features/property/constants/myListingTableColumns.constants";
+import type { PropertyListingsNamespace } from "@/src/features/property/mutations/property.mutation";
 import { cn } from "@/src/lib/cn";
 import { TableProperties } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -30,6 +31,7 @@ export type MyListingFiltersProps = {
     columnId: MyListingToggleableColumnId,
     visible: boolean,
   ) => void;
+  listingsNamespace?: PropertyListingsNamespace;
 };
 
 export function MyListingFilters({
@@ -39,10 +41,11 @@ export function MyListingFilters({
   onStatusChange,
   columnOptions,
   onColumnVisibilityChange,
+  listingsNamespace = "myListings",
 }: MyListingFiltersProps) {
   const tCommon = useTranslations("common");
-  const t = useTranslations("propertyList.myListings");
-  const tStatus = useTranslations("propertyList.myListings.statusFilter");
+  const t = useTranslations(`propertyList.${listingsNamespace}`);
+  const tStatus = useTranslations(`propertyList.${listingsNamespace}.statusFilter`);
 
   const statusOptions = useMemo(
     () =>

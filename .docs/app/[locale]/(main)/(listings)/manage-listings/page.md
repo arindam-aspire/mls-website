@@ -37,7 +37,7 @@ Uses `useAuthorize("MANAGE_LISTINGS")` — reads `user` / `isLoadingUser` from `
 1. Next.js resolves locale-prefixed URL.
 2. `(main)/layout.tsx` applies `ProtectedLayout`.
 3. `useAuthorize("MANAGE_LISTINGS")` waits for `isLoadingUser`, then checks roles.
-4. On success, `ManageListingsScreen` renders page title/subtitle, optional **Add Property** for agents, and Coming Soon placeholder.
+4. On success, `ManageListingsScreen` renders page title/subtitle, optional **Add Property** for agents, filters, and agent listings table (same table pattern as my-listings).
 
 # Dependencies
 

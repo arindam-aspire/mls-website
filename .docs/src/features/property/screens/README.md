@@ -4,7 +4,7 @@ Screens mounted by `app/[locale]/(main)/*/page.tsx` or `app/[locale]/(property)/
 
 | Screen | Route | Route group | Status |
 | --- | --- | --- | --- |
-| [ManageListingsScreen.md](./ManageListingsScreen.md) | `/en/manage-listings` | `(main)` | Coming Soon |
+| [ManageListingsScreen.md](./ManageListingsScreen.md) | `/en/manage-listings` | `(main)` | Manage Listings table (`ListTableView`) |
 | [ListingPropertyScreen.md](./ListingPropertyScreen.md) | `/en/my-listings` | `(main)/(listings)` | My Listings |
 | [PropertyCreateScreen.md](./PropertyCreateScreen.md) | `/en/property-create` | `(main)/(listings)` | Coming Soon |
 | [PropertyUpdateScreen.md](./PropertyUpdateScreen.md) | `/en/property-update` | `(main)/(listings)` | Coming Soon |

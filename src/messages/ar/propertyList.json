@@ -120,7 +120,55 @@
   "manageListings": {
     "pageTitle": "إدارة الإعلانات",
     "pageSubtitle": "أنشئ وعدّل وانشر إعلاناتك العقارية.",
+    "fetchError": "تعذّر جلب الإعلانات",
+    "statusFilter": {
+      "all": "الكل",
+      "ariaLabel": "تصفية حسب الحالة",
+      "draft": "مسودة",
+      "in_progress": "قيد التنفيذ",
+      "submitted": "مُرسَل",
+      "pending_approval": "بانتظار الموافقة",
+      "pending_admin_approval": "بانتظار موافقة المسؤول",
+      "changes_requested": "طُلبت تعديلات",
+      "approved": "موافق عليه",
+      "verified": "موثّق",
+      "rejected": "مرفوض"
+    },
     "addProperty": "إضافة عقار",
+    "noDataTitle": "لا توجد إعلانات",
+    "noDataDescription": "جرّب تعديل البحث أو تصفية الحالة، أو أضف عقاراً جديداً.",
+    "columns": {
+      "propertyName": "اسم العقار",
+      "reference": "المرجع",
+      "status": "الحالة",
+      "submittedOn": "تاريخ الإرسال",
+      "submittedOnEmpty": "—",
+      "reviewedOn": "تاريخ المراجعة",
+      "reviewedOnEmpty": "—",
+      "actions": "الإجراءات"
+    },
+    "columnPickerTitle": "تبديل الأعمدة",
+    "columnPickerAriaLabel": "اختيار أعمدة الجدول",
+    "workflow": {
+      "view": "عرض",
+      "continue": "متابعة",
+      "edit": "تعديل",
+      "viewRejectedReason": "عرض سبب الرفض",
+      "delete": "حذف"
+    },
+    "rejectedReasonModal": {
+      "title": "سبب الرفض",
+      "empty": "لم يتم تقديم سبب رفض لهذا الإعلان.",
+      "close": "إغلاق"
+    },
+    "cancelLabel": "إلغاء",
+    "deleteConfirmTitle": "حذف الإعلان؟",
+    "deleteConfirmDescription": "سيتم حذف \"{title}\" نهائياً. لا يمكن التراجع عن هذا الإجراء.",
+    "deletingLabel": "جارٍ الحذف…",
+    "deleteSuccessTitle": "تم حذف الإعلان",
+    "deleteSuccessDescription": "تم حذف الإعلان بنجاح.",
+    "deleteError": "تعذر حذف الإعلان",
+    "tableViewAriaLabel": "عرض الجدول",
     "comingSoonEyebrow": "قيد التطوير",
     "comingSoonDescription": "أنشئ وعدّل وأدر إعلاناتك العقارية في مكان واحد. هذه الميزة قادمة قريباً!"
   },

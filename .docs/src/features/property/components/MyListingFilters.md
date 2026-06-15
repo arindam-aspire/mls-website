@@ -1,6 +1,6 @@
 # File Overview
 
-Filter bar for the **My Listings** screen (`ListingPropertyScreen`): search, status dropdown, and column visibility popover.
+Filter bar for **My Listings** (`ListingPropertyScreen`) and **Manage Listings** (`ManageListingsScreen`): search, status dropdown, and column visibility popover.
 
 **Source:** `src/features/property/components/MyListingFilters.tsx`
 
@@ -14,7 +14,7 @@ Filter bar for the **My Listings** screen (`ListingPropertyScreen`): search, sta
 
 - `SearchInput`, `SelectDropdown`, `Popover` family from `@/src/components/ui/popover`
 - `MY_LISTING_STATUS_FILTER_VALUES` from `myListingStatusFilters.constants`
-- `common` + `propertyList.myListings` translations
+- `common` + `propertyList.myListings` or `propertyList.manageListings` translations (via `listingsNamespace`)
 
 # Props / Parameters
 
@@ -26,6 +26,7 @@ Filter bar for the **My Listings** screen (`ListingPropertyScreen`): search, sta
 | `onStatusChange` | `(value: string) => void` |
 | `columnOptions` | `MyListingColumnOption[]` — label and visible per optional column |
 | `onColumnVisibilityChange` | `(columnId, visible) => void` |
+| `listingsNamespace` | `"myListings" \| "manageListings"` (default `"myListings"`) |
 
 # Actions / Inputs
 
