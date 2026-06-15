@@ -18,6 +18,7 @@ type LibraryPropertyListing = ComponentProps<typeof ListTableView>["data"][numbe
 
 export type MyListingTableRow = LibraryPropertyListing & {
   reviewedDate: string;
+  submission_review_reason?: string | null;
 };
 
 function isRejectedWorkflow(item: AgentPropertyListItem): boolean {
@@ -43,6 +44,7 @@ export function mapAgentPropertyListItem(
     ...listing,
     validatedDate: item.submission_submitted_at ?? "",
     reviewedDate: item.submission_reviewed_at ?? "",
+    submission_review_reason: item.submission_review_reason,
     actions:
       isRejectedWorkflow(item) && options?.rejectedRowActionLabels
         ? buildRejectedListingRowActions(item, options.rejectedRowActionLabels)

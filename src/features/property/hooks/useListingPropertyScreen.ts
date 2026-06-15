@@ -424,16 +424,28 @@ export function useListingPropertyScreen(
     [columnVisibility, t],
   );
 
+  const rejectedSubmissionReviewReason = useMemo(() => {
+    if (!rejectedReasonListing) {
+      return "";
+    }
+
+    const sourceItem = listings?.find(
+      (item) => item.property_id === rejectedReasonListing.property_id,
+    );
+
+    return sourceItem?.submission_review_reason?.trim() ?? "";
+  }, [listings, rejectedReasonListing]);
+
   const rejectedReasonModal = useMemo(
     () => ({
       open: rejectedReasonListing !== null,
       title: t("rejectedReasonModal.title"),
-      reason: rejectedReasonListing?.submission_review_reason?.trim() ?? "",
+      reason: rejectedSubmissionReviewReason,
       emptyReason: t("rejectedReasonModal.empty"),
       closeLabel: t("rejectedReasonModal.close"),
       onClose: () => setRejectedReasonListing(null),
     }),
-    [rejectedReasonListing, t],
+    [rejectedReasonListing, rejectedSubmissionReviewReason, t],
   );
 
   const deleteConfirmModal = useMemo(
