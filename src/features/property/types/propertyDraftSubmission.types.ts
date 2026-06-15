@@ -169,6 +169,12 @@ export type PropertyDraftSubmissionResponse = {
   meta?: Record<string, unknown>;
 };
 
+/** Request body for `POST /property-submissions/submit` (no existing draft id). */
+export type PropertySubmissionDirectSubmitRequestBody = {
+  payload: PropertyDraftSubmissionPayload;
+  confirm_submit: true;
+};
+
 /** Request body for `POST /property-submissions/{submissionId}/submit`. */
 export type PropertyDraftSubmissionSubmitRequestBody = {
   confirm_submit: true;
@@ -180,4 +186,12 @@ export type PropertyDraftSubmissionSubmitResponse = {
   data: PropertyDraftSubmissionData | null;
   error: unknown;
   meta?: Record<string, unknown>;
+};
+
+/** Response from `DELETE /property-submissions/{submissionId}`. */
+export type PropertySubmissionDeleteResponse = {
+  success: boolean;
+  message: string | null;
+  data: unknown;
+  error: unknown;
 };

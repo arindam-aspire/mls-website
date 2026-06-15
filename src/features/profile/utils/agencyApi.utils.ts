@@ -1,7 +1,11 @@
 import type {
   Agency,
   AgencyApiPayload,
+  AgencyListItem,
+  AgencyListItemRaw,
+  AgencyListResponse,
   GetAgencyResponse,
+  NormalizedAgencyListResponse,
   NormalizedGetAgencyResponse,
 } from "../types/profile.types";
 import {
@@ -39,5 +43,45 @@ export function normalizeGetAgencyResponse(
   return {
     ...response,
     data: unwrapAgencyFromResponseData(response.data),
+  };
+}
+
+function normalizeNullableUrl(value: string | null | undefined): string | null {
+  const trimmed = value?.trim() ?? "";
+  return trimmed.length > 0 ? trimmed : null;
+}
+
+function normalizeAgencyListItem(raw: AgencyListItemRaw): AgencyListItem | null {
+  const id = raw.id?.trim() ?? "";
+  if (!id) {
+    return null;
+  }
+
+  const agencyName = raw.agency_name?.trim() ?? "";
+
+  return {
+    id,
+    agency_name: agencyName,
+    logo_url: normalizeNullableUrl(raw.logo_url),
+    email: raw.email?.trim() ?? "",
+    phone: raw.phone?.trim() ?? "",
+  };
+}
+
+export function normalizeAgencyListResponse(
+  response: AgencyListResponse,
+  params: { skip: number; limit: number },
+): NormalizedAgencyListResponse {
+  const rawItems = response.data ?? [];
+
+  const items = rawItems
+    .map(normalizeAgencyListItem)
+    .filter((item): item is AgencyListItem => item !== null);
+
+  return {
+    items,
+    total: items.length,
+    skip: params.skip,
+    limit: params.limit,
   };
 }

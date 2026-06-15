@@ -1,4 +1,5 @@
 export const userEndpoints = {
+  AGENCY: "/users/agency",
   RECENT_VIEWS: "/users/recent-views",
   RECENT_VIEWS_LIST: (params: { page: number; pageSize: number }): string => {
     const search = new URLSearchParams({

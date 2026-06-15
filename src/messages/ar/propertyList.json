@@ -130,6 +130,7 @@
     "fetchError": "فشل في جلب مسودات الإعلانات",
     "resume": "استئناف",
     "createNew": "إنشاء إعلان جديد",
+    "addProperty": "إضافة عقار",
     "updatedAt": "تم التحديث {time}",
     "listingPurposeSale": "للبيع",
     "listingPurposeRent": "للإيجار",
@@ -147,7 +148,7 @@
       "in_progress": "قيد التنفيذ",
       "submitted": "مُرسَل",
       "pending_approval": "بانتظار الموافقة",
-      "pending_admin_approval": "بانتظار موافقة المسؤول",
+      "pending_admin_approval": "بانتظار الموافقة",
       "changes_requested": "طُلبت تعديلات",
       "approved": "موافق عليه",
       "verified": "موثّق",
@@ -162,14 +163,31 @@
       "status": "الحالة",
       "submittedOn": "تاريخ الإرسال",
       "submittedOnEmpty": "—",
+      "reviewedOn": "تاريخ المراجعة",
+      "reviewedOnEmpty": "—",
       "actions": "الإجراءات"
     },
     "columnPickerTitle": "تبديل الأعمدة",
     "columnPickerAriaLabel": "اختيار أعمدة الجدول",
     "workflow": {
       "view": "عرض",
-      "continue": "متابعة"
+      "continue": "متابعة",
+      "edit": "تعديل",
+      "viewRejectedReason": "عرض سبب الرفض",
+      "delete": "حذف"
     },
+    "rejectedReasonModal": {
+      "title": "سبب الرفض",
+      "empty": "لم يتم تقديم سبب رفض لهذا الإعلان.",
+      "close": "إغلاق"
+    },
+    "cancelLabel": "إلغاء",
+    "deleteConfirmTitle": "حذف الإعلان؟",
+    "deleteConfirmDescription": "سيتم حذف \"{title}\" نهائياً. لا يمكن التراجع عن هذا الإجراء.",
+    "deletingLabel": "جارٍ الحذف…",
+    "deleteSuccessTitle": "تم حذف الإعلان",
+    "deleteSuccessDescription": "تم حذف الإعلان بنجاح.",
+    "deleteError": "تعذر حذف الإعلان",
     "tableViewAriaLabel": "عرض الجدول",
     "comingSoonEyebrow": "قيد التطوير",
     "comingSoonDescription": "أدر واعرض جميع إعلاناتك العقارية في مكان واحد. هذه الميزة قادمة قريباً!"

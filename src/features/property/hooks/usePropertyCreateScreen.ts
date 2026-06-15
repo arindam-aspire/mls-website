@@ -24,6 +24,7 @@ import { usePathname, useRouter } from "@/src/i18n/navigation";
 import {
   buildPropertyDraftSubmissionRequestBody,
   buildPropertyDraftSubmissionUpdateRequestBody,
+  buildPropertySubmissionDirectSubmitRequestBody,
   mapPropertyDraftSubmissionToPropertyFormValues,
 } from "@/src/features/property/mappers/propertyDraftSubmission.mapper";
 import {
@@ -38,9 +39,11 @@ import {
   useGetPropertyFeatureCatalog,
   useSavePropertyDraftSubmission,
   useSubmitPropertyDraftSubmission,
+  useSubmitPropertySubmission,
   useUpdatePropertyDraftSubmission,
 } from "@/src/features/property/mutations/property.mutation";
 import type { FeatureCatalogItem } from "@/src/features/property/types/property.types";
+import type { PropertyDraftSubmissionData } from "@/src/features/property/types/propertyDraftSubmission.types";
 import {
   propertyFormSteps,
   type PropertyFormStep,
@@ -62,6 +65,16 @@ function getLocationTaxonomyTotal(
   }
 
   return payload.total;
+}
+
+function resolveSubmissionFormAccess(data: PropertyDraftSubmissionData) {
+  const status = data.status?.trim().toLowerCase();
+
+  return {
+    canEdit: status !== "submitted",
+    rejectionReason:
+      status === "rejected" ? data.review_reason?.trim() || null : null,
+  };
 }
 
 export function usePropertyCreateScreen() {
@@ -93,6 +106,8 @@ export function usePropertyCreateScreen() {
   );
   const [isCatalogLoading, setIsCatalogLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [canEditSubmission, setCanEditSubmission] = useState(true);
+  const [rejectionReason, setRejectionReason] = useState<string | null>(null);
   const [submissionId, setSubmissionId] = useState<string | null>(() =>
     searchParams.get(PROPERTY_CREATE_SUBMISSION_ID_PARAM),
   );
@@ -111,6 +126,7 @@ export function usePropertyCreateScreen() {
   const { mutateAsync: updateDraftSubmission, isPending: isUpdateDraftSaving } =
     useUpdatePropertyDraftSubmission();
   const { mutateAsync: submitDraftSubmission } = useSubmitPropertyDraftSubmission();
+  const { mutateAsync: submitPropertySubmissionDirect } = useSubmitPropertySubmission();
   const isDraftSaving = isCreateDraftSaving || isUpdateDraftSaving;
   const { onUploadOwnerDocument } = useOwnerDocumentUpload();
   const { onUploadPropertyMedia, onUploadPropertyDocument } =
@@ -211,6 +227,10 @@ export function usePropertyCreateScreen() {
         );
         setSubmissionId(draftResponse.data.submission_id);
         draftHydratedForRef.current = draftResponse.data.submission_id;
+
+        const formAccess = resolveSubmissionFormAccess(draftResponse.data);
+        setCanEditSubmission(formAccess.canEdit);
+        setRejectionReason(formAccess.rejectionReason);
       }
     },
     [fetchPropertyDraftSubmission],
@@ -290,58 +310,49 @@ export function usePropertyCreateScreen() {
     setIsSubmitting(true);
 
     try {
-      let submissionIdToSubmit = submissionId;
-
-      if (submissionIdToSubmit) {
-        const saveResponse = await updateDraftSubmission({
-          submissionId: submissionIdToSubmit,
-          body: buildPropertyDraftSubmissionUpdateRequestBody(
+      if (!submissionId) {
+        const submitResponse = await submitPropertySubmissionDirect(
+          buildPropertySubmissionDirectSubmitRequestBody(
             detailsForSubmit,
             featuresAndAmenities,
-            currentStep,
-            lastCompletedStep,
-            submitPayloadOptions,
-          ),
-        });
-
-        if (!saveResponse.success) {
-          toast.error(t("submitSaveError"), {
-            description: saveResponse.message ?? undefined,
-          });
-          return;
-        }
-      } else {
-        const saveResponse = await saveDraftSubmission(
-          buildPropertyDraftSubmissionRequestBody(
-            detailsForSubmit,
-            featuresAndAmenities,
-            currentStep,
-            lastCompletedStep,
             submitPayloadOptions,
           ),
         );
 
-        if (!saveResponse.success) {
-          toast.error(t("submitSaveError"), {
-            description: saveResponse.message ?? undefined,
+        if (submitResponse.success) {
+          toast.success(t("submitSuccess"), {
+            description: submitResponse.message ?? undefined,
           });
+          router.push(listingsPath);
           return;
         }
 
-        const nextSubmissionId = saveResponse.data?.submission_id;
+        toast.error(t("submitError"), {
+          description: submitResponse.message ?? undefined,
+        });
+        return;
+      }
 
-        if (!nextSubmissionId) {
-          toast.error(t("submitSaveError"));
-          return;
-        }
+      const saveResponse = await updateDraftSubmission({
+        submissionId,
+        body: buildPropertyDraftSubmissionUpdateRequestBody(
+          detailsForSubmit,
+          featuresAndAmenities,
+          currentStep,
+          lastCompletedStep,
+          submitPayloadOptions,
+        ),
+      });
 
-        submissionIdToSubmit = nextSubmissionId;
-        draftHydratedForRef.current = nextSubmissionId;
-        syncSubmissionIdInUrl(nextSubmissionId);
+      if (!saveResponse.success) {
+        toast.error(t("submitSaveError"), {
+          description: saveResponse.message ?? undefined,
+        });
+        return;
       }
 
       const submitResponse = await submitDraftSubmission({
-        submissionId: submissionIdToSubmit,
+        submissionId,
         body: { confirm_submit: true },
       });
 
@@ -368,10 +379,9 @@ export function usePropertyCreateScreen() {
     maxReachedStep,
     propertyDetails,
     router,
-    saveDraftSubmission,
     submissionId,
     submitDraftSubmission,
-    syncSubmissionIdInUrl,
+    submitPropertySubmissionDirect,
     t,
     toast,
     updateDraftSubmission,
@@ -468,6 +478,8 @@ export function usePropertyCreateScreen() {
     isDraftSaving,
     isSubmitting,
     submissionId,
+    canEditSubmission,
+    rejectionReason,
     onNext,
     onPrevious,
     onStepClick,

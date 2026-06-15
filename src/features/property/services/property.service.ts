@@ -7,6 +7,8 @@ import type {
   PropertyDraftSubmissionSubmitRequestBody,
   PropertyDraftSubmissionSubmitResponse,
   PropertyDraftSubmissionUpdateRequestBody,
+  PropertySubmissionDeleteResponse,
+  PropertySubmissionDirectSubmitRequestBody,
 } from "../types/propertyDraftSubmission.types";
 import type {
   AgentPropertiesListParams,
@@ -119,6 +121,27 @@ export async function getPropertyDraftSubmission(
     endpoint: propertyEndpoints.PROPERTY_SUBMISSION_BY_ID(submissionId),
     method: "GET",
     auth: true,
+  });
+}
+
+export async function deletePropertySubmission(
+  submissionId: string,
+): Promise<PropertySubmissionDeleteResponse> {
+  return apiClient.request<PropertySubmissionDeleteResponse>({
+    endpoint: propertyEndpoints.PROPERTY_SUBMISSION_BY_ID(submissionId),
+    method: "DELETE",
+    auth: true,
+  });
+}
+
+export async function submitPropertySubmission(
+  body: PropertySubmissionDirectSubmitRequestBody,
+): Promise<PropertyDraftSubmissionSubmitResponse> {
+  return apiClient.request<PropertyDraftSubmissionSubmitResponse>({
+    endpoint: propertyEndpoints.PROPERTY_SUBMISSIONS_SUBMIT(),
+    method: "POST",
+    auth: true,
+    body,
   });
 }
 

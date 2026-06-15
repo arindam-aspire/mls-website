@@ -1,17 +1,19 @@
 # File Overview
 
-Draft listings screen using `@abdoun/abdoun-library` **`DraftList`** fed by `useDraftListingsScreen`.
+Draft listings screen using **`PropertyDraftList`** (per-row actions from API `can_edit` / `can_delete`) fed by `useDraftListingsScreen`.
 
 **Source:** `src/features/property/screens/DraftListingsScreen.tsx`
 
 # Responsibilities
 
 - Page heading from `propertyList.draftListings`.
-- Render `DraftList` with API-backed `items`, `isLoading`, pagination, resume/create/delete handlers, and localized empty state.
+- **Add Property** primary button in page header (always visible, same layout as My Listings) — uses `onCreateNew` from `useAddPropertyEntry({ restrictForOwnerOnly: true })`.
+- Render `PropertyDraftList` with API-backed items, pagination, and per-row actions.
 
 # Imports
 
-- `DraftList` from `@abdoun/abdoun-library`
+- `PropertyDraftList` from property components
+- `SelectAgencyModal` from profile modals
 - `useDraftListingsScreen`
 
 # Navigation
@@ -22,3 +24,5 @@ Draft listings screen using `@abdoun/abdoun-library` **`DraftList`** fed by `use
 # Dependencies
 
 - [useDraftListingsScreen.md](../hooks/useDraftListingsScreen.md)
+- [useAddPropertyEntry.md](../hooks/useAddPropertyEntry.md)
+- [SelectAgencyModal.md](../../profile/modals/SelectAgencyModal.md)

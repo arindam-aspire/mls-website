@@ -130,6 +130,7 @@
     "fetchError": "Échec du chargement des annonces brouillon",
     "resume": "Reprendre",
     "createNew": "Créer une nouvelle annonce",
+    "addProperty": "Ajouter un bien",
     "updatedAt": "Mis à jour {time}",
     "listingPurposeSale": "À vendre",
     "listingPurposeRent": "À louer",
@@ -147,7 +148,7 @@
       "in_progress": "En cours",
       "submitted": "Soumis",
       "pending_approval": "En attente d'approbation",
-      "pending_admin_approval": "En attente d'approbation admin",
+      "pending_admin_approval": "En attente d'approbation",
       "changes_requested": "Modifications demandées",
       "approved": "Approuvé",
       "verified": "Vérifié",
@@ -162,14 +163,31 @@
       "status": "Statut",
       "submittedOn": "Soumis le",
       "submittedOnEmpty": "—",
+      "reviewedOn": "Révisé le",
+      "reviewedOnEmpty": "—",
       "actions": "Actions"
     },
     "columnPickerTitle": "Afficher les colonnes",
     "columnPickerAriaLabel": "Choisir les colonnes du tableau",
     "workflow": {
       "view": "Voir",
-      "continue": "Continuer"
+      "continue": "Continuer",
+      "edit": "Modifier",
+      "viewRejectedReason": "Voir le motif du rejet",
+      "delete": "Supprimer"
     },
+    "rejectedReasonModal": {
+      "title": "Motif du rejet",
+      "empty": "Aucun motif de rejet n'a été fourni pour cette annonce.",
+      "close": "Fermer"
+    },
+    "cancelLabel": "Annuler",
+    "deleteConfirmTitle": "Supprimer l'annonce ?",
+    "deleteConfirmDescription": "« {title} » sera supprimé définitivement. Cette action est irréversible.",
+    "deletingLabel": "Suppression…",
+    "deleteSuccessTitle": "Annonce supprimée",
+    "deleteSuccessDescription": "L'annonce a été supprimée avec succès.",
+    "deleteError": "Échec de la suppression de l'annonce",
     "tableViewAriaLabel": "Vue tableau",
     "comingSoonEyebrow": "En cours de développement",
     "comingSoonDescription": "Gérez et consultez toutes vos annonces immobilières au même endroit. Cette fonctionnalité arrive bientôt !"

@@ -18,12 +18,15 @@ Logic layer for the profile feature.
 - `useAgencyMeasurementUnitPreference` — agency area unit (SQFT/SQM) selection + `PUT /agency/{id}`.
 - `useAgencyDisplayPreferencesRows` — `UpcomingFeatureModal` state when persist is off.
 
+- `useSelectAgencyModal` — select agency modal labels and close (agency picker UI pending).
+
 ## Files
 
 | Path | Role |
 | --- | --- |
 | [index.md](./index.md) | Barrel re-export for profile hooks |
 | [useProfileScreen.md](./useProfileScreen.md) | Profile screen logic — auth store user, labels, modal state |
+| [useSelectAgencyModal.md](./useSelectAgencyModal.md) | Select agency modal — i18n and close handler |
 | [useAgencyLogoUpload.md](./useAgencyLogoUpload.md) | Agency logo upload/remove on profile page |
 | [useEditAgencyModal.md](./useEditAgencyModal.md) | Edit agency modal — form state, PUT, optional license upload |
 | [useChangePasswordModal.md](./useChangePasswordModal.md) | Logic hook for change-password modal API/submit/close flow |

@@ -3,6 +3,7 @@ export const MY_LISTING_TABLE_COLUMN_IDS = [
   "reference",
   "status",
   "submittedOn",
+  "reviewedOn",
   "actions",
 ] as const;
 
@@ -19,6 +20,7 @@ export const MY_LISTING_TOGGLEABLE_COLUMN_IDS = [
   "reference",
   "status",
   "submittedOn",
+  "reviewedOn",
 ] as const;
 
 export type MyListingToggleableColumnId =
@@ -30,16 +32,18 @@ export const DEFAULT_MY_LISTING_COLUMN_VISIBILITY: MyListingColumnVisibility = {
   reference: true,
   status: true,
   submittedOn: true,
+  reviewedOn: true,
 };
 
 export const MY_LISTING_COLUMN_I18N_KEY: Record<
   MyListingTableColumnId,
-  "propertyName" | "reference" | "status" | "submittedOn" | "actions"
+  "propertyName" | "reference" | "status" | "submittedOn" | "reviewedOn" | "actions"
 > = {
   title: "propertyName",
   reference: "reference",
   status: "status",
   submittedOn: "submittedOn",
+  reviewedOn: "reviewedOn",
   actions: "actions",
 };
 

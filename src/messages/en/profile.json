@@ -153,5 +153,23 @@
   "otpVerifyContinue": "Verify & Continue",
   "otpVerifyConfirmLoading": "Verifying…",
   "otpVerifyCodeRequired": "Enter the 6-digit code",
-  "otpVerifySentCodeLabel": "Your verification code:"
+  "otpVerifySentCodeLabel": "Your verification code:",
+  "selectAgency": {
+    "title": "Select agency",
+    "description": "Choose an agency to list your property under.",
+    "searchPlaceholder": "Search agencies by name, email, or phone…",
+    "agencyCount": "{count, plural, one {# agency} other {# agencies}}",
+    "agencyListAriaLabel": "Available agencies",
+    "agencyOptionAriaLabel": "{name}",
+    "continue": "Continue",
+    "assignAgencyErrorTitle": "Could not link agency",
+    "selectHint": "Select an agency to continue",
+    "emptyTitle": "No agencies available",
+    "emptyDescription": "There are no agencies to select right now. Try again later.",
+    "noSearchResultsTitle": "No agencies match your search",
+    "noSearchResultsDescription": "Try a different name, email, or phone number.",
+    "fetchErrorTitle": "Could not load agencies",
+    "selectAgencyRequiredTitle": "Select an agency",
+    "selectAgencyRequiredDescription": "Choose an agency before continuing."
+  }
 }

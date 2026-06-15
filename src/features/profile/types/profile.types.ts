@@ -301,3 +301,72 @@ export type EditAgencyFormValues = {
   country: string;
   zip_code: string;
 };
+
+// ── Agency list (GET /agency/list) ───────────────────────────────────────────
+
+export type AgencyListParams = {
+  skip?: number;
+  limit?: number;
+};
+
+/** Single row from `GET /agency/list` (`data[]`). */
+export type AgencyListItemRaw = {
+  id: string;
+  agency_name: string;
+  agency_trade_name: string;
+  legal_document_s3_link: string | null;
+  logo_url: string | null;
+  email: string;
+  phone: string;
+  profile_picture_url: string | null;
+  website: string | null;
+  address: string | null;
+  city: string | null;
+  state: string | null;
+  country: string | null;
+  zip_code: string | null;
+  currency: string;
+  measurement_unit: string;
+  is_active: boolean;
+  is_verified: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+/** Normalized row for select-agency UI. */
+export type AgencyListItem = {
+  id: string;
+  agency_name: string;
+  logo_url: string | null;
+  email: string;
+  phone: string;
+};
+
+export type AgencyListResponse = {
+  success: boolean;
+  message: string | null;
+  data: AgencyListItemRaw[] | null;
+  error: unknown;
+  meta: Record<string, unknown>;
+};
+
+export type NormalizedAgencyListResponse = {
+  items: AgencyListItem[];
+  total: number;
+  skip: number;
+  limit: number;
+};
+
+// ── User agency (PATCH /users/agency) ─────────────────────────────────────────
+
+export type AssignUserAgencyRequest = {
+  agencyId: string;
+};
+
+export type AssignUserAgencyResponse = {
+  success: boolean;
+  message: string | null;
+  data: unknown;
+  error: unknown;
+  meta: Record<string, unknown>;
+};

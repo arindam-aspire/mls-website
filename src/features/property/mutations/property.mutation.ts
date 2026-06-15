@@ -13,6 +13,7 @@ import {
   getAllFavorites,
   getFavoriteList,
   getPropertyDetails,
+  deletePropertySubmission,
   getPropertyDraftSubmission,
   getPropertyFeatureCatalog,
   getPropertyList,
@@ -22,11 +23,13 @@ import {
   getSimilarProperties,
   savePropertyDraftSubmission,
   submitPropertyDraftSubmission,
+  submitPropertySubmission,
   updatePropertyDraftSubmission,
 } from "../services/property.service";
 import type {
   PropertyDraftSubmissionSubmitRequestBody,
   PropertyDraftSubmissionUpdateRequestBody,
+  PropertySubmissionDirectSubmitRequestBody,
 } from "../types/propertyDraftSubmission.types";
 
 export const FAVORITES_ALL_QUERY_KEY = ["property", "favorites", "all"] as const;
@@ -91,6 +94,20 @@ export function useGetAllFavorites(options?: { enabled?: boolean }) {
   });
 }
 
+export const useDeletePropertySubmission = () => {
+  const t = useTranslations("propertyList.myListings");
+  const toast = useToast();
+
+  return useMutation({
+    mutationFn: deletePropertySubmission,
+    onError: (error: ApiError) => {
+      toast.error(t("deleteError"), {
+        description: error.message,
+      });
+    },
+  });
+};
+
 export const useGetPropertyDraftSubmission = () => {
   const t = useTranslations("propertyList.propertyCreate");
   const toast = useToast();
@@ -132,6 +149,13 @@ export const useSubmitPropertyDraftSubmission = () => {
       submissionId: string;
       body: PropertyDraftSubmissionSubmitRequestBody;
     }) => submitPropertyDraftSubmission(submissionId, body),
+  });
+};
+
+export const useSubmitPropertySubmission = () => {
+  return useMutation({
+    mutationFn: (body: PropertySubmissionDirectSubmitRequestBody) =>
+      submitPropertySubmission(body),
   });
 };
 

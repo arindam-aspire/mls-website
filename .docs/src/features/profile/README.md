@@ -8,8 +8,9 @@ User profile area scaffolded with a feature-first folder structure.
 profile/
   components/  Feature UI blocks
   hooks/       Profile logic hooks
+  modals/      Cross-feature modal shells (e.g. SelectAgencyModal)
   mutations/   React Query write hooks
-  screens/     Route-level screens
+  screens/     Route-level screens and screen-local modals
   services/    API interaction layer
   store/       Feature state modules
   types/       Profile TypeScript types
@@ -21,6 +22,10 @@ profile/
 | Path | Role |
 | --- | --- |
 | [hooks/useProfileScreen.md](./hooks/useProfileScreen.md) | Toolbar labels and modal state |
+| [modals/SelectAgencyModal.md](./modals/SelectAgencyModal.md) | Agency picker shell (My Listings Add Property gate) |
+| [components/SelectAgencyListItem.md](./components/SelectAgencyListItem.md) | Selectable agency row |
+| [components/SelectAgencyModalSkeleton.md](./components/SelectAgencyModalSkeleton.md) | Agency list loading skeleton |
+| [hooks/useSelectAgencyModal.md](./hooks/useSelectAgencyModal.md) | Select agency modal labels and close |
 | [screens/ProfileScreen.md](./screens/ProfileScreen.md) | `ProfileScreen` — toolbar + modals |
 | [components/ProfilePageToolbar.md](./components/ProfilePageToolbar.md) | Page title, subtitle, action buttons |
 | [components/MyProfileCard.md](./components/MyProfileCard.md) | Profile summary card |

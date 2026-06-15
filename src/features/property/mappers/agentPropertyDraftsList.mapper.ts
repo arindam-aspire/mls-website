@@ -4,6 +4,11 @@ import {
 } from "@abdoun/abdoun-library";
 import type { AgentPropertyDraftListItem } from "../types/property.types";
 
+export type MappedDraftListItem = DraftListItemData & {
+  canEdit: boolean;
+  canDelete: boolean;
+};
+
 export type MapAgentPropertyDraftLabels = {
   formatUpdatedAt: (isoDate: string) => string;
 };
@@ -11,7 +16,7 @@ export type MapAgentPropertyDraftLabels = {
 export function mapAgentPropertyDraftListItem(
   item: AgentPropertyDraftListItem,
   labels: MapAgentPropertyDraftLabels,
-): DraftListItemData {
+): MappedDraftListItem {
   return {
     id: item.submission_id,
     title: item.title ?? "",
@@ -21,13 +26,15 @@ export function mapAgentPropertyDraftListItem(
     listingPurposeLabel: "",
     currentStep: item.current_step,
     totalSteps: propertyFormSteps.length,
+    canEdit: item.can_edit,
+    canDelete: item.can_delete,
   };
 }
 
 export function mapAgentPropertyDraftListItems(
   items: AgentPropertyDraftListItem[] | undefined,
   labels: MapAgentPropertyDraftLabels,
-): DraftListItemData[] {
+): MappedDraftListItem[] {
   if (!items?.length) {
     return [];
   }

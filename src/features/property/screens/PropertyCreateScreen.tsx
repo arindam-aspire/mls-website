@@ -23,6 +23,8 @@ export default function PropertyCreateScreen() {
     isDraftSaving,
     isSubmitting,
     submissionId,
+    canEditSubmission,
+    rejectionReason,
     onNext,
     onPrevious,
     onStepClick,
@@ -72,6 +74,8 @@ export default function PropertyCreateScreen() {
         onUploadOwnerDocument={onUploadOwnerDocument}
         onUploadPropertyMedia={onUploadPropertyMedia}
         onUploadPropertyDocument={onUploadPropertyDocument}
+        canEdit={canEditSubmission}
+        rejectionReason={rejectionReason}
       />
     </div>
   );

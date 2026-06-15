@@ -1,6 +1,7 @@
 import { apiClient, authClient } from "@/src/apis/clients/api.client";
 import { agencyEndpoints } from "@/src/apis/endpoints/agencyEndpoints";
 import { profileEndpoints } from "@/src/apis/endpoints/profileEndpoints";
+import { userEndpoints } from "@/src/apis/endpoints/userEndpoints";
 import { getLoggedInUser } from "@/src/features/auth/services/auth.service";
 import type { LoggedInUser } from "@/src/features/auth/types/auth.types";
 import { putFileToPresignedUrl } from "@/src/lib/upload";
@@ -12,18 +13,27 @@ import type {
   Agency,
   AgencyLegalDocumentUploadRequest,
   AgencyLegalDocumentUploadResponse,
+  AgencyListParams,
+  AgencyListResponse,
+  AssignUserAgencyResponse,
   AgencyLogoUploadRequest,
   AgencyLogoUploadResponse,
   DeleteAgencyLogoResponse,
   GetAgencyResponse,
+  NormalizedAgencyListResponse,
   NormalizedGetAgencyResponse,
   UpdateAgencyRequest,
   UpdateAgencyResponse,
 } from "../types/profile.types";
 import {
+  normalizeAgencyListResponse,
   normalizeGetAgencyResponse,
   unwrapAgencyFromResponseData,
 } from "../utils/agencyApi.utils";
+import {
+  DEFAULT_AGENCY_LIST_LIMIT,
+  DEFAULT_AGENCY_LIST_SKIP,
+} from "../constants/selectAgency.constants";
 import type {
   DeleteProfilePictureResponse,
   ProfilePictureUploadRequest,
@@ -44,6 +54,40 @@ export async function getAgencyById(agencyId: string): Promise<NormalizedGetAgen
   });
 
   return normalizeGetAgencyResponse(response);
+}
+
+export async function getAgencyList(
+  params: AgencyListParams = {},
+): Promise<NormalizedAgencyListResponse> {
+  const skip = params.skip ?? DEFAULT_AGENCY_LIST_SKIP;
+  const limit = params.limit ?? DEFAULT_AGENCY_LIST_LIMIT;
+
+  const response = await apiClient.request<AgencyListResponse>({
+    endpoint: agencyEndpoints.LIST({ skip, limit }),
+    method: "GET",
+    auth: true,
+  });
+
+  return normalizeAgencyListResponse(response, { skip, limit });
+}
+
+export async function assignUserAgency(agencyId: string): Promise<AssignUserAgencyResponse> {
+  return apiClient.request<AssignUserAgencyResponse>({
+    endpoint: userEndpoints.AGENCY,
+    method: "PATCH",
+    body: { agencyId },
+    auth: true,
+  });
+}
+
+export async function assignUserAgencyAndRefreshUser(agencyId: string): Promise<LoggedInUser> {
+  const response = await assignUserAgency(agencyId);
+  if (!response.success) {
+    throw new Error(response.message ?? "Failed to assign agency");
+  }
+
+  const me = await getLoggedInUser();
+  return me.data;
 }
 
 export async function updateAgency(

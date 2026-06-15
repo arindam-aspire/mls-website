@@ -21,6 +21,17 @@ Logged-in user profile, roles, permissions, and `/auth/me` response types.
 
 `LoggedInUser.agency` is optional; present for agency portal users.
 
+# `LoggedInUser` (`GET /auth/me` data)
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `has_agency` | `boolean` (optional) | Whether the user is linked to an agency (independent of nested `agency` summary) |
+| `agency` | `LoggedInUserAgency \| null \| undefined` | Agency summary when present |
+| `email` | `string` | Login email |
+| `full_name` | `string` | Display name |
+| `phone_number` | `string` | E.164 or stored phone |
+| `roles` | `Role[]` | Assigned roles with permissions |
+
 # API Usage
 
 | Type | Flow |
@@ -33,4 +44,5 @@ Logged-in user profile, roles, permissions, and `/auth/me` response types.
 
 # Notes
 
+- `has_agency` indicates agency membership from the API; use with nested `agency` for profile and listing flows.
 - `LoggedInUser` includes `roles` and nested `permissions` for future RBAC UI.

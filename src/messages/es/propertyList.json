@@ -130,6 +130,7 @@
     "fetchError": "Error al obtener los borradores de listados",
     "resume": "Reanudar",
     "createNew": "Crear nuevo listado",
+    "addProperty": "Añadir propiedad",
     "updatedAt": "Actualizado {time}",
     "listingPurposeSale": "En venta",
     "listingPurposeRent": "En alquiler",
@@ -147,7 +148,7 @@
       "in_progress": "En progreso",
       "submitted": "Enviado",
       "pending_approval": "Pendiente de aprobación",
-      "pending_admin_approval": "Pendiente de aprobación del administrador",
+      "pending_admin_approval": "Pendiente de aprobación",
       "changes_requested": "Cambios solicitados",
       "approved": "Aprobado",
       "verified": "Verificado",
@@ -162,14 +163,31 @@
       "status": "Estado",
       "submittedOn": "Enviado el",
       "submittedOnEmpty": "—",
+      "reviewedOn": "Revisado el",
+      "reviewedOnEmpty": "—",
       "actions": "Acciones"
     },
     "columnPickerTitle": "Alternar columnas",
     "columnPickerAriaLabel": "Elegir columnas de la tabla",
     "workflow": {
       "view": "Ver",
-      "continue": "Continuar"
+      "continue": "Continuar",
+      "edit": "Editar",
+      "viewRejectedReason": "Ver motivo del rechazo",
+      "delete": "Eliminar"
     },
+    "rejectedReasonModal": {
+      "title": "Motivo del rechazo",
+      "empty": "No se proporcionó un motivo de rechazo para este anuncio.",
+      "close": "Cerrar"
+    },
+    "cancelLabel": "Cancelar",
+    "deleteConfirmTitle": "¿Eliminar anuncio?",
+    "deleteConfirmDescription": "Se eliminará \"{title}\" de forma permanente. Esta acción no se puede deshacer.",
+    "deletingLabel": "Eliminando…",
+    "deleteSuccessTitle": "Anuncio eliminado",
+    "deleteSuccessDescription": "El anuncio se eliminó correctamente.",
+    "deleteError": "No se pudo eliminar el anuncio",
     "tableViewAriaLabel": "Vista de tabla",
     "comingSoonEyebrow": "En desarrollo",
     "comingSoonDescription": "Gestiona y consulta todos tus anuncios de propiedades en un solo lugar. ¡Esta función llegará pronto!"

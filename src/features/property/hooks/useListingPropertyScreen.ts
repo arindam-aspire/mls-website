@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/src/i18n/navigation";
 import type { AppLocale } from "@/src/i18n/routing";
 import type { ListTableView, PinnedColumns, SortConfig } from "@abdoun/abdoun-library";
+import { PROPERTY_CREATE_SUBMISSION_ID_PARAM } from "../constants/propertyCreate.constants";
 import {
   DEFAULT_MY_LISTING_COLUMN_VISIBILITY,
   isMyListingTableColumnVisible,
@@ -14,14 +15,22 @@ import {
   type MyListingColumnVisibility,
   type MyListingToggleableColumnId,
 } from "../constants/myListingTableColumns.constants";
+import {
+  MY_LISTING_STATUS_FILTER_VALUES,
+  type MyListingStatusFilterValue,
+} from "../constants/myListingStatusFilters.constants";
 import { mapAgentPropertyListItems } from "../mappers/agentPropertiesList.mapper";
-import { buildMyListingTableColumns } from "../utils/buildMyListingTableColumns";
-import { useGetAgentProperties } from "../mutations/property.mutation";
+import {
+  useDeletePropertySubmission,
+  useGetAgentProperties,
+} from "../mutations/property.mutation";
 import type {
   AgentPropertiesListParams,
   AgentPropertyListItem,
   PaginationMeta,
 } from "../types/property.types";
+import { buildMyListingTableColumns } from "../utils/buildMyListingTableColumns";
+import { useToast } from "@/src/hooks/useToast";
 
 type LibraryPropertyListing = ComponentProps<typeof ListTableView>["data"][number];
 
@@ -53,13 +62,26 @@ function resolveLibraryLocale(locale: AppLocale): keyof LibraryPropertyListing["
   return locale;
 }
 
+function resolveListingTitle(
+  listing: LibraryPropertyListing,
+  locale: keyof LibraryPropertyListing["title"],
+): string {
+  return listing.title[locale] || listing.title.en;
+}
+
+function isMyListingStatusFilterValue(value: string): value is MyListingStatusFilterValue {
+  return (MY_LISTING_STATUS_FILTER_VALUES as readonly string[]).includes(value);
+}
+
 export function useListingPropertyScreen() {
   // 1. Router & navigation
   const router = useRouter();
 
   // 2. UI utilities
   const t = useTranslations("propertyList.myListings");
+  const tStatus = useTranslations("propertyList.myListings.statusFilter");
   const locale = useLocale() as AppLocale;
+  const toast = useToast();
 
   // 4. Local state
   const [search, setSearch] = useState("");
@@ -75,10 +97,17 @@ export function useListingPropertyScreen() {
   const [requestParams, setRequestParams] = useState<AgentPropertiesListParams>(() =>
     buildRequestParams("", "", DEFAULT_PAGE, DEFAULT_PAGE_SIZE),
   );
+  const [rejectedReasonListing, setRejectedReasonListing] =
+    useState<LibraryPropertyListing | null>(null);
+  const [pendingDeleteListing, setPendingDeleteListing] =
+    useState<LibraryPropertyListing | null>(null);
+  const [deletingSubmissionId, setDeletingSubmissionId] = useState<string | null>(null);
 
   // 5. Data fetching / queries
   const { mutate: getAgentProperties, isPending: isLoadingAgentProperties } =
     useGetAgentProperties();
+  const { mutate: deletePropertySubmission, isPending: isDeletingSubmission } =
+    useDeletePropertySubmission();
 
   const fetchAgentProperties = useCallback(
     (params: AgentPropertiesListParams) => {
@@ -107,10 +136,59 @@ export function useListingPropertyScreen() {
   );
 
   // 6. Derived / memoized values
-  const tableListings = useMemo(
-    () => mapAgentPropertyListItems(listings ?? []),
-    [listings],
+  const submissionIdByPropertyId = useMemo(() => {
+    const map = new Map<string, string>();
+
+    for (const item of listings ?? []) {
+      map.set(item.property_id, item.submission_id);
+    }
+
+    return map;
+  }, [listings]);
+
+  const deletingPropertyId = useMemo(() => {
+    if (!deletingSubmissionId) {
+      return null;
+    }
+
+    const match = listings?.find((item) => item.submission_id === deletingSubmissionId);
+
+    return match?.property_id ?? null;
+  }, [deletingSubmissionId, listings]);
+
+  const rejectedRowActionLabels = useMemo(
+    () => ({
+      edit: t("workflow.edit"),
+      delete: t("workflow.delete"),
+    }),
+    [t],
   );
+
+  const tableListings = useMemo(() => {
+    return mapAgentPropertyListItems(listings ?? [], {
+      rejectedRowActionLabels,
+    }).map((row) => {
+      const key = row.status.key;
+      const withStatusLabel = isMyListingStatusFilterValue(key)
+        ? {
+            ...row,
+            status: {
+              ...row.status,
+              label: tStatus(key),
+            },
+          }
+        : row;
+
+      if (deletingPropertyId && withStatusLabel.property_id === deletingPropertyId) {
+        return {
+          ...withStatusLabel,
+          is_delete_loading: true,
+        };
+      }
+
+      return withStatusLabel;
+    });
+  }, [deletingPropertyId, listings, rejectedRowActionLabels, tStatus]);
 
   const tableLocale = useMemo(() => resolveLibraryLocale(locale), [locale]);
 
@@ -150,29 +228,136 @@ export function useListingPropertyScreen() {
     [t],
   );
 
+  const navigateToPropertyView = useCallback(
+    (listing: LibraryPropertyListing) => {
+      router.push(`/propert-details/${listing.id}`);
+    },
+    [router],
+  );
+
+  const navigateToSubmissionEdit = useCallback(
+    (propertyId: string) => {
+      const submissionId = submissionIdByPropertyId.get(propertyId);
+
+      if (!submissionId) {
+        return;
+      }
+
+      router.push(
+        `/property-create?${PROPERTY_CREATE_SUBMISSION_ID_PARAM}=${encodeURIComponent(submissionId)}`,
+      );
+    },
+    [router, submissionIdByPropertyId],
+  );
+
   const workflowActions = useMemo(
     () => ({
       view: {
         label: t("workflow.view"),
-        onClick: (listing: LibraryPropertyListing) => {
-          router.push(`/property-update?property_id=${listing.property_id}`);
-        },
+        onClick: navigateToPropertyView,
       },
       continue: {
         label: t("workflow.continue"),
         onClick: (listing: LibraryPropertyListing) => {
-          router.push(`/property-update?property_id=${listing.property_id}`);
+          const submissionId = submissionIdByPropertyId.get(listing.property_id);
+
+          if (submissionId) {
+            router.push(
+              `/property-create?${PROPERTY_CREATE_SUBMISSION_ID_PARAM}=${encodeURIComponent(submissionId)}`,
+            );
+            return;
+          }
+
+          navigateToPropertyView(listing);
+        },
+      },
+      rejected_reason: {
+        label: t("workflow.viewRejectedReason"),
+        onClick: (listing: LibraryPropertyListing) => {
+          setRejectedReasonListing(listing);
         },
       },
     }),
-    [router, t],
+    [navigateToPropertyView, router, submissionIdByPropertyId, t],
   );
 
   const onClickProperty = useCallback(
     (listing: LibraryPropertyListing) => {
-      router.push(`/property-update?property_id=${listing.property_id}`);
+      navigateToPropertyView(listing);
     },
-    [router],
+    [navigateToPropertyView],
+  );
+
+  const onRowAction = useCallback(
+    (actionId: string, listing: LibraryPropertyListing) => {
+      if (actionId === "edit") {
+        navigateToSubmissionEdit(listing.property_id);
+        return;
+      }
+
+      if (actionId === "delete") {
+        setPendingDeleteListing(listing);
+      }
+    },
+    [navigateToSubmissionEdit],
+  );
+
+  const onClickDelete = useCallback((listing: LibraryPropertyListing) => {
+    setPendingDeleteListing(listing);
+  }, []);
+
+  const closeDeleteConfirm = useCallback(() => {
+    if (isDeletingSubmission) {
+      return;
+    }
+
+    setPendingDeleteListing(null);
+  }, [isDeletingSubmission]);
+
+  const confirmDeleteListing = useCallback(() => {
+    if (!pendingDeleteListing || isDeletingSubmission) {
+      return;
+    }
+
+    const submissionId = submissionIdByPropertyId.get(pendingDeleteListing.property_id);
+
+    if (!submissionId) {
+      return;
+    }
+
+    setDeletingSubmissionId(submissionId);
+
+    deletePropertySubmission(submissionId, {
+      onSuccess: (response) => {
+        toast.success(t("deleteSuccessTitle"), {
+          description: response.message ?? t("deleteSuccessDescription"),
+        });
+        setDeletingSubmissionId(null);
+        setPendingDeleteListing(null);
+        fetchAgentProperties(requestParams);
+      },
+      onError: () => {
+        setDeletingSubmissionId(null);
+      },
+    });
+  }, [
+    deletePropertySubmission,
+    fetchAgentProperties,
+    isDeletingSubmission,
+    pendingDeleteListing,
+    requestParams,
+    submissionIdByPropertyId,
+    t,
+    toast,
+  ]);
+
+  const listingRowActionOptions = useMemo(
+    () => ({
+      onRowAction,
+      canViewDelete: true,
+      onClickDelete,
+    }),
+    [onClickDelete, onRowAction],
   );
 
   const allColumns = useMemo(
@@ -184,13 +369,16 @@ export function useListingPropertyScreen() {
           status: t("columns.status"),
           submittedOn: t("columns.submittedOn"),
           submittedOnEmpty: t("columns.submittedOnEmpty"),
+          reviewedOn: t("columns.reviewedOn"),
+          reviewedOnEmpty: t("columns.submittedOnEmpty"),
         },
         tableLocale,
         appLocale: locale,
         onClick: onClickProperty,
         workflowActions,
+        listingRowActionOptions,
       }),
-    [locale, onClickProperty, t, tableLocale, workflowActions],
+    [locale, listingRowActionOptions, onClickProperty, t, tableLocale, workflowActions],
   );
 
   const columns = useMemo(
@@ -225,6 +413,44 @@ export function useListingPropertyScreen() {
         visible: columnVisibility[id],
       })),
     [columnVisibility, t],
+  );
+
+  const rejectedReasonModal = useMemo(
+    () => ({
+      open: rejectedReasonListing !== null,
+      title: t("rejectedReasonModal.title"),
+      reason: rejectedReasonListing?.submission_review_reason?.trim() ?? "",
+      emptyReason: t("rejectedReasonModal.empty"),
+      closeLabel: t("rejectedReasonModal.close"),
+      onClose: () => setRejectedReasonListing(null),
+    }),
+    [rejectedReasonListing, t],
+  );
+
+  const deleteConfirmModal = useMemo(
+    () => ({
+      open: pendingDeleteListing !== null,
+      title: t("deleteConfirmTitle"),
+      description: pendingDeleteListing
+        ? t("deleteConfirmDescription", {
+            title: resolveListingTitle(pendingDeleteListing, tableLocale),
+          })
+        : "",
+      confirmLabel: t("workflow.delete"),
+      cancelLabel: t("cancelLabel"),
+      deletingLabel: t("deletingLabel"),
+      isLoading: isDeletingSubmission,
+      onClose: closeDeleteConfirm,
+      onConfirm: confirmDeleteListing,
+    }),
+    [
+      closeDeleteConfirm,
+      confirmDeleteListing,
+      isDeletingSubmission,
+      pendingDeleteListing,
+      t,
+      tableLocale,
+    ],
   );
 
   // 7. Callbacks
@@ -279,10 +505,14 @@ export function useListingPropertyScreen() {
     noDataFound,
     workflowActions,
     onClickProperty,
+    onClickDelete,
+    onRowAction,
     columns,
     pinnedColumns,
     listTitle: t("pageTitle"),
     isLoading: listings === null || isLoadingAgentProperties,
     fetchAgentProperties,
+    rejectedReasonModal,
+    deleteConfirmModal,
   };
 }

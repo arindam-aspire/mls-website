@@ -385,7 +385,7 @@ Used by `(main)` route group.
 | File | Role |
 | --- | --- |
 | `screens/ProfileScreen.tsx` | `ProfileScreen` — toolbar, profile card, change password, separate edit email/phone modals |
-| `services/profile.service.ts` | `PATCH /auth/me/profile/request` + `POST /auth/me/profile/verify` (email/phone OTP); `POST` / `DELETE /auth/me/profile-picture`; `GET` / `PUT /agency/{id}`; `POST` / `DELETE /agency/{id}/logo`; `POST /agency/{id}/legal-document`; `PATCH /auth/me` (legacy combined update) |
+| `services/profile.service.ts` | `PATCH /auth/me/profile/request` + `POST /auth/me/profile/verify` (email/phone OTP); `POST` / `DELETE /auth/me/profile-picture`; `GET /agency/list`; `GET` / `PUT /agency/{id}`; `POST` / `DELETE /agency/{id}/logo`; `POST /agency/{id}/legal-document`; `PATCH /auth/me` (legacy combined update) |
 | `hooks/useProfileAvatarUpload.ts` | File picker, validation, `useUploadProfilePicture` |
 | `screens/EditEmailModal.tsx` | Two-step email change: request OTP → confirm |
 | `screens/EditPhoneModal.tsx` | Two-step phone change: request OTP → confirm (E.164 `phone_number`) |

@@ -153,5 +153,23 @@
   "otpVerifyContinue": "Verificar y continuar",
   "otpVerifyConfirmLoading": "Verificando…",
   "otpVerifyCodeRequired": "Introduce el código de 6 dígitos",
-  "otpVerifySentCodeLabel": "Tu código de verificación:"
+  "otpVerifySentCodeLabel": "Tu código de verificación:",
+  "selectAgency": {
+    "title": "Seleccionar agencia",
+    "description": "Elige una agencia bajo la cual publicar tu propiedad.",
+    "searchPlaceholder": "Buscar agencias por nombre, correo o teléfono…",
+    "agencyCount": "{count, plural, one {# agencia} other {# agencias}}",
+    "agencyListAriaLabel": "Agencias disponibles",
+    "agencyOptionAriaLabel": "{name}",
+    "continue": "Continuar",
+    "assignAgencyErrorTitle": "No se pudo vincular la agencia",
+    "selectHint": "Selecciona una agencia para continuar",
+    "emptyTitle": "No hay agencias disponibles",
+    "emptyDescription": "No hay agencias para seleccionar en este momento. Inténtalo de nuevo más tarde.",
+    "noSearchResultsTitle": "Ninguna agencia coincide con tu búsqueda",
+    "noSearchResultsDescription": "Prueba con otro nombre, correo o número de teléfono.",
+    "fetchErrorTitle": "No se pudieron cargar las agencias",
+    "selectAgencyRequiredTitle": "Selecciona una agencia",
+    "selectAgencyRequiredDescription": "Elige una agencia antes de continuar."
+  }
 }

@@ -3,13 +3,17 @@ import { formatListingSubmittedDate } from "@/src/features/property/utils/format
 import { cn } from "@/src/lib/cn";
 import {
   buildPropertyTableColumns,
-  createWorkflowActionsResolver,
   ListingStatusBadge,
   type ListTableView,
   type PropertyTableWorkflowActionsConfig,
   type TableColumn,
 } from "@abdoun/abdoun-library";
 import type { ComponentProps } from "react";
+import type { MyListingTableRow } from "@/src/features/property/mappers/agentPropertiesList.mapper";
+import {
+  createMyListingRowActionsResolver,
+  type MyListingRowActionOptions,
+} from "./createMyListingRowActionsResolver";
 
 type LibraryPropertyListing = ComponentProps<typeof ListTableView>["data"][number];
 type LibraryTitleLocale = keyof LibraryPropertyListing["title"];
@@ -20,14 +24,21 @@ type MyListingTableColumnLabels = {
   status: string;
   submittedOn: string;
   submittedOnEmpty: string;
+  reviewedOn: string;
+  reviewedOnEmpty: string;
 };
+
+function resolveReviewedDate(row: LibraryPropertyListing): string {
+  return (row as MyListingTableRow).reviewedDate;
+}
 
 type BuildMyListingTableColumnsParams = {
   labels: MyListingTableColumnLabels;
   tableLocale: LibraryTitleLocale;
   appLocale: AppLocale;
   onClick?: (listing: LibraryPropertyListing) => void;
-  workflowActions?: PropertyTableWorkflowActionsConfig;
+  workflowActions: PropertyTableWorkflowActionsConfig;
+  listingRowActionOptions?: MyListingRowActionOptions;
 };
 
 function resolveListingTitle(
@@ -43,10 +54,12 @@ export function buildMyListingTableColumns({
   appLocale,
   onClick,
   workflowActions,
+  listingRowActionOptions,
 }: BuildMyListingTableColumnsParams): TableColumn<LibraryPropertyListing>[] {
-  const rowActions = workflowActions
-    ? createWorkflowActionsResolver(workflowActions)
-    : undefined;
+  const rowActions = createMyListingRowActionsResolver({
+    workflowActions,
+    listingRowActionOptions,
+  });
 
   const defaultColumns = buildPropertyTableColumns({
     locale: tableLocale,
@@ -124,6 +137,36 @@ export function buildMyListingTableColumns({
         return (
           <span className="block w-full min-w-0 truncate">
             {formatted ?? labels.submittedOnEmpty}
+          </span>
+        );
+      },
+    },
+    {
+      id: "reviewedOn",
+      header: labels.reviewedOn,
+      align: "start",
+      sortable: true,
+      cellClassName: "whitespace-nowrap text-text/80",
+      getSortValue: (row) => {
+        const reviewedDate = resolveReviewedDate(row);
+
+        if (!reviewedDate) {
+          return null;
+        }
+
+        const timestamp = new Date(reviewedDate).getTime();
+
+        return Number.isNaN(timestamp) ? null : timestamp;
+      },
+      render: (row) => {
+        const formatted = formatListingSubmittedDate(
+          resolveReviewedDate(row),
+          appLocale,
+        );
+
+        return (
+          <span className="block w-full min-w-0 truncate">
+            {formatted ?? labels.reviewedOnEmpty}
           </span>
         );
       },

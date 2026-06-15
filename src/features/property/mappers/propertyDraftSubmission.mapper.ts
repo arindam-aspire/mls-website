@@ -5,6 +5,7 @@ import type {
   PropertyDraftSubmissionRequestBody,
   PropertyDraftSubmissionReviewSubmit,
   PropertyDraftSubmissionUpdateRequestBody,
+  PropertySubmissionDirectSubmitRequestBody,
 } from "@/src/features/property/types/propertyDraftSubmission.types";
 import type { PropertyFormProps, PropertyFormValues } from "@abdoun/abdoun-library";
 
@@ -316,6 +317,21 @@ export function buildPropertyDraftSubmissionRequestBody(
     ),
     current_step: currentStep,
     last_completed_step: lastCompletedStep,
+  };
+}
+
+export function buildPropertySubmissionDirectSubmitRequestBody(
+  propertyDetails: PropertyFormValues,
+  featuresAndAmenities: FeaturesAndAmenities,
+  options?: BuildPropertyDraftSubmissionPayloadOptions,
+): PropertySubmissionDirectSubmitRequestBody {
+  return {
+    payload: buildPropertyDraftSubmissionPayload(
+      propertyDetails,
+      featuresAndAmenities,
+      options,
+    ),
+    confirm_submit: true,
   };
 }
 

@@ -23,8 +23,12 @@ Maps `GET /agent-properties/drafts` rows to `@abdoun/abdoun-library` `DraftListI
 | — | `propertyType` / `listingPurposeLabel` → `""` (not in API yet) |
 | `current_step` | `currentStep` |
 | `propertyFormSteps.length` | `totalSteps` |
+| `can_edit` | `canEdit` — controls Resume button visibility |
+| `can_delete` | `canDelete` — controls Delete button visibility |
 
-Also on each row: `status`, `last_completed_step`, `can_edit`, `can_delete` (reserved for actions).
+Also on each row: `status`, `last_completed_step`.
+
+Per-item actions are applied in [PropertyDraftList.md](../components/PropertyDraftList.md) via `DraftListCard` (`onResume` / `onDelete` omitted when false).
 
 # Dependencies
 

@@ -105,6 +105,8 @@ export const propertyEndpoints = {
     return `/agent-properties/drafts?${search.toString()}`;
   },
   PROPERTY_SUBMISSIONS: (): string => "/property-submissions",
+  /** Submit a new listing without an existing draft id. */
+  PROPERTY_SUBMISSIONS_SUBMIT: (): string => "/property-submissions/submit",
   PROPERTY_SUBMISSION_BY_ID: (submissionId: string): string =>
     `/property-submissions/${encodeURIComponent(submissionId)}`,
   PROPERTY_SUBMISSION_SUBMIT: (submissionId: string): string =>

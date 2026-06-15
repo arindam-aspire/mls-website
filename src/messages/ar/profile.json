@@ -153,5 +153,23 @@
   "otpVerifyContinue": "تحقق ومتابعة",
   "otpVerifyConfirmLoading": "جارٍ التحقق…",
   "otpVerifyCodeRequired": "أدخل الرمز المكوّن من 6 أرقام",
-  "otpVerifySentCodeLabel": "رمز التحقق الخاص بك:"
+  "otpVerifySentCodeLabel": "رمز التحقق الخاص بك:",
+  "selectAgency": {
+    "title": "اختر الوكالة",
+    "description": "اختر وكالة لإدراج عقارك تحتها.",
+    "searchPlaceholder": "ابحث عن الوكالات بالاسم أو البريد أو الهاتف…",
+    "agencyCount": "{count, plural, one {وكالة واحدة} other {# وكالات}}",
+    "agencyListAriaLabel": "الوكالات المتاحة",
+    "agencyOptionAriaLabel": "{name}",
+    "continue": "متابعة",
+    "assignAgencyErrorTitle": "تعذر ربط الوكالة",
+    "selectHint": "اختر وكالة للمتابعة",
+    "emptyTitle": "لا توجد وكالات متاحة",
+    "emptyDescription": "لا توجد وكالات للاختيار حالياً. حاول مرة أخرى لاحقاً.",
+    "noSearchResultsTitle": "لا توجد وكالات مطابقة لبحثك",
+    "noSearchResultsDescription": "جرّب اسماً أو بريداً أو رقم هاتف مختلفاً.",
+    "fetchErrorTitle": "تعذر تحميل الوكالات",
+    "selectAgencyRequiredTitle": "اختر وكالة",
+    "selectAgencyRequiredDescription": "اختر وكالة قبل المتابعة."
+  }
 }

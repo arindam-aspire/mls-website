@@ -7,6 +7,7 @@ Custom hooks that own property feature logic: fetching, store sync, handlers, an
 | File | Purpose |
 | --- | --- |
 | [usePropertyList.md](./usePropertyList.md) | Property list screen logic (URL params, fetch, toolbar, pagination) |
+| [useAddPropertyEntry.md](./useAddPropertyEntry.md) | My Listings Add Property gate (`has_agency` check + agency modal) |
 | [useFavouritePropertyList.md](./useFavouritePropertyList.md) | Favourites screen logic (`GET /favorites`, pagination, `PropertyCardList`) |
 | [useRecentlyViewedScreen.md](./useRecentlyViewedScreen.md) | Recently viewed list, pagination, favourites, clear-all |
 | [useSavedSearchesScreen.md](./useSavedSearchesScreen.md) | Property saved-searches stub screen labels (`propertyList.savedSearches`) |

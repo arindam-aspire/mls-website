@@ -142,7 +142,11 @@ mls_website/
 │       │   │   │   ├── useAgencyLogoUpload.md
 │       │   │   │   ├── useAgencyMeasurementUnitPreference.md
 │       │   │   │   ├── useChangePasswordModal.md
-│       │   │   │   └── useProfileScreen.md
+│       │   │   │   ├── useProfileScreen.md
+│       │   │   │   └── useSelectAgencyModal.md
+│       │   │   ├── modals/
+│       │   │   │   ├── README.md
+│       │   │   │   └── SelectAgencyModal.md
 │       │   │   ├── mutations/
 │       │   │   │   ├── README.md
 │       │   │   │   └── index.md
@@ -167,6 +171,7 @@ mls_website/
 │       │       │   ├── README.md
 │       │       │   ├── PropertyListAdvancedFilters.md
 │       │       │   ├── PropertyListFilters.md
+│       │       │   ├── PropertyDraftList.md
 │       │       │   └── MyListingFilters.md
 │       │       ├── constants/
 │       │       │   ├── myListingStatusFilters.constants.md
@@ -175,6 +180,7 @@ mls_website/
 │       │       │   ├── README.md
 │       │       │   ├── usePropertyDetails.md
 │       │       │   ├── usePropertyList.md
+│       │       │   ├── useAddPropertyEntry.md
 │       │       │   ├── useFavouritePropertyList.md
 │       │       │   ├── useRecentlyViewedScreen.md
 │       │       │   ├── useSavedSearchesScreen.md
@@ -600,13 +606,16 @@ mls_website/
 │   │   ├── profile/
 │   │   │   ├── constants/
 │   │   │   │   ├── agencyPreferences.ts
-│   │   │   │   └── profileEditModal.constants.ts
+│   │   │   │   ├── profileEditModal.constants.ts
+│   │   │   │   └── selectAgency.constants.ts
 │   │   │   ├── components/
 │   │   │   │   ├── AgencyDisplayPreferencesRows.tsx
 │   │   │   │   ├── AgencyProfileCard.tsx
 │   │   │   │   ├── ChangePasswordForm.tsx
 │   │   │   │   ├── DisplayPreferenceOptionCard.tsx
 │   │   │   │   ├── EditAgencyForm.tsx
+│   │   │   │   ├── SelectAgencyListItem.tsx
+│   │   │   │   ├── SelectAgencyModalSkeleton.tsx
 │   │   │   │   ├── EditEmailForm.tsx
 │   │   │   │   ├── EditPhoneForm.tsx
 │   │   │   │   ├── MyProfileCard.tsx
@@ -632,7 +641,10 @@ mls_website/
 │   │   │   │   ├── useEditEmailModal.ts
 │   │   │   │   ├── useEditPhoneModal.ts
 │   │   │   │   ├── useProfileAvatarUpload.ts
-│   │   │   │   └── useProfileScreen.ts
+│   │   │   │   ├── useProfileScreen.ts
+│   │   │   │   └── useSelectAgencyModal.ts
+│   │   │   ├── modals/
+│   │   │   │   └── SelectAgencyModal.tsx
 │   │   │   ├── mutations/
 │   │   │   │   ├── index.ts
 │   │   │   │   └── profile.mutation.ts
@@ -655,6 +667,7 @@ mls_website/
 │   │   │       ├── agencyApi.utils.ts
 │   │   │       ├── agencyForm.utils.ts
 │   │   │       ├── agencyPreferences.utils.ts
+│   │   │       ├── selectAgency.utils.ts
 │   │   │       ├── formatPhoneNumberE164.ts
 │   │   │       ├── licenseDocumentDisplay.ts
 │   │   │       ├── parseStoredPhoneNumber.ts
@@ -664,9 +677,12 @@ mls_website/
 │   │       ├── components/
 │   │       │   ├── PropertyListAdvancedFilters.tsx
 │   │       │   ├── PropertyListFilters.tsx
+│   │       │   ├── PropertyDraftList.tsx
 │   │       │   ├── MyListingFilters.tsx
+│   │       │   ├── MyListingRejectedReasonModal.tsx
 │   │       │   └── PropertyCreateScreenSkeleton.tsx
 │   │       ├── constants/
+│   │       │   ├── myListingRowActions.constants.ts
 │   │       │   ├── myListingStatusFilters.constants.ts
 │   │       │   ├── myListingTableColumns.constants.ts
 │   │       │   ├── propertyCreate.constants.ts
@@ -675,6 +691,7 @@ mls_website/
 │   │       │   └── propertyListAdvancedFilters.constants.ts
 │   │       ├── hooks/
 │   │       │   ├── propertySearchFilter.constants.ts
+│   │       │   ├── useAddPropertyEntry.ts
 │   │       │   ├── useDraftListingsScreen.ts
 │   │       │   ├── useOwnerDocumentUpload.ts
 │   │       │   ├── usePropertyMediaUpload.ts
@@ -683,6 +700,7 @@ mls_website/
 │   │       │   ├── usePropertyFavouriteToggle.ts
 │   │       │   ├── usePropertyList.ts
 │   │       │   ├── useFavouritePropertyList.ts
+│   │       │   ├── useListingPropertyScreen.ts
 │   │       │   ├── useRecentlyViewedScreen.ts
 │   │       │   ├── useSavedSearchesScreen.ts
 │   │       │   └── usePropertySearchFilters.ts
@@ -720,6 +738,8 @@ mls_website/
 │   │       └── utils/
 │   │           ├── applyFavoriteFlagsToListings.ts
 │   │           ├── buildMyListingTableColumns.tsx
+│   │           ├── createMyListingRowActionsResolver.ts
+│   │           ├── myListingRowActionIcons.tsx
 │   │           ├── formatListingSubmittedDate.ts
 │   │           ├── parsePropertyListUrlParams.ts
 │   │           ├── propertyAdvancedFieldVisibility.ts

@@ -33,6 +33,6 @@ import type { SignInResponse } from "@/src/features/auth/types";
 
 ## Notes
 
-- `LoggedInUser` includes `roles` and `permissions` for future RBAC UI.
+- `LoggedInUser` includes optional `has_agency`, nested `agency`, `roles`, and `permissions` for RBAC and agency UI.
 - Form types may include UI-only fields (e.g. `rememberMe`) mapped in services.
 - `SignInOtp` types depend on `SignInTokens` from `signIn.types.ts`.

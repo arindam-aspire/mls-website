@@ -6,6 +6,8 @@ import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/src/i18n/navigation";
 import type { AppLocale } from "@/src/i18n/routing";
 import { formatNotificationRelativeTime } from "@/src/features/notifications/utils/formatNotificationRelativeTime";
+import type { MappedDraftListItem } from "../mappers/agentPropertyDraftsList.mapper";
+import { useAddPropertyEntry } from "./useAddPropertyEntry";
 import { PROPERTY_CREATE_SUBMISSION_ID_PARAM } from "../constants/propertyCreate.constants";
 import {
   mapAgentPropertyDraftListItems,
@@ -29,6 +31,11 @@ export function useDraftListingsScreen() {
   // 2. UI utilities
   const t = useTranslations("propertyList.draftListings");
   const locale = useLocale() as AppLocale;
+  const {
+    onAddProperty: onCreateNew,
+    isSelectAgencyOpen,
+    setIsSelectAgencyOpen,
+  } = useAddPropertyEntry({ restrictForOwnerOnly: true });
 
   // 4. Local state
   const [page, setPage] = useState(DEFAULT_PAGE);
@@ -82,7 +89,7 @@ export function useDraftListingsScreen() {
     };
   }, [locale, t]);
 
-  const draftListItems = useMemo((): DraftListItemData[] => {
+  const draftListItems = useMemo((): MappedDraftListItem[] => {
     return mapAgentPropertyDraftListItems(listings ?? [], draftLabels);
   }, [draftLabels, listings]);
 
@@ -116,6 +123,7 @@ export function useDraftListingsScreen() {
 
   const resumeLabel = useMemo(() => t("resume"), [t]);
   const createLabel = useMemo(() => t("createNew"), [t]);
+  const addPropertyLabel = useMemo(() => t("addProperty"), [t]);
 
   const emptyStateContent = useMemo(
     () => ({
@@ -126,10 +134,6 @@ export function useDraftListingsScreen() {
   );
 
   // 7. Callbacks
-  const onCreateNew = useCallback(() => {
-    router.push("/property-create");
-  }, [router]);
-
   const onResume = useCallback(
     (item: DraftListItemData) => {
       const submissionId = String(item.id);
@@ -167,6 +171,9 @@ export function useDraftListingsScreen() {
     onDelete,
     resumeLabel,
     createLabel,
+    addPropertyLabel,
     emptyStateContent,
+    isSelectAgencyOpen,
+    setIsSelectAgencyOpen,
   };
 }
