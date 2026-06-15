@@ -6,7 +6,10 @@ Custom hooks that own property feature logic: fetching, store sync, handlers, an
 
 | File | Purpose |
 | --- | --- |
-| [usePropertyList.md](./usePropertyList.md) | Property list screen logic (URL params, fetch, toolbar, pagination) |
+| [useListingPropertyScreen.md](./useListingPropertyScreen.md) | My Listings screen (`useAgentListingsTable` + `myListings` namespace) |
+| [useManageListingsScreen.md](./useManageListingsScreen.md) | Manage Listings — agent: `useAgentListingsTable`; admin: `useAdminPropertySubmissionsTable` |
+| [useAdminPropertySubmissionsTable.md](./useAdminPropertySubmissionsTable.md) | Admin submissions table (`GET /admin/property-submissions`) |
+| [useAgentListingsTable.md](./useAgentListingsTable.md) | Shared agent listings table logic (internal; used by the two screen hooks above) |
 | [useAddPropertyEntry.md](./useAddPropertyEntry.md) | My Listings Add Property gate (`has_agency` check + agency modal) |
 | [useFavouritePropertyList.md](./useFavouritePropertyList.md) | Favourites screen logic (`GET /favorites`, pagination, `PropertyCardList`) |
 | [useRecentlyViewedScreen.md](./useRecentlyViewedScreen.md) | Recently viewed list, pagination, favourites, clear-all |

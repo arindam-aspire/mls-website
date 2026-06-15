@@ -8,7 +8,7 @@ Next.js App Router page for route segment `[locale]/manage-listings`. Client wra
 
 - Next.js App Router page for route segment `[locale]/manage-listings`.
 - Client wrapper that calls `useAuthorize("MANAGE_LISTINGS")` before rendering `ManageListingsScreen`.
-- Shows `LoadingScreen` when auth finished loading and `user` is still absent (redirect pending).
+- Shows `LoadingScreen` while `isLoadingUser` is true or until `user` is hydrated (avoids wrong API branch before role is known).
 
 # Imports
 

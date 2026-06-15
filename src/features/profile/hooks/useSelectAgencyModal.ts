@@ -12,7 +12,8 @@ import {
   DEFAULT_AGENCY_LIST_LIMIT,
   DEFAULT_AGENCY_LIST_SKIP,
 } from "../constants/selectAgency.constants";
-import { assignUserAgencyAndRefreshUser, getAgencyList } from "../services/profile.service";
+import { assignUserAgencyAndRefreshUser } from "@/src/features/user/services/user.service";
+import { getAgencyList } from "../services/profile.service";
 import type { AgencyListItem } from "../types/profile.types";
 import { filterAgenciesBySearch } from "../utils/selectAgency.utils";
 

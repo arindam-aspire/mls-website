@@ -1,10 +1,15 @@
 import type { PropertyTableRowAction } from "@abdoun/abdoun-library";
 import {
   ArrowRight,
+  CheckCircle2,
   Eye,
   MessageSquareText,
   Pencil,
   Trash2,
+  UserCog,
+  UserMinus,
+  UserPlus,
+  XCircle,
 } from "lucide-react";
 import type { ReactNode } from "react";
 
@@ -16,6 +21,11 @@ const MY_LISTING_ROW_ACTION_ICONS: Record<string, ReactNode> = {
   edit: <Pencil className={iconClassName} aria-hidden />,
   rejected_reason: <MessageSquareText className={iconClassName} aria-hidden />,
   delete: <Trash2 className={iconClassName} aria-hidden />,
+  assign: <UserPlus className={iconClassName} aria-hidden />,
+  approve: <CheckCircle2 className={iconClassName} aria-hidden />,
+  reject: <XCircle className={iconClassName} aria-hidden />,
+  reassign: <UserCog className={iconClassName} aria-hidden />,
+  unassign: <UserMinus className={iconClassName} aria-hidden />,
 };
 
 export function withMyListingRowActionIcons(

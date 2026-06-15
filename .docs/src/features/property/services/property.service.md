@@ -63,6 +63,8 @@ _N/A — stateless service._
 | `getSimilarProperties` | GET | `/properties/:id/similar` | no (`auth: false`) |
 | `getPropertyFeatureCatalog` | GET | `/features?is_active=true` | no (`auth: false`) |
 | `getAgentProperties` | GET | `/agent-properties?page=&pageSize=` | yes |
+| `getAdminPropertySubmissions` | GET | `/admin/property-submissions?status=&page=&pageSize=` | yes |
+| `reviewAdminPropertySubmission` | POST | `/admin/property-submissions/{submissionId}/review` body `{ action }` | yes |
 | `getAgentPropertyDrafts` | GET | `/agent-properties/drafts?page=&pageSize=` | yes |
 | `getFavoriteList` | GET | `/favorites?page=&pageSize=` | yes |
 | `getAllFavorites` | GET | `/favorites` | yes |

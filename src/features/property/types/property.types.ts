@@ -156,6 +156,7 @@ export type AgentPropertyListItem = {
   can_edit_submission: boolean;
   can_delete_submission: boolean;
   agency: unknown | null;
+  submitted_by?: string | null;
 };
 
 export type AgentPropertiesListData = {
@@ -181,6 +182,82 @@ export type AgentPropertiesListResponse = {
 export type AgentPropertiesListings = {
   items: AgentPropertyListItem[];
   meta?: PaginationMeta;
+};
+
+// ── Admin property submissions (GET /admin/property-submissions) ─────────────
+
+export type AdminPropertySubmissionsListParams = {
+  page: number;
+  pageSize: number;
+  status?: string;
+};
+
+/** Single row from `GET /admin/property-submissions` (`data.items[]`). */
+export type AdminPropertySubmissionListItem = {
+  submission_id: string;
+  submitted_by: string;
+  submitted_by_name: string;
+  status: string;
+  property_id: string;
+  agent_user_id: string | null;
+  has_assigned_agent: boolean;
+  property_hash: number;
+  property_title: string;
+  property_reference_number: string | null;
+  current_step: number;
+  submitted_at: string;
+  reviewed_at: string | null;
+};
+
+export type AdminPropertySubmissionsListData = {
+  items: AdminPropertySubmissionListItem[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrevious: boolean;
+};
+
+export type AdminPropertySubmissionsListResponse = {
+  success: boolean;
+  message: string | null;
+  data: AdminPropertySubmissionsListData | null;
+  error: unknown;
+  meta?: {
+    pagination?: PaginationMeta;
+  };
+};
+
+export type AdminPropertySubmissionReviewApproveBody = {
+  action: "approve";
+};
+
+export type AdminPropertySubmissionReviewRejectBody = {
+  action: "reject";
+  reason: string;
+};
+
+export type AdminPropertySubmissionReviewRequestBody =
+  | AdminPropertySubmissionReviewApproveBody
+  | AdminPropertySubmissionReviewRejectBody;
+
+export type AdminPropertySubmissionReviewResponse = {
+  success: boolean;
+  message: string | null;
+  data: unknown;
+  error: unknown;
+};
+
+export type AdminPropertyAssignAgentRequestBody = {
+  agent_id: string | null;
+};
+
+export type AdminPropertyAssignAgentResponse = {
+  success: boolean;
+  message: string | null;
+  data: unknown;
+  error: unknown;
 };
 
 // ── Agent property drafts (GET /agent-properties/drafts) ────────────────────

@@ -35,7 +35,7 @@ Screen receives all form props from `usePropertyCreateScreen()` — see hook doc
 - Breadcrumb: `hidden md:flex` on the right; Home icon, List icon + listings label, Create (current).
 - `PropertyForm` owns step content and validation; host controls `activeStep`, `maxReachedStep`, persisted `propertyDetails`, and navigation callbacks.
 - Light/dark semantic tokens; i18n in all four locales for page chrome (form labels live in the library).
-- Requires `@abdoun/abdoun-library` v0.1.60+ for `PropertyForm` `canEdit` / `rejectionReason` (read-only submitted, resubmit alert when rejected).
+- Requires `@abdoun/abdoun-library` v0.1.61+ for `PropertyForm` `canEdit` / `rejectionReason` (read-only submitted, resubmit alert when rejected).
 - Passes `canEdit` and `rejectionReason` from draft submission `status` / `review_reason`.
 - Passes `isDraftLoading={isDraftSaving}` and `isSubmitting` to disable the form while draft save or submit is in flight.
 

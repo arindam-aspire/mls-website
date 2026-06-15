@@ -1,9 +1,12 @@
 import { apiClient, authClient } from "@/src/apis/clients/api.client";
 import { agencyEndpoints } from "@/src/apis/endpoints/agencyEndpoints";
 import { profileEndpoints } from "@/src/apis/endpoints/profileEndpoints";
-import { userEndpoints } from "@/src/apis/endpoints/userEndpoints";
 import { getLoggedInUser } from "@/src/features/auth/services/auth.service";
 import type { LoggedInUser } from "@/src/features/auth/types/auth.types";
+import {
+  assignUserAgency,
+  assignUserAgencyAndRefreshUser,
+} from "@/src/features/user/services/user.service";
 import { putFileToPresignedUrl } from "@/src/lib/upload";
 import { resolveLicenseDocumentContentType } from "@/src/lib/validateLicenseDocumentFile";
 import {
@@ -15,7 +18,6 @@ import type {
   AgencyLegalDocumentUploadResponse,
   AgencyListParams,
   AgencyListResponse,
-  AssignUserAgencyResponse,
   AgencyLogoUploadRequest,
   AgencyLogoUploadResponse,
   DeleteAgencyLogoResponse,
@@ -71,24 +73,7 @@ export async function getAgencyList(
   return normalizeAgencyListResponse(response, { skip, limit });
 }
 
-export async function assignUserAgency(agencyId: string): Promise<AssignUserAgencyResponse> {
-  return apiClient.request<AssignUserAgencyResponse>({
-    endpoint: userEndpoints.AGENCY,
-    method: "PATCH",
-    body: { agencyId },
-    auth: true,
-  });
-}
-
-export async function assignUserAgencyAndRefreshUser(agencyId: string): Promise<LoggedInUser> {
-  const response = await assignUserAgency(agencyId);
-  if (!response.success) {
-    throw new Error(response.message ?? "Failed to assign agency");
-  }
-
-  const me = await getLoggedInUser();
-  return me.data;
-}
+export { assignUserAgency, assignUserAgencyAndRefreshUser };
 
 export async function updateAgency(
   agencyId: string,

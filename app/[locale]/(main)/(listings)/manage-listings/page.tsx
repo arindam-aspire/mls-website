@@ -9,7 +9,7 @@ export default function ManageListingsPage() {
   usePageTitle("manageListings");
   const { user, isLoadingUser } = useAuthorize("MANAGE_LISTINGS");
 
-  if (!isLoadingUser && !user) return <LoadingScreen />;
+  if (isLoadingUser || !user) return <LoadingScreen />;
 
   return <ManageListingsScreen />;
 }

@@ -10,7 +10,7 @@ Column ids and default visibility for the **My Listings** table column picker.
 | --- | --- |
 | `MY_LISTING_TABLE_COLUMN_IDS` | All table column ids |
 | `MY_LISTING_ALWAYS_VISIBLE_COLUMN_IDS` | `title`, `actions` — always in table, not in popover |
-| `MY_LISTING_TOGGLEABLE_COLUMN_IDS` | `reference`, `status`, `submittedOn`, `reviewedOn` — column picker only |
+| `MY_LISTING_TOGGLEABLE_COLUMN_IDS` | `status`, `submission`, `reviewedOn` — column picker only |
 | `MyListingColumnVisibility` | Toggle state for optional columns only |
 | `DEFAULT_MY_LISTING_COLUMN_VISIBILITY` | All toggleable columns visible initially |
 | `isMyListingTableColumnVisible` | Resolves visibility for any column id |

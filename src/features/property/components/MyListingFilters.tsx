@@ -4,6 +4,7 @@ import { CheckboxField, SearchInput, SelectDropdown } from "@/src/components/ui"
 import { iconButtonSizeClasses } from "@/src/components/ui/responsiveSizes";
 import { Popover, PopoverButton, PopoverPanel } from "@/src/components/ui/popover";
 import { MY_LISTING_STATUS_FILTER_VALUES } from "@/src/features/property/constants/myListingStatusFilters.constants";
+import type { ManageListingToggleableColumnId } from "@/src/features/property/constants/manageListingTableColumns.constants";
 import type { MyListingToggleableColumnId } from "@/src/features/property/constants/myListingTableColumns.constants";
 import type { PropertyListingsNamespace } from "@/src/features/property/mutations/property.mutation";
 import { cn } from "@/src/lib/cn";
@@ -16,7 +17,7 @@ const statusFieldClassName =
   "w-full min-w-0 flex-1 sm:w-auto sm:min-w-[11.5rem] md:min-w-[13rem] lg:min-w-[14.5rem]";
 
 export type MyListingColumnOption = {
-  id: MyListingToggleableColumnId;
+  id: MyListingToggleableColumnId | ManageListingToggleableColumnId;
   label: string;
   visible: boolean;
 };
@@ -28,10 +29,12 @@ export type MyListingFiltersProps = {
   onStatusChange: (value: string) => void;
   columnOptions: MyListingColumnOption[];
   onColumnVisibilityChange: (
-    columnId: MyListingToggleableColumnId,
+    columnId: MyListingToggleableColumnId | ManageListingToggleableColumnId,
     visible: boolean,
   ) => void;
   listingsNamespace?: PropertyListingsNamespace;
+  showSearch?: boolean;
+  statusFilterValues?: readonly string[];
 };
 
 export function MyListingFilters({
@@ -42,6 +45,8 @@ export function MyListingFilters({
   columnOptions,
   onColumnVisibilityChange,
   listingsNamespace = "myListings",
+  showSearch = true,
+  statusFilterValues = MY_LISTING_STATUS_FILTER_VALUES,
 }: MyListingFiltersProps) {
   const tCommon = useTranslations("common");
   const t = useTranslations(`propertyList.${listingsNamespace}`);
@@ -49,30 +54,34 @@ export function MyListingFilters({
 
   const statusOptions = useMemo(
     () =>
-      MY_LISTING_STATUS_FILTER_VALUES.map((value) => ({
+      statusFilterValues.map((value) => ({
         value,
         label: tStatus(value),
       })),
-    [tStatus],
+    [statusFilterValues, tStatus],
   );
 
   return (
     <div className="flex w-full min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-      <SearchInput
-        fullWidth={false}
-        className={cn(searchFieldClassName)}
-        placeholder={tCommon("searchPlaceholder")}
-        aria-label={tCommon("searchPlaceholder")}
-        clearLabel={tCommon("clearSearch")}
-        size="md"
-        value={search}
-        onChange={(event) => {
-          onSearchChange(event.target.value);
-        }}
-        onClear={() => {
-          onSearchChange("");
-        }}
-      />
+      {showSearch ? (
+        <SearchInput
+          fullWidth={false}
+          className={cn(searchFieldClassName)}
+          placeholder={tCommon("searchPlaceholder")}
+          aria-label={tCommon("searchPlaceholder")}
+          clearLabel={tCommon("clearSearch")}
+          size="md"
+          value={search}
+          onChange={(event) => {
+            onSearchChange(event.target.value);
+          }}
+          onClear={() => {
+            onSearchChange("");
+          }}
+        />
+      ) : (
+        <div className="hidden sm:block sm:flex-1" aria-hidden />
+      )}
 
       <div className="flex w-full min-w-0 items-center gap-2 sm:w-auto sm:shrink-0">
         <SelectDropdown

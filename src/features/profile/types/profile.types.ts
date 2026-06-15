@@ -357,16 +357,6 @@ export type NormalizedAgencyListResponse = {
   limit: number;
 };
 
-// ── User agency (PATCH /users/agency) ─────────────────────────────────────────
+// ── User agency (PATCH /users/agency) — see `src/features/user/types/user.types.ts` ──
 
-export type AssignUserAgencyRequest = {
-  agencyId: string;
-};
-
-export type AssignUserAgencyResponse = {
-  success: boolean;
-  message: string | null;
-  data: unknown;
-  error: unknown;
-  meta: Record<string, unknown>;
-};
+export type { AssignUserAgencyRequest, AssignUserAgencyResponse } from "@/src/features/user/types";

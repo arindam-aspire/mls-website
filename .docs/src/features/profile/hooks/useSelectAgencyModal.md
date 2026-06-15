@@ -30,4 +30,5 @@ Logic for `SelectAgencyModal`: fetch agency list, selection state, link agency o
 # Dependencies
 
 - [SelectAgencyModal.md](../modals/SelectAgencyModal.md)
-- [profile.service.ts](../../../../src/features/profile/services/profile.service.ts) — `assignUserAgency`, `assignUserAgencyAndRefreshUser`
+- [user.service.ts](../../../../src/features/user/services/user.service.ts) — `assignUserAgency`, `assignUserAgencyAndRefreshUser`
+- [profile.service.ts](../../../../src/features/profile/services/profile.service.ts) — re-exports the same functions for backward compatibility

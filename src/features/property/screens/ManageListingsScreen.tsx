@@ -6,12 +6,14 @@ import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { isAgentUser } from "@/src/features/auth/utils/profileMenuRoleAccess";
 import { MyListingFilters } from "@/src/features/property/components/MyListingFilters";
 import { MyListingRejectedReasonModal } from "@/src/features/property/components/MyListingRejectedReasonModal";
-import { useListingPropertyScreen } from "@/src/features/property/hooks/useListingPropertyScreen";
+import { AssignAgentModal } from "@/src/features/property/components/AssignAgentModal";
+import { RejectSubmissionModal } from "@/src/features/property/components/RejectSubmissionModal";
+import { useManageListingsScreen } from "@/src/features/property/hooks/useManageListingsScreen";
 import { useRouter } from "@/src/i18n/navigation";
 import { cn } from "@/src/lib/cn";
 import { bodyLargeTextClasses, headingPageClasses } from "@/src/lib/typography";
 import { ListTableView } from "@abdoun/abdoun-library";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, CheckCircle2, UserMinus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback, useMemo } from "react";
 
@@ -33,12 +35,17 @@ export default function ManageListingsScreen() {
     listTitle,
     rejectedReasonModal,
     deleteConfirmModal,
+    approveConfirmModal,
+    assignAgentModal,
+    rejectSubmissionModal,
+    unassignConfirmModal,
     onClickDelete,
     onRowAction,
     workflowActions,
-  } = useListingPropertyScreen({ listingsNamespace: "manageListings" });
-  const t = useTranslations("propertyList.manageListings");
+    canViewDelete,
+  } = useManageListingsScreen();
   const router = useRouter();
+  const t = useTranslations("propertyList.manageListings");
   const user = useAuthStore((state) => state.user);
 
   const showAddProperty = useMemo(() => isAgentUser(user), [user]);
@@ -89,7 +96,7 @@ export default function ManageListingsScreen() {
               pinnedColumns={pinnedColumns}
               workflowActions={workflowActions}
               onRowAction={onRowAction}
-              canViewDelete
+              canViewDelete={canViewDelete}
               onClickDelete={onClickDelete}
             />
           </CardContent>
@@ -105,21 +112,80 @@ export default function ManageListingsScreen() {
         closeLabel={rejectedReasonModal.closeLabel}
       />
 
-      <ConfirmModal
-        open={deleteConfirmModal.open}
-        onClose={deleteConfirmModal.onClose}
-        onConfirm={deleteConfirmModal.onConfirm}
-        onCancel={deleteConfirmModal.onClose}
-        variant="danger"
-        title={deleteConfirmModal.title}
-        description={deleteConfirmModal.description}
-        confirmLabel={deleteConfirmModal.confirmLabel}
-        cancelLabel={deleteConfirmModal.cancelLabel}
-        cancelColor="inherit"
-        confirmIcon={<Trash2 className="size-4" aria-hidden />}
-        isLoading={deleteConfirmModal.isLoading}
-        loadingLabel={deleteConfirmModal.deletingLabel}
-      />
+      {approveConfirmModal ? (
+        <ConfirmModal
+          open={approveConfirmModal.open}
+          onClose={approveConfirmModal.onClose}
+          onConfirm={approveConfirmModal.onConfirm}
+          onCancel={approveConfirmModal.onClose}
+          variant="primary"
+          title={approveConfirmModal.title}
+          description={approveConfirmModal.description}
+          confirmLabel={approveConfirmModal.confirmLabel}
+          cancelLabel={approveConfirmModal.cancelLabel}
+          cancelColor="inherit"
+          confirmIcon={<CheckCircle2 className="size-4" aria-hidden />}
+          isLoading={approveConfirmModal.isLoading}
+          loadingLabel={approveConfirmModal.approvingLabel}
+        />
+      ) : null}
+
+      {assignAgentModal ? (
+        <AssignAgentModal
+          open={assignAgentModal.open}
+          listingTitle={assignAgentModal.listingTitle}
+          mode={assignAgentModal.mode}
+          isAssigning={assignAgentModal.isAssigning}
+          onClose={assignAgentModal.onClose}
+          onAssign={assignAgentModal.onAssign}
+        />
+      ) : null}
+
+      {rejectSubmissionModal ? (
+        <RejectSubmissionModal
+          open={rejectSubmissionModal.open}
+          listingTitle={rejectSubmissionModal.listingTitle}
+          isSubmitting={rejectSubmissionModal.isSubmitting}
+          onClose={rejectSubmissionModal.onClose}
+          onSubmit={rejectSubmissionModal.onSubmit}
+        />
+      ) : null}
+
+      {unassignConfirmModal ? (
+        <ConfirmModal
+          open={unassignConfirmModal.open}
+          onClose={unassignConfirmModal.onClose}
+          onConfirm={unassignConfirmModal.onConfirm}
+          onCancel={unassignConfirmModal.onClose}
+          variant="danger"
+          title={unassignConfirmModal.title}
+          description={unassignConfirmModal.description}
+          confirmLabel={unassignConfirmModal.confirmLabel}
+          cancelLabel={unassignConfirmModal.cancelLabel}
+          cancelColor="inherit"
+          confirmIcon={<UserMinus className="size-4" aria-hidden />}
+          isLoading={unassignConfirmModal.isLoading}
+          loadingLabel={unassignConfirmModal.unassigningLabel}
+        />
+      ) : null}
+
+      {deleteConfirmModal ? (
+        <ConfirmModal
+          open={deleteConfirmModal.open}
+          onClose={deleteConfirmModal.onClose}
+          onConfirm={deleteConfirmModal.onConfirm}
+          onCancel={deleteConfirmModal.onClose}
+          variant="danger"
+          title={deleteConfirmModal.title}
+          description={deleteConfirmModal.description}
+          confirmLabel={deleteConfirmModal.confirmLabel}
+          cancelLabel={deleteConfirmModal.cancelLabel}
+          cancelColor="inherit"
+          confirmIcon={<Trash2 className="size-4" aria-hidden />}
+          isLoading={deleteConfirmModal.isLoading}
+          loadingLabel={deleteConfirmModal.deletingLabel}
+        />
+      ) : null}
     </>
   );
 }

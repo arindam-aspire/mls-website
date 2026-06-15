@@ -31,7 +31,7 @@ Dynamic detail route: `/en/propert-details/:id` → `PropertyDetailsScreen`.
 
 ## Status
 
-`PropertyListScreen` and `PropertyDetailsScreen` use `@abdoun/abdoun-library` list/detail components. `ListingPropertyScreen` and `ManageListingsScreen` use `ListTableView` with `GET /agent-properties`. Other routed screens may still use [ComingSoonCard](../../components/common/ComingSoonCard.md).
+`PropertyListScreen` and `PropertyDetailsScreen` use `@abdoun/abdoun-library` list/detail components. `ListingPropertyScreen` uses `GET /agent-properties`. `ManageListingsScreen` uses agent or admin submissions API by role. Other routed screens may still use [ComingSoonCard](../../components/common/ComingSoonCard.md).
 
 ## API
 

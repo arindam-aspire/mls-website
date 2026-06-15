@@ -1,4 +1,5 @@
 import type {
+  AdminPropertySubmissionsListParams,
   AgentPropertiesListParams,
   AgentPropertyDraftsListParams,
   PropertyListParams,
@@ -96,6 +97,19 @@ export const propertyEndpoints = {
 
     return `/agent-properties?${search.toString()}`;
   },
+  ADMIN_PROPERTY_SUBMISSIONS: (params: AdminPropertySubmissionsListParams): string => {
+    const search = new URLSearchParams({
+      page: String(params.page),
+      pageSize: String(params.pageSize),
+      status: params.status ?? "",
+    });
+
+    return `/admin/property-submissions?${search.toString()}`;
+  },
+  ADMIN_PROPERTY_SUBMISSION_REVIEW: (submissionId: string): string =>
+    `/admin/property-submissions/${encodeURIComponent(submissionId)}/review`,
+  ADMIN_PROPERTY_ASSIGN_AGENT: (propertyId: string): string =>
+    `/admin/properties/${encodeURIComponent(propertyId)}/assign-agent`,
   AGENT_PROPERTY_DRAFTS: (params: AgentPropertyDraftsListParams): string => {
     const search = new URLSearchParams({
       page: String(params.page),

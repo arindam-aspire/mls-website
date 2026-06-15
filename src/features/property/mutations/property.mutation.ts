@@ -7,8 +7,10 @@ import { useToast } from "@/src/hooks/useToast";
 import {
   addFavorite,
   addRecentView,
+  assignAdminPropertyAgent,
   clearRecentViews,
   getAgentProperties,
+  getAdminPropertySubmissions,
   getAgentPropertyDrafts,
   getAllFavorites,
   getFavoriteList,
@@ -20,6 +22,7 @@ import {
   getRecentViewsList,
   removeFavorite,
   removeRecentView,
+  reviewAdminPropertySubmission,
   getSimilarProperties,
   savePropertyDraftSubmission,
   submitPropertyDraftSubmission,
@@ -31,6 +34,8 @@ import type {
   PropertyDraftSubmissionUpdateRequestBody,
   PropertySubmissionDirectSubmitRequestBody,
 } from "../types/propertyDraftSubmission.types";
+
+export type PropertyListingsNamespace = "myListings" | "manageListings";
 
 export const FAVORITES_ALL_QUERY_KEY = ["property", "favorites", "all"] as const;
 
@@ -94,8 +99,10 @@ export function useGetAllFavorites(options?: { enabled?: boolean }) {
   });
 }
 
-export const useDeletePropertySubmission = () => {
-  const t = useTranslations("propertyList.myListings");
+export const useDeletePropertySubmission = (
+  listingsNamespace: PropertyListingsNamespace = "myListings",
+) => {
+  const t = useTranslations(`propertyList.${listingsNamespace}`);
   const toast = useToast();
 
   return useMutation({
@@ -159,8 +166,6 @@ export const useSubmitPropertySubmission = () => {
   });
 };
 
-export type PropertyListingsNamespace = "myListings" | "manageListings";
-
 export const useGetAgentProperties = (
   listingsNamespace: PropertyListingsNamespace = "myListings",
 ) => {
@@ -174,6 +179,44 @@ export const useGetAgentProperties = (
         description: error.message,
       });
     },
+  });
+};
+
+export const useGetAdminPropertySubmissions = () => {
+  const t = useTranslations("propertyList.manageListings");
+  const toast = useToast();
+
+  return useMutation({
+    mutationFn: getAdminPropertySubmissions,
+    onError: (error: ApiError) => {
+      toast.error(t("fetchError"), {
+        description: error.message,
+      });
+    },
+  });
+};
+
+export const useReviewAdminPropertySubmission = () => {
+  return useMutation({
+    mutationFn: ({
+      submissionId,
+      body,
+    }: {
+      submissionId: string;
+      body: Parameters<typeof reviewAdminPropertySubmission>[1];
+    }) => reviewAdminPropertySubmission(submissionId, body),
+  });
+};
+
+export const useAssignAdminPropertyAgent = () => {
+  return useMutation({
+    mutationFn: ({
+      propertyId,
+      body,
+    }: {
+      propertyId: string;
+      body: Parameters<typeof assignAdminPropertyAgent>[1];
+    }) => assignAdminPropertyAgent(propertyId, body),
   });
 };
 

@@ -97,21 +97,23 @@ export default function ListingPropertyScreen() {
         closeLabel={rejectedReasonModal.closeLabel}
       />
 
-      <ConfirmModal
-        open={deleteConfirmModal.open}
-        onClose={deleteConfirmModal.onClose}
-        onConfirm={deleteConfirmModal.onConfirm}
-        onCancel={deleteConfirmModal.onClose}
-        variant="danger"
-        title={deleteConfirmModal.title}
-        description={deleteConfirmModal.description}
-        confirmLabel={deleteConfirmModal.confirmLabel}
-        cancelLabel={deleteConfirmModal.cancelLabel}
-        cancelColor="inherit"
-        confirmIcon={<Trash2 className="size-4" aria-hidden />}
-        isLoading={deleteConfirmModal.isLoading}
-        loadingLabel={deleteConfirmModal.deletingLabel}
-      />
+      {deleteConfirmModal ? (
+        <ConfirmModal
+          open={deleteConfirmModal.open}
+          onClose={deleteConfirmModal.onClose}
+          onConfirm={deleteConfirmModal.onConfirm}
+          onCancel={deleteConfirmModal.onClose}
+          variant="danger"
+          title={deleteConfirmModal.title}
+          description={deleteConfirmModal.description}
+          confirmLabel={deleteConfirmModal.confirmLabel}
+          cancelLabel={deleteConfirmModal.cancelLabel}
+          cancelColor="inherit"
+          confirmIcon={<Trash2 className="size-4" aria-hidden />}
+          isLoading={deleteConfirmModal.isLoading}
+          loadingLabel={deleteConfirmModal.deletingLabel}
+        />
+      ) : null}
     </>
   );
 }

@@ -21,15 +21,46 @@ export type MyListingTableRow = LibraryPropertyListing & {
   submission_review_reason?: string | null;
 };
 
+function resolveAgentListingDisplayStatusKey(item: AgentPropertyListItem): string {
+  const submissionStatus = item.submission_status?.trim();
+
+  if (submissionStatus === "approved" || submissionStatus === "rejected") {
+    return submissionStatus;
+  }
+
+  return item.submission_workflow_label?.trim() || item.status_slug || submissionStatus || "";
+}
+
 function isRejectedWorkflow(item: AgentPropertyListItem): boolean {
-  const workflowKey = item.submission_workflow_label?.trim() || item.status_slug;
-  return workflowKey === "rejected";
+  return resolveAgentListingDisplayStatusKey(item) === "rejected";
 }
 
 function toSubmissionApiListing(item: AgentPropertyListItem): SubmissionApiListing {
   return {
-    ...item,
-    submission_submitted_at: item.submission_submitted_at ?? "",
+    property_id: item.property_id,
+    property_hash: item.property_hash,
+    title: item.title,
+    listing_purpose: item.listing_purpose,
+    type_name: item.type_name,
+    type_slug: item.type_slug,
+    category_name: item.category_name,
+    category_slug: item.category_slug,
+    status_name: item.status_name,
+    status_slug: item.status_slug,
+    price: item.price,
+    currency: item.currency,
+    reference_number: item.reference_number,
+    created_at: item.created_at,
+    updated_at: item.updated_at,
+    submission_id: item.submission_id,
+    submission_status: item.submission_status,
+    submitted_on: item.submission_submitted_at,
+    submission_submitted_by: item.submitted_by,
+    submission_reviewed_at: item.submission_reviewed_at,
+    submission_review_reason: item.submission_review_reason,
+    submission_workflow_label: item.submission_workflow_label,
+    can_edit_submission: item.can_edit_submission,
+    can_delete_submission: item.can_delete_submission,
     agency: item.agency as SubmissionApiListing["agency"],
   };
 }
@@ -39,9 +70,14 @@ export function mapAgentPropertyListItem(
   options?: MapAgentPropertyListItemsOptions,
 ): MyListingTableRow {
   const listing = mapSubmissionApiListingToPropertyListing(toSubmissionApiListing(item));
+  const statusKey = resolveAgentListingDisplayStatusKey(item);
 
   return {
     ...listing,
+    status: {
+      ...listing.status,
+      key: statusKey as typeof listing.status.key,
+    },
     validatedDate: item.submission_submitted_at ?? "",
     reviewedDate: item.submission_reviewed_at ?? "",
     submission_review_reason: item.submission_review_reason,

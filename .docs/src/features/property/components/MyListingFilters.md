@@ -36,7 +36,7 @@ Filter bar for **My Listings** (`ListingPropertyScreen`) and **Manage Listings**
 | Status | `statusFilter.all`, `statusFilter.{value}` |
 | Column picker trigger | `columnPickerAriaLabel` |
 | Column picker title | `columnPickerTitle` |
-| Column labels | `columns.reference`, `status`, `submittedOn` (toggleable only) |
+| Column labels | `columns.status`, `submission`, `reviewedOn` (toggleable only) |
 
 # UI Details
 

@@ -19,10 +19,10 @@ type LibraryPropertyListing = ComponentProps<typeof ListTableView>["data"][numbe
 type LibraryTitleLocale = keyof LibraryPropertyListing["title"];
 
 type MyListingTableColumnLabels = {
-  propertyName: string;
-  reference: string;
+  property: string;
   status: string;
-  submittedOn: string;
+  submission: string;
+  submittedByEmpty: string;
   submittedOnEmpty: string;
   reviewedOn: string;
   reviewedOnEmpty: string;
@@ -30,6 +30,32 @@ type MyListingTableColumnLabels = {
 
 function resolveReviewedDate(row: LibraryPropertyListing): string {
   return (row as MyListingTableRow).reviewedDate;
+}
+
+function resolveSubmittedBy(row: LibraryPropertyListing): string {
+  const submittedBy = row.submission_submitted_by?.trim();
+
+  if (submittedBy) {
+    return submittedBy;
+  }
+
+  const agencyName = row.agency?.agency_name?.trim();
+
+  if (agencyName) {
+    return agencyName;
+  }
+
+  return row.brokerName?.trim() ?? "";
+}
+
+function resolveSubmittedOnDate(row: LibraryPropertyListing): string {
+  const validatedDate = (row as MyListingTableRow).validatedDate?.trim();
+
+  if (validatedDate) {
+    return validatedDate;
+  }
+
+  return row.submitted_on?.trim() ?? "";
 }
 
 type BuildMyListingTableColumnsParams = {
@@ -46,6 +72,64 @@ function resolveListingTitle(
   locale: LibraryTitleLocale,
 ): string {
   return listing.title[locale] || listing.title.en;
+}
+
+function resolveListingReference(listing: LibraryPropertyListing): string {
+  return listing.reference_number?.trim() || listing.property_id;
+}
+
+function renderSubmissionCell(
+  row: LibraryPropertyListing,
+  labels: Pick<MyListingTableColumnLabels, "submittedByEmpty" | "submittedOnEmpty">,
+  appLocale: AppLocale,
+) {
+  const submittedBy = resolveSubmittedBy(row);
+  const formattedDate = formatListingSubmittedDate(
+    resolveSubmittedOnDate(row),
+    appLocale,
+  );
+
+  return (
+    <div className="min-w-0">
+      <span className="block w-full min-w-0 truncate text-sm font-medium text-text">
+        {submittedBy || labels.submittedByEmpty}
+      </span>
+      <span className="mt-0.5 block w-full min-w-0 truncate text-xs text-muted">
+        {formattedDate ?? labels.submittedOnEmpty}
+      </span>
+    </div>
+  );
+}
+function renderPropertyCell(
+  row: LibraryPropertyListing,
+  tableLocale: LibraryTitleLocale,
+  onClick?: (listing: LibraryPropertyListing) => void,
+) {
+  const title = resolveListingTitle(row, tableLocale);
+  const reference = resolveListingReference(row);
+
+  return (
+    <div className="min-w-0">
+      {onClick ? (
+        <button
+          type="button"
+          onClick={() => onClick(row)}
+          className={cn(
+            "block w-full min-w-0 truncate text-start text-sm font-medium text-secondary underline-offset-2 hover:underline",
+          )}
+        >
+          {title}
+        </button>
+      ) : (
+        <span className="block w-full min-w-0 truncate text-start text-sm font-medium text-text">
+          {title}
+        </span>
+      )}
+      <span className="mt-0.5 block w-full min-w-0 truncate text-xs text-muted">
+        {reference}
+      </span>
+    </div>
+  );
 }
 
 export function buildMyListingTableColumns({
@@ -69,46 +153,25 @@ export function buildMyListingTableColumns({
 
   const actionsColumn = defaultColumns.find((column) => column.id === "actions");
 
-  const columns: TableColumn<LibraryPropertyListing>[] = [
-    {
-      id: "title",
-      header: labels.propertyName,
-      align: "start",
-      sortable: true,
-      getSortValue: (row) => resolveListingTitle(row, tableLocale),
-      render: (row) =>
-        onClick ? (
-          <button
-            type="button"
-            onClick={() => onClick(row)}
-            className={cn(
-              "block w-full min-w-0 truncate text-start text-sm font-medium text-secondary underline-offset-2 hover:underline",
-            )}
-          >
-            {resolveListingTitle(row, tableLocale)}
-          </button>
-        ) : (
-          <span className="block w-full min-w-0 truncate text-start text-sm">
-            {resolveListingTitle(row, tableLocale)}
-          </span>
-        ),
-    },
-    {
-      id: "reference",
-      header: labels.reference,
-      align: "start",
-      render: (row) => (
-        <span className="font-medium text-secondary">
-          {row.reference_number ?? row.property_id}
-        </span>
-      ),
-    },
+  const columns: TableColumn<LibraryPropertyListing>[] = [];
+
+  columns.push({
+    id: "title",
+    header: labels.property,
+    align: "start",
+    sortable: true,
+    getSortValue: (row) =>
+      `${resolveListingTitle(row, tableLocale)} ${resolveListingReference(row)}`,
+    render: (row) => renderPropertyCell(row, tableLocale, onClick),
+  });
+
+  columns.push(
     {
       id: "status",
       header: labels.status,
       align: "center",
-      width: 140,
-      minWidth: 120,
+      width: 200,
+      minWidth: 168,
       cellClassName: "whitespace-nowrap",
       render: (row) => (
         <div className="flex justify-center">
@@ -117,29 +180,31 @@ export function buildMyListingTableColumns({
       ),
     },
     {
-      id: "submittedOn",
-      header: labels.submittedOn,
+      id: "submission",
+      header: labels.submission,
       align: "start",
       sortable: true,
-      cellClassName: "whitespace-nowrap text-text/80",
+      minWidth: 168,
       getSortValue: (row) => {
-        if (!row.validatedDate) {
+        const submittedOnDate = resolveSubmittedOnDate(row);
+
+        if (!submittedOnDate) {
           return null;
         }
 
-        const timestamp = new Date(row.validatedDate).getTime();
+        const timestamp = new Date(submittedOnDate).getTime();
 
         return Number.isNaN(timestamp) ? null : timestamp;
       },
-      render: (row) => {
-        const formatted = formatListingSubmittedDate(row.validatedDate, appLocale);
-
-        return (
-          <span className="block w-full min-w-0 truncate">
-            {formatted ?? labels.submittedOnEmpty}
-          </span>
-        );
-      },
+      render: (row) =>
+        renderSubmissionCell(
+          row,
+          {
+            submittedByEmpty: labels.submittedByEmpty,
+            submittedOnEmpty: labels.submittedOnEmpty,
+          },
+          appLocale,
+        ),
     },
     {
       id: "reviewedOn",
@@ -171,7 +236,7 @@ export function buildMyListingTableColumns({
         );
       },
     },
-  ];
+  );
 
   if (actionsColumn) {
     columns.push(actionsColumn);

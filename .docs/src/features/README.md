@@ -25,6 +25,8 @@ src/features/<feature>/
 | `landing` | Home hero, taxonomy search, marketing | [landing/README.md](./landing/README.md) |
 | `property` | Listings, favourites, saved searches, inquiries | [property/README.md](./property/README.md) |
 | `profile` | My profile (placeholder) | [profile/README.md](./profile/README.md) |
+| `agent` | `GET /agents` list for admin assignment flows | [agent/README.md](./agent/README.md) |
+| `user` | `/users/*` API domain (agency assignment, future recent-views) | [user/README.md](./user/README.md) |
 | `dashboard` | Dashboard (placeholder) | [dashboard/README.md](./dashboard/README.md) |
 | `not-found` | 404 content | [not-found/README.md](./not-found/README.md) |
 | `unauthorized` | 401 unauthorized content | [unauthorized/README.md](./unauthorized/README.md) |

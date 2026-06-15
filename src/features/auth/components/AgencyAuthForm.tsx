@@ -27,10 +27,10 @@ export function AgencyAuthForm({ className }: AgencyAuthFormProps) {
     >
       <div
         role="note"
-        className="flex gap-3 rounded-xl border border-tertiary-dark/25 bg-tertiary-light p-4"
+        className="flex gap-3 rounded-xl border border-tertiary/25 bg-tertiary/15 p-4"
       >
         <Info
-          className="mt-0.5 size-5 shrink-0 text-tertiary-dark"
+          className="mt-0.5 size-5 shrink-0 text-tertiary"
           aria-hidden
         />
         <p className={cn(bodyTextClasses, "leading-relaxed text-text")}>

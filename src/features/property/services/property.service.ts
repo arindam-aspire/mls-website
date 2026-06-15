@@ -11,6 +11,12 @@ import type {
   PropertySubmissionDirectSubmitRequestBody,
 } from "../types/propertyDraftSubmission.types";
 import type {
+  AdminPropertyAssignAgentRequestBody,
+  AdminPropertyAssignAgentResponse,
+  AdminPropertySubmissionReviewRequestBody,
+  AdminPropertySubmissionReviewResponse,
+  AdminPropertySubmissionsListParams,
+  AdminPropertySubmissionsListResponse,
   AgentPropertiesListParams,
   AgentPropertiesListResponse,
   AgentPropertyDraftsListParams,
@@ -78,6 +84,40 @@ export async function getAgentProperties(
     endpoint: propertyEndpoints.AGENT_PROPERTIES(params),
     method: "GET",
     auth: true,
+  });
+}
+
+export async function getAdminPropertySubmissions(
+  params: AdminPropertySubmissionsListParams,
+): Promise<AdminPropertySubmissionsListResponse> {
+  return apiClient.request<AdminPropertySubmissionsListResponse>({
+    endpoint: propertyEndpoints.ADMIN_PROPERTY_SUBMISSIONS(params),
+    method: "GET",
+    auth: true,
+  });
+}
+
+export async function reviewAdminPropertySubmission(
+  submissionId: string,
+  body: AdminPropertySubmissionReviewRequestBody,
+): Promise<AdminPropertySubmissionReviewResponse> {
+  return apiClient.request<AdminPropertySubmissionReviewResponse>({
+    endpoint: propertyEndpoints.ADMIN_PROPERTY_SUBMISSION_REVIEW(submissionId),
+    method: "POST",
+    auth: true,
+    body,
+  });
+}
+
+export async function assignAdminPropertyAgent(
+  propertyId: string,
+  body: AdminPropertyAssignAgentRequestBody,
+): Promise<AdminPropertyAssignAgentResponse> {
+  return apiClient.request<AdminPropertyAssignAgentResponse>({
+    endpoint: propertyEndpoints.ADMIN_PROPERTY_ASSIGN_AGENT(propertyId),
+    method: "PATCH",
+    auth: true,
+    body,
   });
 }
 

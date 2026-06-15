@@ -59,7 +59,7 @@ _No explicit show/hide controls detected._
 - **Light/dark:** via `ThemeProvider` / `html.light` | `html.dark`.
 - **Radius:** `rounded-lg` controls; `rounded-xl` cards/modals/popovers; `rounded-full` avatars/pills.
 - **Responsive:** mobile-first (`sm:`, `md:`, `lg:`).
-- Uses **`Modal`** from UI kit (`rounded-xl`).
+- **Agency notice:** `role="note"` block uses `bg-tertiary/15`, `border-tertiary/25`, `text-tertiary` icon, `text-text` body for readable contrast in light and dark themes.
 
 # Flow Description
 

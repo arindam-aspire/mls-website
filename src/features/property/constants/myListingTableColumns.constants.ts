@@ -1,8 +1,7 @@
 export const MY_LISTING_TABLE_COLUMN_IDS = [
   "title",
-  "reference",
   "status",
-  "submittedOn",
+  "submission",
   "reviewedOn",
   "actions",
 ] as const;
@@ -17,9 +16,8 @@ export type MyListingAlwaysVisibleColumnId =
 
 /** Shown in the toggle-columns popover. */
 export const MY_LISTING_TOGGLEABLE_COLUMN_IDS = [
-  "reference",
   "status",
-  "submittedOn",
+  "submission",
   "reviewedOn",
 ] as const;
 
@@ -29,20 +27,18 @@ export type MyListingToggleableColumnId =
 export type MyListingColumnVisibility = Record<MyListingToggleableColumnId, boolean>;
 
 export const DEFAULT_MY_LISTING_COLUMN_VISIBILITY: MyListingColumnVisibility = {
-  reference: true,
   status: true,
-  submittedOn: true,
+  submission: true,
   reviewedOn: true,
 };
 
 export const MY_LISTING_COLUMN_I18N_KEY: Record<
   MyListingTableColumnId,
-  "propertyName" | "reference" | "status" | "submittedOn" | "reviewedOn" | "actions"
+  "property" | "status" | "submission" | "reviewedOn" | "actions"
 > = {
-  title: "propertyName",
-  reference: "reference",
+  title: "property",
   status: "status",
-  submittedOn: "submittedOn",
+  submission: "submission",
   reviewedOn: "reviewedOn",
   actions: "actions",
 };

@@ -7,15 +7,15 @@ Agency/agent **Manage Listings** screen at `/en/manage-listings`: page header, *
 # Responsibilities
 
 - Render localized page title and subtitle (`propertyList.manageListings`).
-- **Add Property** primary button (right on `sm+`) for **agents only** (`isAgentUser`); navigates to `/property-create` via `useRouter` from `@/src/i18n/navigation`.
+- **Add Property** primary button (right on `sm+`) for **agents only** (`isAgentUser`); navigates directly to `/property-create` (no agency selection modal).
 - Show `Card` (`rounded-xl`) with `MyListingFilters` and `ListTableView` from `@abdoun/abdoun-library`.
-- Reuse `useListingPropertyScreen({ listingsNamespace: "manageListings" })` for table data and filters.
+- Reuse `useManageListingsScreen()` for table data and filters.
 
 # Imports
 
 - `Card`, `CardContent`, `Button`, `MyListingFilters`
 - `ListTableView` from `@abdoun/abdoun-library`
-- `useListingPropertyScreen`
+- `useManageListingsScreen`
 - `useTranslations("propertyList.manageListings")`
 - Typography: `headingPageClasses`, `bodyLargeTextClasses`
 - `Plus` icon (lucide-react)
@@ -27,7 +27,7 @@ Agency/agent **Manage Listings** screen at `/en/manage-listings`: page header, *
 # State Management
 
 - Reads `user` from `useAuthStore` to derive `showAddProperty` via `isAgentUser(user)`.
-- `useListingPropertyScreen({ listingsNamespace: "manageListings" })` fetches `GET /agent-properties`, maps rows for `ListTableView`, and owns sort/pagination state.
+- `useManageListingsScreen()` — **agents** use `GET /agent-properties`; **admins** use `GET /admin/property-submissions`.
 
 # Navigation
 
@@ -39,7 +39,7 @@ Agency/agent **Manage Listings** screen at `/en/manage-listings`: page header, *
 | Action | Behavior |
 | --- | --- |
 | Add Property | Agent only → `router.push("/property-create")` |
-| Search / status filters | Via `MyListingFilters` → refetch API (page resets to 1) |
+| Search / status filters | Via `MyListingFilters` → refetch API (page resets to 1); search hidden for admin |
 | Table sort | Client-side `sortConfig` on current page rows |
 | Pagination | Server page / page size via `ListTableView` footer |
 | Property title / View / Continue | Navigate to property update with `property_id` query |
@@ -49,18 +49,19 @@ Agency/agent **Manage Listings** screen at `/en/manage-listings`: page header, *
 - Header layout matches `ListingPropertyScreen` (title left, action right on `sm+`).
 - `rounded-lg` button; `rounded-xl` card; semantic tokens; mobile-first.
 - `ListTableView` uses built-in `TableBodySkeleton` while loading; empty state from `noDataFound` i18n keys.
-- Custom columns via `buildMyListingTableColumns`: **Property Name**, **Reference**, **Status**, **Submitted on**, **Actions**.
-- Pinned columns: `title` (left), `actions` (right).
+- Custom columns via `buildMyListingTableColumns`: **Property** (name + reference stacked), **Status**, **Submitted on**, **Reviewed on**, **Actions**.
+- Pinned columns: `title` (Property) (left), `actions` (right).
 
 # API Usage
 
-| Method | Endpoint | Auth |
-| --- | --- | --- |
-| GET | `/agent-properties` | Yes |
+| Method | Endpoint | Auth | Role |
+| --- | --- | --- | --- |
+| GET | `/agent-properties` | Yes | Agent |
+| GET | `/admin/property-submissions` | Yes | Admin / agency |
 
 # Dependencies
 
-- [useListingPropertyScreen.md](../hooks/useListingPropertyScreen.md)
+- [useManageListingsScreen.md](../hooks/useManageListingsScreen.md)
 - [ListingPropertyScreen.md](./ListingPropertyScreen.md) — shared screen pattern
 - [agentPropertiesList.mapper.md](../mappers/agentPropertiesList.mapper.md)
 - `src/messages/*/propertyList.json` → `manageListings.*`
@@ -68,5 +69,5 @@ Agency/agent **Manage Listings** screen at `/en/manage-listings`: page header, *
 
 # Notes
 
-- Distinct route/permission from `/my-listings` (`MY_LISTINGS`, owners) but same table UI and API.
+- Distinct route/permission from `/my-listings` (`MY_LISTINGS`, owners). Same table UI; API depends on role (agent vs admin).
 - `property-create` requires `PROPERTY_CREATE` (owner or agent); agency users without that permission are redirected by page guard.

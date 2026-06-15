@@ -372,7 +372,7 @@ Used by `(main)` route group.
 | `PropertyListScreen` | Stub |
 | `PropertyDetailsScreen` | Property detail (`PropertyView`, `/propert-details/:id`) |
 | `ListingPropertyScreen` | My listings table (`GET /agent-properties`, `ListTableView`) |
-| `ManageListingsScreen` | Manage listings table (same API/UI as my-listings; `MANAGE_LISTINGS`) |
+| `ManageListingsScreen` | Manage listings table — agents: `GET /agent-properties`; admins: `GET /admin/property-submissions` (`MANAGE_LISTINGS`) |
 | `FavouritePropertyScreen` | Favourites list (`GET /favorites`, `PropertyCardList`) |
 | `RecentlyViewedScreen` | Recent views list (`GET /users/recent-views`, `PropertyCardList`, clear all) |
 | `InquiriesScreen` | Coming Soon |

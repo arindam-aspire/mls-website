@@ -30,6 +30,12 @@ TypeScript types for property list and detail APIs, aligned with `@abdoun/abdoun
 - `AgentPropertiesListData`
 - `AgentPropertiesListResponse`
 - `AgentPropertiesListings`
+- `AdminPropertySubmissionsListParams`
+- `AdminPropertySubmissionListItem`
+- `AdminPropertySubmissionsListData`
+- `AdminPropertySubmissionsListResponse`
+- `AdminPropertySubmissionReviewRequestBody`
+- `AdminPropertySubmissionReviewResponse`
 
 # State Management
 
@@ -44,6 +50,8 @@ _N/A — type-only module._
 | `PropertySimilarResponse` | `/properties/:id/similar` | GET |
 | `FeatureCatalogResponse` | `/features?is_active=true` | GET |
 | `AgentPropertiesListResponse` | `/agent-properties` | GET |
+| `AdminPropertySubmissionsListResponse` | `/admin/property-submissions` | GET |
+| `AdminPropertySubmissionReviewResponse` | `/admin/property-submissions/{submissionId}/review` | POST |
 
 Request query shape: `PropertyListParams` — required: `page`, `pageSize`, `category`, `status`; optional: `sort`, `type`, `location`, `budgetMin`, `budgetMax`, `furnitureStatus`, `bedrooms`, `bathrooms`, `parking`, `propertyAge`, `minArea`, `maxArea`, `amenities`, `similar_to`, `savedSearchId`.
 
@@ -66,6 +74,7 @@ URL-synced filters: all `PropertyListParams` fields (see [property.types.md](./p
 | `reference_number` | e.g. `REF-0056` |
 | `created_at` / `updated_at` | ISO timestamps |
 | `submission_*` | submission workflow fields |
+| `submitted_by` | submitter display name (Submission column) |
 | `submission_workflow_label` | e.g. `pending_admin_approval` |
 | `can_edit_submission` / `can_delete_submission` | booleans |
 | `agency` | `null` or agency object (typed `unknown` until API shape is fixed) |
@@ -74,7 +83,24 @@ URL-synced filters: all `PropertyListParams` fields (see [property.types.md](./p
 
 `AgentPropertiesListParams`: required `page`, `pageSize`; optional `search`, `status` (omitted when empty / “All”).
 
-Mapping to UI/`PropertyListing` is not implemented yet.
+## Admin property submissions (`GET /admin/property-submissions`)
+
+`AdminPropertySubmissionListItem` — one row in `data.items`:
+
+| Field | Purpose |
+| --- | --- |
+| `submission_id` | Submission UUID |
+| `submitted_by` | Submitter user id |
+| `submitted_by_name` | Submitter display name (preferred for Submission column) |
+| `status` | e.g. `submitted`, `approved`, `rejected` |
+| `property_id` / `property_hash` | Property identifiers |
+| `property_title` / `property_reference_number` | Property display fields |
+| `submitted_at` / `reviewed_at` | ISO timestamps |
+| `agent_user_id` / `has_assigned_agent` / `current_step` | workflow metadata |
+
+Mapped to `AgentPropertyListItem` via [adminPropertySubmissions.mapper.md](../mappers/adminPropertySubmissions.mapper.md) before `ListTableView` rendering.
+
+Mapping to UI/`PropertyListing` is implemented in [agentPropertiesList.mapper.md](../mappers/agentPropertiesList.mapper.md).
 
 # Navigation
 

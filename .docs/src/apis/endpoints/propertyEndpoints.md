@@ -29,6 +29,8 @@ _N/A — no local/global state in this module._
 | `PROPERTY_SIMILAR` | `/properties/:id/similar` |
 | `FEATURE_CATALOG` | `/features?is_active=true` |
 | `AGENT_PROPERTIES` | `/agent-properties?page=&pageSize=` |
+| `ADMIN_PROPERTY_SUBMISSIONS` | `/admin/property-submissions?status=&page=&pageSize=` |
+| `ADMIN_PROPERTY_SUBMISSION_REVIEW` | `/admin/property-submissions/{submissionId}/review` |
 | `AGENT_PROPERTY_DRAFTS` | `/agent-properties/drafts?page=&pageSize=` |
 | `PROPERTY_SUBMISSIONS` | `/property-submissions` |
 | `PROPERTY_SUBMISSION_BY_ID` | `/property-submissions/:submissionId` |

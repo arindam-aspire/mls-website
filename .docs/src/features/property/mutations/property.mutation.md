@@ -28,6 +28,8 @@ React Query hooks for loading property lists, details, and favourites.
 - `useSavePropertyDraftSubmission`
 - `useUpdatePropertyDraftSubmission`
 - `useSubmitPropertyDraftSubmission`
+- `PropertyListingsNamespace` — `"myListings" | "manageListings"` for listing table toast copy
+- `useDeletePropertySubmission`
 - `useGetAgentProperties`
 - `useGetFavoriteList`
 - `useRemoveFavorite`
@@ -55,7 +57,10 @@ React Query hooks for loading property lists, details, and favourites.
 | `useUpdatePropertyDraftSubmission` | `updatePropertyDraftSubmission(id, body)` | `PATCH /property-submissions/{id}` (`action: save_draft`) |
 | `useSubmitPropertyDraftSubmission` | `submitPropertyDraftSubmission(id, body)` | `POST /property-submissions/{id}/submit` (`confirm_submit: true`); toasts in `usePropertyCreateScreen` |
 | `useGetAllFavorites` | `getAllFavorites()` | `GET /favorites` (auth) |
-| `useGetAgentProperties` | `getAgentProperties(params)` | `GET /agent-properties?page=&pageSize=` |
+| `useGetAgentProperties` | `getAgentProperties(params)` | `GET /agent-properties?page=&pageSize=` — optional `listingsNamespace` for fetch error toast |
+| `useGetAdminPropertySubmissions` | `getAdminPropertySubmissions(params)` | `GET /admin/property-submissions?status=&page=&pageSize=` (auth) |
+| `useReviewAdminPropertySubmission` | `reviewAdminPropertySubmission(submissionId, body)` | `POST /admin/property-submissions/{submissionId}/review` (auth) |
+| `useDeletePropertySubmission` | `deletePropertySubmission(submissionId)` | `DELETE /property-submissions/{id}` — optional `listingsNamespace` for delete error toast |
 | `useGetAgentPropertyDrafts` | `getAgentPropertyDrafts(params)` | `GET /agent-properties/drafts?page=&pageSize=` (auth) |
 | `useGetFavoriteList` | `getFavoriteList(params)` | `GET /favorites?page=&pageSize=` |
 | `useAddFavorite` | `addFavorite({ property_hash })` | `POST /favorites` |

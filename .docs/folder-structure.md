@@ -120,6 +120,21 @@ mls_website/
 │       │   ├── not-found/
 │       │   ├── notifications/
 │       │   ├── unauthorized/
+│       │   ├── agent/
+│       │   │   ├── README.md
+│       │   │   ├── constants/
+│       │   │   │   └── agentList.constants.md
+│       │   │   ├── services/
+│       │   │   │   ├── README.md
+│       │   │   │   ├── index.md
+│       │   │   │   └── agent.service.md
+│       │   │   ├── types/
+│       │   │   │   ├── README.md
+│       │   │   │   ├── index.md
+│       │   │   │   └── agent.types.md
+│       │   │   └── utils/
+│       │   │       ├── README.md
+│       │   │       └── filterAgentsBySearch.md
 │       │   ├── profile/
 │       │   │   ├── README.md
 │       │   │   ├── components/
@@ -166,9 +181,35 @@ mls_website/
 │       │   │   └── utils/
 │       │   │       ├── README.md
 │       │   │       └── index.md
+│       │   ├── user/
+│       │   │   ├── README.md
+│       │   │   ├── hooks/
+│       │   │   │   ├── README.md
+│       │   │   │   └── index.md
+│       │   │   ├── mutations/
+│       │   │   │   ├── README.md
+│       │   │   │   └── index.md
+│       │   │   ├── services/
+│       │   │   │   ├── README.md
+│       │   │   │   ├── index.md
+│       │   │   │   └── user.service.md
+│       │   │   ├── store/
+│       │   │   │   ├── README.md
+│       │   │   │   └── index.md
+│       │   │   ├── types/
+│       │   │   │   ├── README.md
+│       │   │   │   ├── index.md
+│       │   │   │   └── user.types.md
+│       │   │   └── utils/
+│       │   │       ├── README.md
+│       │   │       └── index.md
 │       │   └── property/
 │       │       ├── components/
 │       │       │   ├── README.md
+│       │       │   ├── AssignAgentListItem.md
+│       │       │   ├── AssignAgentModal.md
+│       │       │   ├── AssignAgentModalSkeleton.md
+│       │       │   ├── RejectSubmissionModal.md
 │       │       │   ├── PropertyListAdvancedFilters.md
 │       │       │   ├── PropertyListFilters.md
 │       │       │   ├── PropertyDraftList.md
@@ -341,6 +382,7 @@ mls_website/
 │   │   │   └── token.store.ts
 │   │   └── endpoints/
 │   │       ├── agencyEndpoints.ts
+│   │       ├── agentEndpoints.ts
 │   │       ├── authEndpoints.ts
 │   │       ├── index.ts
 │   │       ├── profileEndpoints.ts
@@ -673,8 +715,40 @@ mls_website/
 │   │   │       ├── parseStoredPhoneNumber.ts
 │   │   │       ├── profileOtp.utils.ts
 │   │   │       └── validateProfileImageFile.ts
+│   │   ├── agent/
+│   │   │   ├── constants/
+│   │   │   │   └── agentList.constants.ts
+│   │   │   ├── services/
+│   │   │   │   ├── index.ts
+│   │   │   │   └── agent.service.ts
+│   │   │   ├── types/
+│   │   │   │   ├── index.ts
+│   │   │   │   └── agent.types.ts
+│   │   │   └── utils/
+│   │   │       ├── filterActiveAgents.ts
+│   │   │       ├── filterAgentsBySearch.ts
+│   │   │       └── index.ts
+│   │   ├── user/
+│   │   │   ├── hooks/
+│   │   │   │   └── index.ts
+│   │   │   ├── mutations/
+│   │   │   │   └── index.ts
+│   │   │   ├── services/
+│   │   │   │   ├── index.ts
+│   │   │   │   └── user.service.ts
+│   │   │   ├── store/
+│   │   │   │   └── index.ts
+│   │   │   ├── types/
+│   │   │   │   ├── index.ts
+│   │   │   │   └── user.types.ts
+│   │   │   └── utils/
+│   │   │       └── index.ts
 │   │   └── property/
 │   │       ├── components/
+│   │       │   ├── AssignAgentListItem.tsx
+│   │       │   ├── AssignAgentModal.tsx
+│   │       │   ├── AssignAgentModalSkeleton.tsx
+│   │       │   ├── RejectSubmissionModal.tsx
 │   │       │   ├── PropertyListAdvancedFilters.tsx
 │   │       │   ├── PropertyListFilters.tsx
 │   │       │   ├── PropertyDraftList.tsx
@@ -682,7 +756,10 @@ mls_website/
 │   │       │   ├── MyListingRejectedReasonModal.tsx
 │   │       │   └── PropertyCreateScreenSkeleton.tsx
 │   │       ├── constants/
+│   │       │   ├── adminListingRowActions.constants.ts
 │   │       │   ├── myListingRowActions.constants.ts
+│   │       │   ├── adminPropertySubmissionStatusFilters.constants.ts
+│   │       │   ├── manageListingTableColumns.constants.ts
 │   │       │   ├── myListingStatusFilters.constants.ts
 │   │       │   ├── myListingTableColumns.constants.ts
 │   │       │   ├── propertyCreate.constants.ts
@@ -692,6 +769,8 @@ mls_website/
 │   │       ├── hooks/
 │   │       │   ├── propertySearchFilter.constants.ts
 │   │       │   ├── useAddPropertyEntry.ts
+│   │       │   ├── useAssignAgentModal.ts
+│   │       │   ├── useRejectSubmissionModal.ts
 │   │       │   ├── useDraftListingsScreen.ts
 │   │       │   ├── useOwnerDocumentUpload.ts
 │   │       │   ├── usePropertyMediaUpload.ts
@@ -700,11 +779,17 @@ mls_website/
 │   │       │   ├── usePropertyFavouriteToggle.ts
 │   │       │   ├── usePropertyList.ts
 │   │       │   ├── useFavouritePropertyList.ts
+│   │       │   ├── useAdminPropertySubmissionsTable.ts
+│   │       │   ├── useAgentListingsTable.ts
 │   │       │   ├── useListingPropertyScreen.ts
+│   │       │   ├── useManageListingsScreen.ts
 │   │       │   ├── useRecentlyViewedScreen.ts
 │   │       │   ├── useSavedSearchesScreen.ts
 │   │       │   └── usePropertySearchFilters.ts
+│   │       ├── i18n/
+│   │       │   └── buildManageListingTableColumnLabels.ts
 │   │       ├── mappers/
+│   │       │   ├── adminPropertySubmissions.mapper.ts
 │   │       │   ├── agentPropertiesList.mapper.ts
 │   │       │   ├── agentPropertyDraftsList.mapper.ts
 │   │       │   ├── favoriteList.mapper.ts
@@ -733,6 +818,7 @@ mls_website/
 │   │       │   └── property.store.ts
 │   │       ├── types/
 │   │       │   ├── property.types.ts
+│   │       │   ├── assignAgentModal.types.ts
 │   │       │   ├── propertyDraftSubmission.types.ts
 │   │       │   └── upload.types.ts
 │   │       └── utils/
