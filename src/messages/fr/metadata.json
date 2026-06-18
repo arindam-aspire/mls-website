@@ -13,5 +13,9 @@
   "manageListings": "Gérer les annonces",
   "draftListings": "Annonces brouillon",
   "propertyCreate": "Créer un bien",
-  "propertyUpdate": "Modifier le bien"
+  "propertyUpdate": "Modifier le bien",
+  "owners": "Propriétaires",
+  "agents": "Agents",
+  "agencySettings": "Paramètres de l'agence",
+  "notificationSettings": "Paramètres de notification"
 }

@@ -15,12 +15,16 @@ const PROTECTED_ROUTES = [
   "/manage-listings",
   "/draft-listings",
   "/my-profile",
+  "/agency-settings",
+  "/notification-settings",
   "/my-listings",
   "/property-create",
   "/property-update",
   "/saved-searches",
   "/favourites",
   "/recently-viewed",
+  "/owners",
+  "/agents",
 ];
 
 export function proxy(request: NextRequest) {

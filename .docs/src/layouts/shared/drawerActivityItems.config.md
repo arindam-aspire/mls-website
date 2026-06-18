@@ -29,6 +29,8 @@ Consumers pass `DRAWER_ACTIVITY_ITEMS` through `filterProfileMenuItemsWithRoleAc
 - **Draft Listings** — `owner` + `agent` (`protectedDrawer` / `publicMenu`); protected popover uses separate menu config
 - **Recently Viewed** — `owner` / `registered_user`
 
+Admin **Owners** and **Agents** links live in the protected drawer **User Management** section (`ProtectedMobileDrawer`), not in My Activity.
+
 # Dependencies
 
 - `PublicMobileMenu`, `LandingMobileMenu`, `ProtectedMobileDrawer`

@@ -13,7 +13,9 @@ Primary authenticated-main routes with `ProtectedLayout`. Group name does **not*
 | [dashboard/page.md](./dashboard/page.md) | `/en/dashboard` | `DashboardScreen` | `useAuthorize("DASHBOARD")` |
 | [(listings)/my-listings/page.md](./(listings)/my-listings/page.md) | `/en/my-listings` | `ListingPropertyScreen` | `useAuthorize("MY_LISTINGS")` |
 | [(listings)/manage-listings/page.md](./(listings)/manage-listings/page.md) | `/en/manage-listings` | `ManageListingsScreen` | `useAuthorize("MANAGE_LISTINGS")` |
-| [my-profile/page.md](./my-profile/page.md) | `/en/my-profile` | `ProfileScreen` | `useAuthorize("PROFILE")` |
+| [(profile)/my-profile/page.md](./(profile)/my-profile/page.md) | `/en/my-profile` | `ProfileScreen` | `useAuthorize("PROFILE")` |
+| [(profile)/agency-settings/page.md](./(profile)/agency-settings/page.md) | `/en/agency-settings` | `AgencySettingsScreen` | `useAuthorize("AGENCY_SETTINGS")` |
+| [(profile)/notification-settings/page.md](./(profile)/notification-settings/page.md) | `/en/notification-settings` | `NotificationSettingsScreen` | `useAuthorize("NOTIFICATION_SETTINGS")` |
 | [saved-searches/page.md](./saved-searches/page.md) | `/en/saved-searches` | `SavedSearchScreen` | `useAuthorize("SAVED_SEARCHES")` |
 | [notifications/page.md](./notifications/page.md) | `/en/notifications` | `NotificationScreen` | `useAuthorize("NOTIFICATIONS")` |
 | [favourites/page.md](./favourites/page.md) | `/en/favourites` | `FavouritePropertyScreen` | `useAuthorize("FAVOURITES")` |
@@ -29,8 +31,11 @@ Pages are **client components** that show `LoadingScreen` while auth resolves. `
   (listings)/
     my-listings/page.tsx
     manage-listings/page.tsx
+  (profile)/
+    my-profile/page.tsx
+    agency-settings/page.tsx
+    notification-settings/page.tsx
   dashboard/page.tsx
-  my-profile/page.tsx
   saved-searches/page.tsx
   notifications/page.tsx
   favourites/page.tsx

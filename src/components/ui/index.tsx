@@ -102,6 +102,8 @@ export type {
 } from "./link";
 export { LINK_COLORS, LINK_SIZES, LINK_VARIANTS } from "./link";
 export { Input } from "./input";
+export { CopyLinkBar } from "./copy-link-bar";
+export type { CopyLinkBarProps } from "./copy-link-bar";
 export { SearchInput } from "./search-input";
 export type {
   SearchInputProps,
@@ -128,6 +130,7 @@ export {
   SelectDropdown,
   SELECT_DROPDOWN_EMPTY_VALUE,
 } from "./select-dropdown";
+export { MultiSelectDropdown } from "./multi-select-dropdown";
 export {
   BudgetSelect,
   BUDGET_SELECT_EMPTY_VALUE,
@@ -142,6 +145,10 @@ export type {
   SelectDropdownSize,
   SelectDropdownVariant,
 } from "./select-dropdown";
+export type {
+  MultiSelectDropdownOption,
+  MultiSelectDropdownProps,
+} from "./multi-select-dropdown";
 export type {
   BudgetSelectOption,
   BudgetSelectProps,

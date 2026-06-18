@@ -171,5 +171,13 @@
     "fetchErrorTitle": "No se pudieron cargar las agencias",
     "selectAgencyRequiredTitle": "Selecciona una agencia",
     "selectAgencyRequiredDescription": "Elige una agencia antes de continuar."
+  },
+  "agencySettings": {
+    "title": "Configuración de agencia",
+    "description": "La configuración de agencia está en camino. Pronto podrá administrar el perfil y las preferencias de su agencia aquí."
+  },
+  "notificationSettings": {
+    "title": "Configuración de notificaciones",
+    "description": "La configuración de notificaciones está en camino. Pronto podrá elegir cómo y cuándo recibir alertas aquí."
   }
 }

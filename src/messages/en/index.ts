@@ -8,6 +8,7 @@ import profile from "./profile.json" with { type: "json" };
 import propertyList from "./propertyList.json" with { type: "json" };
 import savedSearches from "./savedSearches.json" with { type: "json" };
 import unauthorized from "./unauthorized.json" with { type: "json" };
+import user from "./user.json" with { type: "json" };
 
 const messages = {
   auth,
@@ -20,6 +21,7 @@ const messages = {
   propertyList,
   savedSearches,
   unauthorized,
+  user,
 };
 
 export default messages;

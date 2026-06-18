@@ -206,7 +206,9 @@ All paths below are **without** locale; prepend `/<locale>` (e.g. `/en/my-listin
 | `/dashboard` | `(main)/dashboard/page.tsx` | `DashboardScreen` — guarded by `useAuthorize("DASHBOARD")` |
 | `/manage-listings` | `(main)/(listings)/manage-listings/page.tsx` | `ManageListingsScreen` — guarded by `useAuthorize("MANAGE_LISTINGS")` |
 | `/draft-listings` | `(main)/(listings)/draft-listings/page.tsx` | `DraftListingsScreen` — guarded by `useAuthorize("DRAFT_LISTINGS")` |
-| `/my-profile` | `(main)/my-profile/page.tsx` | `ProfileScreen` — guarded by `useAuthorize("PROFILE")` |
+| `/my-profile` | `(main)/(profile)/my-profile/page.tsx` | `ProfileScreen` — guarded by `useAuthorize("PROFILE")` |
+| `/agency-settings` | `(main)/(profile)/agency-settings/page.tsx` | `AgencySettingsScreen` — guarded by `useAuthorize("AGENCY_SETTINGS")` (admin only) |
+| `/notification-settings` | `(main)/(profile)/notification-settings/page.tsx` | `NotificationSettingsScreen` — guarded by `useAuthorize("NOTIFICATION_SETTINGS")` (owner, user) |
 | `/saved-searches` | `(main)/saved-searches/page.tsx` | `SavedSearchScreen` — guarded by `useAuthorize("SAVED_SEARCHES")` |
 | `/notifications` | `(main)/notifications/page.tsx` | `NotificationScreen` (placeholder) — guarded by `useAuthorize("NOTIFICATIONS")` |
 | `/favourites` | `(main)/favourites/page.tsx` | `FavouritePropertyScreen` — guarded by `useAuthorize("FAVOURITES")` |
@@ -214,6 +216,8 @@ All paths below are **without** locale; prepend `/<locale>` (e.g. `/en/my-listin
 | `/property-create` | `(main)/(listings)/property-create/page.tsx` | `PropertyCreateScreen` — guarded by `useAuthorize("PROPERTY_CREATE")` (owner, agent) |
 | `/property-update` | `(main)/(listings)/property-update/page.tsx` | `PropertyUpdateScreen` — guarded by `useAuthorize("MY_LISTINGS")` |
 | `/recently-viewed` | `(main)/recently-viewed/page.tsx` | `RecentlyViewedScreen` — guarded by `useAuthorize("RECENTLY_VIEWED")` |
+| `/owners` | `(main)/owners/page.tsx` | `OwnersScreen` (placeholder) — guarded by `useAuthorize("OWNERS")` (admin only) |
+| `/agents` | `(main)/agents/page.tsx` | `AgentsScreen` (placeholder) — guarded by `useAuthorize("AGENTS")` (admin only) |
 | `/property-list` | `(property)/property-list/page.tsx` | `PropertyListScreen` (`PropertyCardList`) |
 | `/propert-details/:id` | `(property)/propert-details/[id]/page.tsx` | `PropertyDetailsScreen` (`PropertyView`) |
 | `/inquiries` | `(property)/inquiries/page.tsx` | `InquiriesScreen` (Coming Soon) |
@@ -498,7 +502,7 @@ Session persistence helpers: `src/features/auth/store/authModalStorage.ts`.
 3. User lacks permission → `router.replace("/unauthorized")`.
 4. Returns `{ user }` for guarded pages; pages typically `if (!user) return null`.
 
-**Protected pages:** `app/[locale]/(main)/dashboard/page.tsx`, `app/[locale]/(main)/my-profile/page.tsx`.
+**Protected pages:** `app/[locale]/(main)/dashboard/page.tsx`, `app/[locale]/(main)/(profile)/my-profile/page.tsx`.
 
 ### React Query mutations (`auth.mutation.ts`)
 
@@ -740,7 +744,7 @@ Enforced via `.cursor/rules/`:
 Exports `proxy` (Next.js 16 middleware entry). Flow:
 
 1. Run **next-intl** middleware (`createMiddleware(routing)`).
-2. Strip locale prefix from pathname and check **protected routes**: `/dashboard`, `/manage-listings`, `/draft-listings`, `/my-profile`, `/my-listings`, `/property-create`, `/property-update`, `/saved-searches`, `/favourites`, `/recently-viewed`.
+2. Strip locale prefix from pathname and check **protected routes**: `/dashboard`, `/manage-listings`, `/draft-listings`, `/my-profile`, `/agency-settings`, `/notification-settings`, `/my-listings`, `/property-create`, `/property-update`, `/saved-searches`, `/favourites`, `/recently-viewed`, `/owners`, `/agents`.
 3. If protected and no `access_token` cookie → redirect to `/` (same origin).
 4. Otherwise return the i18n response.
 

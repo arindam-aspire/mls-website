@@ -5,6 +5,8 @@ export type AgentListQueryParams = {
   pageSize: number;
   sortBy?: string;
   sortOrder?: AgentListSortOrder;
+  search?: string;
+  status?: string;
 };
 
 export const agentEndpoints = {
@@ -22,6 +24,19 @@ export const agentEndpoints = {
       search.set("sortOrder", params.sortOrder);
     }
 
+    if (params.search) {
+      search.set("search", params.search);
+    }
+
+    if (params.status) {
+      search.set("status", params.status);
+    }
+
     return `/agents?${search.toString()}`;
   },
+  SUMMARY: "/agents/summary",
+  INVITE: "/agents/invite",
+  MANUAL_ONBOARD: "/agents/manual-onboard",
+  RESEND_INVITATION: (agentId: string) => `/agents/${agentId}/resend-invitation`,
+  DELETE: (agentId: string) => `/agents/${agentId}`,
 } as const;

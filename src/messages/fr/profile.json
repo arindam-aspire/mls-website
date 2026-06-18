@@ -171,5 +171,13 @@
     "fetchErrorTitle": "Impossible de charger les agences",
     "selectAgencyRequiredTitle": "Sélectionnez une agence",
     "selectAgencyRequiredDescription": "Choisissez une agence avant de continuer."
+  },
+  "agencySettings": {
+    "title": "Paramètres de l'agence",
+    "description": "Les paramètres de l'agence arrivent bientôt. Vous pourrez gérer le profil et les préférences de votre agence ici."
+  },
+  "notificationSettings": {
+    "title": "Paramètres de notification",
+    "description": "Les paramètres de notification arrivent bientôt. Vous pourrez choisir comment et quand recevoir des alertes ici."
   }
 }

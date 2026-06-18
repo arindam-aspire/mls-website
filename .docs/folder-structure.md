@@ -49,8 +49,17 @@ mls_website/
 │   │       │   │       └── page.md
 │   │       │   ├── dashboard/
 │   │       │   │   └── page.md
-│   │       │   ├── my-profile/
+│   │       │   ├── owners/
 │   │       │   │   └── page.md
+│   │       │   ├── agents/
+│   │       │   │   └── page.md
+│   │       │   ├── (profile)/
+│   │       │   │   ├── my-profile/
+│   │       │   │   │   └── page.md
+│   │       │   │   ├── agency-settings/
+│   │       │   │   │   └── page.md
+│   │       │   │   └── notification-settings/
+│   │       │   │       └── page.md
 │   │       │   ├── saved-searches/
 │   │       │   │   └── page.md
 │   │       │   ├── notifications/
@@ -120,21 +129,6 @@ mls_website/
 │       │   ├── not-found/
 │       │   ├── notifications/
 │       │   ├── unauthorized/
-│       │   ├── agent/
-│       │   │   ├── README.md
-│       │   │   ├── constants/
-│       │   │   │   └── agentList.constants.md
-│       │   │   ├── services/
-│       │   │   │   ├── README.md
-│       │   │   │   ├── index.md
-│       │   │   │   └── agent.service.md
-│       │   │   ├── types/
-│       │   │   │   ├── README.md
-│       │   │   │   ├── index.md
-│       │   │   │   └── agent.types.md
-│       │   │   └── utils/
-│       │   │       ├── README.md
-│       │   │       └── filterAgentsBySearch.md
 │       │   ├── profile/
 │       │   │   ├── README.md
 │       │   │   ├── components/
@@ -166,7 +160,9 @@ mls_website/
 │       │   │   │   ├── README.md
 │       │   │   │   └── index.md
 │       │   │   ├── screens/
+│       │   │   │   ├── AgencySettingsScreen.md
 │       │   │   │   ├── ChangePasswordModal.md
+│       │   │   │   ├── NotificationSettingsScreen.md
 │       │   │   │   └── ProfileScreen.md
 │       │   │   ├── services/
 │       │   │   │   ├── README.md
@@ -183,15 +179,48 @@ mls_website/
 │       │   │       └── index.md
 │       │   ├── user/
 │       │   │   ├── README.md
+│       │   │   ├── components/
+│       │   │   │   ├── README.md
+│       │   │   │   ├── AgentKPICards.md
+│       │   │   │   ├── AgentKPICardsSkeleton.md
+│       │   │   │   ├── AgentList.md
+│       │   │   │   ├── AgentListFilters.md
+│       │   │   │   ├── InviteAgentByEmailContent.md
+│       │   │   │   ├── InviteAgentByEmailForm.md
+│       │   │   │   ├── InviteAgentGeneratingPanel.md
+│       │   │   │   ├── InviteAgentReadyPanel.md
+│       │   │   │   └── ManualOnboardAgentForm.md
+│       │   │   ├── constants/
+│       │   │   │   ├── agentList.constants.md
+│       │   │   │   ├── agentListStatusFilters.constants.md
+│       │   │   │   ├── agentListTableColumns.constants.md
 │       │   │   ├── hooks/
 │       │   │   │   ├── README.md
-│       │   │   │   └── index.md
+│       │   │   │   ├── index.md
+│       │   │   │   ├── useAgentsScreen.md
+│       │   │   │   ├── useInviteAgentByEmailModal.md
+│       │   │   │   ├── useResendAgentInvitationConfirm.md
+│       │   │   │   ├── useDeleteAgentConfirm.md
+│       │   │   │   └── useManualOnboardAgentModal.md
+│       │   │   ├── i18n/
+│       │   │   │   ├── buildAgentListColumnLabels.md
+│       │   │   │   └── buildAgentListStatusFilterLabels.md
+│       │   │   ├── mappers/
+│       │   │   │   └── mapAgentListItemToLibraryAgent.md
 │       │   │   ├── mutations/
 │       │   │   │   ├── README.md
+│       │   │   │   ├── agent.mutation.md
 │       │   │   │   └── index.md
+│       │   │   ├── screens/
+│       │   │   │   ├── AgentsScreen.md
+│       │   │   │   └── OwnersScreen.md
+│       │   │   ├── modals/
+│       │   │   │   ├── InviteAgentByEmailModal.md
+│       │   │   │   └── ManualOnboardAgentModal.md
 │       │   │   ├── services/
 │       │   │   │   ├── README.md
 │       │   │   │   ├── index.md
+│       │   │   │   ├── agent.service.md
 │       │   │   │   └── user.service.md
 │       │   │   ├── store/
 │       │   │   │   ├── README.md
@@ -199,9 +228,18 @@ mls_website/
 │       │   │   ├── types/
 │       │   │   │   ├── README.md
 │       │   │   │   ├── index.md
+│       │   │   │   ├── agent.types.md
 │       │   │   │   └── user.types.md
 │       │   │   └── utils/
 │       │   │       ├── README.md
+│       │   │       ├── filterActiveAgents.md
+│       │   │       ├── filterAgentsBySearch.md
+│       │   │       ├── filterAgentsByStatus.md
+│       │   │       ├── buildAgentListRequestParams.md
+│       │   │       ├── buildAgentListTableColumns.md
+│       │   │       ├── mapAgentListStatusFilterToApiStatus.md
+│       │   │       ├── mapAgentSummaryToKpiMetrics.md
+│       │   │       ├── parseAgentInviteLink.md
 │       │   │       └── index.md
 │       │   └── property/
 │       │       ├── components/
@@ -337,8 +375,17 @@ mls_website/
 │   │   │   │       └── page.tsx
 │   │   │   ├── dashboard/
 │   │   │   │   └── page.tsx
-│   │   │   ├── my-profile/
+│   │   │   ├── owners/
 │   │   │   │   └── page.tsx
+│   │   │   ├── agents/
+│   │   │   │   └── page.tsx
+│   │   │   ├── (profile)/
+│   │   │   │   ├── my-profile/
+│   │   │   │   │   └── page.tsx
+│   │   │   │   ├── agency-settings/
+│   │   │   │   │   └── page.tsx
+│   │   │   │   └── notification-settings/
+│   │   │   │       └── page.tsx
 │   │   │   ├── saved-searches/
 │   │   │   │   └── page.tsx
 │   │   │   ├── notifications/
@@ -443,6 +490,9 @@ mls_website/
 │   │       │   ├── types.ts
 │   │       │   └── utils.ts
 │   │       ├── card/
+│   │       │   ├── index.tsx
+│   │       │   └── types.ts
+│   │       ├── copy-link-bar/
 │   │       │   ├── index.tsx
 │   │       │   └── types.ts
 │   │       ├── icon-button/
@@ -691,10 +741,12 @@ mls_website/
 │   │   │   │   ├── index.ts
 │   │   │   │   └── profile.mutation.ts
 │   │   │   ├── screens/
+│   │   │   │   ├── AgencySettingsScreen.tsx
 │   │   │   │   ├── ChangePasswordModal.tsx
 │   │   │   │   ├── EditAgencyModal.tsx
 │   │   │   │   ├── EditEmailModal.tsx
 │   │   │   │   ├── EditPhoneModal.tsx
+│   │   │   │   ├── NotificationSettingsScreen.tsx
 │   │   │   │   └── ProfileScreen.tsx
 │   │   │   ├── services/
 │   │   │   │   ├── index.ts
@@ -715,33 +767,64 @@ mls_website/
 │   │   │       ├── parseStoredPhoneNumber.ts
 │   │   │       ├── profileOtp.utils.ts
 │   │   │       └── validateProfileImageFile.ts
-│   │   ├── agent/
-│   │   │   ├── constants/
-│   │   │   │   └── agentList.constants.ts
-│   │   │   ├── services/
-│   │   │   │   ├── index.ts
-│   │   │   │   └── agent.service.ts
-│   │   │   ├── types/
-│   │   │   │   ├── index.ts
-│   │   │   │   └── agent.types.ts
-│   │   │   └── utils/
-│   │   │       ├── filterActiveAgents.ts
-│   │   │       ├── filterAgentsBySearch.ts
-│   │   │       └── index.ts
 │   │   ├── user/
+│   │   │   ├── components/
+│   │   │   │   ├── AgentKPICards.tsx
+│   │   │   │   ├── AgentKPICardsSkeleton.tsx
+│   │   │   │   ├── AgentList.tsx
+│   │   │   │   ├── AgentListFilters.tsx
+│   │   │   │   ├── InviteAgentByEmailContent.tsx
+│   │   │   │   ├── InviteAgentByEmailForm.tsx
+│   │   │   │   ├── InviteAgentGeneratingPanel.tsx
+│   │   │   │   ├── InviteAgentReadyPanel.tsx
+│   │   │   │   ├── ManualOnboardAgentContent.tsx
+│   │   │   │   ├── ManualOnboardAgentForm.tsx
+│   │   │   │   ├── ManualOnboardSuccessPanel.tsx
+│   │   │   ├── constants/
+│   │   │   │   ├── agentList.constants.ts
+│   │   │   │   ├── agentListStatusFilters.constants.ts
+│   │   │   │   ├── agentListTableColumns.constants.ts
 │   │   │   ├── hooks/
-│   │   │   │   └── index.ts
+│   │   │   │   ├── index.ts
+│   │   │   │   ├── useAgentsScreen.ts
+│   │   │   │   ├── useInviteAgentByEmailModal.ts
+│   │   │   │   ├── useResendAgentInvitationConfirm.ts
+│   │   │   │   ├── useDeleteAgentConfirm.ts
+│   │   │   │   └── useManualOnboardAgentModal.ts
+│   │   │   ├── i18n/
+│   │   │   │   ├── buildAgentListColumnLabels.ts
+│   │   │   │   └── buildAgentListStatusFilterLabels.ts
+│   │   │   ├── mappers/
+│   │   │   │   └── mapAgentListItemToLibraryAgent.ts
 │   │   │   ├── mutations/
+│   │   │   │   ├── agent.mutation.ts
 │   │   │   │   └── index.ts
+│   │   │   ├── screens/
+│   │   │   │   ├── AgentsScreen.tsx
+│   │   │   │   └── OwnersScreen.tsx
+│   │   │   ├── modals/
+│   │   │   │   ├── InviteAgentByEmailModal.tsx
+│   │   │   │   └── ManualOnboardAgentModal.tsx
 │   │   │   ├── services/
 │   │   │   │   ├── index.ts
+│   │   │   │   ├── agent.service.ts
 │   │   │   │   └── user.service.ts
 │   │   │   ├── store/
 │   │   │   │   └── index.ts
 │   │   │   ├── types/
 │   │   │   │   ├── index.ts
+│   │   │   │   ├── agent.types.ts
 │   │   │   │   └── user.types.ts
 │   │   │   └── utils/
+│   │   │       ├── filterActiveAgents.ts
+│   │   │       ├── filterAgentsBySearch.ts
+│   │   │       ├── filterAgentsByStatus.ts
+│   │   │       ├── buildAgentListRequestParams.ts
+│   │   │       ├── buildAgentListTableColumns.ts
+│   │   │       ├── mapAgentListStatusFilterToApiStatus.ts
+│   │   │       ├── mapAgentSummaryToKpiMetrics.ts
+│   │   │       ├── parseAgentInviteLink.ts
+│   │   │       ├── validateOnboardAgentForms.ts
 │   │   │       └── index.ts
 │   │   └── property/
 │   │       ├── components/

@@ -27,6 +27,8 @@ profile/
 | [components/SelectAgencyModalSkeleton.md](./components/SelectAgencyModalSkeleton.md) | Agency list loading skeleton |
 | [hooks/useSelectAgencyModal.md](./hooks/useSelectAgencyModal.md) | Select agency modal labels and close |
 | [screens/ProfileScreen.md](./screens/ProfileScreen.md) | `ProfileScreen` — toolbar + modals |
+| [screens/AgencySettingsScreen.md](./screens/AgencySettingsScreen.md) | Agency settings placeholder |
+| [screens/NotificationSettingsScreen.md](./screens/NotificationSettingsScreen.md) | Notification settings placeholder |
 | [components/ProfilePageToolbar.md](./components/ProfilePageToolbar.md) | Page title, subtitle, action buttons |
 | [components/MyProfileCard.md](./components/MyProfileCard.md) | Profile summary card |
 | [components/README.md](./components/README.md) | Profile components index |
@@ -38,9 +40,11 @@ profile/
 | [types/README.md](./types/README.md) | Profile type folder docs |
 | [utils/README.md](./utils/README.md) | Profile utility folder docs |
 
-## Route
+## Routes
 
-- `/en/my-profile` — `app/[locale]/(main)/my-profile/page.tsx`
+- `/en/my-profile` — `app/[locale]/(main)/(profile)/my-profile/page.tsx`
+- `/en/agency-settings` — `app/[locale]/(main)/(profile)/agency-settings/page.tsx` (admin)
+- `/en/notification-settings` — `app/[locale]/(main)/(profile)/notification-settings/page.tsx` (owner, user)
 
 ## Status
 

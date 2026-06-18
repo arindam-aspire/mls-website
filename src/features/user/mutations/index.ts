@@ -1,1 +1,3 @@
-/** User feature React Query mutations (`/users/*` domain). */
+/** User feature React Query mutations (`/agents/*` domain). */
+export { useInviteAgentByEmail } from "./agent.mutation";
+export { useManualOnboardAgent } from "./agent.mutation";

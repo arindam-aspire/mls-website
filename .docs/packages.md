@@ -28,7 +28,7 @@
 
 | Package | Version | Purpose |
 | --- | --- | --- |
-| @abdoun/abdoun-library | ^0.1.61 | Shared MLS property UI components (cards, detail view, property form, draft list) |
+| @abdoun/abdoun-library | ^0.1.66 | Shared MLS property UI components (cards, detail view, property form, draft list, agent list) |
 
 ## UI (accessible primitives & icons)
 

@@ -4,6 +4,8 @@ Logic for `AssignAgentModal`: fetch agents, search, pagination, selection, assig
 
 **Source:** `src/features/property/hooks/useAssignAgentModal.ts`
 
+Imports agent list logic from `src/features/user/` (`getAgentList`, types, constants, filters).
+
 # API Usage
 
 | Method | Path | When |

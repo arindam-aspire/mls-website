@@ -1,6 +1,8 @@
 import {
+  Briefcase,
   FilePenLine,
   Heart,
+  KeyRound,
   LayoutDashboard,
   List,
   Search,
@@ -19,6 +21,22 @@ export type ProtectedSidebarNavSectionConfig = {
   titleKey: string;
   items: ProtectedSidebarNavItemConfig[];
 };
+
+export const PROTECTED_USER_MANAGEMENT_NAV_ITEMS: ProtectedSidebarNavItemConfig[] =
+  [
+    {
+      labelKey: "owners",
+      href: "/owners",
+      icon: KeyRound,
+      permission: "OWNERS",
+    },
+    {
+      labelKey: "agents",
+      href: "/agents",
+      icon: Briefcase,
+      permission: "AGENTS",
+    },
+  ];
 
 export const PROTECTED_SIDEBAR_NAV_SECTIONS: ProtectedSidebarNavSectionConfig[] =
   [
@@ -61,5 +79,9 @@ export const PROTECTED_SIDEBAR_NAV_SECTIONS: ProtectedSidebarNavSectionConfig[] 
           permission: "PROFILE",
         },
       ],
+    },
+    {
+      titleKey: "sidebarSectionUserManagement",
+      items: PROTECTED_USER_MANAGEMENT_NAV_ITEMS,
     },
   ];

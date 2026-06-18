@@ -13,5 +13,9 @@
   "manageListings": "إدارة الإعلانات",
   "draftListings": "مسودات الإعلانات",
   "propertyCreate": "إضافة عقار",
-  "propertyUpdate": "تحديث العقار"
+  "propertyUpdate": "تحديث العقار",
+  "owners": "الملاك",
+  "agents": "الوكلاء",
+  "agencySettings": "إعدادات الوكالة",
+  "notificationSettings": "إعدادات الإشعارات"
 }

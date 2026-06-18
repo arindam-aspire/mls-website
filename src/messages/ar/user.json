@@ -1,0 +1,136 @@
+{
+  "owners": {
+    "title": "الملاك",
+    "description": "إدارة الملاك قيد التطوير. ستتمكن قريباً من مراجعة وإدارة ملاك العقارات من هنا."
+  },
+  "agents": {
+    "title": "الوكلاء",
+    "description": "إدارة الوكلاء قيد التطوير. ستتمكن قريباً من مراجعة وإدارة الوكلاء من هنا.",
+    "pageTitle": "الوكلاء",
+    "pageSubtitle": "راجع الوكلاء وأضفهم وأدرهم عبر منصتك.",
+    "inviteByEmail": "دعوة عبر البريد الإلكتروني",
+    "manualOnboard": "إضافة يدوية",
+    "inviteByEmailModal": {
+      "title": "دعوة عبر البريد الإلكتروني",
+      "description": "أدخل بريد الوكيل الإلكتروني لإنشاء رابط دعوة.",
+      "emailLabel": "البريد الإلكتروني",
+      "emailPlaceholder": "agent@example.com",
+      "generate": "إنشاء الدعوة",
+      "generating": "جارٍ الإنشاء…",
+      "generatingHint": "جارٍ إنشاء رابط دعوة فريد لهذا الوكيل.",
+      "cancel": "إلغاء",
+      "errorTitle": "تعذر إنشاء الدعوة",
+      "generated": {
+        "subtitle": "انسخ الرابط أو أرسل الدعوة من تطبيق البريد.",
+        "readyTitle": "الدعوة جاهزة",
+        "descriptionWithEmail": "تم إنشاء رابط دعوة لـ {email}.",
+        "shareHint": "استخدم نسخ الرابط أعلاه، أو إرسال عبر البريد أدناه لفتح تطبيق البريد.",
+        "linkLabel": "رابط الدعوة",
+        "copyLink": "نسخ الرابط",
+        "copyLinkSuccessTitle": "تم نسخ الرابط",
+        "copyLinkSuccessDescription": "رابط الدعوة في الحافظة.",
+        "copyLinkErrorTitle": "تعذر نسخ الرابط",
+        "copyLinkErrorDescription": "انسخ الرابط يدوياً من الشريط أعلاه.",
+        "sendViaEmail": "إرسال عبر البريد",
+        "emailSubject": "أنت مدعو للانضمام كوكيل",
+        "emailBody": "استخدم هذا الرابط لقبول دعوة الوكيل:\n\n{link}",
+        "done": "تم"
+      }
+    },
+    "manualOnboardModal": {
+      "title": "إضافة يدوية",
+      "description": "أدخل بيانات الوكيل لإنشاء حسابه.",
+      "fullNameLabel": "الاسم الكامل",
+      "fullNamePlaceholder": "أدخل الاسم الكامل",
+      "emailLabel": "البريد الإلكتروني",
+      "emailPlaceholder": "agent@example.com",
+      "phoneLabel": "الهاتف",
+      "serviceAreaLabel": "منطقة الخدمة",
+      "serviceAreaPlaceholder": "اختر مناطق الخدمة",
+      "submit": "إرسال الوكيل",
+      "submitting": "جارٍ الإرسال…",
+      "cancel": "إلغاء",
+      "errorTitle": "تعذر إضافة الوكيل",
+      "success": {
+        "subtitle": "شارك كلمة المرور المؤقتة بشكل آمن مع الوكيل.",
+        "readyTitle": "تم إنشاء الوكيل",
+        "descriptionWithName": "تمت إضافة {name} بنجاح.",
+        "temporaryPasswordLabel": "كلمة المرور المؤقتة",
+        "copyPassword": "نسخ كلمة المرور",
+        "copyPasswordSuccessTitle": "تم نسخ كلمة المرور",
+        "copyPasswordSuccessDescription": "كلمة المرور المؤقتة في الحافظة.",
+        "copyPasswordErrorTitle": "تعذر نسخ كلمة المرور",
+        "copyPasswordErrorDescription": "انسخ كلمة المرور يدوياً من الحقل أعلاه.",
+        "passwordHint": "يجب على الوكيل تغيير كلمة المرور بعد أول تسجيل دخول.",
+        "done": "تم"
+      },
+      "validation": {
+        "fullNameRequired": "الاسم الكامل مطلوب",
+        "serviceAreaRequired": "اختر منطقة خدمة واحدة على الأقل"
+      }
+    },
+    "resendConfirm": {
+      "title": "إعادة إرسال الدعوة؟",
+      "description": "سيتم إرسال دعوة جديدة إلى {name}.",
+      "confirm": "إعادة إرسال الدعوة",
+      "cancel": "إلغاء",
+      "resending": "جارٍ إعادة الإرسال…",
+      "successTitle": "تمت إعادة إرسال الدعوة",
+      "successDescription": "تمت إعادة إرسال الدعوة بنجاح.",
+      "errorTitle": "تعذر إعادة إرسال الدعوة"
+    },
+    "deleteConfirm": {
+      "revokeTitle": "إلغاء الدعوة؟",
+      "revokeDescription": "سيؤدي هذا إلى إلغاء الدعوة المعلقة لـ {name}. لا يمكن التراجع عن هذا الإجراء.",
+      "revokeConfirm": "إلغاء الدعوة",
+      "removeTitle": "حذف الوكيل؟",
+      "removeDescription": "سيؤدي هذا إلى إزالة {name} نهائياً من وكلائك. لا يمكن التراجع عن هذا الإجراء.",
+      "removeConfirm": "حذف الوكيل",
+      "cancel": "إلغاء",
+      "deleting": "جارٍ الحذف…",
+      "successTitle": "تمت إزالة الوكيل",
+      "successDescription": "تم حذف الوكيل بنجاح.",
+      "errorTitle": "تعذر حذف الوكيل"
+    },
+    "summary": {
+      "fetchErrorTitle": "تعذر تحميل إحصائيات الوكلاء"
+    },
+    "kpi": {
+      "ariaLabel": "إحصائيات الوكلاء",
+      "activeAgents": "الوكلاء النشطون",
+      "pendingReview": "قيد المراجعة",
+      "pendingInvite": "دعوة معلقة",
+      "declined": "مرفوض"
+    },
+    "list": {
+      "fetchErrorTitle": "تعذر تحميل الوكلاء",
+      "tableTitle": "الوكلاء",
+      "noDataTitle": "لم يتم العثور على وكلاء",
+      "noDataDescription": "جرّب تعديل البحث أو تصفية الحالة.",
+      "searchPlaceholder": "ابحث عن الوكلاء بالاسم أو البريد الإلكتروني…",
+      "statusFilter": {
+        "all": "الكل",
+        "ariaLabel": "تصفية حسب الحالة",
+        "active": "نشط",
+        "inactive": "غير نشط",
+        "invited": "مدعو",
+        "pending": "معلق",
+        "declined": "مرفوض"
+      },
+      "columnPickerTitle": "الأعمدة",
+      "columnPickerAriaLabel": "اختر الأعمدة المرئية",
+      "columns": {
+        "agent": "الوكيل",
+        "contact": "جهة الاتصال",
+        "city": "المدينة",
+        "status": "الحالة",
+        "activityDate": "تاريخ النشاط",
+        "actions": "الإجراءات"
+      },
+      "workflow": {
+        "comingSoonTitle": "الإجراء قريباً",
+        "comingSoonDescription": "ستتوفر إجراءات سير عمل الوكلاء في تحديث لاحق."
+      }
+    }
+  }
+}

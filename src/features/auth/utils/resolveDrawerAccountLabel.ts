@@ -10,6 +10,9 @@ function isAdminRole(roleName: string | undefined): boolean {
   return role === "admin" || role === "agency";
 }
 
+export const DRAWER_AGENCY_SETTINGS_PATH = "/agency-settings";
+export const DRAWER_NOTIFICATION_SETTINGS_PATH = "/notification-settings";
+
 export function resolveDrawerAccountLabel(
   user: LoggedInUser | null | undefined,
   t: DrawerAccountTranslate,
@@ -33,4 +36,14 @@ export function shouldShowDrawerNotificationSettings(
 
   const roleName = user.roles?.[0]?.name?.toLowerCase();
   return roleName === "owner" || roleName === "registered_user";
+}
+
+export function shouldShowDrawerAgencySettings(
+  user: LoggedInUser | null | undefined,
+): boolean {
+  if (!user) {
+    return false;
+  }
+
+  return isAdminRole(user.roles?.[0]?.name);
 }

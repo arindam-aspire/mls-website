@@ -1,0 +1,136 @@
+{
+  "owners": {
+    "title": "Propriétaires",
+    "description": "La gestion des propriétaires arrive bientôt. Vous pourrez consulter et gérer les propriétaires ici."
+  },
+  "agents": {
+    "title": "Agents",
+    "description": "La gestion des agents arrive bientôt. Vous pourrez consulter et gérer les agents ici.",
+    "pageTitle": "Agents",
+    "pageSubtitle": "Consultez, intégrez et gérez les agents sur votre plateforme.",
+    "inviteByEmail": "Inviter par e-mail",
+    "manualOnboard": "Intégration manuelle",
+    "inviteByEmailModal": {
+      "title": "Inviter par e-mail",
+      "description": "Saisissez l'e-mail de l'agent pour générer un lien d'invitation.",
+      "emailLabel": "E-mail",
+      "emailPlaceholder": "agent@exemple.com",
+      "generate": "Générer l'invitation",
+      "generating": "Génération…",
+      "generatingHint": "Création d'un lien d'invitation unique pour cet agent.",
+      "cancel": "Annuler",
+      "errorTitle": "Impossible de générer l'invitation",
+      "generated": {
+        "subtitle": "Copiez le lien ou envoyez l'invitation depuis votre app e-mail.",
+        "readyTitle": "Invitation prête",
+        "descriptionWithEmail": "Un lien d'invitation a été créé pour {email}.",
+        "shareHint": "Utilisez Copier le lien ci-dessus ou Envoyer par e-mail ci-dessous pour ouvrir votre app e-mail.",
+        "linkLabel": "Lien d'invitation",
+        "copyLink": "Copier le lien",
+        "copyLinkSuccessTitle": "Lien copié",
+        "copyLinkSuccessDescription": "Le lien d'invitation est dans le presse-papiers.",
+        "copyLinkErrorTitle": "Impossible de copier le lien",
+        "copyLinkErrorDescription": "Copiez le lien manuellement depuis la barre ci-dessus.",
+        "sendViaEmail": "Envoyer par e-mail",
+        "emailSubject": "Vous êtes invité à rejoindre en tant qu'agent",
+        "emailBody": "Utilisez ce lien pour accepter votre invitation d'agent :\n\n{link}",
+        "done": "Terminé"
+      }
+    },
+    "manualOnboardModal": {
+      "title": "Intégration manuelle",
+      "description": "Saisissez les informations de l'agent pour créer son compte.",
+      "fullNameLabel": "Nom complet",
+      "fullNamePlaceholder": "Saisissez le nom complet",
+      "emailLabel": "E-mail",
+      "emailPlaceholder": "agent@exemple.com",
+      "phoneLabel": "Téléphone",
+      "serviceAreaLabel": "Zone de service",
+      "serviceAreaPlaceholder": "Sélectionnez les zones de service",
+      "submit": "Soumettre l'agent",
+      "submitting": "Envoi…",
+      "cancel": "Annuler",
+      "errorTitle": "Impossible d'intégrer l'agent",
+      "success": {
+        "subtitle": "Partagez le mot de passe temporaire en toute sécurité avec l'agent.",
+        "readyTitle": "Agent créé",
+        "descriptionWithName": "{name} a été intégré avec succès.",
+        "temporaryPasswordLabel": "Mot de passe temporaire",
+        "copyPassword": "Copier le mot de passe",
+        "copyPasswordSuccessTitle": "Mot de passe copié",
+        "copyPasswordSuccessDescription": "Le mot de passe temporaire est dans le presse-papiers.",
+        "copyPasswordErrorTitle": "Impossible de copier le mot de passe",
+        "copyPasswordErrorDescription": "Copiez le mot de passe manuellement depuis le champ ci-dessus.",
+        "passwordHint": "L'agent doit changer ce mot de passe après sa première connexion.",
+        "done": "Terminé"
+      },
+      "validation": {
+        "fullNameRequired": "Le nom complet est requis",
+        "serviceAreaRequired": "Sélectionnez au moins une zone de service"
+      }
+    },
+    "resendConfirm": {
+      "title": "Renvoyer l'invitation ?",
+      "description": "Une nouvelle invitation sera envoyée à {name}.",
+      "confirm": "Renvoyer l'invitation",
+      "cancel": "Annuler",
+      "resending": "Renvoi en cours…",
+      "successTitle": "Invitation renvoyée",
+      "successDescription": "L'invitation a été renvoyée avec succès.",
+      "errorTitle": "Impossible de renvoyer l'invitation"
+    },
+    "deleteConfirm": {
+      "revokeTitle": "Révoquer l'invitation ?",
+      "revokeDescription": "Cela annulera l'invitation en attente pour {name}. Cette action est irréversible.",
+      "revokeConfirm": "Révoquer l'invitation",
+      "removeTitle": "Supprimer l'agent ?",
+      "removeDescription": "Cela supprimera définitivement {name} de vos agents. Cette action est irréversible.",
+      "removeConfirm": "Supprimer l'agent",
+      "cancel": "Annuler",
+      "deleting": "Suppression…",
+      "successTitle": "Agent supprimé",
+      "successDescription": "L'agent a été supprimé avec succès.",
+      "errorTitle": "Impossible de supprimer l'agent"
+    },
+    "summary": {
+      "fetchErrorTitle": "Impossible de charger les statistiques des agents"
+    },
+    "kpi": {
+      "ariaLabel": "Statistiques des agents",
+      "activeAgents": "Agents actifs",
+      "pendingReview": "En attente de validation",
+      "pendingInvite": "Invitation en attente",
+      "declined": "Refusés"
+    },
+    "list": {
+      "fetchErrorTitle": "Impossible de charger les agents",
+      "tableTitle": "Agents",
+      "noDataTitle": "Aucun agent trouvé",
+      "noDataDescription": "Essayez d'ajuster la recherche ou le filtre de statut.",
+      "searchPlaceholder": "Rechercher des agents par nom ou e-mail…",
+      "statusFilter": {
+        "all": "Tous",
+        "ariaLabel": "Filtrer par statut",
+        "active": "Actif",
+        "inactive": "Inactif",
+        "invited": "Invité",
+        "pending": "En attente",
+        "declined": "Refusé"
+      },
+      "columnPickerTitle": "Colonnes",
+      "columnPickerAriaLabel": "Choisir les colonnes visibles",
+      "columns": {
+        "agent": "Agent",
+        "contact": "Contact",
+        "city": "Ville",
+        "status": "Statut",
+        "activityDate": "Date d'activité",
+        "actions": "Actions"
+      },
+      "workflow": {
+        "comingSoonTitle": "Action bientôt disponible",
+        "comingSoonDescription": "Les actions du flux agent seront disponibles dans une prochaine mise à jour."
+      }
+    }
+  }
+}
