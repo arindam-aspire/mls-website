@@ -3,18 +3,24 @@
 import { Moon, Sun } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { IconButton } from "@/src/components/ui/icon-button";
+import {
+  headerIconButtonClass,
+  headerIconGlyphClass,
+  headerIconStrokeWidth,
+} from "@/src/layouts/shared/headerIconButtonStyles";
+import { headerOverHeroIconClass } from "./PublicNotificationsButton";
 import { cn } from "@/src/lib/cn";
 import { useTheme, type ThemeMode } from "@/src/providers/ThemeProvider";
 
 function getThemeToggleIcon(mode: ThemeMode) {
+  const iconClass = cn(headerIconGlyphClass);
+
   return mode === "light" ? (
-    <Moon className="size-5" strokeWidth={1.75} aria-hidden />
+    <Moon className={iconClass} strokeWidth={headerIconStrokeWidth} aria-hidden />
   ) : (
-    <Sun className="size-5" strokeWidth={1.75} aria-hidden />
+    <Sun className={iconClass} strokeWidth={headerIconStrokeWidth} aria-hidden />
   );
 }
-
-import { headerOverHeroIconClass } from "./PublicNotificationsButton";
 
 export interface PublicHeaderThemeButtonProps {
   /** Landing: translucent hero header styling. */
@@ -38,8 +44,8 @@ export function PublicHeaderThemeButton({
         color="inherit"
         variant="outline"
         isRounded
-        size="md"
-        className={cn(overHero && headerOverHeroIconClass)}
+        size="sm"
+        className={cn(headerIconButtonClass, overHero && headerOverHeroIconClass)}
         onClick={() => setTheme(theme === "light" ? "dark" : "light")}
       />
     </span>

@@ -27,7 +27,7 @@ profile/
 | [components/SelectAgencyModalSkeleton.md](./components/SelectAgencyModalSkeleton.md) | Agency list loading skeleton |
 | [hooks/useSelectAgencyModal.md](./hooks/useSelectAgencyModal.md) | Select agency modal labels and close |
 | [screens/ProfileScreen.md](./screens/ProfileScreen.md) | `ProfileScreen` — toolbar + modals |
-| [screens/AgencySettingsScreen.md](./screens/AgencySettingsScreen.md) | Agency settings placeholder |
+| [screens/AgencySettingsScreen.md](./screens/AgencySettingsScreen.md) | Agency display preferences (currency, measurement) |
 | [screens/NotificationSettingsScreen.md](./screens/NotificationSettingsScreen.md) | Notification settings placeholder |
 | [components/ProfilePageToolbar.md](./components/ProfilePageToolbar.md) | Page title, subtitle, action buttons |
 | [components/MyProfileCard.md](./components/MyProfileCard.md) | Profile summary card |

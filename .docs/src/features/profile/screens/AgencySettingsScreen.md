@@ -1,18 +1,27 @@
-# File Overview
-
-Placeholder **Agency Settings** screen for admin/agency users.
+# Agency Settings screen
 
 **Source:** `src/features/profile/screens/AgencySettingsScreen.tsx`
 
-# Responsibilities
+Agency admin page for display preferences (currency and measurement unit).
 
-- Display a localized coming-soon placeholder until dedicated agency settings UI is implemented.
+## Layout
 
-# Navigation
+- Page title + subtitle from `profile.agencySettings`
+- Responsive grid (`grid-cols-1 lg:grid-cols-2`) of preference cards
+- `AgencySettingsScreenSkeleton` while agency data loads
 
-- Route: `/en/agency-settings` (locale-prefixed)
-- Linked from mobile drawer account section (admin/agency)
+## Components
 
-# Dependencies
+| Component | Role |
+| --- | --- |
+| [AgencySettingsCurrencyCard.md](../components/AgencySettingsCurrencyCard.md) | JOD / USD card |
+| [AgencySettingsMeasurementUnitCard.md](../components/AgencySettingsMeasurementUnitCard.md) | Sq. feet / Sq. meters card |
+| [UpcomingFeatureModal](../../../components/common/UpcomingFeatureModal.tsx) | Shown when persist flag is off |
 
-- [agency-settings/page.md](../../../../app/[locale]/(main)/(profile)/agency-settings/page.md)
+## Hook
+
+- [useAgencySettingsScreen.md](../hooks/useAgencySettingsScreen.md)
+
+## Route
+
+`/agency-settings` — `useAuthorize("AGENCY_SETTINGS")`

@@ -9,7 +9,7 @@ Client hook for agency **measurement unit** display preference (SQFT / SQM): opt
 - Normalize `agency.measurement_unit` via `normalizeAgencyMeasurementUnit`.
 - Build `options` from `AGENCY_MEASUREMENT_UNITS` and `profile.displayPreferences.measurementUnit.{sqft|sqm}.*` keys.
 - When `AGENCY_DISPLAY_PREFERENCES_PERSIST_ENABLED` is `true`, selection calls `useUpdateAgencyDisplayPreferences` with `{ measurement_unit }`. Currently `false` (read-only UI; upcoming).
-- Expose `interactive`, `isUpdating` / `disabled` for the measurement panel in [AgencyDisplayPreferencesRows.md](../components/AgencyDisplayPreferencesRows.md).
+- Expose `interactive`, `isUpdating` / `disabled` for [AgencySettingsMeasurementUnitCard.md](../components/AgencySettingsMeasurementUnitCard.md).
 
 # Exports
 

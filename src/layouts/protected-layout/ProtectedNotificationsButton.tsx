@@ -3,6 +3,11 @@
 import { Bell } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { IconButton } from "@/src/components/ui/icon-button";
+import {
+  protectedHeaderIconButtonClass,
+  protectedHeaderIconGlyphClass,
+  protectedHeaderIconStrokeWidth,
+} from "@/src/layouts/protected-layout/protectedMobileHeaderStyles";
 import { cn } from "@/src/lib/cn";
 import { notificationsIndicatorClass } from "@/src/layouts/shared/notificationsButtonStyles";
 
@@ -23,12 +28,19 @@ export function ProtectedNotificationsButton({
   return (
     <span className={cn("relative inline-flex shrink-0", className)}>
       <IconButton
-        icon={<Bell className="size-5 shrink-0" strokeWidth={2} aria-hidden />}
+        icon={
+          <Bell
+            className={protectedHeaderIconGlyphClass}
+            strokeWidth={protectedHeaderIconStrokeWidth}
+            aria-hidden
+          />
+        }
         aria-label={t("notifications")}
         color="inherit"
         variant="outline"
         isRounded
-        size="md"
+        size="sm"
+        className={protectedHeaderIconButtonClass}
         onClick={onClick}
       />
       {showIndicator ? (

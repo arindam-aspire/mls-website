@@ -16,6 +16,7 @@ Logic layer for the profile feature.
 - `useChangePasswordModal` — change-password form submit flow.
 - `useAgencyCurrencyPreference` — agency currency (JOD/USD) selection + `PUT /agency/{id}`.
 - `useAgencyMeasurementUnitPreference` — agency area unit (SQFT/SQM) selection + `PUT /agency/{id}`.
+- `useAgencySettingsScreen` — agency settings page (display preferences)
 - `useAgencyDisplayPreferencesRows` — `UpcomingFeatureModal` state when persist is off.
 
 - `useSelectAgencyModal` — select agency modal labels and close (agency picker UI pending).
@@ -32,4 +33,5 @@ Logic layer for the profile feature.
 | [useChangePasswordModal.md](./useChangePasswordModal.md) | Logic hook for change-password modal API/submit/close flow |
 | [useAgencyCurrencyPreference.md](./useAgencyCurrencyPreference.md) | Agency display preference — currency |
 | [useAgencyMeasurementUnitPreference.md](./useAgencyMeasurementUnitPreference.md) | Agency display preference — measurement unit |
+| [useAgencySettingsScreen.md](./useAgencySettingsScreen.md) | Agency settings screen |
 | [useAgencyDisplayPreferencesRows.md](./useAgencyDisplayPreferencesRows.md) | Upcoming-feature modal for display preferences |

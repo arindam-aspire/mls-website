@@ -13,11 +13,14 @@ Maps MLS `OwnerListItem` API rows to `@abdoun/abdoun-library` `Owner` for `Owner
 
 ## Mapping
 
-- `name` from `name` or `fullName`
-- `propertyOwned` from `propertyOwned` or `property_owned`
-- `joinedAt` from `joinedAt` or `joined_at`
-- `status` via library `mapOwnerApiStatus`
-- Empty `email` / `phone` become `undefined`
+| API field | Library `Owner` field |
+| --- | --- |
+| `owner_id` | `id` |
+| `full_name` | `name` |
+| `email` / `phone` | `email` / `phone` (empty → `undefined`) |
+| `property_owned` | `propertyOwned` (defaults to `0`) |
+| `created_at` | `joinedAt` |
+| `status` | `status` via `mapOwnerApiStatus` (defaults to `ACTIVE` when absent) |
 
 ## Consumer
 

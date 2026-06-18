@@ -1,11 +1,18 @@
 export type OwnerListItem = {
-  id: string;
-  name: string;
+  owner_id: string;
+  full_name: string;
   email: string;
   phone: string;
-  propertyOwned: number;
-  joinedAt: string;
-  status: string;
+  nationality: string | null;
+  ssi: string | null;
+  address: string | null;
+  documents: unknown[];
+  created_at: string;
+  updated_at: string;
+  /** Present when the API returns owner status. */
+  status?: string;
+  /** Present when the API returns a property count. */
+  property_owned?: number;
 };
 
 export type OwnerListPagination = {
@@ -24,13 +31,14 @@ export type OwnerListParams = {
   status?: string;
 };
 
+export type OwnerListResponseData = OwnerListPagination & {
+  items: OwnerListItem[];
+};
+
 export type OwnerListResponse = {
   success: boolean;
   message: string | null;
-  data: {
-    owners: OwnerListItem[];
-    pagination: OwnerListPagination;
-  } | null;
+  data: OwnerListResponseData | null;
   error: unknown;
   meta?: {
     pagination?: OwnerListPagination;

@@ -173,8 +173,10 @@
     "selectAgencyRequiredDescription": "Elige una agencia antes de continuar."
   },
   "agencySettings": {
+    "pageTitle": "Configuración de agencia",
+    "pageSubtitle": "Elija cómo se muestran los precios de los anuncios y los tamaños de las propiedades en MLS Jordan.",
     "title": "Configuración de agencia",
-    "description": "La configuración de agencia está en camino. Pronto podrá administrar el perfil y las preferencias de su agencia aquí."
+    "description": "Administre las preferencias de visualización de su agencia."
   },
   "notificationSettings": {
     "title": "Configuración de notificaciones",

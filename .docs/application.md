@@ -207,7 +207,7 @@ All paths below are **without** locale; prepend `/<locale>` (e.g. `/en/my-listin
 | `/manage-listings` | `(main)/(listings)/manage-listings/page.tsx` | `ManageListingsScreen` — guarded by `useAuthorize("MANAGE_LISTINGS")` |
 | `/draft-listings` | `(main)/(listings)/draft-listings/page.tsx` | `DraftListingsScreen` — guarded by `useAuthorize("DRAFT_LISTINGS")` |
 | `/my-profile` | `(main)/(profile)/my-profile/page.tsx` | `ProfileScreen` — guarded by `useAuthorize("PROFILE")` |
-| `/agency-settings` | `(main)/(profile)/agency-settings/page.tsx` | `AgencySettingsScreen` — guarded by `useAuthorize("AGENCY_SETTINGS")` (admin only) |
+| `/agency-settings` | `(main)/(profile)/agency-settings/page.tsx` | `AgencySettingsScreen` — currency & measurement display preferences; guarded by `useAuthorize("AGENCY_SETTINGS")` |
 | `/notification-settings` | `(main)/(profile)/notification-settings/page.tsx` | `NotificationSettingsScreen` — guarded by `useAuthorize("NOTIFICATION_SETTINGS")` (owner, user) |
 | `/saved-searches` | `(main)/saved-searches/page.tsx` | `SavedSearchScreen` — guarded by `useAuthorize("SAVED_SEARCHES")` |
 | `/notifications` | `(main)/notifications/page.tsx` | `NotificationScreen` (placeholder) — guarded by `useAuthorize("NOTIFICATIONS")` |

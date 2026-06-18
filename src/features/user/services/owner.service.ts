@@ -6,9 +6,41 @@ import {
 } from "../constants/ownerList.constants";
 import type {
   NormalizedOwnerListResponse,
+  OwnerListPagination,
   OwnerListParams,
   OwnerListResponse,
 } from "../types/owner.types";
+
+function resolveOwnerListPagination(
+  data: OwnerListResponse["data"],
+  metaPagination: OwnerListPagination | undefined,
+  fallbackPage: number,
+  fallbackPageSize: number,
+): OwnerListPagination {
+  if (metaPagination) {
+    return metaPagination;
+  }
+
+  if (data) {
+    return {
+      page: data.page,
+      pageSize: data.pageSize,
+      total: data.total,
+      totalPages: data.totalPages,
+      hasNext: data.hasNext,
+      hasPrevious: data.hasPrevious,
+    };
+  }
+
+  return {
+    page: fallbackPage,
+    pageSize: fallbackPageSize,
+    total: 0,
+    totalPages: 0,
+    hasNext: false,
+    hasPrevious: false,
+  };
+}
 
 export async function getOwnerList(
   agencyId: string,
@@ -29,18 +61,15 @@ export async function getOwnerList(
   });
 
   const data = response.data;
-  const pagination =
-    response.meta?.pagination ?? data?.pagination ?? {
-      page,
-      pageSize,
-      total: data?.owners.length ?? 0,
-      totalPages: 1,
-      hasNext: false,
-      hasPrevious: false,
-    };
+  const pagination = resolveOwnerListPagination(
+    data,
+    response.meta?.pagination,
+    page,
+    pageSize,
+  );
 
   return {
-    owners: data?.owners ?? [],
+    owners: data?.items ?? [],
     pagination,
   };
 }

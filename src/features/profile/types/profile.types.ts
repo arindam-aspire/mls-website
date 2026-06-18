@@ -169,7 +169,6 @@ export type AgencyProfileCardProps = {
   onEditEmail: () => void;
   onEditPhone: () => void;
   onEditAgency: () => void;
-  displayPreferences: AgencyProfileCardDisplayPreferences;
 };
 
 export type UpdateProfileRequest = {

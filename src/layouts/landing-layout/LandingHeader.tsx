@@ -15,6 +15,7 @@ import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { AUTH_VIEW } from "@/src/features/auth/authViews";
 import { Link, usePathname, useRouter } from "@/src/i18n/navigation";
 import type { AppLocale } from "@/src/i18n/routing";
+import { headerIconButtonSizeClass } from "@/src/layouts/shared/headerIconButtonStyles";
 import mlsLogoDark from "@/src/assets/images/MLS_Dark_Logo.png";
 import mlsLogoLight from "@/src/assets/images/MLS_Light_Logo.png";
 import { LandingDesktopNav } from "./LandingDesktopNav";
@@ -31,7 +32,8 @@ import {
 export function LandingHeader() {
   const user = useAuthStore((state) => state.user);
   const isLoadingUser = useAuthStore((state) => state.isLoadingUser);
-  const { hasUnread: hasUnreadNotifications } = useHeaderNotificationUnreadCount({
+  const { hasUnread: hasUnreadNotifications, unreadCount: notificationUnreadCount } =
+    useHeaderNotificationUnreadCount({
     enabled: Boolean(user),
   });
   const t = useTranslations("common");
@@ -70,9 +72,7 @@ export function LandingHeader() {
 
   const mobileHeaderIconButtonClass = cn(
     landingMobileHeaderIconButtonClass,
-    overHero
-      ? headerOverHeroIconClass
-      : "!bg-transparent data-hover:!bg-page data-active:!bg-page",
+    overHero && headerOverHeroIconClass,
   );
 
   const mobileSignInButtonClass = cn(
@@ -117,13 +117,21 @@ export function LandingHeader() {
         <div className="flex h-full shrink-0 items-center gap-2 self-center sm:gap-3 md:hidden">
           {isLoadingUser ? (
             <>
-              <Skeleton variant="circular" className="size-9 shrink-0 sm:size-11" />
-              <Skeleton variant="circular" className="size-9 shrink-0 sm:size-11" />
+              <Skeleton
+                variant="circular"
+                className={cn(headerIconButtonSizeClass, "shrink-0")}
+              />
+              <Skeleton
+                variant="circular"
+                className={cn(headerIconButtonSizeClass, "shrink-0")}
+              />
             </>
           ) : user ? (
             <NotificationsPopover
               enabled
               hasUnread={hasUnreadNotifications}
+              unreadCount={notificationUnreadCount}
+              controlSize="sm"
               overHero={overHero}
             />
           ) : (
@@ -146,7 +154,8 @@ export function LandingHeader() {
             aria-expanded={mobileMenuOpen}
             color="inherit"
             variant="outline"
-            size="md"
+            isRounded
+            size="sm"
             className={mobileHeaderIconButtonClass}
             onClick={() => setMobileMenuOpen(true)}
           />

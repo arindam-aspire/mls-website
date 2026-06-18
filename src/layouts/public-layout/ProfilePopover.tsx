@@ -14,6 +14,7 @@ import { useHeaderNotificationUnreadCount } from "@/src/features/notifications/h
 import { useLogout } from "@/src/features/auth/mutations/auth.mutation";
 import type { LoggedInUser } from "@/src/features/auth/types/auth.types";
 import { useRouter } from "@/src/i18n/navigation";
+import { headerControlDividerClass } from "@/src/layouts/shared/headerIconButtonStyles";
 import { cn } from "@/src/lib/cn";
 import { profileEmailClasses, profileNameClasses } from "@/src/lib/typography";
 import { useClose } from "@headlessui/react";
@@ -113,7 +114,8 @@ export function ProfilePopover({
     [user, tAuth],
   );
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-  const { hasUnread: hasUnreadNotifications } = useHeaderNotificationUnreadCount({
+  const { hasUnread: hasUnreadNotifications, unreadCount: notificationUnreadCount } =
+    useHeaderNotificationUnreadCount({
     enabled: true,
   });
   const { mutate: logout, isPending: isLoggingOut, isSuccess: isLoggedOut } = useLogout();
@@ -130,14 +132,16 @@ export function ProfilePopover({
         <NotificationsPopover
           enabled
           hasUnread={hasUnreadNotifications}
+          unreadCount={notificationUnreadCount}
+          controlSize="sm"
           overHero={overHero}
         />
       ) : null}
 
       <span
         className={cn(
-          "hidden h-9 w-px shrink-0 lg:block lg:h-10",
-          overHero ? "bg-white/25" : "bg-secondary/15",
+          "hidden md:block",
+          overHero ? "h-8 w-px shrink-0 bg-white/25 sm:h-9 lg:h-10" : headerControlDividerClass,
         )}
         aria-hidden
       />
@@ -174,7 +178,7 @@ export function ProfilePopover({
           <Avatar
             src={user.profile_picture_url}
             name={user.full_name}
-            size="md"
+            size="sm"
             className={
               overHero ? profileHeaderAvatarOverHeroClass : profileHeaderAvatarClass
             }

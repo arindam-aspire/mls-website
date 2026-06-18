@@ -8,6 +8,7 @@ Client hook for `ProtectedProfileMenu`: role label resolution, menu labels, logo
 
 - `useProtectedProfileMenu`
 - `useProtectedProfileMenuItem`
+- `ProtectedProfileMenuEntry`, `ProtectedProfileMenuAccountGroup`, `ProtectedProfileMenuLinkItem`
 
 # Return value (`useProtectedProfileMenu`)
 
@@ -16,24 +17,12 @@ Client hook for `ProtectedProfileMenu`: role label resolution, menu labels, logo
 | `t` | `common` translations |
 | `user` | Passed-in `LoggedInUser` |
 | `roleLabel` | Primary role line for header/panel |
-| `menuItems` | Localized menu entries (role-filtered for popover) |
+| `menuEntries` | Localized menu entries (links or agency account group) |
+| `menuAriaLabel` | `myAccount` for agency; `profile` for other roles |
 | `showLogoutConfirm` | Confirm modal open state |
 | `isLoggingOut` | Logout mutation pending |
 | `openLogoutConfirm` / `closeLogoutConfirm` / `confirmLogout` | Modal handlers |
 | `router` | Locale-aware router |
-
-# Role label resolution
-
-Maps `user.roles[0].name` to `auth.accountType*` titles only:
-
-| API role name | Label |
-| --- | --- |
-| `admin`, `agency` | Agency |
-| `agent` | Agent |
-| `owner` | Owner |
-| `registered_user` | User |
-
-Unknown roles return an empty subtitle.
 
 # Profile popover menu items (role-specific)
 
@@ -41,10 +30,13 @@ Unknown roles return an empty subtitle.
 | --- | --- |
 | `owner` | Profile, My Listings, Favourites, Saved Searches, Recently Viewed, Inquiries |
 | `registered_user` | Profile, Favourites, Saved Searches, Recently Viewed, Inquiries |
-| `admin`, `agency`, `agent` | Profile only (+ Sign out; Manage Listings in sidebar / mobile drawer) |
+| `agent` | My Profile only (+ Sign out) |
+| `admin`, `agency` | **My Account** row with chevron; hover/focus opens flyout: Profile (`/my-profile`), Agency Settings (`/agency-settings`) |
 
-Items pass through `filterProfileMenuItemsWithRoleAccess` after the agency/agent base filter.
+Agency detection uses `isAgencyUser` from `profileMenuRoleAccess`. Other roles pass through `filterProfileMenuItemsWithRoleAccess` with context `protectedPopover`.
 
 # Dependencies
 
 - `useLogout`, `useRouter`, `next-intl`
+- `isAgencyUser`, `filterProfileMenuItemsWithRoleAccess`
+- `DRAWER_AGENCY_SETTINGS_PATH` from `resolveDrawerAccountLabel`

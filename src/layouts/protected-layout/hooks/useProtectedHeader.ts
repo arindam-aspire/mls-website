@@ -9,10 +9,9 @@ import { useHeaderNotificationUnreadCount } from "@/src/features/notifications/h
 import { hasProtectedSidebarAccess } from "@/src/lib/auth/sidebarAccess";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
 import type { AppLocale } from "@/src/i18n/routing";
+import { buildHeaderLocaleOptions } from "@/src/layouts/shared/buildHeaderLocaleOptions";
 import { useTheme } from "@/src/providers/ThemeProvider";
 import type { StaticImageData } from "next/image";
-
-const LOCALE_VALUES: AppLocale[] = ["en", "ar", "es", "fr"];
 
 export function useProtectedHeader() {
   const router = useRouter();
@@ -25,7 +24,8 @@ export function useProtectedHeader() {
   const user = useAuthStore((state) => state.user);
   const isLoadingUser = useAuthStore((state) => state.isLoadingUser);
 
-  const { hasUnread: hasUnreadNotifications } = useHeaderNotificationUnreadCount({
+  const { hasUnread: hasUnreadNotifications, unreadCount: notificationUnreadCount } =
+    useHeaderNotificationUnreadCount({
     enabled: Boolean(user),
   });
 
@@ -37,8 +37,8 @@ export function useProtectedHeader() {
   );
 
   const handleLocaleChange = useCallback(
-    (nextLocale: string) => {
-      router.replace(pathname, { locale: nextLocale as AppLocale });
+    (nextLocale: AppLocale) => {
+      router.replace(pathname, { locale: nextLocale });
     },
     [pathname, router],
   );
@@ -51,14 +51,7 @@ export function useProtectedHeader() {
     setIsMobileMenuOpen(false);
   }, []);
 
-  const localeOptions = useMemo(
-    () =>
-      LOCALE_VALUES.map((value) => ({
-        value,
-        label: t(`localeNames.${value}`),
-      })),
-    [t],
-  );
+  const localeOptions = useMemo(() => buildHeaderLocaleOptions(t), [t]);
 
   const showHeaderLogo = useMemo(
     () => Boolean(user) && !hasProtectedSidebarAccess(user),
@@ -72,6 +65,7 @@ export function useProtectedHeader() {
     user,
     isLoadingUser,
     hasUnreadNotifications,
+    notificationUnreadCount,
     showHeaderLogo,
     headerLogoSrc,
     handleLocaleChange,

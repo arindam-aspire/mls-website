@@ -9,7 +9,16 @@ import {
   PopoverPanel,
 } from "@/src/components/ui/popover";
 import { Skeleton } from "@/src/components/ui/skeleton";
+import type { ButtonSizeTier } from "@/src/components/ui/responsiveSizes";
+import {
+  buttonIconSizeClasses,
+  iconButtonSizeClasses,
+} from "@/src/components/ui/responsiveSizes";
 import { Link } from "@/src/i18n/navigation";
+import {
+  headerIconStrokeWidth,
+  headerPopoverTriggerClass,
+} from "@/src/layouts/shared/headerIconButtonStyles";
 import { cn } from "@/src/lib/cn";
 import { SavedSearchPopoverItem } from "../components/SavedSearchPopoverItem";
 import {
@@ -21,11 +30,32 @@ import { useSaveSearchPopover } from "../hooks/useSaveSearchPopover";
 type SaveSearchPopoverProps = {
   className?: string;
   enabled?: boolean;
+  /** Icon button size tier for the trigger. Protected header uses `sm`. */
+  controlSize?: ButtonSizeTier;
+};
+
+const popoverTriggerSizeClasses: Record<ButtonSizeTier, string> = {
+  xs: cn(
+    "!inline-flex !shrink-0 !rounded-full !border !border-secondary/15",
+    "!bg-surface !p-0 !shadow-none",
+    iconButtonSizeClasses.xs,
+  ),
+  sm: headerPopoverTriggerClass,
+  md: cn(
+    "!inline-flex !size-9 !min-h-9 !min-w-9 !shrink-0 !rounded-full !border !border-secondary/15",
+    "!bg-surface !p-0 !shadow-none sm:!size-11 sm:!min-h-11 sm:!min-w-11",
+  ),
+  lg: cn(
+    "!inline-flex !shrink-0 !rounded-full !border !border-secondary/15",
+    "!bg-surface !p-0 !shadow-none",
+    iconButtonSizeClasses.lg,
+  ),
 };
 
 export function SaveSearchPopover({
   className,
   enabled = true,
+  controlSize = "md",
 }: SaveSearchPopoverProps) {
   const {
     searchAriaLabel,
@@ -55,13 +85,16 @@ export function SaveSearchPopover({
         aria-label={searchAriaLabel}
         onClick={onOpen}
         className={cn(
-          "!inline-flex !size-9 !min-h-9 !min-w-9 !shrink-0 !rounded-full !border !border-secondary/15",
-          "!bg-surface !p-0 !shadow-none sm:!size-11 sm:!min-h-11 sm:!min-w-11",
+          popoverTriggerSizeClasses[controlSize],
           "hover:!bg-page data-active:!bg-page",
           "focus-visible:ring-2 focus-visible:ring-secondary/40",
         )}
       >
-        <Search className="size-5 shrink-0" strokeWidth={2} aria-hidden />
+        <Search
+          className={cn(buttonIconSizeClasses[controlSize], "shrink-0 text-current")}
+          strokeWidth={controlSize === "sm" ? headerIconStrokeWidth : 2}
+          aria-hidden
+        />
       </PopoverButton>
 
       <PopoverPanel

@@ -1,19 +1,22 @@
 "use client";
 
-import { Globe, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import Image from "next/image";
 import { IconButton } from "@/src/components/ui/icon-button";
-import { SelectDropdown } from "@/src/components/ui/select-dropdown";
 import { Skeleton } from "@/src/components/ui/skeleton";
 import { Link } from "@/src/i18n/navigation";
+import { ProtectedFullscreenButton } from "@/src/layouts/protected-layout/ProtectedFullscreenButton";
+import { ProtectedLanguageSelect } from "@/src/layouts/protected-layout/ProtectedLanguageSelect";
 import { ProtectedMobileMenu } from "@/src/layouts/protected-layout/ProtectedMobileMenu";
 import { ProtectedProfileMenu } from "@/src/layouts/protected-layout/ProtectedProfileMenu";
 import { NotificationsPopover } from "@/src/features/notifications/popovers/NotificationsPopover";
 import { SaveSearchPopover } from "@/src/features/saved-searches/popovers/SaveSearchPopover";
 import { ProtectedThemeButton } from "@/src/layouts/protected-layout/ProtectedThemeButton";
 import {
+  protectedHeaderIconButtonClass,
+  protectedHeaderControlDividerClass,
+  protectedHeaderIconButtonSizeClass,
   protectedMobileHeaderBarClass,
-  protectedMobileHeaderIconButtonClass,
   protectedMobileHeaderIconClass,
   protectedMobileLogoImageClass,
   protectedMobileLogoLinkClass,
@@ -33,6 +36,7 @@ export function ProtectedHeader() {
     user,
     isLoadingUser,
     hasUnreadNotifications,
+    notificationUnreadCount,
     showHeaderLogo,
     headerLogoSrc,
     handleLocaleChange,
@@ -41,10 +45,7 @@ export function ProtectedHeader() {
     closeMobileMenu,
   } = useProtectedHeader();
 
-  const mobileIconButtonClass = cn(
-    protectedMobileHeaderIconButtonClass,
-    "!bg-transparent hover:!bg-page",
-  );
+  const mobileIconButtonClass = protectedHeaderIconButtonClass;
 
   return (
     <>
@@ -74,14 +75,22 @@ export function ProtectedHeader() {
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
             {isLoadingUser ? (
               <>
-                <Skeleton variant="circular" className="size-9 sm:size-11" />
-                <Skeleton variant="circular" className="size-9 sm:size-11" />
+                <Skeleton
+                  variant="circular"
+                  className={cn(protectedHeaderIconButtonSizeClass, "shrink-0")}
+                />
+                <Skeleton
+                  variant="circular"
+                  className={cn(protectedHeaderIconButtonSizeClass, "shrink-0")}
+                />
               </>
             ) : user ? (
               <>
                 <NotificationsPopover
                   enabled
                   hasUnread={hasUnreadNotifications}
+                  unreadCount={notificationUnreadCount}
+                  controlSize="sm"
                 />
                 <IconButton
                   type="button"
@@ -92,7 +101,8 @@ export function ProtectedHeader() {
                   aria-expanded={isMobileMenuOpen}
                   color="inherit"
                   variant="outline"
-                  size="md"
+                  isRounded
+                  size="sm"
                   className={mobileIconButtonClass}
                   onClick={openMobileMenu}
                 />
@@ -125,56 +135,65 @@ export function ProtectedHeader() {
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           {isLoadingUser ? (
             <>
-              <Skeleton variant="circular" className="size-9 shrink-0 sm:size-11" aria-hidden />
               <Skeleton
                 variant="circular"
-                className="hidden size-9 shrink-0 md:block sm:size-11"
+                className={cn(protectedHeaderIconButtonSizeClass, "shrink-0")}
                 aria-hidden
               />
-              <SelectDropdown
-                variant="outline"
-                size="md"
-                iconStart={<Globe aria-hidden />}
-                aria-label={t("language")}
-                placeholder={t("language")}
-                includePlaceholderOption={false}
-                options={localeOptions}
-                value={locale}
-                onChange={handleLocaleChange}
-                fullWidth={false}
-                wrapperClassName="relative z-[60] w-auto shrink-0"
+              <Skeleton
+                variant="circular"
+                className={cn(protectedHeaderIconButtonSizeClass, "shrink-0")}
+                aria-hidden
               />
-              <Skeleton variant="circular" className="size-9 shrink-0 sm:size-11" aria-hidden />
-              <span className="h-9 w-px shrink-0 bg-secondary/15 sm:h-10" aria-hidden />
-              <Skeleton className="hidden h-9 w-24 shrink-0 rounded-lg lg:block lg:h-10" aria-hidden />
-              <Skeleton variant="circular" className="size-9 shrink-0 sm:size-11" aria-hidden />
+              <Skeleton
+                variant="circular"
+                className={cn(
+                  protectedHeaderIconButtonSizeClass,
+                  "hidden shrink-0 md:block",
+                )}
+                aria-hidden
+              />
+              <Skeleton
+                variant="circular"
+                className={cn(protectedHeaderIconButtonSizeClass, "shrink-0")}
+                aria-hidden
+              />
+              <Skeleton
+                className="h-8 w-14 shrink-0 rounded-lg sm:h-9 lg:h-10"
+                aria-hidden
+              />
+              <span className={cn(protectedHeaderControlDividerClass, "hidden md:block")} aria-hidden />
+              <Skeleton
+                className="hidden h-8 w-24 shrink-0 rounded-lg sm:h-9 md:block lg:h-10"
+                aria-hidden
+              />
+              <Skeleton
+                variant="circular"
+                className={cn(protectedHeaderIconButtonSizeClass, "shrink-0")}
+                aria-hidden
+              />
             </>
           ) : (
             <>
               <ProtectedThemeButton />
-              <SaveSearchPopover enabled={Boolean(user)} />
-              <SelectDropdown
-                variant="outline"
-                size="md"
-                iconStart={<Globe aria-hidden />}
-                aria-label={t("language")}
-                placeholder={t("language")}
-                includePlaceholderOption={false}
-                options={localeOptions}
-                value={locale}
-                onChange={handleLocaleChange}
-                fullWidth={false}
-                wrapperClassName="relative z-[60] w-auto shrink-0"
-              />
+              <ProtectedFullscreenButton />
+              <SaveSearchPopover enabled={Boolean(user)} controlSize="sm" />
               {user ? (
-                <>
-                  <NotificationsPopover
+                <NotificationsPopover
                   enabled
                   hasUnread={hasUnreadNotifications}
+                  unreadCount={notificationUnreadCount}
+                  controlSize="sm"
                 />
-                  <ProtectedProfileMenu user={user} />
-                </>
               ) : null}
+              <ProtectedLanguageSelect
+                value={locale}
+                options={localeOptions}
+                onChange={handleLocaleChange}
+                ariaLabel={t("language")}
+                className="relative z-[60]"
+              />
+              {user ? <ProtectedProfileMenu user={user} /> : null}
             </>
           )}
           </div>

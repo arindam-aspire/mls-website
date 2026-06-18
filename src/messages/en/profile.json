@@ -173,8 +173,10 @@
     "selectAgencyRequiredDescription": "Choose an agency before continuing."
   },
   "agencySettings": {
+    "pageTitle": "Agency Settings",
+    "pageSubtitle": "Choose how listing prices and property sizes appear across MLS Jordan.",
     "title": "Agency Settings",
-    "description": "Agency settings are on the way. You will be able to manage your agency profile and preferences here."
+    "description": "Manage display preferences for your agency."
   },
   "notificationSettings": {
     "title": "Notification Settings",

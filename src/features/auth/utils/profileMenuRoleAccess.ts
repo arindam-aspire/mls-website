@@ -20,6 +20,17 @@ export function isAgentUser(user: LoggedInUser | null | undefined): boolean {
   return user?.roles?.some((role) => role.name === UserRole.AGENT) ?? false;
 }
 
+function isAgencyRoleName(roleName: string | null | undefined): boolean {
+  if (!roleName) return false;
+  const role = roleName.toLowerCase();
+  return role === UserRole.AGENCY || role === MANAGE_LISTINGS_LEGACY_AGENCY_ROLE;
+}
+
+/** Agency portal users (`admin` / legacy `agency`). */
+export function isAgencyUser(user: LoggedInUser | null | undefined): boolean {
+  return isAgencyRoleName(user?.roles?.[0]?.name);
+}
+
 export function isOwnerUser(user: LoggedInUser | null | undefined): boolean {
   return user?.roles?.some((role) => role.name === UserRole.OWNER) ?? false;
 }

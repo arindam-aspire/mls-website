@@ -173,8 +173,10 @@
     "selectAgencyRequiredDescription": "Choisissez une agence avant de continuer."
   },
   "agencySettings": {
+    "pageTitle": "Paramètres de l'agence",
+    "pageSubtitle": "Choisissez comment les prix des annonces et les surfaces s'affichent sur MLS Jordan.",
     "title": "Paramètres de l'agence",
-    "description": "Les paramètres de l'agence arrivent bientôt. Vous pourrez gérer le profil et les préférences de votre agence ici."
+    "description": "Gérez les préférences d'affichage de votre agence."
   },
   "notificationSettings": {
     "title": "Paramètres de notification",

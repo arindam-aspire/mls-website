@@ -133,7 +133,10 @@ mls_website/
 │       │   │   ├── README.md
 │       │   │   ├── components/
 │       │   │   │   ├── README.md
-│       │   │   │   ├── AgencyDisplayPreferencesRows.md
+│       │   │   │   ├── AgencyDisplayPreferenceCard.md
+│       │   │   │   ├── AgencySettingsCurrencyCard.md
+│       │   │   │   ├── AgencySettingsMeasurementUnitCard.md
+│       │   │   │   ├── AgencySettingsScreenSkeleton.md
 │       │   │   │   ├── AgencyProfileCard.md
 │       │   │   │   ├── ChangePasswordForm.md
 │       │   │   │   ├── DisplayPreferenceOptionCard.md
@@ -148,6 +151,7 @@ mls_website/
 │       │   │   │   ├── index.md
 │       │   │   │   ├── useAgencyCurrencyPreference.md
 │       │   │   │   ├── useAgencyDisplayPreferencesRows.md
+│       │   │   │   ├── useAgencySettingsScreen.md
 │       │   │   │   ├── useAgencyLogoUpload.md
 │       │   │   │   ├── useAgencyMeasurementUnitPreference.md
 │       │   │   │   ├── useChangePasswordModal.md
@@ -315,6 +319,7 @@ mls_website/
 │       │   │   ├── README.md
 │       │   │   ├── hooks/
 │       │   │   │   ├── useProtectedBottomTabBar.md
+│       │   │   │   ├── useProtectedFullscreen.md
 │       │   │   │   ├── useProtectedHeader.md
 │       │   │   │   ├── useProtectedProfileMenu.md
 │       │   │   │   ├── useProtectedSidebar.md
@@ -324,7 +329,9 @@ mls_website/
 │       │   │   ├── protectedBottomTab.config.md
 │       │   │   ├── ProtectedDrawer.md
 │       │   │   ├── ProtectedFooter.md
+│       │   │   ├── ProtectedFullscreenButton.md
 │       │   │   ├── ProtectedHeader.md
+│       │   │   ├── ProtectedLanguageSelect.md
 │       │   │   ├── ProtectedProfileMenu.md
 │       │   │   ├── ProtectedNotificationsButton.md
 │       │   │   ├── ProtectedSearchButton.md
@@ -710,7 +717,10 @@ mls_website/
 │   │   │   │   ├── profileEditModal.constants.ts
 │   │   │   │   └── selectAgency.constants.ts
 │   │   │   ├── components/
-│   │   │   │   ├── AgencyDisplayPreferencesRows.tsx
+│   │   │   │   ├── AgencyDisplayPreferenceCard.tsx
+│   │   │   │   ├── AgencySettingsCurrencyCard.tsx
+│   │   │   │   ├── AgencySettingsMeasurementUnitCard.tsx
+│   │   │   │   ├── AgencySettingsScreenSkeleton.tsx
 │   │   │   │   ├── AgencyProfileCard.tsx
 │   │   │   │   ├── ChangePasswordForm.tsx
 │   │   │   │   ├── DisplayPreferenceOptionCard.tsx
@@ -735,6 +745,7 @@ mls_website/
 │   │   │   │   ├── index.ts
 │   │   │   │   ├── useAgencyCurrencyPreference.ts
 │   │   │   │   ├── useAgencyDisplayPreferencesRows.ts
+│   │   │   │   ├── useAgencySettingsScreen.ts
 │   │   │   │   ├── useAgencyLogoUpload.ts
 │   │   │   │   ├── useAgencyMeasurementUnitPreference.ts
 │   │   │   │   ├── useChangePasswordModal.ts
@@ -983,12 +994,19 @@ mls_website/
 │   │   ├── useMatchMedia.ts
 │   │   └── useToast.tsx
 │   ├── i18n/
+│   │   ├── localeFlags.ts
 │   │   ├── navigation.ts
 │   │   ├── request.ts
 │   │   └── routing.ts
 │   ├── layouts/
 │   │   ├── shared/
+│   │   │   ├── buildHeaderLocaleOptions.ts
 │   │   │   ├── drawerActivityItems.config.ts
+│   │   │   ├── headerIconButtonStyles.ts
+│   │   │   ├── HeaderFullscreenButton.tsx
+│   │   │   ├── HeaderLanguageSelect.tsx
+│   │   │   ├── hooks/
+│   │   │   │   └── useHeaderFullscreen.ts
 │   │   │   └── notificationsButtonStyles.ts
 │   │   ├── landing-layout/
 │   │   │   ├── index.tsx
@@ -1006,6 +1024,7 @@ mls_website/
 │   │   ├── protected-layout/
 │   │   │   ├── hooks/
 │   │   │   │   ├── useProtectedBottomTabBar.ts
+│   │   │   │   ├── useProtectedFullscreen.ts
 │   │   │   │   ├── useProtectedHeader.ts
 │   │   │   │   ├── useProtectedProfileMenu.ts
 │   │   │   │   ├── useProtectedSidebar.ts
@@ -1017,7 +1036,9 @@ mls_website/
 │   │   │   ├── ProtectedBottomTabBar.tsx
 │   │   │   ├── ProtectedDrawer.tsx
 │   │   │   ├── ProtectedFooter.tsx
+│   │   │   ├── ProtectedFullscreenButton.tsx
 │   │   │   ├── ProtectedHeader.tsx
+│   │   │   ├── ProtectedLanguageSelect.tsx
 │   │   │   ├── ProtectedProfileMenu.tsx
 │   │   │   ├── ProtectedNotificationsButton.tsx
 │   │   │   ├── ProtectedSearchButton.tsx

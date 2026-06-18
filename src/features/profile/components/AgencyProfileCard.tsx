@@ -21,7 +21,6 @@ import { bodyTextClasses, headingSectionClasses } from "@/src/lib/typography";
 import type { Agency, AgencyProfileCardProps } from "../types/profile.types";
 import { toExternalWebsiteHref } from "../utils/agencyForm.utils";
 import { licenseDocumentDisplayName } from "../utils/licenseDocumentDisplay";
-import { AgencyDisplayPreferencesRows } from "./AgencyDisplayPreferencesRows";
 import { ProfileAvatarUpload } from "./ProfileAvatarUpload";
 
 const profileCardClassName = "w-full md:max-w-md sm:max-w-none lg:max-w-none md:mx-auto lg:max-w-none lg:mx-0";
@@ -199,7 +198,6 @@ export function AgencyProfileCard({
   onEditEmail,
   onEditPhone,
   onEditAgency,
-  displayPreferences,
 }: AgencyProfileCardProps) {
   const { notProvided } = labels;
   const website = agency.website?.trim() ?? "";
@@ -337,28 +335,6 @@ export function AgencyProfileCard({
               className="lg:col-span-2"
             />
           </dl>
-
-          <section
-            className="mt-6 border-t border-secondary/15 pt-6 sm:mt-8"
-            aria-labelledby="agency-display-preferences-title"
-          >
-            <h3
-              id="agency-display-preferences-title"
-              className={cn("break-words text-center lg:text-start", headingSectionClasses)}
-            >
-              {displayPreferences.title}
-            </h3>
-            <p
-              className={cn(
-                "mt-2 break-words text-center text-sm text-muted sm:text-base",
-                "lg:text-start",
-                bodyTextClasses,
-              )}
-            >
-              {displayPreferences.subtitle}
-            </p>
-            <AgencyDisplayPreferencesRows preferences={displayPreferences} />
-          </section>
         </div>
       </CardContent>
     </Card>

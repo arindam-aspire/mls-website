@@ -16,6 +16,11 @@ const nextConfig: NextConfig = {
         hostname: "abdoun-dev-assets-usw2.s3.us-west-2.amazonaws.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "flagcdn.com",
+        pathname: "/w40/**",
+      },
     ],
   },
 };

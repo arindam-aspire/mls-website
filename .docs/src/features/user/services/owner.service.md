@@ -17,7 +17,7 @@ Optional query params when provided on `OwnerListParams`:
 | `search` | Name/email search string |
 | `status` | Uppercase owner status (`ACTIVE`, `SUSPENDED`) |
 
-Pagination is read from `response.data.pagination` with fallback to `response.meta.pagination`.
+Pagination is read from `response.meta.pagination` with fallback to the flat pagination fields on `response.data` (`total`, `page`, `pageSize`, `totalPages`, `hasNext`, `hasPrevious`). List rows come from `data.items`.
 
 ## Consumers
 

@@ -5,8 +5,12 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useLogout } from "@/src/features/auth/mutations/auth.mutation";
 import type { LoggedInUser } from "@/src/features/auth/types/auth.types";
+import { DRAWER_AGENCY_SETTINGS_PATH } from "@/src/features/auth/utils/resolveDrawerAccountLabel";
 import { resolveProfileRoleLabel } from "@/src/features/auth/utils/resolveProfileRoleLabel";
-import { filterProfileMenuItemsWithRoleAccess } from "@/src/features/auth/utils/profileMenuRoleAccess";
+import {
+  filterProfileMenuItemsWithRoleAccess,
+  isAgencyUser,
+} from "@/src/features/auth/utils/profileMenuRoleAccess";
 import { useRouter } from "@/src/i18n/navigation";
 import { UserRole } from "@/src/lib/auth/roles";
 
@@ -21,22 +25,70 @@ const PROFILE_MENU_ITEMS = [
   { labelKey: "myInquiries", path: "/inquiries" },
 ] as const;
 
-/** Agency and agent popover: profile link only (logout is separate). */
-const AGENCY_AGENT_PROFILE_MENU_ROLE_NAMES = new Set<string>([
-  UserRole.AGENCY,
-  UserRole.AGENT,
-  "agency",
-]);
+const AGENCY_ACCOUNT_MENU_ITEMS = [
+  { labelKey: "accountProfile", path: "/my-profile" },
+  { labelKey: "agencySettings", path: DRAWER_AGENCY_SETTINGS_PATH },
+] as const;
 
-function resolveProtectedProfileMenuItems(user: LoggedInUser) {
+/** Agent popover: profile link only (logout is separate). */
+const AGENT_PROFILE_MENU_ROLE_NAMES = new Set<string>([UserRole.AGENT]);
+
+export type ProtectedProfileMenuLinkItem = {
+  kind: "link";
+  labelKey: (typeof PROFILE_MENU_ITEMS)[number]["labelKey"];
+  label: string;
+  path: string;
+};
+
+export type ProtectedProfileMenuAccountGroupItem = {
+  labelKey: (typeof AGENCY_ACCOUNT_MENU_ITEMS)[number]["labelKey"];
+  label: string;
+  path: string;
+};
+
+export type ProtectedProfileMenuAccountGroup = {
+  kind: "accountGroup";
+  titleKey: "myAccount";
+  title: string;
+  items: ProtectedProfileMenuAccountGroupItem[];
+};
+
+export type ProtectedProfileMenuEntry =
+  | ProtectedProfileMenuLinkItem
+  | ProtectedProfileMenuAccountGroup;
+
+function resolveProtectedProfileMenuEntries(
+  user: LoggedInUser,
+  t: (key: string) => string,
+): ProtectedProfileMenuEntry[] {
+  if (isAgencyUser(user)) {
+    return [
+      {
+        kind: "accountGroup",
+        titleKey: "myAccount",
+        title: t("myAccount"),
+        items: AGENCY_ACCOUNT_MENU_ITEMS.map((item) => ({
+          ...item,
+          label: t(item.labelKey),
+        })),
+      },
+    ];
+  }
+
   const roleName = user.roles?.[0]?.name;
 
   const baseItems =
-    roleName && AGENCY_AGENT_PROFILE_MENU_ROLE_NAMES.has(roleName)
+    roleName && AGENT_PROFILE_MENU_ROLE_NAMES.has(roleName)
       ? PROFILE_MENU_ITEMS.filter((item) => item.labelKey === "profile")
       : PROFILE_MENU_ITEMS;
 
-  return filterProfileMenuItemsWithRoleAccess(baseItems, user, "protectedPopover");
+  return filterProfileMenuItemsWithRoleAccess(baseItems, user, "protectedPopover").map(
+    (item) => ({
+      kind: "link" as const,
+      ...item,
+      label: t(item.labelKey),
+    }),
+  );
 }
 
 export function useProtectedProfileMenu(user: LoggedInUser) {
@@ -53,14 +105,15 @@ export function useProtectedProfileMenu(user: LoggedInUser) {
     [user, tAuth],
   );
 
-  const menuItems = useMemo(() => {
-    const items = resolveProtectedProfileMenuItems(user);
+  const menuEntries = useMemo(
+    () => resolveProtectedProfileMenuEntries(user, t),
+    [t, user],
+  );
 
-    return items.map((item) => ({
-      ...item,
-      label: t(item.labelKey),
-    }));
-  }, [t, user]);
+  const menuAriaLabel = useMemo(
+    () => (isAgencyUser(user) ? t("myAccount") : t("profile")),
+    [t, user],
+  );
 
   const openLogoutConfirm = useCallback(() => {
     setShowLogoutConfirm(true);
@@ -84,7 +137,8 @@ export function useProtectedProfileMenu(user: LoggedInUser) {
     t,
     user,
     roleLabel,
-    menuItems,
+    menuEntries,
+    menuAriaLabel,
     showLogoutConfirm,
     isLoggingOut,
     openLogoutConfirm,

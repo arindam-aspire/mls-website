@@ -173,8 +173,10 @@
     "selectAgencyRequiredDescription": "اختر وكالة قبل المتابعة."
   },
   "agencySettings": {
+    "pageTitle": "إعدادات الوكالة",
+    "pageSubtitle": "اختر كيفية عرض أسعار الإعلانات وأحجام العقارات عبر MLS Jordan.",
     "title": "إعدادات الوكالة",
-    "description": "إعدادات الوكالة قيد التطوير. ستتمكن قريباً من إدارة ملف الوكالة وتفضيلاتها من هنا."
+    "description": "إدارة تفضيلات العرض لوكالتك."
   },
   "notificationSettings": {
     "title": "إعدادات الإشعارات",

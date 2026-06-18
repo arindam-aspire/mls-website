@@ -7,6 +7,7 @@ next-intl configuration for locale routing and navigation.
 | [routing.md](./routing.md) | Locales `en`, `ar`, `es`, `fr`; `localePrefix: always`; RTL helper |
 | [request.md](./request.md) | Server request config — loads `src/messages/<locale>` |
 | [navigation.md](./navigation.md) | `Link`, `useRouter`, `redirect`, `getPathname` |
+| [localeFlags.md](./localeFlags.md) | Flag CDN URLs and display codes per `AppLocale` |
 
 ## Locales
 
