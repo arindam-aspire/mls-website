@@ -7,7 +7,8 @@ HTTP layer for `/users/*` and `/agents` endpoints.
 | File | Role |
 | --- | --- |
 | [user.service.md](./user.service.md) | `assignUserAgency`, `assignUserAgencyAndRefreshUser` |
-| [agent.service.md](./agent.service.md) | `getAgentList` |
+| [agent.service.md](./agent.service.md) | `getAgentList`, invite/onboard/resend/delete |
+| [owner.service.md](./owner.service.md) | `getOwnerList` |
 | [index.md](./index.md) | Barrel re-export |
 
 ## Consumers

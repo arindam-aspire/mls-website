@@ -1,7 +1,36 @@
 {
   "owners": {
     "title": "الملاك",
-    "description": "إدارة الملاك قيد التطوير. ستتمكن قريباً من مراجعة وإدارة ملاك العقارات من هنا."
+    "pageTitle": "الملاك",
+    "pageSubtitle": "راجع وأدر ملاك العقارات عبر منصتك.",
+    "description": "إدارة الملاك قيد التطوير. ستتمكن قريباً من مراجعة وإدارة ملاك العقارات من هنا.",
+    "list": {
+      "tableTitle": "الملاك",
+      "noDataTitle": "لم يتم العثور على ملاك",
+      "noDataDescription": "جرّب تعديل البحث أو تصفية الحالة.",
+      "fetchErrorTitle": "تعذر تحميل الملاك",
+      "searchPlaceholder": "ابحث عن الملاك بالاسم أو البريد الإلكتروني…",
+      "statusFilter": {
+        "all": "الكل",
+        "ariaLabel": "تصفية حسب الحالة",
+        "active": "نشط",
+        "suspended": "موقوف"
+      },
+      "columnPickerTitle": "الأعمدة",
+      "columnPickerAriaLabel": "اختر الأعمدة المرئية",
+      "columns": {
+        "owner": "المالك",
+        "contact": "جهة الاتصال",
+        "properties": "العقارات",
+        "status": "الحالة",
+        "joinedAt": "تاريخ الانضمام",
+        "actions": "الإجراءات"
+      },
+      "workflow": {
+        "comingSoonTitle": "الإجراء قريباً",
+        "comingSoonDescription": "ستتوفر إجراءات سير عمل الملاك في تحديث لاحق."
+      }
+    }
   },
   "agents": {
     "title": "الوكلاء",

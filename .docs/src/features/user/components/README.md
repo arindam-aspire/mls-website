@@ -1,6 +1,6 @@
 # User components (`src/features/user/components/`)
 
-Presentational UI for admin agent management on the `/agents` screen.
+Presentational UI for admin **Agents** and **Owners** management screens.
 
 ## Files
 
@@ -8,6 +8,8 @@ Presentational UI for admin agent management on the `/agents` screen.
 | --- | --- |
 | [AgentList.md](./AgentList.md) | Agents list/table below KPI cards |
 | [AgentListFilters.md](./AgentListFilters.md) | Search and filter toolbar for agent list |
+| [OwnerList.md](./OwnerList.md) | Owners list/table shell |
+| [OwnerListFilters.md](./OwnerListFilters.md) | Search and filter toolbar for owner list |
 | [AgentKPICards.md](./AgentKPICards.md) | Summary KPI cards above agent list |
 | [AgentKPICardsSkeleton.md](./AgentKPICardsSkeleton.md) | Loading skeleton for KPI grid |
 | [InviteAgentByEmailForm.md](./InviteAgentByEmailForm.md) | Invite email field inside invite modal |

@@ -1,7 +1,36 @@
 {
   "owners": {
     "title": "Propriétaires",
-    "description": "La gestion des propriétaires arrive bientôt. Vous pourrez consulter et gérer les propriétaires ici."
+    "pageTitle": "Propriétaires",
+    "pageSubtitle": "Consultez et gérez les propriétaires sur votre plateforme.",
+    "description": "La gestion des propriétaires arrive bientôt. Vous pourrez consulter et gérer les propriétaires ici.",
+    "list": {
+      "tableTitle": "Propriétaires",
+      "noDataTitle": "Aucun propriétaire trouvé",
+      "noDataDescription": "Essayez d'ajuster la recherche ou le filtre de statut.",
+      "fetchErrorTitle": "Impossible de charger les propriétaires",
+      "searchPlaceholder": "Rechercher des propriétaires par nom ou e-mail…",
+      "statusFilter": {
+        "all": "Tous",
+        "ariaLabel": "Filtrer par statut",
+        "active": "Actif",
+        "suspended": "Suspendu"
+      },
+      "columnPickerTitle": "Colonnes",
+      "columnPickerAriaLabel": "Choisir les colonnes visibles",
+      "columns": {
+        "owner": "Propriétaire",
+        "contact": "Contact",
+        "properties": "Biens",
+        "status": "Statut",
+        "joinedAt": "Date d'inscription",
+        "actions": "Actions"
+      },
+      "workflow": {
+        "comingSoonTitle": "Action bientôt disponible",
+        "comingSoonDescription": "Les actions du flux propriétaire seront disponibles dans une prochaine mise à jour."
+      }
+    }
   },
   "agents": {
     "title": "Agents",

@@ -1,0 +1,2 @@
+export const DEFAULT_OWNER_LIST_PAGE = 1;
+export const DEFAULT_OWNER_LIST_PAGE_SIZE = 10;

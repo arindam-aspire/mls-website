@@ -185,6 +185,8 @@ mls_website/
 │       │   │   │   ├── AgentKPICardsSkeleton.md
 │       │   │   │   ├── AgentList.md
 │       │   │   │   ├── AgentListFilters.md
+│       │   │   │   ├── OwnerList.md
+│       │   │   │   ├── OwnerListFilters.md
 │       │   │   │   ├── InviteAgentByEmailContent.md
 │       │   │   │   ├── InviteAgentByEmailForm.md
 │       │   │   │   ├── InviteAgentGeneratingPanel.md
@@ -194,17 +196,22 @@ mls_website/
 │       │   │   │   ├── agentList.constants.md
 │       │   │   │   ├── agentListStatusFilters.constants.md
 │       │   │   │   ├── agentListTableColumns.constants.md
+│       │   │   │   ├── ownerListStatusFilters.constants.md
+│       │   │   │   └── ownerListTableColumns.constants.md
 │       │   │   ├── hooks/
 │       │   │   │   ├── README.md
 │       │   │   │   ├── index.md
 │       │   │   │   ├── useAgentsScreen.md
+│       │   │   │   ├── useOwnersScreen.md
 │       │   │   │   ├── useInviteAgentByEmailModal.md
 │       │   │   │   ├── useResendAgentInvitationConfirm.md
 │       │   │   │   ├── useDeleteAgentConfirm.md
 │       │   │   │   └── useManualOnboardAgentModal.md
 │       │   │   ├── i18n/
 │       │   │   │   ├── buildAgentListColumnLabels.md
-│       │   │   │   └── buildAgentListStatusFilterLabels.md
+│       │   │   │   ├── buildAgentListStatusFilterLabels.md
+│       │   │   │   ├── buildOwnerListColumnLabels.md
+│       │   │   │   └── buildOwnerListStatusFilterLabels.md
 │       │   │   ├── mappers/
 │       │   │   │   └── mapAgentListItemToLibraryAgent.md
 │       │   │   ├── mutations/
@@ -237,6 +244,7 @@ mls_website/
 │       │   │       ├── filterAgentsByStatus.md
 │       │   │       ├── buildAgentListRequestParams.md
 │       │   │       ├── buildAgentListTableColumns.md
+│       │   │       ├── buildOwnerListTableColumns.md
 │       │   │       ├── mapAgentListStatusFilterToApiStatus.md
 │       │   │       ├── mapAgentSummaryToKpiMetrics.md
 │       │   │       ├── parseAgentInviteLink.md
@@ -432,6 +440,7 @@ mls_website/
 │   │       ├── agentEndpoints.ts
 │   │       ├── authEndpoints.ts
 │   │       ├── index.ts
+│   │       ├── ownerEndpoints.ts
 │   │       ├── profileEndpoints.ts
 │   │       ├── propertyEndpoints.ts
 │   │       ├── userEndpoints.ts
@@ -773,6 +782,8 @@ mls_website/
 │   │   │   │   ├── AgentKPICardsSkeleton.tsx
 │   │   │   │   ├── AgentList.tsx
 │   │   │   │   ├── AgentListFilters.tsx
+│   │   │   │   ├── OwnerList.tsx
+│   │   │   │   ├── OwnerListFilters.tsx
 │   │   │   │   ├── InviteAgentByEmailContent.tsx
 │   │   │   │   ├── InviteAgentByEmailForm.tsx
 │   │   │   │   ├── InviteAgentGeneratingPanel.tsx
@@ -784,18 +795,25 @@ mls_website/
 │   │   │   │   ├── agentList.constants.ts
 │   │   │   │   ├── agentListStatusFilters.constants.ts
 │   │   │   │   ├── agentListTableColumns.constants.ts
+│   │   │   │   ├── ownerListStatusFilters.constants.ts
+│   │   │   │   ├── ownerListTableColumns.constants.ts
+│   │   │   │   └── ownerList.constants.ts
 │   │   │   ├── hooks/
 │   │   │   │   ├── index.ts
 │   │   │   │   ├── useAgentsScreen.ts
+│   │   │   │   ├── useOwnersScreen.ts
 │   │   │   │   ├── useInviteAgentByEmailModal.ts
 │   │   │   │   ├── useResendAgentInvitationConfirm.ts
 │   │   │   │   ├── useDeleteAgentConfirm.ts
 │   │   │   │   └── useManualOnboardAgentModal.ts
 │   │   │   ├── i18n/
 │   │   │   │   ├── buildAgentListColumnLabels.ts
-│   │   │   │   └── buildAgentListStatusFilterLabels.ts
+│   │   │   │   ├── buildAgentListStatusFilterLabels.ts
+│   │   │   │   ├── buildOwnerListColumnLabels.ts
+│   │   │   │   └── buildOwnerListStatusFilterLabels.ts
 │   │   │   ├── mappers/
-│   │   │   │   └── mapAgentListItemToLibraryAgent.ts
+│   │   │   │   ├── mapAgentListItemToLibraryAgent.ts
+│   │   │   │   └── mapOwnerListItemToLibraryOwner.ts
 │   │   │   ├── mutations/
 │   │   │   │   ├── agent.mutation.ts
 │   │   │   │   └── index.ts
@@ -808,20 +826,25 @@ mls_website/
 │   │   │   ├── services/
 │   │   │   │   ├── index.ts
 │   │   │   │   ├── agent.service.ts
+│   │   │   │   ├── owner.service.ts
 │   │   │   │   └── user.service.ts
 │   │   │   ├── store/
 │   │   │   │   └── index.ts
 │   │   │   ├── types/
 │   │   │   │   ├── index.ts
 │   │   │   │   ├── agent.types.ts
+│   │   │   │   ├── owner.types.ts
 │   │   │   │   └── user.types.ts
 │   │   │   └── utils/
 │   │   │       ├── filterActiveAgents.ts
 │   │   │       ├── filterAgentsBySearch.ts
 │   │   │       ├── filterAgentsByStatus.ts
 │   │   │       ├── buildAgentListRequestParams.ts
+│   │   │       ├── buildOwnerListRequestParams.ts
 │   │   │       ├── buildAgentListTableColumns.ts
+│   │   │       ├── buildOwnerListTableColumns.ts
 │   │   │       ├── mapAgentListStatusFilterToApiStatus.ts
+│   │   │       ├── mapOwnerListStatusFilterToApiStatus.ts
 │   │   │       ├── mapAgentSummaryToKpiMetrics.ts
 │   │   │       ├── parseAgentInviteLink.ts
 │   │   │       ├── validateOnboardAgentForms.ts

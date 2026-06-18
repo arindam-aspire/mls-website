@@ -1,7 +1,36 @@
 {
   "owners": {
     "title": "Owners",
-    "description": "Owner management is on the way. You will be able to review and manage property owners here."
+    "pageTitle": "Owners",
+    "pageSubtitle": "Review and manage property owners across your platform.",
+    "description": "Owner management is on the way. You will be able to review and manage property owners here.",
+    "list": {
+      "tableTitle": "Owners",
+      "noDataTitle": "No owners found",
+      "noDataDescription": "Try adjusting your search or status filter.",
+      "fetchErrorTitle": "Could not load owners",
+      "searchPlaceholder": "Search owners by name or email…",
+      "statusFilter": {
+        "all": "All",
+        "ariaLabel": "Filter by status",
+        "active": "Active",
+        "suspended": "Suspended"
+      },
+      "columnPickerTitle": "Columns",
+      "columnPickerAriaLabel": "Choose visible columns",
+      "columns": {
+        "owner": "Owner",
+        "contact": "Contact",
+        "properties": "Properties",
+        "status": "Status",
+        "joinedAt": "Joined at",
+        "actions": "Actions"
+      },
+      "workflow": {
+        "comingSoonTitle": "Action coming soon",
+        "comingSoonDescription": "Owner workflow actions will be available in a future update."
+      }
+    }
   },
   "agents": {
     "title": "Agents",
