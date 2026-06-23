@@ -20,6 +20,10 @@ export function isAgentUser(user: LoggedInUser | null | undefined): boolean {
   return user?.roles?.some((role) => role.name === UserRole.AGENT) ?? false;
 }
 
+export function isSuperAdminUser(user: LoggedInUser | null | undefined): boolean {
+  return user?.roles?.some((role) => role.name === UserRole.SUPER_ADMIN) ?? false;
+}
+
 export function isOwnerUser(user: LoggedInUser | null | undefined): boolean {
   return user?.roles?.some((role) => role.name === UserRole.OWNER) ?? false;
 }

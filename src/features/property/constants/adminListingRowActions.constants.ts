@@ -17,6 +17,7 @@ function normalizeSubmissionStatus(status: string): string {
 export function buildAdminListingRowActions(
   item: AdminPropertySubmissionListItem,
   labels: AdminListingRowActionLabels,
+  canReviewSubmissions = false,
 ): PropertyListingRowActionDescriptor[] {
   const status = normalizeSubmissionStatus(item.status);
 
@@ -26,20 +27,26 @@ export function buildAdminListingRowActions(
 
   if (status === "submitted") {
     if (!item.has_assigned_agent) {
-      return [
+      const actions: PropertyListingRowActionDescriptor[] = [
         { id: "assign", label: labels.assignAgent },
-        { id: "reject", label: labels.reject, tone: "danger" },
         { id: "view" },
       ];
+      if (canReviewSubmissions) {
+        actions.splice(1, 0, { id: "reject", label: labels.reject, tone: "danger" });
+      }
+      return actions;
     }
 
-    return [
-      { id: "approve", label: labels.approve },
+    const actions: PropertyListingRowActionDescriptor[] = [
       { id: "reassign", label: labels.reassign },
-      { id: "reject", label: labels.reject, tone: "danger" },
       { id: "unassign", label: labels.unassign },
       { id: "view" },
     ];
+    if (canReviewSubmissions) {
+      actions.unshift({ id: "approve", label: labels.approve });
+      actions.splice(2, 0, { id: "reject", label: labels.reject, tone: "danger" });
+    }
+    return actions;
   }
 
   return [{ id: "view" }];

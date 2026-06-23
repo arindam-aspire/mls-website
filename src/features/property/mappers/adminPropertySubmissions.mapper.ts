@@ -11,6 +11,7 @@ import {
 
 export type MapAdminPropertySubmissionListItemsOptions = MapAgentPropertyListItemsOptions & {
   adminRowActionLabels?: AdminListingRowActionLabels;
+  canReviewSubmissions?: boolean;
 };
 
 export function mapAdminSubmissionToAgentPropertyListItem(
@@ -65,7 +66,11 @@ export function mapAdminPropertySubmissionListItems(
 
     return {
       ...row,
-      actions: buildAdminListingRowActions(item, options.adminRowActionLabels),
+      actions: buildAdminListingRowActions(
+        item,
+        options.adminRowActionLabels,
+        options.canReviewSubmissions,
+      ),
     };
   });
 }

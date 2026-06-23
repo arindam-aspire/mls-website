@@ -7,6 +7,8 @@ import { useRouter } from "@/src/i18n/navigation";
 import type { AppLocale } from "@/src/i18n/routing";
 import { useToast } from "@/src/hooks/useToast";
 import type { ApiError } from "@/src/apis/core/error.normalizer";
+import { useAuthStore } from "@/src/features/auth/store/auth.store";
+import { isSuperAdminUser } from "@/src/features/auth/utils/profileMenuRoleAccess";
 import type { ListTableView, PinnedColumns, SortConfig } from "@abdoun/abdoun-library";
 import {
   ADMIN_PROPERTY_SUBMISSION_STATUS_FILTER_VALUES,
@@ -91,6 +93,7 @@ export function useAdminPropertySubmissionsTable({
   const t = useTranslations(`propertyList.${LISTINGS_NAMESPACE}`);
   const tStatus = useTranslations(`propertyList.${LISTINGS_NAMESPACE}.statusFilter`);
   const locale = useLocale() as AppLocale;
+  const user = useAuthStore((state) => state.user);
 
   // 4. Local state
   const [status, setStatus] = useState("");
@@ -104,9 +107,6 @@ export function useAdminPropertySubmissionsTable({
     enabled ? null : [],
   );
   const [paginationMeta, setPaginationMeta] = useState<PaginationMeta | undefined>();
-  const [requestParams, setRequestParams] = useState<AdminPropertySubmissionsListParams>(
-    () => buildRequestParams("", DEFAULT_PAGE, DEFAULT_PAGE_SIZE),
-  );
   const [rejectedReasonListing, setRejectedReasonListing] =
     useState<LibraryPropertyListing | null>(null);
   const [pendingApproveListing, setPendingApproveListing] =
@@ -131,13 +131,17 @@ export function useAdminPropertySubmissionsTable({
   const { mutate: assignAdminPropertyAgent, isPending: isAssigningAgent } =
     useAssignAdminPropertyAgent();
 
+  const requestParams = useMemo(
+    () => buildRequestParams(status, page, pageSize),
+    [page, pageSize, status],
+  );
+
   const fetchAdminPropertySubmissions = useCallback(
     (params: AdminPropertySubmissionsListParams) => {
       if (!enabled) {
         return;
       }
 
-      setRequestParams(params);
       getAdminPropertySubmissions(params, {
         onSuccess: (response) => {
           const data = response.data;
@@ -186,6 +190,7 @@ export function useAdminPropertySubmissionsTable({
   const tableListings = useMemo(() => {
     return mapAdminPropertySubmissionListItems(listings ?? [], {
       adminRowActionLabels,
+      canReviewSubmissions: isSuperAdminUser(user),
     }).map((row) => {
       const key = row.status.key;
 
@@ -201,7 +206,7 @@ export function useAdminPropertySubmissionsTable({
         },
       };
     });
-  }, [adminRowActionLabels, listings, tStatus]);
+  }, [adminRowActionLabels, listings, tStatus, user]);
 
   const tableLocale = useMemo(() => resolveLibraryLocale(locale), [locale]);
 
@@ -816,8 +821,8 @@ export function useAdminPropertySubmissionsTable({
       return;
     }
 
-    fetchAdminPropertySubmissions(buildRequestParams(status, page, pageSize));
-  }, [enabled, fetchAdminPropertySubmissions, page, pageSize, status]);
+    fetchAdminPropertySubmissions(requestParams);
+  }, [enabled, fetchAdminPropertySubmissions, requestParams]);
 
   // 10. Return values
   return {

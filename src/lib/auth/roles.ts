@@ -3,6 +3,7 @@
  * agency → admin, agent → agent, owner → owner, user → registered_user
  */
 export enum UserRole {
+  SUPER_ADMIN = "super_admin",
   AGENCY = "admin",
   AGENT = "agent",
   OWNER = "owner",
