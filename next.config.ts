@@ -1,9 +1,18 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
+import path from "node:path";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
+const workspaceRoot = path.resolve(process.cwd(), "..");
 
 const nextConfig: NextConfig = {
+  transpilePackages: ["@abdoun/abdoun-library"],
+  experimental: {
+    externalDir: true,
+  },
+  turbopack: {
+    root: workspaceRoot,
+  },
   images: {
     remotePatterns: [
       {
