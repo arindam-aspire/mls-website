@@ -24,9 +24,10 @@ import { useRouter } from "@/src/i18n/navigation";
 import { cn } from "@/src/lib/cn";
 import { bodyTextClasses } from "@/src/lib/typography";
 import { MapPin, Search } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 const LISTING_TYPES = ["buy", "rent"] as const;
+const DEFAULT_CATEGORY_SLUG = "residential";
 
 const searchBarWrapperClass =
   "flex w-full min-w-0 max-w-4xl flex-col items-stretch text-start md:items-start";
@@ -124,15 +125,12 @@ export function HeroSearchBar({
     );
   }, [locationQuery, locationSuggestions]);
 
-  useEffect(() => {
-    if (categories.length === 0) {
-      return;
-    }
-
-    setPropertyType((current) =>
-      categories.some((category) => category.slug === current)
-        ? current
-        : categories[0].slug,
+  const defaultPropertyType = useMemo(() => {
+    return (
+      categories.find((category) => category.slug === DEFAULT_CATEGORY_SLUG)
+        ?.slug ??
+      categories[0]?.slug ??
+      ""
     );
   }, [categories]);
 
@@ -140,8 +138,8 @@ export function HeroSearchBar({
     if (categories.some((category) => category.slug === propertyType)) {
       return propertyType;
     }
-    return categories[0]?.slug ?? "";
-  }, [categories, propertyType]);
+    return defaultPropertyType;
+  }, [categories, defaultPropertyType, propertyType]);
 
   const selectedCategory = useMemo(
     () => categories.find((category) => category.slug === activePropertyType),
