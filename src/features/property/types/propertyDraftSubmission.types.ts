@@ -120,6 +120,7 @@ export type PropertyDraftSubmissionPayload = {
 
 /** Request body for `POST /property-submissions` (create draft). */
 export type PropertyDraftSubmissionRequestBody = {
+  agency_id?: string | null;
   payload: PropertyDraftSubmissionPayload;
   /** Active `PropertyForm` step index when saving. */
   current_step: number;
@@ -132,6 +133,7 @@ export type PropertyDraftSubmissionSaveAction = "save_draft";
 /** Request body for `PATCH /property-submissions/{submissionId}` (update draft). */
 export type PropertyDraftSubmissionUpdateRequestBody = {
   action: PropertyDraftSubmissionSaveAction;
+  agency_id?: string | null;
   current_step: number;
   /** Furthest step the user has completed when saving. */
   last_completed_step: number;
@@ -151,6 +153,7 @@ export type PropertyDraftSubmissionStepCompletion = {
 
 export type PropertyDraftSubmissionData = {
   submission_id: string;
+  agency_id?: string | null;
   status: string;
   current_step: number;
   last_completed_step: number;
@@ -171,6 +174,7 @@ export type PropertyDraftSubmissionResponse = {
 
 /** Request body for `POST /property-submissions/submit` (no existing draft id). */
 export type PropertySubmissionDirectSubmitRequestBody = {
+  agency_id?: string | null;
   payload: PropertyDraftSubmissionPayload;
   confirm_submit: true;
 };

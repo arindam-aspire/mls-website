@@ -17,14 +17,14 @@ export function useAddPropertyEntry(options: UseAddPropertyEntryOptions = {}) {
   const [isSelectAgencyOpen, setIsSelectAgencyOpen] = useState(false);
 
   const onAddProperty = useCallback(() => {
-    const shouldCheckHasAgency = restrictForOwnerOnly ? isOwnerUser(user) : true;
+    const shouldSelectAgency = isOwnerUser(user) || !restrictForOwnerOnly;
 
-    if (!shouldCheckHasAgency || user?.has_agency === true) {
-      router.push("/property-create");
+    if (shouldSelectAgency && isOwnerUser(user)) {
+      setIsSelectAgencyOpen(true);
       return;
     }
 
-    setIsSelectAgencyOpen(true);
+    router.push("/property-create");
   }, [restrictForOwnerOnly, router, user]);
 
   const closeSelectAgency = useCallback(() => {

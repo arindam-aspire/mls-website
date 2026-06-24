@@ -1,10 +1,9 @@
 "use client";
 
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState, type Dispatch, type SetStateAction } from "react";
 import type { ApiError } from "@/src/apis/core/error.normalizer";
-import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { PROPERTY_CREATE_AGENCY_ID_PARAM } from "@/src/features/property/constants/propertyCreate.constants";
 import { useRouter } from "@/src/i18n/navigation";
 import { useToast } from "@/src/hooks/useToast";
@@ -12,7 +11,6 @@ import {
   DEFAULT_AGENCY_LIST_LIMIT,
   DEFAULT_AGENCY_LIST_SKIP,
 } from "../constants/selectAgency.constants";
-import { assignUserAgencyAndRefreshUser } from "@/src/features/user/services/user.service";
 import { getAgencyList } from "../services/profile.service";
 import type { AgencyListItem } from "../types/profile.types";
 import { filterAgenciesBySearch } from "../utils/selectAgency.utils";
@@ -27,7 +25,6 @@ export function useSelectAgencyModal({ isOpen, setIsOpen }: UseSelectAgencyModal
   const t = useTranslations("profile.selectAgency");
   const tCommon = useTranslations("common");
   const toast = useToast();
-  const setUser = useAuthStore((state) => state.setUser);
 
   const [selectedAgencyId, setSelectedAgencyId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -47,10 +44,6 @@ export function useSelectAgencyModal({ isOpen, setIsOpen }: UseSelectAgencyModal
     enabled: isOpen,
   });
 
-  const assignAgencyMutation = useMutation({
-    mutationFn: assignUserAgencyAndRefreshUser,
-  });
-
   const agencies = agencyList?.items ?? [];
 
   const filteredAgencies = useMemo(
@@ -64,44 +57,28 @@ export function useSelectAgencyModal({ isOpen, setIsOpen }: UseSelectAgencyModal
   );
 
   const closeModal = useCallback(() => {
-    if (assignAgencyMutation.isPending) {
-      return;
-    }
     setIsOpen(false);
-  }, [assignAgencyMutation.isPending, setIsOpen]);
+  }, [setIsOpen]);
 
   const onSelectAgency = useCallback(
     (agency: AgencyListItem) => {
-      if (assignAgencyMutation.isPending) {
-        return;
-      }
       setSelectedAgencyId(agency.id);
     },
-    [assignAgencyMutation.isPending],
+    [],
   );
 
   const onSearchChange = useCallback(
     (value: string) => {
-      if (assignAgencyMutation.isPending) {
-        return;
-      }
       setSearchQuery(value);
     },
-    [assignAgencyMutation.isPending],
+    [],
   );
 
   const onClearSearch = useCallback(() => {
-    if (assignAgencyMutation.isPending) {
-      return;
-    }
     setSearchQuery("");
-  }, [assignAgencyMutation.isPending]);
+  }, []);
 
   const onContinue = useCallback(() => {
-    if (assignAgencyMutation.isPending) {
-      return;
-    }
-
     if (!selectedAgencyId) {
       toast.error(t("selectAgencyRequiredTitle"), {
         description: t("selectAgencyRequiredDescription"),
@@ -109,30 +86,11 @@ export function useSelectAgencyModal({ isOpen, setIsOpen }: UseSelectAgencyModal
       return;
     }
 
-    assignAgencyMutation.mutate(selectedAgencyId, {
-      onSuccess: (user) => {
-        setUser(user);
-        setIsOpen(false);
-        router.push(
-          `/property-create?${PROPERTY_CREATE_AGENCY_ID_PARAM}=${encodeURIComponent(selectedAgencyId)}`,
-        );
-      },
-      onError: (mutationError) => {
-        const apiError = mutationError as unknown as ApiError;
-        toast.error(t("assignAgencyErrorTitle"), {
-          description: apiError.message,
-        });
-      },
-    });
-  }, [
-    assignAgencyMutation,
-    router,
-    selectedAgencyId,
-    setIsOpen,
-    setUser,
-    t,
-    toast,
-  ]);
+    setIsOpen(false);
+    router.push(
+      `/property-create?${PROPERTY_CREATE_AGENCY_ID_PARAM}=${encodeURIComponent(selectedAgencyId)}`,
+    );
+  }, [router, selectedAgencyId, setIsOpen, t, toast]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -150,7 +108,7 @@ export function useSelectAgencyModal({ isOpen, setIsOpen }: UseSelectAgencyModal
   }, [error, isError, t, toast]);
 
   const isLoading = isOpen && isPending;
-  const isContinuePending = assignAgencyMutation.isPending;
+  const isContinuePending = false;
   const isEmpty = !isLoading && !isError && agencies.length === 0;
   const isSearchEmpty =
     !isLoading && !isError && agencies.length > 0 && filteredAgencies.length === 0;

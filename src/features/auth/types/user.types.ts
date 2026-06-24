@@ -25,6 +25,7 @@ export type LoggedInUserAgency = {
 
 export type LoggedInUser = {
   agency?: LoggedInUserAgency | null;
+  agencies?: LoggedInUserAgency[];
   /** Whether the authenticated user is linked to an agency (`GET /auth/me`). */
   has_agency?: boolean;
   email: string;

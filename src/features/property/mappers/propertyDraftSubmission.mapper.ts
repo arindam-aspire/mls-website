@@ -153,6 +153,8 @@ function mapSelectedAmenitiesToFeatureIds(
 export type BuildPropertyDraftSubmissionPayloadOptions = {
   /** When true, all review flags are sent as accepted (submit path after library validation). */
   forSubmit?: boolean;
+  /** Selected agency for owner-created listings; backend falls back to auth context for agency users. */
+  agencyId?: string | null;
 };
 
 function mapReviewSubmit(
@@ -310,6 +312,7 @@ export function buildPropertyDraftSubmissionRequestBody(
   options?: BuildPropertyDraftSubmissionPayloadOptions,
 ): PropertyDraftSubmissionRequestBody {
   return {
+    agency_id: options?.agencyId ?? undefined,
     payload: buildPropertyDraftSubmissionPayload(
       propertyDetails,
       featuresAndAmenities,
@@ -326,6 +329,7 @@ export function buildPropertySubmissionDirectSubmitRequestBody(
   options?: BuildPropertyDraftSubmissionPayloadOptions,
 ): PropertySubmissionDirectSubmitRequestBody {
   return {
+    agency_id: options?.agencyId ?? undefined,
     payload: buildPropertyDraftSubmissionPayload(
       propertyDetails,
       featuresAndAmenities,
@@ -344,6 +348,7 @@ export function buildPropertyDraftSubmissionUpdateRequestBody(
 ): PropertyDraftSubmissionUpdateRequestBody {
   return {
     action: PROPERTY_DRAFT_SUBMISSION_SAVE_ACTION,
+    agency_id: options?.agencyId ?? undefined,
     current_step: currentStep,
     last_completed_step: lastCompletedStep,
     payload: buildPropertyDraftSubmissionPayload(

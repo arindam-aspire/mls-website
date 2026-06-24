@@ -2,7 +2,7 @@
 
 import type { BreadcrumbItem } from "@/src/components/ui/breadcrumb";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
-import { resolveListingsMenuPath } from "@/src/features/auth/utils/profileMenuRoleAccess";
+import { isOwnerUser, resolveListingsMenuPath } from "@/src/features/auth/utils/profileMenuRoleAccess";
 import {
   useGetLocationTaxonomy,
   useGetPropertyTaxonomy,
@@ -15,7 +15,10 @@ import {
   getPropertyCategories,
   type PropertyTaxonomyResponse,
 } from "@/src/features/landing/types/propertyTaxonomy.types";
-import { PROPERTY_CREATE_SUBMISSION_ID_PARAM } from "@/src/features/property/constants/propertyCreate.constants";
+import {
+  PROPERTY_CREATE_AGENCY_ID_PARAM,
+  PROPERTY_CREATE_SUBMISSION_ID_PARAM,
+} from "@/src/features/property/constants/propertyCreate.constants";
 import {
   INITIAL_PROPERTY_FORM_ACTIVE_STEP,
   INITIAL_PROPERTY_FORM_VALUES,
@@ -110,6 +113,9 @@ export function usePropertyCreateScreen() {
   const [rejectionReason, setRejectionReason] = useState<string | null>(null);
   const [submissionId, setSubmissionId] = useState<string | null>(() =>
     searchParams.get(PROPERTY_CREATE_SUBMISSION_ID_PARAM),
+  );
+  const [selectedAgencyId, setSelectedAgencyId] = useState<string | null>(() =>
+    searchParams.get(PROPERTY_CREATE_AGENCY_ID_PARAM),
   );
   // Set only after a successful fetch or first draft save — not from URL on mount,
   // otherwise resume-from-draft-list skips hydration.
@@ -226,6 +232,9 @@ export function usePropertyCreateScreen() {
           ),
         );
         setSubmissionId(draftResponse.data.submission_id);
+        if (draftResponse.data.agency_id) {
+          setSelectedAgencyId(draftResponse.data.agency_id);
+        }
         draftHydratedForRef.current = draftResponse.data.submission_id;
 
         const formAccess = resolveSubmissionFormAccess(draftResponse.data);
@@ -305,7 +314,13 @@ export function usePropertyCreateScreen() {
       max_reached_step: lastCompletedStep,
     };
     const submitPayloadOptions = { forSubmit: true } as const;
+    const agencyId = selectedAgencyId ?? searchParams.get(PROPERTY_CREATE_AGENCY_ID_PARAM);
     const listingsPath = resolveListingsMenuPath(user) ?? "/my-listings";
+
+    if (isOwnerUser(user) && !agencyId) {
+      toast.error("Select an agency before submitting this property.");
+      return;
+    }
 
     setIsSubmitting(true);
 
@@ -315,7 +330,7 @@ export function usePropertyCreateScreen() {
           buildPropertySubmissionDirectSubmitRequestBody(
             detailsForSubmit,
             featuresAndAmenities,
-            submitPayloadOptions,
+            { ...submitPayloadOptions, agencyId },
           ),
         );
 
@@ -340,7 +355,7 @@ export function usePropertyCreateScreen() {
           featuresAndAmenities,
           currentStep,
           lastCompletedStep,
-          submitPayloadOptions,
+          { ...submitPayloadOptions, agencyId },
         ),
       });
 
@@ -379,6 +394,8 @@ export function usePropertyCreateScreen() {
     maxReachedStep,
     propertyDetails,
     router,
+    searchParams,
+    selectedAgencyId,
     submissionId,
     submitDraftSubmission,
     submitPropertySubmissionDirect,
@@ -397,6 +414,7 @@ export function usePropertyCreateScreen() {
         nextPropertyDetails.max_reached_step ?? maxReachedStep ?? currentStep;
 
       try {
+        const agencyId = selectedAgencyId ?? searchParams.get(PROPERTY_CREATE_AGENCY_ID_PARAM);
         const response = submissionId
           ? await updateDraftSubmission({
               submissionId,
@@ -405,6 +423,7 @@ export function usePropertyCreateScreen() {
                 featuresAndAmenities,
                 currentStep,
                 lastCompletedStep,
+                { agencyId },
               ),
             })
           : await saveDraftSubmission(
@@ -413,6 +432,7 @@ export function usePropertyCreateScreen() {
                 featuresAndAmenities,
                 currentStep,
                 lastCompletedStep,
+                { agencyId },
               ),
             );
 
@@ -442,6 +462,8 @@ export function usePropertyCreateScreen() {
       featuresAndAmenities,
       maxReachedStep,
       saveDraftSubmission,
+      searchParams,
+      selectedAgencyId,
       submissionId,
       syncSubmissionIdInUrl,
       t,
