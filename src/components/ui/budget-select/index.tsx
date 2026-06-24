@@ -205,6 +205,7 @@ export function BudgetSelect({
 
           <div className="relative min-w-0 flex-1">
             <ListboxButton
+              suppressHydrationWarning
               id={selectId}
               autoFocus={autoFocus}
               aria-invalid={hasError || undefined}
