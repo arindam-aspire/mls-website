@@ -92,6 +92,7 @@ export function BudgetField({
       dir={isRtl ? "rtl" : "ltr"}
     >
       <button
+        suppressHydrationWarning
         ref={triggerRef}
         type="button"
         title={label}

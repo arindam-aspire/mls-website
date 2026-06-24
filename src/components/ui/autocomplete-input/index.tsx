@@ -319,6 +319,7 @@ export function AutocompleteInput({
               <InputIcon icon={iconStart} size={size} className={iconClassName} />
             )}
             <ComboboxInput
+              suppressHydrationWarning
               id={inputId}
               name={name}
               autoFocus={autoFocus}
