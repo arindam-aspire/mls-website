@@ -28,7 +28,7 @@ Client hook powering `ProtectedHeader` actions and state.
 | `hasUnreadNotifications` | `boolean` | From `GET /notifications/unread-count` when user is ready |
 | `showHeaderLogo` | `boolean` | Desktop left logo for user/owner (no sidebar) |
 | `headerLogoSrc` | `StaticImageData` | `MLS_Light_Logo` or `MLS_Dark_Logo` from `useTheme` |
-| `handleLocaleChange` | `(locale: string) => void` | `router.replace` with new locale |
+| `handleLocaleChange` | `(locale: AppLocale) => void` | `router.replace` with new locale |
 | `isMobileMenuOpen` | `boolean` | Mobile drawer visibility |
 | `openMobileMenu` | `() => void` | Opens `ProtectedMobileMenu` |
 | `closeMobileMenu` | `() => void` | Closes mobile drawer |

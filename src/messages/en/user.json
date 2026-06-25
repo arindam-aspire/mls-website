@@ -1,0 +1,165 @@
+{
+  "owners": {
+    "title": "Owners",
+    "pageTitle": "Owners",
+    "pageSubtitle": "Review and manage property owners across your platform.",
+    "description": "Owner management is on the way. You will be able to review and manage property owners here.",
+    "list": {
+      "tableTitle": "Owners",
+      "noDataTitle": "No owners found",
+      "noDataDescription": "Try adjusting your search or status filter.",
+      "fetchErrorTitle": "Could not load owners",
+      "searchPlaceholder": "Search owners by name or email…",
+      "statusFilter": {
+        "all": "All",
+        "ariaLabel": "Filter by status",
+        "active": "Active",
+        "suspended": "Suspended"
+      },
+      "columnPickerTitle": "Columns",
+      "columnPickerAriaLabel": "Choose visible columns",
+      "columns": {
+        "owner": "Owner",
+        "contact": "Contact",
+        "properties": "Properties",
+        "status": "Status",
+        "joinedAt": "Joined at",
+        "actions": "Actions"
+      },
+      "workflow": {
+        "comingSoonTitle": "Action coming soon",
+        "comingSoonDescription": "Owner workflow actions will be available in a future update."
+      }
+    }
+  },
+  "agents": {
+    "title": "Agents",
+    "description": "Agent management is on the way. You will be able to review and manage agents here.",
+    "pageTitle": "Agents",
+    "pageSubtitle": "Review, onboard, and manage agents across your platform.",
+    "inviteByEmail": "Invite by email",
+    "manualOnboard": "Manual onboarding",
+    "inviteByEmailModal": {
+      "title": "Invite by email",
+      "description": "Enter the agent's email address to generate an invitation link.",
+      "emailLabel": "Email",
+      "emailPlaceholder": "agent@example.com",
+      "generate": "Generate invitation",
+      "generating": "Generating…",
+      "generatingHint": "Creating a unique invitation link for this agent.",
+      "cancel": "Cancel",
+      "errorTitle": "Could not generate invitation",
+      "generated": {
+        "subtitle": "Copy the link or send the invitation from your email app.",
+        "readyTitle": "Invitation ready",
+        "descriptionWithEmail": "An invitation link was created for {email}.",
+        "shareHint": "Use Copy link above, or Send via email below to open your mail app.",
+        "linkLabel": "Invitation link",
+        "copyLink": "Copy link",
+        "copyLinkSuccessTitle": "Link copied",
+        "copyLinkSuccessDescription": "The invitation link is on your clipboard.",
+        "copyLinkErrorTitle": "Could not copy link",
+        "copyLinkErrorDescription": "Copy the link manually from the bar above.",
+        "sendViaEmail": "Send via email",
+        "emailSubject": "You're invited to join as an agent",
+        "emailBody": "Use this link to accept your agent invitation:\n\n{link}",
+        "done": "Done"
+      }
+    },
+    "manualOnboardModal": {
+      "title": "Manual onboarding",
+      "description": "Enter the agent's details to create their account.",
+      "fullNameLabel": "Full name",
+      "fullNamePlaceholder": "Enter full name",
+      "emailLabel": "Email",
+      "emailPlaceholder": "agent@example.com",
+      "phoneLabel": "Phone",
+      "serviceAreaLabel": "Service area",
+      "serviceAreaPlaceholder": "Select service areas",
+      "submit": "Submit agent",
+      "submitting": "Submitting…",
+      "cancel": "Cancel",
+      "errorTitle": "Could not onboard agent",
+      "success": {
+        "subtitle": "Share the temporary password securely with the agent.",
+        "readyTitle": "Agent created",
+        "descriptionWithName": "{name} was onboarded successfully.",
+        "temporaryPasswordLabel": "Temporary password",
+        "copyPassword": "Copy password",
+        "copyPasswordSuccessTitle": "Password copied",
+        "copyPasswordSuccessDescription": "The temporary password is on your clipboard.",
+        "copyPasswordErrorTitle": "Could not copy password",
+        "copyPasswordErrorDescription": "Copy the password manually from the field above.",
+        "passwordHint": "The agent should change this password after their first sign-in.",
+        "done": "Done"
+      },
+      "validation": {
+        "fullNameRequired": "Full name is required",
+        "serviceAreaRequired": "Select at least one service area"
+      }
+    },
+    "resendConfirm": {
+      "title": "Resend invitation?",
+      "description": "A new invitation will be sent to {name}.",
+      "confirm": "Resend invitation",
+      "cancel": "Cancel",
+      "resending": "Resending…",
+      "successTitle": "Invitation resent",
+      "successDescription": "The invitation was resent successfully.",
+      "errorTitle": "Could not resend invitation"
+    },
+    "deleteConfirm": {
+      "revokeTitle": "Revoke invitation?",
+      "revokeDescription": "This will cancel the pending invitation for {name}. This action cannot be undone.",
+      "revokeConfirm": "Revoke invitation",
+      "removeTitle": "Delete agent?",
+      "removeDescription": "This will permanently remove {name} from your agents. This action cannot be undone.",
+      "removeConfirm": "Delete agent",
+      "cancel": "Cancel",
+      "deleting": "Deleting…",
+      "successTitle": "Agent removed",
+      "successDescription": "The agent was deleted successfully.",
+      "errorTitle": "Could not delete agent"
+    },
+    "summary": {
+      "fetchErrorTitle": "Could not load agent statistics"
+    },
+    "kpi": {
+      "ariaLabel": "Agent statistics",
+      "activeAgents": "Active Agents",
+      "pendingReview": "Pending Review",
+      "pendingInvite": "Pending Invite",
+      "declined": "Declined"
+    },
+    "list": {
+      "fetchErrorTitle": "Could not load agents",
+      "tableTitle": "Agents",
+      "noDataTitle": "No agents found",
+      "noDataDescription": "Try adjusting your search or status filter.",
+      "searchPlaceholder": "Search agents by name or email…",
+      "statusFilter": {
+        "all": "All",
+        "ariaLabel": "Filter by status",
+        "active": "Active",
+        "inactive": "Inactive",
+        "invited": "Invited",
+        "pending": "Pending",
+        "declined": "Declined"
+      },
+      "columnPickerTitle": "Columns",
+      "columnPickerAriaLabel": "Choose visible columns",
+      "columns": {
+        "agent": "Agent",
+        "contact": "Contact",
+        "city": "City",
+        "status": "Status",
+        "activityDate": "Activity Date",
+        "actions": "Actions"
+      },
+      "workflow": {
+        "comingSoonTitle": "Action coming soon",
+        "comingSoonDescription": "Agent workflow actions will be available in a future update."
+      }
+    }
+  }
+}

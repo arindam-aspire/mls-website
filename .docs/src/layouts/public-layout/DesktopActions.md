@@ -7,17 +7,14 @@ Project source module.
 # Responsibilities
 
 - Project source module.
-- Render desktop theme, locale, and auth/profile controls for non-landing public routes.
+- Render desktop theme, fullscreen, locale, and auth/profile controls for non-landing public routes.
 
 # Imports
 
 - `import { Button } from "@/src/components/ui/button"`
-- `import { Select } from "@/src/components/ui/select"`
-- `import { Skeleton } from "@/src/components/ui/skeleton"`
-- `import { useAuthStore } from "@/src/features/auth/store/auth.store"`
-- `import { AUTH_VIEW } from "@/src/features/auth/authViews"`
-- `import { usePathname, useRouter } from "@/src/i18n/navigation"`
-- `import type { AppLocale } from "@/src/i18n/routing"`
+- `import { HeaderFullscreenButton } from "@/src/layouts/shared/HeaderFullscreenButton"`
+- `import { HeaderLanguageSelect } from "@/src/layouts/shared/HeaderLanguageSelect"`
+- `import { buildHeaderLocaleOptions } from "@/src/layouts/shared/buildHeaderLocaleOptions"`
 - `import { ProfilePopover } from "./ProfilePopover"`
 - `import { PublicHeaderThemeButton } from "./PublicHeaderThemeButton"`
 
@@ -68,12 +65,15 @@ _No explicit show/hide controls detected._
 
 # Flow Description
 
-See source in `src/layouts/public-layout/DesktopActions.tsx` for step-by-step behavior aligned with [application.md](../../application.md) (path relative may vary).
+1. Renders theme toggle, fullscreen, `HeaderLanguageSelect` (flag + code trigger, full names in popover), then auth/profile.
+2. Locale change: `router.replace(pathname, { locale })` via `buildHeaderLocaleOptions` labels.
+3. Loading: skeleton row matching icon buttons + compact language placeholder (`w-14`).
 
 # Dependencies
 
-- Parent feature or route that imports this file.
-- See **Imports** for direct module dependencies.
+- [../shared/HeaderLanguageSelect.md](../shared/HeaderLanguageSelect.md)
+- [../shared/buildHeaderLocaleOptions.md](../shared/buildHeaderLocaleOptions.md)
+- [ProfilePopover.md](./ProfilePopover.md)
 
 # Notes
 

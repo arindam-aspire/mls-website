@@ -1,18 +1,14 @@
-# File Overview
-
-Modal state and copy for display preference option clicks while API persist is disabled.
+# `useAgencyDisplayPreferencesRows`
 
 **Source:** `src/features/profile/hooks/useAgencyDisplayPreferencesRows.ts`
 
-# Responsibilities
+Upcoming-feature modal state for agency display preference cards when `AGENCY_DISPLAY_PREFERENCES_PERSIST_ENABLED` is `false`.
 
-- `open` / `onClose` for `UpcomingFeatureModal`.
-- Labels from `common.upcomingFeature` (`title`, `subtitle`, `description`, `dismissLabel`).
-
-# Exports
+## Exports
 
 - `useAgencyDisplayPreferencesRows()` → `{ upcomingFeatureModal, openUpcomingFeatureModal }`
 
-# Dependencies
+## Consumers
 
-- [AgencyDisplayPreferencesRows.md](../components/AgencyDisplayPreferencesRows.md)
+- [useAgencySettingsScreen.md](./useAgencySettingsScreen.md)
+- [AgencyDisplayPreferenceCard.md](../components/AgencyDisplayPreferenceCard.md) (via settings screen)

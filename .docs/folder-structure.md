@@ -49,8 +49,17 @@ mls_website/
 │   │       │   │       └── page.md
 │   │       │   ├── dashboard/
 │   │       │   │   └── page.md
-│   │       │   ├── my-profile/
+│   │       │   ├── owners/
 │   │       │   │   └── page.md
+│   │       │   ├── agents/
+│   │       │   │   └── page.md
+│   │       │   ├── (profile)/
+│   │       │   │   ├── my-profile/
+│   │       │   │   │   └── page.md
+│   │       │   │   ├── agency-settings/
+│   │       │   │   │   └── page.md
+│   │       │   │   └── notification-settings/
+│   │       │   │       └── page.md
 │   │       │   ├── saved-searches/
 │   │       │   │   └── page.md
 │   │       │   ├── notifications/
@@ -120,26 +129,14 @@ mls_website/
 │       │   ├── not-found/
 │       │   ├── notifications/
 │       │   ├── unauthorized/
-│       │   ├── agent/
-│       │   │   ├── README.md
-│       │   │   ├── constants/
-│       │   │   │   └── agentList.constants.md
-│       │   │   ├── services/
-│       │   │   │   ├── README.md
-│       │   │   │   ├── index.md
-│       │   │   │   └── agent.service.md
-│       │   │   ├── types/
-│       │   │   │   ├── README.md
-│       │   │   │   ├── index.md
-│       │   │   │   └── agent.types.md
-│       │   │   └── utils/
-│       │   │       ├── README.md
-│       │   │       └── filterAgentsBySearch.md
 │       │   ├── profile/
 │       │   │   ├── README.md
 │       │   │   ├── components/
 │       │   │   │   ├── README.md
-│       │   │   │   ├── AgencyDisplayPreferencesRows.md
+│       │   │   │   ├── AgencyDisplayPreferenceCard.md
+│       │   │   │   ├── AgencySettingsCurrencyCard.md
+│       │   │   │   ├── AgencySettingsMeasurementUnitCard.md
+│       │   │   │   ├── AgencySettingsScreenSkeleton.md
 │       │   │   │   ├── AgencyProfileCard.md
 │       │   │   │   ├── ChangePasswordForm.md
 │       │   │   │   ├── DisplayPreferenceOptionCard.md
@@ -154,6 +151,7 @@ mls_website/
 │       │   │   │   ├── index.md
 │       │   │   │   ├── useAgencyCurrencyPreference.md
 │       │   │   │   ├── useAgencyDisplayPreferencesRows.md
+│       │   │   │   ├── useAgencySettingsScreen.md
 │       │   │   │   ├── useAgencyLogoUpload.md
 │       │   │   │   ├── useAgencyMeasurementUnitPreference.md
 │       │   │   │   ├── useChangePasswordModal.md
@@ -166,7 +164,9 @@ mls_website/
 │       │   │   │   ├── README.md
 │       │   │   │   └── index.md
 │       │   │   ├── screens/
+│       │   │   │   ├── AgencySettingsScreen.md
 │       │   │   │   ├── ChangePasswordModal.md
+│       │   │   │   ├── NotificationSettingsScreen.md
 │       │   │   │   └── ProfileScreen.md
 │       │   │   ├── services/
 │       │   │   │   ├── README.md
@@ -183,15 +183,55 @@ mls_website/
 │       │   │       └── index.md
 │       │   ├── user/
 │       │   │   ├── README.md
+│       │   │   ├── components/
+│       │   │   │   ├── README.md
+│       │   │   │   ├── AgentKPICards.md
+│       │   │   │   ├── AgentKPICardsSkeleton.md
+│       │   │   │   ├── AgentList.md
+│       │   │   │   ├── AgentListFilters.md
+│       │   │   │   ├── OwnerList.md
+│       │   │   │   ├── OwnerListFilters.md
+│       │   │   │   ├── InviteAgentByEmailContent.md
+│       │   │   │   ├── InviteAgentByEmailForm.md
+│       │   │   │   ├── InviteAgentGeneratingPanel.md
+│       │   │   │   ├── InviteAgentReadyPanel.md
+│       │   │   │   └── ManualOnboardAgentForm.md
+│       │   │   ├── constants/
+│       │   │   │   ├── agentList.constants.md
+│       │   │   │   ├── agentListStatusFilters.constants.md
+│       │   │   │   ├── agentListTableColumns.constants.md
+│       │   │   │   ├── ownerListStatusFilters.constants.md
+│       │   │   │   └── ownerListTableColumns.constants.md
 │       │   │   ├── hooks/
 │       │   │   │   ├── README.md
-│       │   │   │   └── index.md
+│       │   │   │   ├── index.md
+│       │   │   │   ├── useAgentsScreen.md
+│       │   │   │   ├── useOwnersScreen.md
+│       │   │   │   ├── useInviteAgentByEmailModal.md
+│       │   │   │   ├── useResendAgentInvitationConfirm.md
+│       │   │   │   ├── useDeleteAgentConfirm.md
+│       │   │   │   └── useManualOnboardAgentModal.md
+│       │   │   ├── i18n/
+│       │   │   │   ├── buildAgentListColumnLabels.md
+│       │   │   │   ├── buildAgentListStatusFilterLabels.md
+│       │   │   │   ├── buildOwnerListColumnLabels.md
+│       │   │   │   └── buildOwnerListStatusFilterLabels.md
+│       │   │   ├── mappers/
+│       │   │   │   └── mapAgentListItemToLibraryAgent.md
 │       │   │   ├── mutations/
 │       │   │   │   ├── README.md
+│       │   │   │   ├── agent.mutation.md
 │       │   │   │   └── index.md
+│       │   │   ├── screens/
+│       │   │   │   ├── AgentsScreen.md
+│       │   │   │   └── OwnersScreen.md
+│       │   │   ├── modals/
+│       │   │   │   ├── InviteAgentByEmailModal.md
+│       │   │   │   └── ManualOnboardAgentModal.md
 │       │   │   ├── services/
 │       │   │   │   ├── README.md
 │       │   │   │   ├── index.md
+│       │   │   │   ├── agent.service.md
 │       │   │   │   └── user.service.md
 │       │   │   ├── store/
 │       │   │   │   ├── README.md
@@ -199,9 +239,19 @@ mls_website/
 │       │   │   ├── types/
 │       │   │   │   ├── README.md
 │       │   │   │   ├── index.md
+│       │   │   │   ├── agent.types.md
 │       │   │   │   └── user.types.md
 │       │   │   └── utils/
 │       │   │       ├── README.md
+│       │   │       ├── filterActiveAgents.md
+│       │   │       ├── filterAgentsBySearch.md
+│       │   │       ├── filterAgentsByStatus.md
+│       │   │       ├── buildAgentListRequestParams.md
+│       │   │       ├── buildAgentListTableColumns.md
+│       │   │       ├── buildOwnerListTableColumns.md
+│       │   │       ├── mapAgentListStatusFilterToApiStatus.md
+│       │   │       ├── mapAgentSummaryToKpiMetrics.md
+│       │   │       ├── parseAgentInviteLink.md
 │       │   │       └── index.md
 │       │   └── property/
 │       │       ├── components/
@@ -269,6 +319,7 @@ mls_website/
 │       │   │   ├── README.md
 │       │   │   ├── hooks/
 │       │   │   │   ├── useProtectedBottomTabBar.md
+│       │   │   │   ├── useProtectedFullscreen.md
 │       │   │   │   ├── useProtectedHeader.md
 │       │   │   │   ├── useProtectedProfileMenu.md
 │       │   │   │   ├── useProtectedSidebar.md
@@ -278,7 +329,9 @@ mls_website/
 │       │   │   ├── protectedBottomTab.config.md
 │       │   │   ├── ProtectedDrawer.md
 │       │   │   ├── ProtectedFooter.md
+│       │   │   ├── ProtectedFullscreenButton.md
 │       │   │   ├── ProtectedHeader.md
+│       │   │   ├── ProtectedLanguageSelect.md
 │       │   │   ├── ProtectedProfileMenu.md
 │       │   │   ├── ProtectedNotificationsButton.md
 │       │   │   ├── ProtectedSearchButton.md
@@ -337,8 +390,17 @@ mls_website/
 │   │   │   │       └── page.tsx
 │   │   │   ├── dashboard/
 │   │   │   │   └── page.tsx
-│   │   │   ├── my-profile/
+│   │   │   ├── owners/
 │   │   │   │   └── page.tsx
+│   │   │   ├── agents/
+│   │   │   │   └── page.tsx
+│   │   │   ├── (profile)/
+│   │   │   │   ├── my-profile/
+│   │   │   │   │   └── page.tsx
+│   │   │   │   ├── agency-settings/
+│   │   │   │   │   └── page.tsx
+│   │   │   │   └── notification-settings/
+│   │   │   │       └── page.tsx
 │   │   │   ├── saved-searches/
 │   │   │   │   └── page.tsx
 │   │   │   ├── notifications/
@@ -385,6 +447,7 @@ mls_website/
 │   │       ├── agentEndpoints.ts
 │   │       ├── authEndpoints.ts
 │   │       ├── index.ts
+│   │       ├── ownerEndpoints.ts
 │   │       ├── profileEndpoints.ts
 │   │       ├── propertyEndpoints.ts
 │   │       ├── userEndpoints.ts
@@ -443,6 +506,9 @@ mls_website/
 │   │       │   ├── types.ts
 │   │       │   └── utils.ts
 │   │       ├── card/
+│   │       │   ├── index.tsx
+│   │       │   └── types.ts
+│   │       ├── copy-link-bar/
 │   │       │   ├── index.tsx
 │   │       │   └── types.ts
 │   │       ├── icon-button/
@@ -651,7 +717,10 @@ mls_website/
 │   │   │   │   ├── profileEditModal.constants.ts
 │   │   │   │   └── selectAgency.constants.ts
 │   │   │   ├── components/
-│   │   │   │   ├── AgencyDisplayPreferencesRows.tsx
+│   │   │   │   ├── AgencyDisplayPreferenceCard.tsx
+│   │   │   │   ├── AgencySettingsCurrencyCard.tsx
+│   │   │   │   ├── AgencySettingsMeasurementUnitCard.tsx
+│   │   │   │   ├── AgencySettingsScreenSkeleton.tsx
 │   │   │   │   ├── AgencyProfileCard.tsx
 │   │   │   │   ├── ChangePasswordForm.tsx
 │   │   │   │   ├── DisplayPreferenceOptionCard.tsx
@@ -676,6 +745,7 @@ mls_website/
 │   │   │   │   ├── index.ts
 │   │   │   │   ├── useAgencyCurrencyPreference.ts
 │   │   │   │   ├── useAgencyDisplayPreferencesRows.ts
+│   │   │   │   ├── useAgencySettingsScreen.ts
 │   │   │   │   ├── useAgencyLogoUpload.ts
 │   │   │   │   ├── useAgencyMeasurementUnitPreference.ts
 │   │   │   │   ├── useChangePasswordModal.ts
@@ -691,10 +761,12 @@ mls_website/
 │   │   │   │   ├── index.ts
 │   │   │   │   └── profile.mutation.ts
 │   │   │   ├── screens/
+│   │   │   │   ├── AgencySettingsScreen.tsx
 │   │   │   │   ├── ChangePasswordModal.tsx
 │   │   │   │   ├── EditAgencyModal.tsx
 │   │   │   │   ├── EditEmailModal.tsx
 │   │   │   │   ├── EditPhoneModal.tsx
+│   │   │   │   ├── NotificationSettingsScreen.tsx
 │   │   │   │   └── ProfileScreen.tsx
 │   │   │   ├── services/
 │   │   │   │   ├── index.ts
@@ -715,33 +787,78 @@ mls_website/
 │   │   │       ├── parseStoredPhoneNumber.ts
 │   │   │       ├── profileOtp.utils.ts
 │   │   │       └── validateProfileImageFile.ts
-│   │   ├── agent/
-│   │   │   ├── constants/
-│   │   │   │   └── agentList.constants.ts
-│   │   │   ├── services/
-│   │   │   │   ├── index.ts
-│   │   │   │   └── agent.service.ts
-│   │   │   ├── types/
-│   │   │   │   ├── index.ts
-│   │   │   │   └── agent.types.ts
-│   │   │   └── utils/
-│   │   │       ├── filterActiveAgents.ts
-│   │   │       ├── filterAgentsBySearch.ts
-│   │   │       └── index.ts
 │   │   ├── user/
+│   │   │   ├── components/
+│   │   │   │   ├── AgentKPICards.tsx
+│   │   │   │   ├── AgentKPICardsSkeleton.tsx
+│   │   │   │   ├── AgentList.tsx
+│   │   │   │   ├── AgentListFilters.tsx
+│   │   │   │   ├── OwnerList.tsx
+│   │   │   │   ├── OwnerListFilters.tsx
+│   │   │   │   ├── InviteAgentByEmailContent.tsx
+│   │   │   │   ├── InviteAgentByEmailForm.tsx
+│   │   │   │   ├── InviteAgentGeneratingPanel.tsx
+│   │   │   │   ├── InviteAgentReadyPanel.tsx
+│   │   │   │   ├── ManualOnboardAgentContent.tsx
+│   │   │   │   ├── ManualOnboardAgentForm.tsx
+│   │   │   │   ├── ManualOnboardSuccessPanel.tsx
+│   │   │   ├── constants/
+│   │   │   │   ├── agentList.constants.ts
+│   │   │   │   ├── agentListStatusFilters.constants.ts
+│   │   │   │   ├── agentListTableColumns.constants.ts
+│   │   │   │   ├── ownerListStatusFilters.constants.ts
+│   │   │   │   ├── ownerListTableColumns.constants.ts
+│   │   │   │   └── ownerList.constants.ts
 │   │   │   ├── hooks/
-│   │   │   │   └── index.ts
+│   │   │   │   ├── index.ts
+│   │   │   │   ├── useAgentsScreen.ts
+│   │   │   │   ├── useOwnersScreen.ts
+│   │   │   │   ├── useInviteAgentByEmailModal.ts
+│   │   │   │   ├── useResendAgentInvitationConfirm.ts
+│   │   │   │   ├── useDeleteAgentConfirm.ts
+│   │   │   │   └── useManualOnboardAgentModal.ts
+│   │   │   ├── i18n/
+│   │   │   │   ├── buildAgentListColumnLabels.ts
+│   │   │   │   ├── buildAgentListStatusFilterLabels.ts
+│   │   │   │   ├── buildOwnerListColumnLabels.ts
+│   │   │   │   └── buildOwnerListStatusFilterLabels.ts
+│   │   │   ├── mappers/
+│   │   │   │   ├── mapAgentListItemToLibraryAgent.ts
+│   │   │   │   └── mapOwnerListItemToLibraryOwner.ts
 │   │   │   ├── mutations/
+│   │   │   │   ├── agent.mutation.ts
 │   │   │   │   └── index.ts
+│   │   │   ├── screens/
+│   │   │   │   ├── AgentsScreen.tsx
+│   │   │   │   └── OwnersScreen.tsx
+│   │   │   ├── modals/
+│   │   │   │   ├── InviteAgentByEmailModal.tsx
+│   │   │   │   └── ManualOnboardAgentModal.tsx
 │   │   │   ├── services/
 │   │   │   │   ├── index.ts
+│   │   │   │   ├── agent.service.ts
+│   │   │   │   ├── owner.service.ts
 │   │   │   │   └── user.service.ts
 │   │   │   ├── store/
 │   │   │   │   └── index.ts
 │   │   │   ├── types/
 │   │   │   │   ├── index.ts
+│   │   │   │   ├── agent.types.ts
+│   │   │   │   ├── owner.types.ts
 │   │   │   │   └── user.types.ts
 │   │   │   └── utils/
+│   │   │       ├── filterActiveAgents.ts
+│   │   │       ├── filterAgentsBySearch.ts
+│   │   │       ├── filterAgentsByStatus.ts
+│   │   │       ├── buildAgentListRequestParams.ts
+│   │   │       ├── buildOwnerListRequestParams.ts
+│   │   │       ├── buildAgentListTableColumns.ts
+│   │   │       ├── buildOwnerListTableColumns.ts
+│   │   │       ├── mapAgentListStatusFilterToApiStatus.ts
+│   │   │       ├── mapOwnerListStatusFilterToApiStatus.ts
+│   │   │       ├── mapAgentSummaryToKpiMetrics.ts
+│   │   │       ├── parseAgentInviteLink.ts
+│   │   │       ├── validateOnboardAgentForms.ts
 │   │   │       └── index.ts
 │   │   └── property/
 │   │       ├── components/
@@ -877,12 +994,19 @@ mls_website/
 │   │   ├── useMatchMedia.ts
 │   │   └── useToast.tsx
 │   ├── i18n/
+│   │   ├── localeFlags.ts
 │   │   ├── navigation.ts
 │   │   ├── request.ts
 │   │   └── routing.ts
 │   ├── layouts/
 │   │   ├── shared/
+│   │   │   ├── buildHeaderLocaleOptions.ts
 │   │   │   ├── drawerActivityItems.config.ts
+│   │   │   ├── headerIconButtonStyles.ts
+│   │   │   ├── HeaderFullscreenButton.tsx
+│   │   │   ├── HeaderLanguageSelect.tsx
+│   │   │   ├── hooks/
+│   │   │   │   └── useHeaderFullscreen.ts
 │   │   │   └── notificationsButtonStyles.ts
 │   │   ├── landing-layout/
 │   │   │   ├── index.tsx
@@ -900,6 +1024,7 @@ mls_website/
 │   │   ├── protected-layout/
 │   │   │   ├── hooks/
 │   │   │   │   ├── useProtectedBottomTabBar.ts
+│   │   │   │   ├── useProtectedFullscreen.ts
 │   │   │   │   ├── useProtectedHeader.ts
 │   │   │   │   ├── useProtectedProfileMenu.ts
 │   │   │   │   ├── useProtectedSidebar.ts
@@ -911,7 +1036,9 @@ mls_website/
 │   │   │   ├── ProtectedBottomTabBar.tsx
 │   │   │   ├── ProtectedDrawer.tsx
 │   │   │   ├── ProtectedFooter.tsx
+│   │   │   ├── ProtectedFullscreenButton.tsx
 │   │   │   ├── ProtectedHeader.tsx
+│   │   │   ├── ProtectedLanguageSelect.tsx
 │   │   │   ├── ProtectedProfileMenu.tsx
 │   │   │   ├── ProtectedNotificationsButton.tsx
 │   │   │   ├── ProtectedSearchButton.tsx

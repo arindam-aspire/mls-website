@@ -14,6 +14,7 @@ import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { AUTH_VIEW } from "@/src/features/auth/authViews";
 import { Link, usePathname, useRouter } from "@/src/i18n/navigation";
 import type { AppLocale } from "@/src/i18n/routing";
+import { headerIconButtonSizeClass } from "@/src/layouts/shared/headerIconButtonStyles";
 import mlsLogoLight from "@/src/assets/images/MLS_Light_Logo.png";
 import { DesktopNav } from "./DesktopNav";
 import { DesktopActions } from "./DesktopActions";
@@ -29,7 +30,8 @@ import {
 export function PublicHeader() {
   const user = useAuthStore((state) => state.user);
   const isLoadingUser = useAuthStore((state) => state.isLoadingUser);
-  const { hasUnread: hasUnreadNotifications } = useHeaderNotificationUnreadCount({
+  const { hasUnread: hasUnreadNotifications, unreadCount: notificationUnreadCount } =
+    useHeaderNotificationUnreadCount({
     enabled: Boolean(user),
   });
   const t = useTranslations("common");
@@ -50,10 +52,7 @@ export function PublicHeader() {
     setMobileMenuOpen(false);
   };
 
-  const mobileHeaderIconButtonClass = cn(
-    publicMobileHeaderIconButtonClass,
-    "!bg-transparent hover:!bg-page",
-  );
+  const mobileHeaderIconButtonClass = publicMobileHeaderIconButtonClass;
 
   const mobileSignInButtonClass = cn(
     "!h-9 sm:!h-11",
@@ -89,13 +88,21 @@ export function PublicHeader() {
           <div className="flex h-full shrink-0 items-center gap-2 self-center sm:gap-3 md:hidden">
             {isLoadingUser ? (
               <>
-                <Skeleton variant="circular" className="size-9 shrink-0 sm:size-11" />
-                <Skeleton variant="circular" className="size-9 shrink-0 sm:size-11" />
+                <Skeleton
+                  variant="circular"
+                  className={cn(headerIconButtonSizeClass, "shrink-0")}
+                />
+                <Skeleton
+                  variant="circular"
+                  className={cn(headerIconButtonSizeClass, "shrink-0")}
+                />
               </>
             ) : user ? (
               <NotificationsPopover
                 enabled
                 hasUnread={hasUnreadNotifications}
+                unreadCount={notificationUnreadCount}
+                controlSize="sm"
               />
             ) : (
               <Button
@@ -117,7 +124,8 @@ export function PublicHeader() {
               aria-expanded={mobileMenuOpen}
               color="inherit"
               variant="outline"
-              size="md"
+              isRounded
+              size="sm"
               className={mobileHeaderIconButtonClass}
               onClick={() => setMobileMenuOpen(true)}
             />

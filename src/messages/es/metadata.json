@@ -13,5 +13,9 @@
   "manageListings": "Gestionar listados",
   "draftListings": "Borradores de listados",
   "propertyCreate": "Crear propiedad",
-  "propertyUpdate": "Actualizar propiedad"
+  "propertyUpdate": "Actualizar propiedad",
+  "owners": "Propietarios",
+  "agents": "Agentes",
+  "agencySettings": "Configuración de agencia",
+  "notificationSettings": "Configuración de notificaciones"
 }

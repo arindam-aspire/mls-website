@@ -171,5 +171,15 @@
     "fetchErrorTitle": "No se pudieron cargar las agencias",
     "selectAgencyRequiredTitle": "Selecciona una agencia",
     "selectAgencyRequiredDescription": "Elige una agencia antes de continuar."
+  },
+  "agencySettings": {
+    "pageTitle": "Configuración de agencia",
+    "pageSubtitle": "Elija cómo se muestran los precios de los anuncios y los tamaños de las propiedades en MLS Jordan.",
+    "title": "Configuración de agencia",
+    "description": "Administre las preferencias de visualización de su agencia."
+  },
+  "notificationSettings": {
+    "title": "Configuración de notificaciones",
+    "description": "La configuración de notificaciones está en camino. Pronto podrá elegir cómo y cuándo recibir alertas aquí."
   }
 }

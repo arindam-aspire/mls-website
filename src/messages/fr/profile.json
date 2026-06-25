@@ -171,5 +171,15 @@
     "fetchErrorTitle": "Impossible de charger les agences",
     "selectAgencyRequiredTitle": "Sélectionnez une agence",
     "selectAgencyRequiredDescription": "Choisissez une agence avant de continuer."
+  },
+  "agencySettings": {
+    "pageTitle": "Paramètres de l'agence",
+    "pageSubtitle": "Choisissez comment les prix des annonces et les surfaces s'affichent sur MLS Jordan.",
+    "title": "Paramètres de l'agence",
+    "description": "Gérez les préférences d'affichage de votre agence."
+  },
+  "notificationSettings": {
+    "title": "Paramètres de notification",
+    "description": "Les paramètres de notification arrivent bientôt. Vous pourrez choisir comment et quand recevoir des alertes ici."
   }
 }

@@ -19,6 +19,13 @@ export const PERMISSIONS = {
   FAVOURITES: [UserRole.AGENCY, UserRole.AGENT, UserRole.OWNER, UserRole.USER],
   NOTIFICATIONS: [UserRole.SUPER_ADMIN, UserRole.AGENCY, UserRole.AGENT, UserRole.OWNER, UserRole.USER],
   RECENTLY_VIEWED: [UserRole.OWNER, UserRole.USER],
+  /** Admin-only user management screens. */
+  OWNERS: [UserRole.AGENCY],
+  AGENTS: [UserRole.AGENCY],
+  /** Agency profile settings (`/agency-settings`). */
+  AGENCY_SETTINGS: [UserRole.AGENCY],
+  /** Notification preferences (`/notification-settings`). */
+  NOTIFICATION_SETTINGS: [UserRole.OWNER, UserRole.USER],
 } as const;
 
 export type PermissionKey = keyof typeof PERMISSIONS;

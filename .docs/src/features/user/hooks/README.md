@@ -1,5 +1,12 @@
 # User hooks (`src/features/user/hooks/`)
 
-Placeholder for hooks that own `/users/*` business logic (e.g. future recent-views hooks).
+Hooks for `/users/*` and admin agent/owner screens.
 
-`index.ts` is an empty barrel comment until hooks are added.
+## Files
+
+| File | Role |
+| --- | --- |
+| [useAgentsScreen.md](./useAgentsScreen.md) | Agents page data, filters, list, onboard modal |
+| [useInviteAgentByEmailModal.md](./useInviteAgentByEmailModal.md) | Invite-by-email modal state |
+| [useManualOnboardAgentModal.md](./useManualOnboardAgentModal.md) | Manual onboard modal state |
+| [index.md](./index.md) | Barrel export |

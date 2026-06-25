@@ -3,14 +3,21 @@
 import { Moon, Sun } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { IconButton } from "@/src/components/ui/icon-button";
+import {
+  protectedHeaderIconButtonClass,
+  protectedHeaderIconGlyphClass,
+  protectedHeaderIconStrokeWidth,
+} from "@/src/layouts/protected-layout/protectedMobileHeaderStyles";
 import { cn } from "@/src/lib/cn";
 import { useTheme, type ThemeMode } from "@/src/providers/ThemeProvider";
 
 function getThemeToggleIcon(mode: ThemeMode) {
+  const iconClass = cn(protectedHeaderIconGlyphClass);
+
   return mode === "light" ? (
-    <Moon className="size-5" strokeWidth={1.75} aria-hidden />
+    <Moon className={iconClass} strokeWidth={protectedHeaderIconStrokeWidth} aria-hidden />
   ) : (
-    <Sun className="size-5" strokeWidth={1.75} aria-hidden />
+    <Sun className={iconClass} strokeWidth={protectedHeaderIconStrokeWidth} aria-hidden />
   );
 }
 
@@ -31,7 +38,8 @@ export function ProtectedThemeButton({ className }: ProtectedThemeButtonProps) {
         color="inherit"
         variant="outline"
         isRounded
-        size="md"
+        size="sm"
+        className={protectedHeaderIconButtonClass}
         onClick={() => setTheme(theme === "light" ? "dark" : "light")}
       />
     </span>

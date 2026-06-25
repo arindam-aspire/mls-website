@@ -16,8 +16,6 @@ import {
   DEFAULT_AGENCY_CURRENCY,
   DEFAULT_AGENCY_MEASUREMENT_UNIT,
 } from "../constants/agencyPreferences";
-import { useAgencyCurrencyPreference } from "./useAgencyCurrencyPreference";
-import { useAgencyMeasurementUnitPreference } from "./useAgencyMeasurementUnitPreference";
 import { useAgencyLogoUpload } from "./useAgencyLogoUpload";
 import { useProfileAvatarUpload } from "./useProfileAvatarUpload";
 
@@ -67,7 +65,6 @@ function resolveRoleTranslationKey(roleName: string | undefined) {
 export function useProfileScreen() {
   // 2. UI utilities
   const t = useTranslations("profile");
-  const tDisplayPreferences = useTranslations("profile.displayPreferences");
   const tCommon = useTranslations("common");
   const toast = useToast();
 
@@ -225,18 +222,6 @@ export function useProfileScreen() {
     return agencyDetails ?? (userAgency ? agencyFromUserSummary(userAgency, user) : null);
   }, [agencyDetails, isAgency, user, userAgency]);
 
-  const currencyPreference = useAgencyCurrencyPreference(
-    agencyId,
-    agencySource,
-    tDisplayPreferences,
-  );
-
-  const measurementUnitPreference = useAgencyMeasurementUnitPreference(
-    agencyId,
-    agencySource,
-    tDisplayPreferences,
-  );
-
   const agencyProfileCard = useMemo(
     () =>
       user && isAgency && agencySource
@@ -274,19 +259,10 @@ export function useProfileScreen() {
             onEditEmail: openEditEmail,
             onEditPhone: openEditPhone,
             onEditAgency: openEditAgency,
-            displayPreferences: {
-              title: t("displayPreferences.title"),
-              subtitle: t("displayPreferences.subtitle"),
-              currency: currencyPreference,
-              measurementUnit: measurementUnitPreference,
-            },
           }
         : null,
     [
-      currencyPreference,
-      measurementUnitPreference,
       agencySource,
-      tDisplayPreferences,
       agencyLogoUpload,
       isAgency,
       openEditAgency,

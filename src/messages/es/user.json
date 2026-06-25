@@ -1,0 +1,165 @@
+{
+  "owners": {
+    "title": "Propietarios",
+    "pageTitle": "Propietarios",
+    "pageSubtitle": "Revise y administre propietarios de inmuebles en su plataforma.",
+    "description": "La gestión de propietarios está en camino. Pronto podrá revisar y administrar propietarios aquí.",
+    "list": {
+      "tableTitle": "Propietarios",
+      "noDataTitle": "No se encontraron propietarios",
+      "noDataDescription": "Prueba a ajustar la búsqueda o el filtro de estado.",
+      "fetchErrorTitle": "No se pudieron cargar los propietarios",
+      "searchPlaceholder": "Buscar propietarios por nombre o correo…",
+      "statusFilter": {
+        "all": "Todos",
+        "ariaLabel": "Filtrar por estado",
+        "active": "Activo",
+        "suspended": "Suspendido"
+      },
+      "columnPickerTitle": "Columnas",
+      "columnPickerAriaLabel": "Elegir columnas visibles",
+      "columns": {
+        "owner": "Propietario",
+        "contact": "Contacto",
+        "properties": "Propiedades",
+        "status": "Estado",
+        "joinedAt": "Fecha de alta",
+        "actions": "Acciones"
+      },
+      "workflow": {
+        "comingSoonTitle": "Acción próximamente",
+        "comingSoonDescription": "Las acciones del flujo de propietarios estarán disponibles en una actualización futura."
+      }
+    }
+  },
+  "agents": {
+    "title": "Agentes",
+    "description": "La gestión de agentes está en camino. Pronto podrá revisar y administrar agentes aquí.",
+    "pageTitle": "Agentes",
+    "pageSubtitle": "Revise, incorpore y administre agentes en su plataforma.",
+    "inviteByEmail": "Invitar por correo",
+    "manualOnboard": "Incorporación manual",
+    "inviteByEmailModal": {
+      "title": "Invitar por correo",
+      "description": "Introduzca el correo del agente para generar un enlace de invitación.",
+      "emailLabel": "Correo electrónico",
+      "emailPlaceholder": "agente@ejemplo.com",
+      "generate": "Generar invitación",
+      "generating": "Generando…",
+      "generatingHint": "Creando un enlace de invitación único para este agente.",
+      "cancel": "Cancelar",
+      "errorTitle": "No se pudo generar la invitación",
+      "generated": {
+        "subtitle": "Copie el enlace o envíe la invitación desde su app de correo.",
+        "readyTitle": "Invitación lista",
+        "descriptionWithEmail": "Se creó un enlace de invitación para {email}.",
+        "shareHint": "Use Copiar enlace arriba o Enviar por correo abajo para abrir su app de correo.",
+        "linkLabel": "Enlace de invitación",
+        "copyLink": "Copiar enlace",
+        "copyLinkSuccessTitle": "Enlace copiado",
+        "copyLinkSuccessDescription": "El enlace de invitación está en el portapapeles.",
+        "copyLinkErrorTitle": "No se pudo copiar el enlace",
+        "copyLinkErrorDescription": "Copie el enlace manualmente desde la barra de arriba.",
+        "sendViaEmail": "Enviar por correo",
+        "emailSubject": "Está invitado a unirse como agente",
+        "emailBody": "Use este enlace para aceptar su invitación de agente:\n\n{link}",
+        "done": "Listo"
+      }
+    },
+    "manualOnboardModal": {
+      "title": "Incorporación manual",
+      "description": "Introduzca los datos del agente para crear su cuenta.",
+      "fullNameLabel": "Nombre completo",
+      "fullNamePlaceholder": "Introduzca el nombre completo",
+      "emailLabel": "Correo electrónico",
+      "emailPlaceholder": "agente@ejemplo.com",
+      "phoneLabel": "Teléfono",
+      "serviceAreaLabel": "Área de servicio",
+      "serviceAreaPlaceholder": "Seleccione áreas de servicio",
+      "submit": "Enviar agente",
+      "submitting": "Enviando…",
+      "cancel": "Cancelar",
+      "errorTitle": "No se pudo incorporar al agente",
+      "success": {
+        "subtitle": "Comparta la contraseña temporal de forma segura con el agente.",
+        "readyTitle": "Agente creado",
+        "descriptionWithName": "{name} se incorporó correctamente.",
+        "temporaryPasswordLabel": "Contraseña temporal",
+        "copyPassword": "Copiar contraseña",
+        "copyPasswordSuccessTitle": "Contraseña copiada",
+        "copyPasswordSuccessDescription": "La contraseña temporal está en el portapapeles.",
+        "copyPasswordErrorTitle": "No se pudo copiar la contraseña",
+        "copyPasswordErrorDescription": "Copie la contraseña manualmente desde el campo de arriba.",
+        "passwordHint": "El agente debe cambiar esta contraseña después del primer inicio de sesión.",
+        "done": "Listo"
+      },
+      "validation": {
+        "fullNameRequired": "El nombre completo es obligatorio",
+        "serviceAreaRequired": "Seleccione al menos un área de servicio"
+      }
+    },
+    "resendConfirm": {
+      "title": "¿Reenviar invitación?",
+      "description": "Se enviará una nueva invitación a {name}.",
+      "confirm": "Reenviar invitación",
+      "cancel": "Cancelar",
+      "resending": "Reenviando…",
+      "successTitle": "Invitación reenviada",
+      "successDescription": "La invitación se reenvió correctamente.",
+      "errorTitle": "No se pudo reenviar la invitación"
+    },
+    "deleteConfirm": {
+      "revokeTitle": "¿Revocar invitación?",
+      "revokeDescription": "Esto cancelará la invitación pendiente de {name}. Esta acción no se puede deshacer.",
+      "revokeConfirm": "Revocar invitación",
+      "removeTitle": "¿Eliminar agente?",
+      "removeDescription": "Esto eliminará permanentemente a {name} de sus agentes. Esta acción no se puede deshacer.",
+      "removeConfirm": "Eliminar agente",
+      "cancel": "Cancelar",
+      "deleting": "Eliminando…",
+      "successTitle": "Agente eliminado",
+      "successDescription": "El agente se eliminó correctamente.",
+      "errorTitle": "No se pudo eliminar el agente"
+    },
+    "summary": {
+      "fetchErrorTitle": "No se pudieron cargar las estadísticas de agentes"
+    },
+    "kpi": {
+      "ariaLabel": "Estadísticas de agentes",
+      "activeAgents": "Agentes activos",
+      "pendingReview": "Pendiente de revisión",
+      "pendingInvite": "Invitación pendiente",
+      "declined": "Rechazados"
+    },
+    "list": {
+      "fetchErrorTitle": "No se pudieron cargar los agentes",
+      "tableTitle": "Agentes",
+      "noDataTitle": "No se encontraron agentes",
+      "noDataDescription": "Prueba a ajustar la búsqueda o el filtro de estado.",
+      "searchPlaceholder": "Buscar agentes por nombre o correo…",
+      "statusFilter": {
+        "all": "Todos",
+        "ariaLabel": "Filtrar por estado",
+        "active": "Activo",
+        "inactive": "Inactivo",
+        "invited": "Invitado",
+        "pending": "Pendiente",
+        "declined": "Rechazado"
+      },
+      "columnPickerTitle": "Columnas",
+      "columnPickerAriaLabel": "Elegir columnas visibles",
+      "columns": {
+        "agent": "Agente",
+        "contact": "Contacto",
+        "city": "Ciudad",
+        "status": "Estado",
+        "activityDate": "Fecha de actividad",
+        "actions": "Acciones"
+      },
+      "workflow": {
+        "comingSoonTitle": "Acción próximamente",
+        "comingSoonDescription": "Las acciones del flujo de agentes estarán disponibles en una actualización futura."
+      }
+    }
+  }
+}

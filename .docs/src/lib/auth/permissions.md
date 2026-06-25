@@ -28,6 +28,10 @@
 | `FAVOURITES` | agency, agent, owner, user |
 | `NOTIFICATIONS` | agency, agent, owner, user |
 | `RECENTLY_VIEWED` | owner, user (`registered_user`) |
+| `OWNERS` | admin (`UserRole.AGENCY`) |
+| `AGENTS` | admin (`UserRole.AGENCY`) |
+| `AGENCY_SETTINGS` | admin (`UserRole.AGENCY`) |
+| `NOTIFICATION_SETTINGS` | owner, user (`registered_user`) |
 
 ## Notes
 

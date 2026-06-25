@@ -2,7 +2,7 @@
 
 import { Avatar } from "@/src/components/ui";
 import { cn } from "@/src/lib/cn";
-import type { AgentListItem } from "@/src/features/agent/types/agent.types";
+import type { AgentListItem } from "@/src/features/user/types/agent.types";
 import { Mail, Phone } from "lucide-react";
 
 type AssignAgentListItemProps = {

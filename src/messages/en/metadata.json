@@ -13,5 +13,9 @@
   "manageListings": "Manage Listings",
   "draftListings": "Draft Listings",
   "propertyCreate": "Create Property",
-  "propertyUpdate": "Update Property"
+  "propertyUpdate": "Update Property",
+  "owners": "Owners",
+  "agents": "Agents",
+  "agencySettings": "Agency Settings",
+  "notificationSettings": "Notification Settings"
 }

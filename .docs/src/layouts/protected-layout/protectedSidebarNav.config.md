@@ -10,6 +10,7 @@ Static config for protected sidebar sections and items.
 | --- | --- |
 | `sidebarSectionMain` | Dashboard → `/dashboard` (`DASHBOARD`) |
 | `sidebarSectionProperty` | Manage Listings → `/manage-listings` (`MANAGE_LISTINGS`), Draft Listings → `/draft-listings` (`DRAFT_LISTINGS_SIDEBAR`, agent only), My Favourites → `/favourites`, My Saved Searches → `/saved-searches` (`PROFILE`) |
+| `sidebarSectionUserManagement` | Owners → `/owners` (`OWNERS`, admin only), Agents → `/agents` (`AGENTS`, admin only) |
 
 # Extending
 

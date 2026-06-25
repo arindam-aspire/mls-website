@@ -7,6 +7,7 @@ import {
 } from "@headlessui/react";
 import {
   Bell,
+  Building2,
   ChevronRight,
   Globe,
   Lock,
@@ -23,7 +24,6 @@ import { useLocale, useTranslations } from "next-intl";
 import mlsLogoDark from "@/src/assets/images/MLS_Dark_Logo.png";
 import mlsLogoLight from "@/src/assets/images/MLS_Light_Logo.png";
 import { ConfirmModal } from "@/src/components/common/ConfirmModal";
-import { UpcomingFeatureModal } from "@/src/components/common/UpcomingFeatureModal";
 import { Avatar } from "@/src/components/ui/avatar";
 import { IconButton } from "@/src/components/ui/icon-button";
 import { Card, CardContent } from "@/src/components/ui/card";
@@ -34,16 +34,21 @@ import { useLogout } from "@/src/features/auth/mutations/auth.mutation";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import {
   resolveDrawerAccountLabel,
+  DRAWER_AGENCY_SETTINGS_PATH,
+  DRAWER_NOTIFICATION_SETTINGS_PATH,
+  shouldShowDrawerAgencySettings,
   shouldShowDrawerNotificationSettings,
 } from "@/src/features/auth/utils/resolveDrawerAccountLabel";
 import { resolveProfileRoleLabel } from "@/src/features/auth/utils/resolveProfileRoleLabel";
 import { ChangePasswordModal } from "@/src/features/profile/screens/ChangePasswordModal";
 import { filterProfileMenuItemsWithRoleAccess } from "@/src/features/auth/utils/profileMenuRoleAccess";
 import { DRAWER_ACTIVITY_ITEMS } from "@/src/layouts/shared/drawerActivityItems.config";
+import { PROTECTED_USER_MANAGEMENT_NAV_ITEMS } from "@/src/layouts/protected-layout/protectedSidebarNav.config";
 import { Link, usePathname, useRouter } from "@/src/i18n/navigation";
 import type { AppLocale } from "@/src/i18n/routing";
 import { isRtlLocale } from "@/src/i18n/routing";
 import { cn } from "@/src/lib/cn";
+import { hasPermission } from "@/src/lib/auth/hasPermission";
 import { profileEmailClasses, profileNameClasses } from "@/src/lib/typography";
 import { useTheme, type ThemeMode } from "@/src/providers/ThemeProvider";
 import {
@@ -246,16 +251,15 @@ function DrawerNavButton({
 function DrawerAccountSection({
   onNavigate,
   onChangePassword,
-  onNotificationSettings,
 }: {
   onNavigate?: () => void;
   onChangePassword: () => void;
-  onNotificationSettings: () => void;
 }) {
   const t = useTranslations("common");
   const pathname = usePathname();
   const user = useAuthStore((state) => state.user);
   const accountLabel = resolveDrawerAccountLabel(user, t);
+  const showAgencySettings = shouldShowDrawerAgencySettings(user);
   const showNotificationSettings = shouldShowDrawerNotificationSettings(user);
 
   const isProfileActive =
@@ -274,6 +278,16 @@ function DrawerAccountSection({
               onNavigate={onNavigate}
             />
           </li>
+          {showAgencySettings ? (
+            <li>
+              <DrawerNavLink
+                href={DRAWER_AGENCY_SETTINGS_PATH}
+                icon={Building2}
+                label={t("agencySettings")}
+                onNavigate={onNavigate}
+              />
+            </li>
+          ) : null}
           <li>
             <DrawerNavButton
               icon={Lock}
@@ -284,10 +298,11 @@ function DrawerAccountSection({
           </li>
           {showNotificationSettings ? (
             <li>
-              <DrawerNavButton
+              <DrawerNavLink
+                href={DRAWER_NOTIFICATION_SETTINGS_PATH}
                 icon={Bell}
                 label={t("notificationSettings")}
-                onClick={onNotificationSettings}
+                onNavigate={onNavigate}
                 showDivider={false}
               />
             </li>
@@ -311,6 +326,49 @@ function DrawerPreferencesSection() {
         onChange={handleThemeChange}
         showDivider={false}
       />
+    </DrawerSectionCard>
+  );
+}
+
+function DrawerUserManagementSection({ onNavigate }: { onNavigate?: () => void }) {
+  const t = useTranslations("common");
+  const pathname = usePathname();
+  const user = useAuthStore((state) => state.user);
+
+  const items = user
+    ? PROTECTED_USER_MANAGEMENT_NAV_ITEMS.filter((item) =>
+        hasPermission(user, item.permission),
+      )
+    : [];
+
+  if (items.length === 0) {
+    return null;
+  }
+
+  return (
+    <DrawerSectionCard title={t("sidebarSectionUserManagement")}>
+      <nav aria-label={t("sidebarSectionUserManagement")}>
+        <ul className="flex flex-col">
+          {items.map((item, index) => {
+            const isLast = index === items.length - 1;
+            const isActive =
+              pathname === item.href || pathname.startsWith(`${item.href}/`);
+
+            return (
+              <li key={item.labelKey}>
+                <DrawerNavLink
+                  href={item.href}
+                  icon={item.icon}
+                  label={t(item.labelKey)}
+                  isActive={isActive}
+                  onNavigate={onNavigate}
+                  showDivider={!isLast}
+                />
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
     </DrawerSectionCard>
   );
 }
@@ -504,7 +562,6 @@ export function ProtectedMobileDrawer({
   const drawerLogoSrc = theme === "dark" ? mlsLogoDark : mlsLogoLight;
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
-  const [isUpcomingFeatureOpen, setIsUpcomingFeatureOpen] = useState(false);
   const { mutate: logout, isPending: isLoggingOut, isSuccess: isLoggedOut } =
     useLogout();
 
@@ -522,11 +579,6 @@ export function ProtectedMobileDrawer({
   const handleChangePassword = () => {
     onClose();
     setIsChangePasswordOpen(true);
-  };
-
-  const handleNotificationSettings = () => {
-    onClose();
-    setIsUpcomingFeatureOpen(true);
   };
 
   return (
@@ -586,10 +638,10 @@ export function ProtectedMobileDrawer({
                         <DrawerAccountSection
                           onNavigate={onClose}
                           onChangePassword={handleChangePassword}
-                          onNotificationSettings={handleNotificationSettings}
                         />
                         <DrawerPreferencesSection />
                         <DrawerMyActivitySection onNavigate={onClose} />
+                        <DrawerUserManagementSection onNavigate={onClose} />
                       </div>
                     </div>
 
@@ -615,12 +667,6 @@ export function ProtectedMobileDrawer({
         loadingLabel={t("signingOut")}
         confirmIcon={<LogOut className="size-4" aria-hidden />}
         cancelLabel={t("logoutCancel")}
-      />
-
-      <UpcomingFeatureModal
-        open={isUpcomingFeatureOpen}
-        onClose={() => setIsUpcomingFeatureOpen(false)}
-        icon={<Bell className="size-7" aria-hidden />}
       />
 
       <ChangePasswordModal

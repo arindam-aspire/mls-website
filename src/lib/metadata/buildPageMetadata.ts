@@ -16,6 +16,10 @@ const PAGE_METADATA_KEYS = [
   "draftListings",
   "propertyCreate",
   "propertyUpdate",
+  "owners",
+  "agents",
+  "agencySettings",
+  "notificationSettings",
 ] as const;
 
 export type PageMetadataKey = (typeof PAGE_METADATA_KEYS)[number];

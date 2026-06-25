@@ -7,6 +7,7 @@ Role-based access helpers for profile menus, mobile activity drawers, listings t
 # Exports
 
 - `isAgentUser(user)` — `true` when any role name is `agent` (e.g. Add Property on manage listings)
+- `isAgencyUser(user)` — `true` for `admin` / legacy `agency` (agency portal)
 - `shouldShowRecentlyViewedMenuItem(user)` — `true` for `registered_user`, `owner`
 - `shouldShowMyListingsMenuItem(user)` — `true` for `owner` only → `/my-listings`
 - `shouldShowManageListingsMenuItem(user)` — `true` for `admin`, `agency`, `agent` → `/manage-listings`

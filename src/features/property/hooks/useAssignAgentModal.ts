@@ -9,11 +9,11 @@ import {
   AGENT_LIST_SORT_ORDER,
   DEFAULT_AGENT_LIST_PAGE,
   DEFAULT_AGENT_LIST_PAGE_SIZE,
-} from "@/src/features/agent/constants/agentList.constants";
-import { getAgentList } from "@/src/features/agent/services/agent.service";
-import type { AgentListItem, AgentListPagination } from "@/src/features/agent/types/agent.types";
-import { filterActiveAgents } from "@/src/features/agent/utils/filterActiveAgents";
-import { filterAgentsBySearch } from "@/src/features/agent/utils/filterAgentsBySearch";
+} from "@/src/features/user/constants/agentList.constants";
+import { getAgentList } from "@/src/features/user/services/agent.service";
+import type { AgentListItem, AgentListPagination } from "@/src/features/user/types/agent.types";
+import { filterActiveAgents } from "@/src/features/user/utils/filterActiveAgents";
+import { filterAgentsBySearch } from "@/src/features/user/utils/filterAgentsBySearch";
 import { useToast } from "@/src/hooks/useToast";
 import type { AssignAgentModalMode } from "../types/assignAgentModal.types";
 

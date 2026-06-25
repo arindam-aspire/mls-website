@@ -1,0 +1,51 @@
+export type OwnerListItem = {
+  owner_id: string;
+  full_name: string;
+  email: string;
+  phone: string;
+  nationality: string | null;
+  ssi: string | null;
+  address: string | null;
+  documents: unknown[];
+  created_at: string;
+  updated_at: string;
+  /** Present when the API returns owner status. */
+  status?: string;
+  /** Present when the API returns a property count. */
+  property_owned?: number;
+};
+
+export type OwnerListPagination = {
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrevious: boolean;
+};
+
+export type OwnerListParams = {
+  page?: number;
+  pageSize?: number;
+  search?: string;
+  status?: string;
+};
+
+export type OwnerListResponseData = OwnerListPagination & {
+  items: OwnerListItem[];
+};
+
+export type OwnerListResponse = {
+  success: boolean;
+  message: string | null;
+  data: OwnerListResponseData | null;
+  error: unknown;
+  meta?: {
+    pagination?: OwnerListPagination;
+  };
+};
+
+export type NormalizedOwnerListResponse = {
+  owners: OwnerListItem[];
+  pagination: OwnerListPagination;
+};

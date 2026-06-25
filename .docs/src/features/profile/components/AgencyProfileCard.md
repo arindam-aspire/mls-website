@@ -8,7 +8,7 @@ Agency account summary card: header row with logo (left, upload/remove) and agen
 
 - Header: logo left (centered below `lg`); **`agency_name`** / **`agency_trade_name`** on `lg+`; **email | phone** from the logged-in **`user`** contact (masked display strings); **Edit agency** button opens [EditAgencyModal.md](../screens/EditAgencyModal.md).
 - Detail area: **`sectionTitle`**, then a single field grid (no subsection borders or titles). One column by default; from `lg` two columns — primary contact + license on one row; email + phone on the next; website and address each span full width (`lg:col-span-2`). License upload in [EditAgencyModal.md](../screens/EditAgencyModal.md).
-- Below address: **Display preferences** — heading + intro, then [AgencyDisplayPreferencesRows.md](./AgencyDisplayPreferencesRows.md) (currency JOD/USD and measurement SQFT/SQM selectable cards).
+- Display preferences (currency, measurement unit) live on [AgencySettingsScreen.md](../screens/AgencySettingsScreen.md), not on this card.
 - Render agency business fields from the `agency` prop; contact name, email, and phone from `user` (`AgencyProfileCardUser`) and translated `labels`.
 - Derive license display filename from `legal_document_s3_link` via `licenseDocumentDisplayName` (URL pathname or last segment).
 - When a document URL exists, show a **Download** `IconButton` that opens `legal_document_s3_link` in a new tab (`downloadLicenseDocument` aria-label).
@@ -57,7 +57,8 @@ See `AgencyProfileCardProps` in `profile.types.ts`:
 | `editEmailLabel` / `editPhoneLabel` | `aria-label` for edit buttons |
 | `onEditEmail` / `onEditPhone` | Open profile edit modals (parent hook) |
 | `onEditAgency` | Open edit agency modal |
-| `displayPreferences` | Section copy + currency/measurement rows (`AgencyProfileCardDisplayPreferences`) |
+
+Display preferences were moved to [AgencySettingsScreen.md](../screens/AgencySettingsScreen.md).
 
 # Actions / Inputs
 

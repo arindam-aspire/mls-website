@@ -1,4 +1,19 @@
 /** Shared mobile header sizing for `ProtectedHeader` and protected mobile drawer. */
+import {
+  headerIconButtonClass,
+  headerIconGlyphClass,
+} from "@/src/layouts/shared/headerIconButtonStyles";
+
+export {
+  headerControlDividerClass as protectedHeaderControlDividerClass,
+  headerIconButtonClass as protectedHeaderIconButtonClass,
+  headerIconButtonSizeClass as protectedHeaderIconButtonSizeClass,
+  headerIconGlyphClass as protectedHeaderIconGlyphClass,
+  headerIconStrokeWidth as protectedHeaderIconStrokeWidth,
+  headerNotificationCountBadgeClass as protectedHeaderNotificationCountBadgeClass,
+  headerPopoverTriggerClass as protectedHeaderPopoverTriggerClass,
+} from "@/src/layouts/shared/headerIconButtonStyles";
+
 export const protectedMobileHeaderContainerClass =
   "container mx-auto w-full px-4 sm:px-5";
 
@@ -27,7 +42,6 @@ export const protectedMobileLogoLinkClass =
 export const protectedMobileLogoImageClass =
   "h-16 w-auto max-w-full object-contain object-center sm:h-[4.25rem]";
 
-export const protectedMobileHeaderIconButtonClass =
-  "inline-flex !size-9 shrink-0 items-center justify-center !gap-0 !rounded-lg !px-0 !py-0 text-text transition-colors hover:bg-page focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary/40 sm:!size-11";
+export const protectedMobileHeaderIconButtonClass = headerIconButtonClass;
 
-export const protectedMobileHeaderIconClass = "size-6";
+export const protectedMobileHeaderIconClass = headerIconGlyphClass;

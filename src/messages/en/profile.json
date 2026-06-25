@@ -171,5 +171,15 @@
     "fetchErrorTitle": "Could not load agencies",
     "selectAgencyRequiredTitle": "Select an agency",
     "selectAgencyRequiredDescription": "Choose an agency before continuing."
+  },
+  "agencySettings": {
+    "pageTitle": "Agency Settings",
+    "pageSubtitle": "Choose how listing prices and property sizes appear across MLS Jordan.",
+    "title": "Agency Settings",
+    "description": "Manage display preferences for your agency."
+  },
+  "notificationSettings": {
+    "title": "Notification Settings",
+    "description": "Notification settings are on the way. You will be able to choose how and when you receive alerts here."
   }
 }

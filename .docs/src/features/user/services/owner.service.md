@@ -1,0 +1,31 @@
+# Owner service
+
+**Source:** `src/features/user/services/owner.service.ts`
+
+Authenticated API helper for the agency-scoped owners list.
+
+## `getOwnerList`
+
+`GET /agency/{agencyId}/owners` with auth. Returns `{ owners, pagination }`.
+
+Default query: `page=1`, `pageSize=10`.
+
+Optional query params when provided on `OwnerListParams`:
+
+| Param | Description |
+| --- | --- |
+| `search` | Name/email search string |
+| `status` | Uppercase owner status (`ACTIVE`, `SUSPENDED`) |
+
+Pagination is read from `response.meta.pagination` with fallback to the flat pagination fields on `response.data` (`total`, `page`, `pageSize`, `totalPages`, `hasNext`, `hasPrevious`). List rows come from `data.items`.
+
+## Consumers
+
+- `useOwnersScreen` — paginated owners table for the admin Owners page
+
+## Related
+
+- Endpoint: `src/apis/endpoints/ownerEndpoints.ts` (`LIST`)
+- Constants: `src/features/user/constants/ownerList.constants.ts`
+- Types: `src/features/user/types/owner.types.ts`
+- Mapper: `src/features/user/mappers/mapOwnerListItemToLibraryOwner.ts`

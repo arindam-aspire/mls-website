@@ -171,5 +171,15 @@
     "fetchErrorTitle": "تعذر تحميل الوكالات",
     "selectAgencyRequiredTitle": "اختر وكالة",
     "selectAgencyRequiredDescription": "اختر وكالة قبل المتابعة."
+  },
+  "agencySettings": {
+    "pageTitle": "إعدادات الوكالة",
+    "pageSubtitle": "اختر كيفية عرض أسعار الإعلانات وأحجام العقارات عبر MLS Jordan.",
+    "title": "إعدادات الوكالة",
+    "description": "إدارة تفضيلات العرض لوكالتك."
+  },
+  "notificationSettings": {
+    "title": "إعدادات الإشعارات",
+    "description": "إعدادات الإشعارات قيد التطوير. ستتمكن قريباً من اختيار كيفية ووقت تلقي التنبيهات من هنا."
   }
 }
