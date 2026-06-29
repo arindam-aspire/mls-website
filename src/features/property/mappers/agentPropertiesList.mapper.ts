@@ -24,7 +24,7 @@ export type MyListingTableRow = LibraryPropertyListing & {
 function resolveAgentListingDisplayStatusKey(item: AgentPropertyListItem): string {
   const submissionStatus = item.submission_status?.trim();
 
-  if (submissionStatus === "approved" || submissionStatus === "rejected") {
+  if (submissionStatus === "active" || submissionStatus === "rejected") {
     return submissionStatus;
   }
 

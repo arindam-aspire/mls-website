@@ -132,7 +132,9 @@
       "changes_requested": "طُلبت تعديلات",
       "approved": "موافق عليه",
       "verified": "موثّق",
-      "rejected": "مرفوض"
+      "rejected": "مرفوض",
+      "pending-approval": "Pending Approval",
+      "active": "Active"
     },
     "addProperty": "إضافة عقار",
     "noDataTitle": "لا توجد إعلانات",
@@ -261,7 +263,9 @@
       "changes_requested": "طُلبت تعديلات",
       "approved": "موافق عليه",
       "verified": "موثّق",
-      "rejected": "مرفوض"
+      "rejected": "مرفوض",
+      "pending-approval": "Pending Approval",
+      "active": "Active"
     },
     "addProperty": "إضافة عقار",
     "noDataTitle": "لا توجد إعلانات",

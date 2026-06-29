@@ -127,9 +127,11 @@
       "draft": "Borrador",
       "in_progress": "En progreso",
       "submitted": "Enviado",
+      "pending-approval": "Pendiente de aprobacion",
       "pending_approval": "Pendiente de aprobación",
       "pending_admin_approval": "Pendiente de aprobación del administrador",
       "changes_requested": "Cambios solicitados",
+      "active": "Activo",
       "approved": "Aprobado",
       "verified": "Verificado",
       "rejected": "Rechazado"
@@ -256,9 +258,11 @@
       "draft": "Borrador",
       "in_progress": "En progreso",
       "submitted": "Enviado",
+      "pending-approval": "Pendiente de aprobacion",
       "pending_approval": "Pendiente de aprobación",
       "pending_admin_approval": "Pendiente de aprobación",
       "changes_requested": "Cambios solicitados",
+      "active": "Activo",
       "approved": "Aprobado",
       "verified": "Verificado",
       "rejected": "Rechazado"

@@ -74,7 +74,7 @@ function resolveSubmissionFormAccess(data: PropertyDraftSubmissionData) {
   const status = data.status?.trim().toLowerCase();
 
   return {
-    canEdit: status !== "submitted",
+    canEdit: status !== "submitted" && status !== "pending-approval",
     rejectionReason:
       status === "rejected" ? data.review_reason?.trim() || null : null,
   };

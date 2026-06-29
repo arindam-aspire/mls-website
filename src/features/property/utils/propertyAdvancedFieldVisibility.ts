@@ -8,28 +8,44 @@ import {
 } from "../constants/propertyListAdvancedFilters.constants";
 
 const RESIDENTIAL_TYPE = {
-  apartment: "apartment",
-  villa: "villa",
-  building: "building",
-  farm: "farm",
+  apartment: "apartments",
+  villa: "villas",
+  building: "buildings",
+  farm: "farms",
 } as const;
 
 const COMMERCIAL_TYPE = {
-  building: "building",
-  office: "office",
-  business: "business",
+  building: "buildings",
+  office: "offices",
+  business: "businesses",
   shop: "shop",
-  showroom: "showroom",
+  showroom: "showrooms",
   warehouse: "warehouse",
+  villa: "villas",
 } as const;
 
 const LAND_TYPE = {
-  residentialLand: "residential-land",
-  commercialLand: "commercial-land",
-  industrialLand: "industrial-land",
-  agriculturalLand: "agricultural-land",
-  mixedUseLand: "mixed-use-land",
+  residentialLand: "residential-lands",
+  commercialLand: "commercial-lands",
+  industrialLand: "industrial-lands",
+  agriculturalLand: "agricultural-lands",
+  mixedUseLand: "mixed-use-lands",
 } as const;
+
+const LEGACY_TYPE_SLUGS: Record<string, string> = {
+  apartment: RESIDENTIAL_TYPE.apartment,
+  villa: RESIDENTIAL_TYPE.villa,
+  building: RESIDENTIAL_TYPE.building,
+  farm: RESIDENTIAL_TYPE.farm,
+  office: COMMERCIAL_TYPE.office,
+  business: COMMERCIAL_TYPE.business,
+  showroom: COMMERCIAL_TYPE.showroom,
+  "residential-land": LAND_TYPE.residentialLand,
+  "commercial-land": LAND_TYPE.commercialLand,
+  "industrial-land": LAND_TYPE.industrialLand,
+  "agricultural-land": LAND_TYPE.agriculturalLand,
+  "mixed-use-land": LAND_TYPE.mixedUseLand,
+};
 
 const LAND_UTILITIES_TYPES = new Set<string>([
   LAND_TYPE.residentialLand,
@@ -51,7 +67,7 @@ function resolveTypeSlug(type: string | undefined) {
     return undefined;
   }
 
-  return type;
+  return LEGACY_TYPE_SLUGS[type] ?? type;
 }
 
 export function showBedrooms(category: string) {

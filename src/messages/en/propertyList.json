@@ -127,9 +127,11 @@
       "draft": "Draft",
       "in_progress": "In Progress",
       "submitted": "Submitted",
+      "pending-approval": "Pending Approval",
       "pending_approval": "Pending Approval",
       "pending_admin_approval": "Pending Admin Approval",
       "changes_requested": "Changes Requested",
+      "active": "Active",
       "approved": "Approved",
       "verified": "Verified",
       "rejected": "Rejected"
@@ -256,9 +258,11 @@
       "draft": "Draft",
       "in_progress": "In Progress",
       "submitted": "Submitted",
+      "pending-approval": "Pending Approval",
       "pending_approval": "Pending Approval",
       "pending_admin_approval": "Pending Approval",
       "changes_requested": "Changes Requested",
+      "active": "Active",
       "approved": "Approved",
       "verified": "Verified",
       "rejected": "Rejected"

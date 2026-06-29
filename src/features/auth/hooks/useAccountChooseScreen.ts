@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import { useTranslations } from "next-intl";
 import { AUTH_VIEW } from "../authViews";
 import { useAuthStore } from "../store/auth.store";
@@ -12,21 +12,13 @@ export function useAccountChooseScreen() {
   const navigate = useAuthStore((state) => state.navigate);
   const [mode, setMode] = useState<"signin" | "signup">("signin");
 
-  const title = useMemo(
-    () =>
-      mode === "signin"
-        ? t("chooseAccountSignInTitle")
-        : t("chooseAccountSignUpTitle"),
-    [mode, t],
-  );
-
   const onCreateAccountClick = useCallback(() => {
     navigate(AUTH_VIEW.userSocialSignUp);
   }, [navigate]);
 
   return {
-    title,
-    subtitle: t("chooseAccountSubtitle"),
+    title: t("chooseAccountSignInTitle"),
+    subtitle: "Use social login, email, or one-time password to continue.",
     mode,
     onModeChange: setMode,
     noAccountText: t("chooseAccountNoAccount"),

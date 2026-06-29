@@ -21,11 +21,11 @@ export function buildAdminListingRowActions(
 ): PropertyListingRowActionDescriptor[] {
   const status = normalizeSubmissionStatus(item.status);
 
-  if (status === "approved" || status === "rejected") {
+  if (status === "active" || status === "rejected") {
     return [{ id: "view" }];
   }
 
-  if (status === "submitted") {
+  if (status === "pending-approval") {
     if (!item.has_assigned_agent) {
       const actions: PropertyListingRowActionDescriptor[] = [
         { id: "assign", label: labels.assignAgent },
