@@ -25,7 +25,6 @@ export type SignInRequest = {
   username: string;
   password: string;
   rememberMe: boolean;
-  role: SignInRole;
 };
 
 export type SignInTokens = {

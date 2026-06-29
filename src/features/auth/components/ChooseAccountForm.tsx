@@ -1,14 +1,12 @@
 "use client";
 
-import { Globe, Info } from "lucide-react";
+import { Clock, Globe, Info, Mail } from "lucide-react";
 import { Button } from "@/src/components/ui";
 import { cn } from "@/src/lib/cn";
 import { authFormOverlineClasses, bodyTextClasses } from "@/src/lib/typography";
 import { AUTH_VIEW } from "../authViews";
-import { useChooseAccountForm } from "../hooks/useChooseAccountForm";
 import { useAuthStore } from "../store/auth.store";
 import type { ChooseAccountMode, ChooseAccountType } from "../types/chooseAccount.types";
-import { AccountTypeCard } from "./AccountTypeCard";
 
 export type { ChooseAccountMode, ChooseAccountType } from "../types/chooseAccount.types";
 export { CHOOSE_ACCOUNT_TYPES } from "../types/chooseAccount.types";
@@ -21,16 +19,12 @@ type ChooseAccountFormProps = {
 };
 
 export function ChooseAccountForm({
-  mode,
+  mode: _mode,
   onModeChange: _onModeChange,
   onAccountTypeSelect,
   className,
 }: ChooseAccountFormProps) {
   const navigate = useAuthStore((state) => state.navigate);
-  const {
-    accountTypes,
-    onAccountTypeSelect: handleAccountTypeSelect,
-  } = useChooseAccountForm({ mode, onAccountTypeSelect });
 
   const handleSocialClick = () => {
     navigate(AUTH_VIEW.userSocialSignIn);
@@ -97,16 +91,30 @@ export function ChooseAccountForm({
       </div>
 
       <div className="flex flex-col gap-3">
-        {accountTypes.map((item) => (
-          <AccountTypeCard
-            key={item.type}
-            icon={item.icon}
-            title={item.title}
-            description={item.description}
-            disabled={mode === "signup" && item.type === "agent"}
-            onClick={() => handleAccountTypeSelect(item.type)}
-          />
-        ))}
+        <Button
+          type="button"
+          variant="solid"
+          color="primary"
+          size="lg"
+          fullWidth
+          className="font-semibold"
+          iconStart={<Mail className="size-5" aria-hidden />}
+          onClick={() => navigate(AUTH_VIEW.userSignIn)}
+        >
+          Sign in with Email
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          color="inherit"
+          size="lg"
+          fullWidth
+          className="font-semibold"
+          iconStart={<Clock className="size-5" aria-hidden />}
+          onClick={() => navigate(AUTH_VIEW.signInOtp)}
+        >
+          Sign in with One-Time Password (OTP)
+        </Button>
       </div>
     </div>
   );

@@ -84,7 +84,6 @@ export const useSignInWithPassword = () => {
         (message) => {
           toast.error("Failed", { description: message });
         },
-        variables.role,
       );
     },
     onError: (error: ApiError) => {
@@ -195,7 +194,6 @@ export const useSignInWithOtpVerify = () => {
         (message) => {
           toast.error("Failed", { description: message });
         },
-        variables.role,
       );
     },
     onError: (error: ApiError) => {

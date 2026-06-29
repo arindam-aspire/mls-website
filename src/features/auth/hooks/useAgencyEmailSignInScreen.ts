@@ -4,7 +4,7 @@ import { useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { AUTH_VIEW } from "../authViews";
 import { useSignInWithPassword } from "../mutations/auth.mutation";
-import { SignInFormValues, resolveSignInRole } from "../types/auth.types";
+import { SignInFormValues } from "../types/auth.types";
 import { useAuthStore } from "../store/auth.store";
 import { useAuthModalNavigation, useIsAgentSignInPortal } from "./useAuthPortal";
 import { useAuthScreenLegalFooter } from "./authScreen.utils";
@@ -23,12 +23,9 @@ export function useAgencyEmailSignInScreen() {
 
   const onClickSignIn = useCallback(
     (values: SignInFormValues) => {
-      signInWithPassword({
-        ...values,
-        role: resolveSignInRole(isAgent ? "agent" : "agency"),
-      });
+      signInWithPassword(values);
     },
-    [isAgent, signInWithPassword],
+    [signInWithPassword],
   );
 
   return {

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
-import { AUTH_VIEW, resolveSignInRoleFromAuthContext } from "../authViews";
+import { AUTH_VIEW } from "../authViews";
 import type { SignInOtpMethod, SignInWithOTPFormValues } from "../components/SignInWithOTPForm";
 import { useSignInWithOtpRequest } from "../mutations/auth.mutation";
 import { useAuthStore } from "../store/auth.store";
@@ -18,16 +18,13 @@ export function useSignInWithOTPScreen() {
   const setOtpFlow = useAuthStore((state) => state.setOtpFlow);
   const setPendingEmail = useAuthStore((state) => state.setPendingEmail);
   const otpSession = useAuthStore((state) => state.otpSession);
-  const agentPortal = useAuthStore((state) => state.agentPortal);
   const {
-    contextView,
     isAgency,
     isAgent,
     signUpView,
   } = useAuthFlowContext();
   const showAgencyCreateAccount = isAgency && !isAgent;
   const showUserCreateAccount = !showAgencyCreateAccount && !isAgency;
-  const signInRole = resolveSignInRoleFromAuthContext(contextView, agentPortal);
   const toast = useToast();
 
   const { mutate: requestOtp, isPending, isSuccess } = useSignInWithOtpRequest();
@@ -45,9 +42,9 @@ export function useSignInWithOTPScreen() {
 
       lastEmailRef.current = values.email;
       setPendingEmail(values.email);
-      requestOtp({ username: values.email, role: signInRole });
+      requestOtp({ username: values.email });
     },
-    [requestOtp, setPendingEmail, signInRole, toast],
+    [requestOtp, setPendingEmail, toast],
   );
 
   const onCreateAccountClick = useCallback(() => {

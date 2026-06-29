@@ -7,7 +7,7 @@ import {
 } from "../authViews";
 import type { SocialAccountType } from "../components/SocialAuthForm";
 import { useSignInWithPassword } from "../mutations/auth.mutation";
-import { SignInFormValues, resolveSignInRole } from "../types/auth.types";
+import { SignInFormValues } from "../types/auth.types";
 import { useAuthStore } from "../store/auth.store";
 import { useAuthModalNavigation } from "./useAuthPortal";
 import { useAuthScreenLegalFooter } from "./authScreen.utils";
@@ -25,12 +25,9 @@ export function useSignInScreen({ type }: UseSignInScreenParams) {
 
   const onClickSignIn = useCallback(
     (values: SignInFormValues) => {
-      signInWithPassword({
-        ...values,
-        role: resolveSignInRole(type),
-      });
+      signInWithPassword(values);
     },
-    [signInWithPassword, type],
+    [signInWithPassword],
   );
 
   const onCreateAccountClick = useCallback(() => {

@@ -6,7 +6,7 @@ import { getAccessTokenRoleName } from "./getAccessTokenRoleName";
 export { getAccessTokenRoleName };
 
 /** API role names that should land on the dashboard after sign-in. */
-const DASHBOARD_ROLE_NAMES = new Set(["admin", "agency"]);
+const DASHBOARD_ROLE_NAMES = new Set(["admin", "agency", "super_admin", "agent"]);
 
 function shouldRedirectToDashboardForRoleName(roleName: string | null | undefined): boolean {
   if (!roleName) return false;

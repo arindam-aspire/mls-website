@@ -2,7 +2,7 @@
 
 import { useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { AUTH_VIEW, resolveSignInRoleFromAuthContext } from "../authViews";
+import { AUTH_VIEW } from "../authViews";
 import {
   useForgotPassword,
   useSignInWithOtpRequest,
@@ -25,16 +25,13 @@ export function useOTPVerificationScreen() {
   const otpCode = useAuthStore((state) => state.otpCode);
   const setOtpCode = useAuthStore((state) => state.setOtpCode);
   const setOtpSession = useAuthStore((state) => state.setOtpSession);
-  const agentPortal = useAuthStore((state) => state.agentPortal);
   const {
-    contextView,
     isAgency,
     isAgent,
     signUpView,
   } = useAuthFlowContext();
   const showAgencyCreateAccount = isAgency && !isAgent;
   const showUserCreateAccount = !showAgencyCreateAccount && !isAgency;
-  const signInRole = resolveSignInRoleFromAuthContext(contextView, agentPortal);
 
   const { mutate: resendOtp, isPending: isResending } = useForgotPassword();
   const { mutate: resendSignInOtp, isPending: isResendingSignInOtp } =
@@ -56,7 +53,6 @@ export function useOTPVerificationScreen() {
       resendSignInOtp(
         {
           username: pendingEmail.trim(),
-          role: signInRole,
         },
         {
           onSuccess: (response) => {
@@ -75,7 +71,6 @@ export function useOTPVerificationScreen() {
     resendSignInOtp,
     setOtpCode,
     setOtpSession,
-    signInRole,
   ]);
 
   const onSubmit = useCallback(
@@ -95,10 +90,9 @@ export function useOTPVerificationScreen() {
         username: pendingEmail.trim(),
         code,
         session: otpSession,
-        role: signInRole,
       });
     },
-    [otpFlow, otpSession, pendingEmail, navigate, setOtpCode, signInRole, verifyOtp],
+    [otpFlow, otpSession, pendingEmail, navigate, setOtpCode, verifyOtp],
   );
 
   const onCreateAccountClick = useCallback(() => {
