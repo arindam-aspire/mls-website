@@ -1,12 +1,14 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Owner, OwnerWorkflowActionsConfig, SortConfig } from "@abdoun/abdoun-library";
 import type { ApiError } from "@/src/apis/core/error.normalizer";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
+import { getAgencyList } from "@/src/features/profile/services/profile.service";
 import { useToast } from "@/src/hooks/useToast";
+import { UserRole } from "@/src/lib/auth/roles";
 import {
   DEFAULT_OWNER_LIST_PAGE,
   DEFAULT_OWNER_LIST_PAGE_SIZE,
@@ -21,7 +23,7 @@ import {
 } from "../constants/ownerListTableColumns.constants";
 import { buildOwnerListColumnLabels } from "../i18n/buildOwnerListColumnLabels";
 import { mapOwnerListItemsToLibraryOwners } from "../mappers/mapOwnerListItemToLibraryOwner";
-import { getOwnerList } from "../services/owner.service";
+import { assignOwnerAgency, getOwnerList, getPlatformOwnerList } from "../services/owner.service";
 import {
   buildOwnerListGridHiddenColumnIds,
   buildOwnerListRequestParams,
@@ -33,12 +35,15 @@ export function useOwnersScreen() {
   const t = useTranslations("user");
   const tColumns = useTranslations("user.owners.list.columns");
   const toast = useToast();
+  const queryClient = useQueryClient();
 
   const user = useAuthStore((state) => state.user);
   const agencyId = user?.agency?.agency_id?.trim() ?? "";
+  const isSuperAdmin = Boolean(user?.roles?.some((role) => role.name === UserRole.SUPER_ADMIN));
 
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("");
+  const [assignmentAgencyId, setAssignmentAgencyId] = useState("");
   const [page, setPage] = useState(DEFAULT_OWNER_LIST_PAGE);
   const [sortConfig, setSortConfig] = useState<SortConfig>([]);
   const [columnVisibility, setColumnVisibility] = useState<OwnerListColumnVisibility>(
@@ -63,9 +68,42 @@ export function useOwnersScreen() {
     isError: isOwnerListError,
     error: ownerListError,
   } = useQuery({
-    queryKey: ["owners", "list", agencyId, listRequestParams],
-    queryFn: () => getOwnerList(agencyId, listRequestParams),
-    enabled: agencyId.length > 0,
+    queryKey: ["owners", "list", isSuperAdmin ? "platform" : agencyId, listRequestParams],
+    queryFn: () =>
+      isSuperAdmin
+        ? getPlatformOwnerList(listRequestParams)
+        : getOwnerList(agencyId, listRequestParams),
+    enabled: isSuperAdmin || agencyId.length > 0,
+  });
+
+  const { data: agencyListData, isFetching: isAgencyListFetching } = useQuery({
+    queryKey: ["agency", "owner-assignment-list"],
+    queryFn: () => getAgencyList({ skip: 0, limit: 100 }),
+    enabled: isSuperAdmin,
+  });
+
+  const agencyOptions = useMemo(
+    () =>
+      (agencyListData?.items ?? [])
+        .filter((agency) => agency.is_active && agency.is_verified)
+        .map((agency) => ({
+          value: agency.id,
+          label: agency.agency_name,
+        })),
+    [agencyListData?.items],
+  );
+
+  const assignOwnerMutation = useMutation({
+    mutationFn: (ownerId: string) => assignOwnerAgency(ownerId, assignmentAgencyId),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["owners", "list"] });
+      toast.success("Owner assigned", {
+        description: "Owner-agency mapping was updated successfully.",
+      });
+    },
+    onError: (error: Error) => {
+      toast.error("Could not assign owner", { description: error.message });
+    },
   });
 
   const onWorkflowActionPlaceholder = useCallback(() => {
@@ -200,6 +238,19 @@ export function useOwnersScreen() {
     [t],
   );
 
+  const assignOwnerToSelectedAgency = useCallback(
+    (ownerId: string) => {
+      if (!assignmentAgencyId) {
+        toast.error("Select an agency", {
+          description: "Choose an active verified agency before assigning an owner.",
+        });
+        return;
+      }
+      assignOwnerMutation.mutate(ownerId);
+    },
+    [assignOwnerMutation, assignmentAgencyId, toast],
+  );
+
   useEffect(() => {
     if (!isOwnerListError) {
       return;
@@ -214,6 +265,15 @@ export function useOwnersScreen() {
   return {
     pageTitle: t("owners.pageTitle"),
     pageSubtitle: t("owners.pageSubtitle"),
+    isSuperAdmin,
+    assignmentAgencyId,
+    onAssignmentAgencyChange: setAssignmentAgencyId,
+    agencyOptions,
+    isAgencyListFetching,
+    platformOwners: ownerListData?.owners ?? [],
+    assignOwnerToSelectedAgency,
+    assigningOwnerId: assignOwnerMutation.variables ?? null,
+    isAssigningOwner: assignOwnerMutation.isPending,
     listFilters: {
       search,
       status,

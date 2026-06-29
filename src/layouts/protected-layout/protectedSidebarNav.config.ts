@@ -1,5 +1,6 @@
 import {
   Briefcase,
+  Building2,
   FilePenLine,
   Heart,
   KeyRound,
@@ -82,6 +83,14 @@ export const PROTECTED_SIDEBAR_NAV_SECTIONS: ProtectedSidebarNavSectionConfig[] 
     },
     {
       titleKey: "sidebarSectionUserManagement",
-      items: PROTECTED_USER_MANAGEMENT_NAV_ITEMS,
+      items: [
+        {
+          labelKey: "agencies",
+          href: "/agencies",
+          icon: Building2,
+          permission: "AGENCIES",
+        },
+        ...PROTECTED_USER_MANAGEMENT_NAV_ITEMS,
+      ],
     },
   ];

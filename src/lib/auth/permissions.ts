@@ -20,7 +20,8 @@ export const PERMISSIONS = {
   NOTIFICATIONS: [UserRole.SUPER_ADMIN, UserRole.AGENCY, UserRole.AGENT, UserRole.OWNER, UserRole.USER],
   RECENTLY_VIEWED: [UserRole.OWNER, UserRole.USER],
   /** Admin-only user management screens. */
-  OWNERS: [UserRole.AGENCY],
+  AGENCIES: [UserRole.SUPER_ADMIN],
+  OWNERS: [UserRole.SUPER_ADMIN, UserRole.AGENCY],
   AGENTS: [UserRole.SUPER_ADMIN, UserRole.AGENCY],
   /** Agency profile settings (`/agency-settings`). */
   AGENCY_SETTINGS: [UserRole.AGENCY],

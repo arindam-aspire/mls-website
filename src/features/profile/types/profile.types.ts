@@ -73,6 +73,7 @@ export type Agency = {
   zip_code: string | null;
   is_active: boolean;
   is_verified: boolean;
+  status?: string;
   currency: AgencyCurrency;
   measurement_unit: AgencyMeasurementUnit;
   created_at: string;
@@ -288,6 +289,71 @@ export type UpdateAgencyResponse = {
   meta: Record<string, unknown>;
 };
 
+export type AgencyOfflineRegistrationRequest = {
+  agency_name: string;
+  agency_trade_name: string;
+  email: string;
+  phone: string;
+  legal_document_s3_link?: string | null;
+  website?: string | null;
+  address?: string | null;
+  city?: string | null;
+  state?: string | null;
+  country?: string | null;
+  zip_code?: string | null;
+  currency?: AgencyCurrency;
+  measurement_unit?: AgencyMeasurementUnit;
+};
+
+export type AgencyInvitationCreateRequest = {
+  email: string;
+  agency_name?: string | null;
+  agency_trade_name?: string | null;
+  phone?: string | null;
+};
+
+export type AgencyReviewRequest = {
+  action: "approve" | "reject";
+  reason?: string | null;
+};
+
+export type AgencyWorkflowResponseData = {
+  agency: Agency;
+  password_setup_token?: string | null;
+  password_setup_link?: string | null;
+};
+
+export type AgencyWorkflowResponse = {
+  success: boolean;
+  message: string | null;
+  data: AgencyWorkflowResponseData;
+  error: unknown;
+  meta: Record<string, unknown>;
+};
+
+export type AgencyInvitationResponseData = {
+  id: string;
+  email: string;
+  agency_name: string | null;
+  agency_trade_name: string | null;
+  phone: string | null;
+  status: string;
+  invitation_link: string | null;
+  expires_at: string | null;
+  accepted_at: string | null;
+  revoked_at: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+};
+
+export type AgencyInvitationResponse = {
+  success: boolean;
+  message: string | null;
+  data: AgencyInvitationResponseData;
+  error: unknown;
+  meta: Record<string, unknown>;
+};
+
 export type DeleteAgencyLogoResponse = GetAgencyResponse;
 
 export type EditAgencyFormValues = {
@@ -328,6 +394,7 @@ export type AgencyListItemRaw = {
   measurement_unit: string;
   is_active: boolean;
   is_verified: boolean;
+  status?: string;
   created_at: string;
   updated_at: string;
 };
@@ -339,6 +406,10 @@ export type AgencyListItem = {
   logo_url: string | null;
   email: string;
   phone: string;
+  status: string;
+  is_active: boolean;
+  is_verified: boolean;
+  created_at: string;
 };
 
 export type AgencyListResponse = {

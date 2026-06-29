@@ -14,12 +14,17 @@ import {
 } from "../utils/validateProfileImageFile";
 import type {
   Agency,
+  AgencyInvitationCreateRequest,
+  AgencyInvitationResponse,
   AgencyLegalDocumentUploadRequest,
   AgencyLegalDocumentUploadResponse,
   AgencyListParams,
   AgencyListResponse,
   AgencyLogoUploadRequest,
   AgencyLogoUploadResponse,
+  AgencyOfflineRegistrationRequest,
+  AgencyReviewRequest,
+  AgencyWorkflowResponse,
   DeleteAgencyLogoResponse,
   GetAgencyResponse,
   NormalizedAgencyListResponse,
@@ -87,6 +92,50 @@ export async function updateAgency(
   });
 
   return unwrapAgencyFromResponseData(response.data);
+}
+
+export async function createOfflineAgency(
+  body: AgencyOfflineRegistrationRequest,
+): Promise<AgencyWorkflowResponse> {
+  return apiClient.request<AgencyWorkflowResponse>({
+    endpoint: agencyEndpoints.OFFLINE_REGISTRATION,
+    method: "POST",
+    body,
+    auth: true,
+  });
+}
+
+export async function createAgencyInvitation(
+  body: AgencyInvitationCreateRequest,
+): Promise<AgencyInvitationResponse> {
+  return apiClient.request<AgencyInvitationResponse>({
+    endpoint: agencyEndpoints.INVITATIONS,
+    method: "POST",
+    body,
+    auth: true,
+  });
+}
+
+export async function reviewAgency(
+  agencyId: string,
+  body: AgencyReviewRequest,
+): Promise<AgencyWorkflowResponse> {
+  return apiClient.request<AgencyWorkflowResponse>({
+    endpoint: agencyEndpoints.review(agencyId),
+    method: "POST",
+    body,
+    auth: true,
+  });
+}
+
+export async function sendAgencyPasswordLink(
+  agencyId: string,
+): Promise<AgencyWorkflowResponse> {
+  return apiClient.request<AgencyWorkflowResponse>({
+    endpoint: agencyEndpoints.passwordLink(agencyId),
+    method: "POST",
+    auth: true,
+  });
 }
 
 export async function updateProfile(

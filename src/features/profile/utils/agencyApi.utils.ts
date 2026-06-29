@@ -65,6 +65,10 @@ function normalizeAgencyListItem(raw: AgencyListItemRaw): AgencyListItem | null 
     logo_url: normalizeNullableUrl(raw.logo_url),
     email: raw.email?.trim() ?? "",
     phone: raw.phone?.trim() ?? "",
+    status: raw.status?.trim() || (raw.is_active ? "ACTIVE" : "PENDING_APPROVAL"),
+    is_active: Boolean(raw.is_active),
+    is_verified: Boolean(raw.is_verified),
+    created_at: raw.created_at?.trim() ?? "",
   };
 }
 

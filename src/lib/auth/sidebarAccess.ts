@@ -3,6 +3,7 @@ import { UserRole } from "./roles";
 
 /** API role names that render the protected layout sidebar (agency + agent). */
 const PROTECTED_SIDEBAR_ROLE_NAMES = new Set<string>([
+  UserRole.SUPER_ADMIN,
   UserRole.AGENCY,
   UserRole.AGENT,
   "agency",

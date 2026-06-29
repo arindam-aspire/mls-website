@@ -13,6 +13,12 @@ export type OwnerListItem = {
   status?: string;
   /** Present when the API returns a property count. */
   property_owned?: number;
+  assigned_agencies?: {
+    id: string;
+    agency_name: string;
+    is_primary: boolean;
+    created_at: string | null;
+  }[];
 };
 
 export type OwnerListPagination = {
@@ -29,6 +35,7 @@ export type OwnerListParams = {
   pageSize?: number;
   search?: string;
   status?: string;
+  agencyId?: string;
 };
 
 export type OwnerListResponseData = OwnerListPagination & {
@@ -48,4 +55,23 @@ export type OwnerListResponse = {
 export type NormalizedOwnerListResponse = {
   owners: OwnerListItem[];
   pagination: OwnerListPagination;
+};
+
+export type AssignOwnerAgencyRequest = {
+  agency_id: string;
+};
+
+export type AssignOwnerAgencyResponse = {
+  success: boolean;
+  message: string | null;
+  data: {
+    id: string;
+    owner_id: string;
+    agency_id: string;
+    relationship_type: string;
+    status: string;
+    is_primary: boolean;
+  };
+  error: unknown;
+  meta: Record<string, unknown>;
 };
