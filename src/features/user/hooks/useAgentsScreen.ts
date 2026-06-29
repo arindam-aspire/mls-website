@@ -5,7 +5,9 @@ import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Agent, AgentWorkflowActionsConfig, SortConfig } from "@abdoun/abdoun-library";
 import type { ApiError } from "@/src/apis/core/error.normalizer";
+import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { useToast } from "@/src/hooks/useToast";
+import { UserRole } from "@/src/lib/auth/roles";
 import type { AgentKPIMetricId } from "../components/AgentKPICards";
 import {
   AGENT_LIST_SORT_BY,
@@ -40,6 +42,9 @@ export function useAgentsScreen() {
   const t = useTranslations("user");
   const tColumns = useTranslations("user.agents.list.columns");
   const toast = useToast();
+  const user = useAuthStore((state) => state.user);
+  const roleNames = useMemo(() => new Set(user?.roles?.map((role) => role.name) ?? []), [user?.roles]);
+  const canManageAgents = roleNames.has(UserRole.AGENCY);
 
   const inviteAgentByEmailModal = useInviteAgentByEmailModal();
   const manualOnboardAgentModal = useManualOnboardAgentModal();
@@ -119,17 +124,21 @@ export function useAgentsScreen() {
   );
 
   const workflowActions = useMemo<AgentWorkflowActionsConfig>(
-    () => ({
-      activate: onWorkflowActionPlaceholder,
-      approve: onWorkflowActionPlaceholder,
-      deactivate: onWorkflowActionPlaceholder,
-      decline: onWorkflowActionPlaceholder,
-      grant_admin: onWorkflowActionPlaceholder,
-      resend: onResendInvitation,
-      revoke: onRevokeInvitation,
-      remove: onRemoveAgent,
-    }),
+    () =>
+      canManageAgents
+        ? {
+            activate: onWorkflowActionPlaceholder,
+            approve: onWorkflowActionPlaceholder,
+            deactivate: onWorkflowActionPlaceholder,
+            decline: onWorkflowActionPlaceholder,
+            grant_admin: onWorkflowActionPlaceholder,
+            resend: onResendInvitation,
+            revoke: onRevokeInvitation,
+            remove: onRemoveAgent,
+          }
+        : {},
     [
+      canManageAgents,
       onRemoveAgent,
       onResendInvitation,
       onRevokeInvitation,
@@ -286,6 +295,7 @@ export function useAgentsScreen() {
     pageSubtitle: t("agents.pageSubtitle"),
     inviteByEmailLabel: t("agents.inviteByEmail"),
     manualOnboardLabel: t("agents.manualOnboard"),
+    canManageAgents,
     kpiMetrics,
     kpiSectionAriaLabel: t("agents.kpi.ariaLabel"),
     isKpiLoading,

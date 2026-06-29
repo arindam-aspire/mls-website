@@ -21,6 +21,7 @@ export function AgentsScreen() {
     kpiMetrics,
     kpiSectionAriaLabel,
     isKpiLoading,
+    canManageAgents,
     listFilters,
     agentList,
     onOpenInviteAgentByEmail,
@@ -40,31 +41,33 @@ export function AgentsScreen() {
             <p className={cn("text-muted", bodyLargeTextClasses)}>{pageSubtitle}</p>
           </div>
 
-          <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center sm:gap-2 md:gap-4 lg:gap-6">
-            <Button
-              type="button"
-              color="inherit"
-              variant="outline"
-              size="md"
-              className="w-full shrink-0 rounded-lg sm:w-auto"
-              iconStart={<Mail className="size-4" aria-hidden />}
-              onClick={onOpenInviteAgentByEmail}
-            >
-              {inviteByEmailLabel}
-            </Button>
+          {canManageAgents ? (
+            <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center sm:gap-2 md:gap-4 lg:gap-6">
+              <Button
+                type="button"
+                color="inherit"
+                variant="outline"
+                size="md"
+                className="w-full shrink-0 rounded-lg sm:w-auto"
+                iconStart={<Mail className="size-4" aria-hidden />}
+                onClick={onOpenInviteAgentByEmail}
+              >
+                {inviteByEmailLabel}
+              </Button>
 
-            <Button
-              type="button"
-              color="primary"
-              variant="solid"
-              size="md"
-              className="w-full shrink-0 rounded-lg sm:w-auto"
-              iconStart={<UserRoundPen className="size-4" aria-hidden />}
-              onClick={onOpenManualOnboardAgent}
-            >
-              {manualOnboardLabel}
-            </Button>
-          </div>
+              <Button
+                type="button"
+                color="primary"
+                variant="solid"
+                size="md"
+                className="w-full shrink-0 rounded-lg sm:w-auto"
+                iconStart={<UserRoundPen className="size-4" aria-hidden />}
+                onClick={onOpenManualOnboardAgent}
+              >
+                {manualOnboardLabel}
+              </Button>
+            </div>
+          ) : null}
         </div>
 
         {isKpiLoading ? (
@@ -79,8 +82,12 @@ export function AgentsScreen() {
         <AgentList filters={listFilters} list={agentList} />
       </div>
 
-      <InviteAgentByEmailModal {...inviteAgentByEmailModal} />
-      <ManualOnboardAgentModal {...manualOnboardAgentModal} />
+      {canManageAgents ? (
+        <>
+          <InviteAgentByEmailModal {...inviteAgentByEmailModal} />
+          <ManualOnboardAgentModal {...manualOnboardAgentModal} />
+        </>
+      ) : null}
 
       {resendAgentConfirm.confirmModal ? (
         <ConfirmModal {...resendAgentConfirm.confirmModal} />
