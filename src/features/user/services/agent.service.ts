@@ -10,6 +10,10 @@ import type {
   AgentInviteRequest,
   AgentInviteResponse,
   AgentInviteResult,
+  AgentInvitationAcceptRequest,
+  AgentInvitationAcceptResponse,
+  AgentInvitationPreview,
+  AgentInvitationPreviewResponse,
   AgentListParams,
   AgentListResponse,
   AgentResendInvitationResponse,
@@ -101,6 +105,39 @@ export async function inviteAgentByEmail(
       inviteLink: parseAgentInviteLink(response.data.inviteLink),
     },
   };
+}
+
+export async function validateAgentInvitation(
+  token: string,
+): Promise<AgentInvitationPreview> {
+  const response = await apiClient.request<AgentInvitationPreviewResponse>({
+    endpoint: agentEndpoints.VALIDATE_INVITATION(token),
+    method: "GET",
+    auth: false,
+  });
+
+  if (!response.success || !response.data) {
+    throw new Error(response.message ?? "Invitation link is invalid");
+  }
+
+  return response.data;
+}
+
+export async function acceptAgentInvitation(
+  body: AgentInvitationAcceptRequest,
+): Promise<string> {
+  const response = await apiClient.request<AgentInvitationAcceptResponse>({
+    endpoint: agentEndpoints.ACCEPT_INVITATION,
+    method: "POST",
+    auth: false,
+    body,
+  });
+
+  if (!response.success || !response.data) {
+    throw new Error(response.message ?? "Failed to activate agent account");
+  }
+
+  return response.message ?? "Agent account activated successfully";
 }
 
 export async function manualOnboardAgent(

@@ -20,7 +20,8 @@ export type UploadPresignedUrlOwnerRequest = UploadPresignedUrlFileFields & {
 };
 
 export type UploadPresignedUrlSubmissionRequest = UploadPresignedUrlFileFields & {
-  submission_id: string;
+  submission_id?: string;
+  draft_client_id?: string;
   context: UploadPresignedUrlSubmissionContext;
 };
 

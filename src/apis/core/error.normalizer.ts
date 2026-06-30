@@ -87,18 +87,19 @@ export function normalizeAxiosError(error: unknown): ApiError {
 
     const status = axiosError.response.status;
     const normalizedCode = resolveNormalizedCode(status);
+    const responseMessage = extractResponseMessage(axiosError.response.data);
 
     if (normalizedCode) {
       return {
         code: normalizedCode,
-        message: NORMALIZED_MESSAGES[normalizedCode],
+        message: responseMessage ?? NORMALIZED_MESSAGES[normalizedCode],
         status,
         details: axiosError.response.data,
       };
     }
 
     const message =
-      extractResponseMessage(axiosError.response.data) ??
+      responseMessage ??
       axiosError.message ??
       "Request failed.";
 

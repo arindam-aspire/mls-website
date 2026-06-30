@@ -39,5 +39,13 @@ export function resolveNotificationHref(notification: NotificationRecord): strin
     return fromPayload;
   }
 
+  if (notification.typeKey === "property_submission_created") {
+    return "/manage-listings";
+  }
+
+  if (notification.typeKey?.startsWith("property_submission_")) {
+    return "/my-listings";
+  }
+
   return "/";
 }

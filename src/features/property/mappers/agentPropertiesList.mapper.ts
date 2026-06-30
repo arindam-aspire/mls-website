@@ -36,6 +36,10 @@ function isRejectedWorkflow(item: AgentPropertyListItem): boolean {
 }
 
 function toSubmissionApiListing(item: AgentPropertyListItem): SubmissionApiListing {
+  const agentName = item.agent_name?.trim();
+  const agentEmail = item.agent_email?.trim();
+  const agentPhone = item.agent_phone?.trim();
+
   return {
     property_id: item.property_id,
     property_hash: item.property_hash,
@@ -62,6 +66,18 @@ function toSubmissionApiListing(item: AgentPropertyListItem): SubmissionApiListi
     can_edit_submission: item.can_edit_submission,
     can_delete_submission: item.can_delete_submission,
     agency: item.agency as SubmissionApiListing["agency"],
+    agent:
+      agentName || agentEmail || agentPhone
+        ? {
+            id: 0,
+            name: agentName || agentEmail || "Assigned agent",
+            phone: agentPhone || null,
+            whatsapp: agentPhone || null,
+            email: agentEmail || null,
+            photo: null,
+            license_number: null,
+          }
+        : null,
   };
 }
 

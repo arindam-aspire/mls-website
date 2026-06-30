@@ -72,11 +72,16 @@ export const useSignInWithPassword = () => {
   return useMutation({
     mutationFn: signInWithPassword,
     onSuccess: async (response: SignInResponse, variables) => {
-      const { access_token, refresh_token, remember_me_cookie } = response.data;
+      const { access_token, refresh_token, remember_me_cookie, requires_password_set } = response.data;
       setAuth(access_token, refresh_token, {
         rememberMeCookie: remember_me_cookie,
         username: variables.username,
       });
+      if (requires_password_set) {
+        useAuthStore.getState().closeAuth();
+        navigateTo(`/${locale}/set-new-password`);
+        return;
+      }
       await completeSignInFlow(
         access_token,
         locale,

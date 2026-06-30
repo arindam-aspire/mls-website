@@ -12,6 +12,7 @@ import { resolveUploadedFileUrl } from "@/src/lib/resolveUploadedFileUrl";
 import { putFileToPresignedUrl } from "@/src/lib/upload";
 
 type UploadContentTypeResolver = (file: File) => string;
+type UploadSubmissionTarget = string | { submission_id?: string; draft_client_id?: string };
 
 export async function requestUploadPresignedUrl(
   body: UploadPresignedUrlOwnerRequest | UploadPresignedUrlSubmissionRequest,
@@ -37,21 +38,24 @@ async function uploadWithPresignedUrl(
     throw new Error(presignResponse.message ?? "Upload presign failed");
   }
 
-  await putFileToPresignedUrl(uploadUrl, file, contentType);
+  if (!uploadUrl.startsWith("dev://")) {
+    await putFileToPresignedUrl(uploadUrl, file, contentType);
+  }
 
   return resolveUploadedFileUrl(uploadUrl, presignResponse.data?.file_url);
 }
 
 async function uploadSubmissionFile(
   file: File,
-  submissionId: string,
+  target: UploadSubmissionTarget,
   context: UploadPresignedUrlSubmissionContext,
   resolveContentType: UploadContentTypeResolver,
 ): Promise<string> {
   const contentType = resolveContentType(file);
+  const uploadTarget = typeof target === "string" ? { submission_id: target } : target;
 
   return uploadWithPresignedUrl(file, {
-    submission_id: submissionId,
+    ...uploadTarget,
     context,
     file_name: file.name,
     content_type: contentType,
@@ -76,11 +80,11 @@ export async function uploadOwnerDocument(
 
 export async function uploadPropertyMediaImage(
   file: File,
-  submissionId: string,
+  target: UploadSubmissionTarget,
 ): Promise<string> {
   return uploadSubmissionFile(
     file,
-    submissionId,
+    target,
     "property_media_image",
     resolveProfileImageContentType,
   );
@@ -88,11 +92,11 @@ export async function uploadPropertyMediaImage(
 
 export async function uploadPropertyDocument(
   file: File,
-  submissionId: string,
+  target: UploadSubmissionTarget,
 ): Promise<string> {
   return uploadSubmissionFile(
     file,
-    submissionId,
+    target,
     "property_document",
     resolveOwnerDocumentContentType,
   );

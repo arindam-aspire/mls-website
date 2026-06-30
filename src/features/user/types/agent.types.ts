@@ -119,6 +119,37 @@ export type AgentInviteResponse = {
   meta: Record<string, unknown>;
 };
 
+export type AgentInvitationPreview = {
+  id: string;
+  email: string;
+  fullName: string;
+  phone: string;
+  serviceArea: string;
+  status: string;
+  expiresAt: string;
+};
+
+export type AgentInvitationPreviewResponse = {
+  success: boolean;
+  message: string | null;
+  data: AgentInvitationPreview | null;
+  error: unknown;
+  meta: Record<string, unknown>;
+};
+
+export type AgentInvitationAcceptRequest = {
+  token: string;
+  password: string;
+};
+
+export type AgentInvitationAcceptResponse = {
+  success: boolean;
+  message: string | null;
+  data: AgentListItem | null;
+  error: unknown;
+  meta: Record<string, unknown>;
+};
+
 export type ManualOnboardAgentRequest = {
   fullName: string;
   email: string;

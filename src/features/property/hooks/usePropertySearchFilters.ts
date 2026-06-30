@@ -37,6 +37,14 @@ export type UsePropertySearchFiltersOptions = {
   disabled?: boolean;
 };
 
+function normalizeRange(minValue: number | undefined, maxValue: number | undefined) {
+  if (minValue != null && maxValue != null && minValue > maxValue) {
+    return { min: maxValue, max: minValue };
+  }
+
+  return { min: minValue, max: maxValue };
+}
+
 export function usePropertySearchFilters({
   filterParams,
   updateFilterParams,
@@ -427,13 +435,14 @@ export function usePropertySearchFilters({
   ]);
 
   const onBudgetCommit = useCallback(() => {
+    const range = normalizeRange(
+      budgetMinDraft ? Number(budgetMinDraft) : undefined,
+      budgetMaxDraft ? Number(budgetMaxDraft) : undefined,
+    );
+
     updateFilterParams({
-      budgetMin: budgetMinDraft
-        ? Number(budgetMinDraft)
-        : ("" as unknown as number),
-      budgetMax: budgetMaxDraft
-        ? Number(budgetMaxDraft)
-        : ("" as unknown as number),
+      budgetMin: range.min ?? ("" as unknown as number),
+      budgetMax: range.max ?? ("" as unknown as number),
       page: 1,
     });
   }, [budgetMaxDraft, budgetMinDraft, updateFilterParams]);
@@ -541,30 +550,34 @@ export function usePropertySearchFilters({
   const onMinAreaCommit = useCallback(() => {
     const nextValue = minAreaDraft ? Number(minAreaDraft) : undefined;
     const currentValue = filterParams.minArea;
+    const range = normalizeRange(nextValue, filterParams.maxArea);
 
     if (nextValue === currentValue || (nextValue == null && currentValue == null)) {
       return;
     }
 
     updateFilterParams({
-      minArea: nextValue ?? ("" as unknown as number),
+      minArea: range.min ?? ("" as unknown as number),
+      maxArea: range.max ?? ("" as unknown as number),
       page: 1,
     });
-  }, [filterParams.minArea, minAreaDraft, updateFilterParams]);
+  }, [filterParams.maxArea, filterParams.minArea, minAreaDraft, updateFilterParams]);
 
   const onMaxAreaCommit = useCallback(() => {
     const nextValue = maxAreaDraft ? Number(maxAreaDraft) : undefined;
     const currentValue = filterParams.maxArea;
+    const range = normalizeRange(filterParams.minArea, nextValue);
 
     if (nextValue === currentValue || (nextValue == null && currentValue == null)) {
       return;
     }
 
     updateFilterParams({
-      maxArea: nextValue ?? ("" as unknown as number),
+      minArea: range.min ?? ("" as unknown as number),
+      maxArea: range.max ?? ("" as unknown as number),
       page: 1,
     });
-  }, [filterParams.maxArea, maxAreaDraft, updateFilterParams]);
+  }, [filterParams.maxArea, filterParams.minArea, maxAreaDraft, updateFilterParams]);
 
   const onMinPlotAreaChange = useCallback((value: string) => {
     setMinPlotAreaDraft(value.replace(/\D/g, ""));
@@ -577,30 +590,34 @@ export function usePropertySearchFilters({
   const onMinPlotAreaCommit = useCallback(() => {
     const nextValue = minPlotAreaDraft ? Number(minPlotAreaDraft) : undefined;
     const currentValue = filterParams.minPlotArea;
+    const range = normalizeRange(nextValue, filterParams.maxPlotArea);
 
     if (nextValue === currentValue || (nextValue == null && currentValue == null)) {
       return;
     }
 
     updateFilterParams({
-      minPlotArea: nextValue ?? ("" as unknown as number),
+      minPlotArea: range.min ?? ("" as unknown as number),
+      maxPlotArea: range.max ?? ("" as unknown as number),
       page: 1,
     });
-  }, [filterParams.minPlotArea, minPlotAreaDraft, updateFilterParams]);
+  }, [filterParams.maxPlotArea, filterParams.minPlotArea, minPlotAreaDraft, updateFilterParams]);
 
   const onMaxPlotAreaCommit = useCallback(() => {
     const nextValue = maxPlotAreaDraft ? Number(maxPlotAreaDraft) : undefined;
     const currentValue = filterParams.maxPlotArea;
+    const range = normalizeRange(filterParams.minPlotArea, nextValue);
 
     if (nextValue === currentValue || (nextValue == null && currentValue == null)) {
       return;
     }
 
     updateFilterParams({
-      maxPlotArea: nextValue ?? ("" as unknown as number),
+      minPlotArea: range.min ?? ("" as unknown as number),
+      maxPlotArea: range.max ?? ("" as unknown as number),
       page: 1,
     });
-  }, [filterParams.maxPlotArea, maxPlotAreaDraft, updateFilterParams]);
+  }, [filterParams.maxPlotArea, filterParams.minPlotArea, maxPlotAreaDraft, updateFilterParams]);
 
   const onGovernorateChange = useCallback((value: string) => {
     setGovernorateDraft(value);

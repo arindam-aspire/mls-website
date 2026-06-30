@@ -1,6 +1,7 @@
 "use client";
 
 import type { BreadcrumbItem } from "@/src/components/ui/breadcrumb";
+import { getPhoneInputCountryByCode } from "@/src/components/ui/phone-input/countries";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { isOwnerUser, resolveListingsMenuPath } from "@/src/features/auth/utils/profileMenuRoleAccess";
 import {
@@ -121,6 +122,7 @@ export function usePropertyCreateScreen() {
   // otherwise resume-from-draft-list skips hydration.
   const draftHydratedForRef = useRef<string | null>(null);
   const hasInitializedRef = useRef(false);
+  const hasAppliedDefaultOwnerRef = useRef(false);
 
   // 5. Data fetching / queries
   const { mutateAsync: fetchPropertyTaxonomy } = useGetPropertyTaxonomy();
@@ -473,6 +475,56 @@ export function usePropertyCreateScreen() {
   );
 
   // 9. Effects
+  useEffect(() => {
+    if (hasAppliedDefaultOwnerRef.current || !user || !isOwnerUser(user) || submissionId) {
+      return;
+    }
+
+    hasAppliedDefaultOwnerRef.current = true;
+    setPropertyDetails((previous) => {
+      const existingOwners = previous.owner_info?.owners ?? [];
+      const hasOwnerContent = existingOwners.some((owner) =>
+        [
+          owner.owner_name,
+          owner.email,
+          owner.phone_number,
+          owner.social_security_id,
+          owner.nationality,
+          owner.owner_address,
+        ].some((value) => value?.trim()) || owner.owner_documents.length > 0,
+      );
+
+      if (hasOwnerContent) {
+        return previous;
+      }
+
+      const jordan = getPhoneInputCountryByCode("JO");
+      const rawPhone = user.phone_number?.trim() ?? "";
+      const phoneNumber =
+        jordan && rawPhone.startsWith(jordan.dialCode)
+          ? rawPhone.slice(jordan.dialCode.length).replace(/\D/g, "")
+          : rawPhone.replace(/\D/g, "");
+
+      return {
+        ...previous,
+        owner_info: {
+          owners: [
+            {
+              owner_name: user.full_name ?? "",
+              email: user.email ?? "",
+              country_code: jordan?.dialCode ?? "+962",
+              phone_number: phoneNumber,
+              social_security_id: "",
+              nationality: "",
+              owner_address: "",
+              owner_documents: [],
+            },
+          ],
+        },
+      };
+    });
+  }, [submissionId, user]);
+
   useEffect(() => {
     if (hasInitializedRef.current) {
       return;

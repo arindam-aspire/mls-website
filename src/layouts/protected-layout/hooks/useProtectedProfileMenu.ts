@@ -28,6 +28,7 @@ const PROFILE_MENU_ITEMS = [
 const AGENCY_ACCOUNT_MENU_ITEMS = [
   { labelKey: "accountProfile", path: "/my-profile" },
   { labelKey: "agencySettings", path: DRAWER_AGENCY_SETTINGS_PATH },
+  { labelKey: "mySavedSearches", path: "/saved-searches" },
 ] as const;
 
 /** Agent popover: profile link only (logout is separate). */

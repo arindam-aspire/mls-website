@@ -8,18 +8,30 @@ export function parseAgentInviteLink(rawLink: string): string {
     return trimmed;
   }
 
-  if (!trimmed.includes(",")) {
-    return trimmed;
-  }
-
-  const segments = trimmed
-    .split(",")
-    .map((segment) => segment.trim())
-    .filter(Boolean);
+  const segments = trimmed.includes(",")
+    ? trimmed
+        .split(",")
+        .map((segment) => segment.trim())
+        .filter(Boolean)
+    : [trimmed];
 
   const inviteSegment = segments.find(
     (segment) => segment.includes("agent-invite") || segment.includes("token="),
   );
 
-  return inviteSegment ?? segments[segments.length - 1] ?? trimmed;
+  const link = inviteSegment ?? segments[segments.length - 1] ?? trimmed;
+
+  if (/^https?:\/\//i.test(link) || typeof window === "undefined") {
+    return link;
+  }
+
+  const locale =
+    window.location.pathname.match(/^\/(en|ar|es|fr)(?:\/|$)/)?.[1] ?? "en";
+  const localizedPath = link.startsWith(`/${locale}/`)
+    ? link
+    : link.startsWith("/")
+      ? `/${locale}${link}`
+      : `/${locale}/${link}`;
+
+  return `${window.location.origin}${localizedPath}`;
 }

@@ -16,29 +16,26 @@ export function usePropertyMediaUpload(submissionId: string | null) {
   const toast = useToast();
 
   // 8. Refs
-  const toastRef = useRef(toast);
-  toastRef.current = toast;
-  const submissionIdRef = useRef(submissionId);
-  submissionIdRef.current = submissionId;
+  const draftClientIdRef = useRef<string | null>(null);
 
   // 7. Callbacks
-  const ensureSubmissionId = useCallback((): string | null => {
-    if (submissionIdRef.current) {
-      return submissionIdRef.current;
+  const resolveUploadTarget = useCallback((): { submission_id?: string; draft_client_id?: string } => {
+    if (submissionId) {
+      return { submission_id: submissionId };
     }
 
-    toastRef.current.error(t("propertyMediaUploadRequiresDraft"), {
-      description: t("propertyMediaUploadRequiresDraftDescription"),
-    });
-    return null;
-  }, [t]);
+    if (!draftClientIdRef.current) {
+      draftClientIdRef.current =
+        globalThis.crypto?.randomUUID?.() ??
+        `property-draft-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    }
+
+    return { draft_client_id: draftClientIdRef.current };
+  }, [submissionId]);
 
   const onUploadPropertyMedia = useCallback(
     async (file: File) => {
-      const activeSubmissionId = ensureSubmissionId();
-      if (!activeSubmissionId) {
-        return null;
-      }
+      const uploadTarget = resolveUploadTarget();
 
       const validationError = validatePropertyMediaImageFile(file, {
         invalidType: t("propertyMediaUploadInvalidType"),
@@ -46,29 +43,26 @@ export function usePropertyMediaUpload(submissionId: string | null) {
       });
 
       if (validationError) {
-        toastRef.current.error(t("propertyMediaUploadError"), {
+        toast.error(t("propertyMediaUploadError"), {
           description: validationError,
         });
         return null;
       }
 
       try {
-        return await uploadPropertyMediaImage(file, activeSubmissionId);
+        return await uploadPropertyMediaImage(file, uploadTarget);
       } catch (error) {
         const message = error instanceof Error ? error.message : undefined;
-        toastRef.current.error(t("propertyMediaUploadError"), { description: message });
+        toast.error(t("propertyMediaUploadError"), { description: message });
         return null;
       }
     },
-    [ensureSubmissionId, t],
+    [resolveUploadTarget, t, toast],
   );
 
   const onUploadPropertyDocument = useCallback(
     async (file: File) => {
-      const activeSubmissionId = ensureSubmissionId();
-      if (!activeSubmissionId) {
-        return null;
-      }
+      const uploadTarget = resolveUploadTarget();
 
       const validationError = validateOwnerDocumentFile(file, {
         invalidType: t("propertyDocumentUploadInvalidType"),
@@ -76,21 +70,21 @@ export function usePropertyMediaUpload(submissionId: string | null) {
       });
 
       if (validationError) {
-        toastRef.current.error(t("propertyDocumentUploadError"), {
+        toast.error(t("propertyDocumentUploadError"), {
           description: validationError,
         });
         return null;
       }
 
       try {
-        return await uploadPropertyDocument(file, activeSubmissionId);
+        return await uploadPropertyDocument(file, uploadTarget);
       } catch (error) {
         const message = error instanceof Error ? error.message : undefined;
-        toastRef.current.error(t("propertyDocumentUploadError"), { description: message });
+        toast.error(t("propertyDocumentUploadError"), { description: message });
         return null;
       }
     },
-    [ensureSubmissionId, t],
+    [resolveUploadTarget, t, toast],
   );
 
   // 10. Return values

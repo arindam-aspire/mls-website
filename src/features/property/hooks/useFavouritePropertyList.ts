@@ -122,7 +122,7 @@ export function useFavouritePropertyList() {
 
   // 7. Callbacks
   const onBrowseProperties = useCallback(() => {
-    router.push("/property-list");
+    router.push("/property-list?status=buy&category=residential&page=1");
   }, [router]);
 
   const openUpcomingFeature = useCallback(() => {

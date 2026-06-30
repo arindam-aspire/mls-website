@@ -32,6 +32,11 @@ export function useAuthorize(requiredPermission: PermissionKey) {
       return;
     }
 
+    if (user.requires_password_set && pathname !== "/set-new-password") {
+      router.replace("/set-new-password");
+      return;
+    }
+
     if (!hasAllowedPermission && pathname !== unauthorizedPath) {
       router.replace(unauthorizedPath);
     }

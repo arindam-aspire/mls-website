@@ -25,6 +25,7 @@ const PROTECTED_ROUTES = [
   "/recently-viewed",
   "/owners",
   "/agents",
+  "/set-new-password",
 ];
 
 export function proxy(request: NextRequest) {

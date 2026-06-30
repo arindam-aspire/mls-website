@@ -88,6 +88,7 @@ function renderSubmissionCell(
     resolveSubmittedOnDate(row),
     appLocale,
   );
+  const assignedAgent = row.agent?.name?.trim();
 
   return (
     <div className="min-w-0">
@@ -97,6 +98,11 @@ function renderSubmissionCell(
       <span className="mt-0.5 block w-full min-w-0 truncate text-xs text-muted">
         {formattedDate ?? labels.submittedOnEmpty}
       </span>
+      {assignedAgent ? (
+        <span className="mt-0.5 block w-full min-w-0 truncate text-xs text-muted">
+          Assigned: {assignedAgent}
+        </span>
+      ) : null}
     </div>
   );
 }

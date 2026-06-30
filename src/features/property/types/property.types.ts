@@ -157,6 +157,10 @@ export type AgentPropertyListItem = {
   can_delete_submission: boolean;
   agency: unknown | null;
   submitted_by?: string | null;
+  agent_user_id?: string | null;
+  agent_name?: string | null;
+  agent_email?: string | null;
+  agent_phone?: string | null;
 };
 
 export type AgentPropertiesListData = {
@@ -200,6 +204,9 @@ export type AdminPropertySubmissionListItem = {
   status: string;
   property_id: string;
   agent_user_id: string | null;
+  agent_name: string | null;
+  agent_email: string | null;
+  agent_phone: string | null;
   has_assigned_agent: boolean;
   property_hash: number;
   property_title: string;

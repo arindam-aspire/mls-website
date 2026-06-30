@@ -43,6 +43,10 @@ export function mapAdminSubmissionToAgentPropertyListItem(
     can_delete_submission: false,
     agency: null,
     submitted_by: item.submitted_by_name?.trim() || item.submitted_by?.trim() || null,
+    agent_user_id: item.agent_user_id,
+    agent_name: item.agent_name,
+    agent_email: item.agent_email,
+    agent_phone: item.agent_phone,
   };
 }
 

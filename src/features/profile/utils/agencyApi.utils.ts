@@ -77,6 +77,16 @@ export function normalizeAgencyListResponse(
   params: { skip: number; limit: number },
 ): NormalizedAgencyListResponse {
   const rawItems = response.data ?? [];
+  const pagination =
+    response.meta &&
+    typeof response.meta === "object" &&
+    "pagination" in response.meta &&
+    response.meta.pagination &&
+    typeof response.meta.pagination === "object"
+      ? (response.meta.pagination as { total?: unknown })
+      : null;
+  const total =
+    typeof pagination?.total === "number" ? pagination.total : rawItems.length;
 
   const items = rawItems
     .map(normalizeAgencyListItem)
@@ -84,7 +94,7 @@ export function normalizeAgencyListResponse(
 
   return {
     items,
-    total: items.length,
+    total,
     skip: params.skip,
     limit: params.limit,
   };
