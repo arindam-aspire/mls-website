@@ -2,6 +2,8 @@
 
 import { KeyRound } from "lucide-react";
 import { useCallback, useState } from "react";
+import { Button } from "@/src/components/ui";
+import { useLogout } from "@/src/features/auth/mutations/auth.mutation";
 import { getLoggedInUser, changePassword } from "@/src/features/auth/services/auth.service";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { ChangePasswordForm } from "@/src/features/profile/components/ChangePasswordForm";
@@ -14,6 +16,7 @@ export function SetNewPasswordScreen() {
   const toast = useToast();
   const setUser = useAuthStore((state) => state.setUser);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { mutate: logout, isPending: isLoggingOut } = useLogout();
 
   const handleSubmit = useCallback(
     async (values: ChangePasswordFormValues) => {
@@ -47,12 +50,22 @@ export function SetNewPasswordScreen() {
           <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
             <KeyRound className="size-5" aria-hidden />
           </span>
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <h1 className="text-2xl font-semibold text-text">Set new password</h1>
             <p className="mt-1 text-sm text-muted">
               Replace your temporary password before continuing.
             </p>
           </div>
+          <Button
+            type="button"
+            variant="outline"
+            color="inherit"
+            size="sm"
+            disabled={isLoggingOut}
+            onClick={() => logout()}
+          >
+            Sign Out
+          </Button>
         </div>
 
         <ChangePasswordForm onSubmit={handleSubmit} isLoading={isSubmitting} />

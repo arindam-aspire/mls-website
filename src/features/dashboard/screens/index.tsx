@@ -84,10 +84,13 @@ export default function DashboardScreen() {
     pendingSubmissionCount,
     activePropertyCount,
     unreadNotificationCount,
+    canReviewSubmissions,
+    isAgent,
   } = useDashboardScreen();
 
   const roles = new Set(user?.roles?.map((role) => role.name) ?? []);
   const isSuperAdmin = roles.has(UserRole.SUPER_ADMIN);
+  const isAgentDashboard = isAgent && !canReviewSubmissions;
   const displayName = user?.full_name?.trim() || user?.email || "User";
 
   const goTo = (path: string) => {
@@ -112,8 +115,10 @@ export default function DashboardScreen() {
             </p>
             <h1 className="mt-2 text-3xl font-bold text-text">Dashboard</h1>
             <p className="mt-2 max-w-3xl text-sm text-muted">
-              Welcome, {displayName}. Review platform activity, pending property approvals,
-              agency coverage, and operational notifications from one place.
+              Welcome, {displayName}.{" "}
+              {isAgentDashboard
+                ? "Review assigned listings and operational notifications from one place."
+                : "Review platform activity, pending property approvals, agency coverage, and operational notifications from one place."}
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
@@ -123,17 +128,19 @@ export default function DashboardScreen() {
               iconStart={<ListChecks className="size-4" aria-hidden />}
               onClick={() => goTo("/manage-listings")}
             >
-              Review Listings
+              {isAgentDashboard ? "View Assigned Listings" : "Review Listings"}
             </Button>
-            <Button
-              type="button"
-              variant="outline"
-              color="inherit"
-              iconStart={<Plus className="size-4" aria-hidden />}
-              onClick={() => goTo("/property-create")}
-            >
-              Add Property
-            </Button>
+            {!isAgentDashboard ? (
+              <Button
+                type="button"
+                variant="outline"
+                color="inherit"
+                iconStart={<Plus className="size-4" aria-hidden />}
+                onClick={() => goTo("/property-create")}
+              >
+                Add Property
+              </Button>
+            ) : null}
           </div>
         </div>
         {hasError ? (
@@ -145,26 +152,34 @@ export default function DashboardScreen() {
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4" aria-label="Dashboard metrics">
         <KpiCard
-          label="Agencies"
-          value={agencyCount}
-          helper="Active and verified agencies available to the platform."
+          label={isAgentDashboard ? "Assigned Listings" : "Agencies"}
+          value={isAgentDashboard ? activePropertyCount : agencyCount}
+          helper={
+            isAgentDashboard
+              ? "Listings currently assigned to your account."
+              : "Agency records available to this workspace."
+          }
           icon={Building2}
           tone="blue"
         />
-        <KpiCard
-          label="Pending Reviews"
-          value={pendingSubmissionCount}
-          helper="Property submissions waiting for Super Admin approval."
-          icon={FileClock}
-          tone="amber"
-        />
-        <KpiCard
-          label="Visible Listings"
-          value={activePropertyCount}
-          helper="Public listing count currently returned by marketplace search."
-          icon={CheckCircle2}
-          tone="green"
-        />
+        {!isAgentDashboard ? (
+          <>
+            <KpiCard
+              label="Pending Reviews"
+              value={pendingSubmissionCount}
+              helper="Property submissions waiting for Super Admin approval."
+              icon={FileClock}
+              tone="amber"
+            />
+            <KpiCard
+              label="Visible Listings"
+              value={activePropertyCount}
+              helper="Public listing count currently returned by marketplace search."
+              icon={CheckCircle2}
+              tone="green"
+            />
+          </>
+        ) : null}
         <KpiCard
           label="Unread Alerts"
           value={unreadNotificationCount}
@@ -174,7 +189,29 @@ export default function DashboardScreen() {
         />
       </section>
 
-      <section className="grid gap-4 xl:grid-cols-[minmax(0,1.4fr)_minmax(22rem,0.8fr)]">
+      {isAgentDashboard ? (
+        <section className="rounded-lg border border-secondary/15 bg-surface p-6 shadow-sm">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <h2 className="text-lg font-bold text-text">Assigned Listings</h2>
+              <p className="mt-1 text-sm text-muted">
+                Continue from your agency-assigned property queue.
+              </p>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              color="inherit"
+              onClick={() => goTo("/manage-listings")}
+            >
+              Open Manage Listings
+            </Button>
+          </div>
+        </section>
+      ) : null}
+
+      {canReviewSubmissions ? (
+        <section className="grid gap-4 xl:grid-cols-[minmax(0,1.4fr)_minmax(22rem,0.8fr)]">
         <div className="rounded-lg border border-secondary/15 bg-surface shadow-sm">
           <div className="flex items-center justify-between gap-4 border-b border-secondary/10 px-5 py-4">
             <div>
@@ -231,7 +268,8 @@ export default function DashboardScreen() {
             ) : null}
           </div>
         </div>
-      </section>
+        </section>
+      ) : null}
     </main>
   );
 }

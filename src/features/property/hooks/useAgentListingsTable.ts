@@ -104,7 +104,8 @@ export function useAgentListingsTable({
 
   // 4. Local state
   const [search, setSearch] = useState("");
-  const [status, setStatus] = useState("");
+  const initialStatus = isManageListings ? "" : MY_LISTING_STATUS_FILTER_VALUES[0];
+  const [status, setStatus] = useState(initialStatus);
   const [page, setPage] = useState(DEFAULT_PAGE);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [sortConfig, setSortConfig] = useState<SortConfig>([]);
@@ -119,8 +120,9 @@ export function useAgentListingsTable({
     enabled ? null : [],
   );
   const [paginationMeta, setPaginationMeta] = useState<PaginationMeta | undefined>();
-  const [requestParams, setRequestParams] = useState<AgentPropertiesListParams>(() =>
-    buildRequestParams("", "", DEFAULT_PAGE, DEFAULT_PAGE_SIZE),
+  const requestParams = useMemo(
+    () => buildRequestParams(search, status, page, pageSize),
+    [page, pageSize, search, status],
   );
   const [rejectedReasonListing, setRejectedReasonListing] =
     useState<LibraryPropertyListing | null>(null);
@@ -140,7 +142,6 @@ export function useAgentListingsTable({
         return;
       }
 
-      setRequestParams(params);
       getAgentProperties(params, {
         onSuccess: (response) => {
           const data = response.data;
@@ -557,8 +558,8 @@ export function useAgentListingsTable({
       return;
     }
 
-    fetchAgentProperties(buildRequestParams(search, status, page, pageSize));
-  }, [enabled, fetchAgentProperties, page, pageSize, search, status]);
+    fetchAgentProperties(requestParams);
+  }, [enabled, fetchAgentProperties, requestParams]);
 
   // 10. Return values
   return {
