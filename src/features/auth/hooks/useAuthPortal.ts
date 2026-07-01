@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuthStore } from "../store/auth.store";
+import { useAuthStore } from "@/src/features/auth/store/auth.store";
 
 export function useAuthPortal(): "agent" | null {
   const agentPortal = useAuthStore((state) => state.agentPortal);

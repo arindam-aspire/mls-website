@@ -3,7 +3,7 @@
 import { useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { useResetPassword } from "../mutations/auth.mutation";
-import { useAuthStore } from "../store/auth.store";
+import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { useAuthModalNavigation } from "./useAuthPortal";
 import { useAuthFlowContext, useAuthScreenLegalFooter } from "./authScreen.utils";
 import { useToast } from "@/src/hooks/useToast";

@@ -10,7 +10,7 @@ import type { SocialAccountType } from "../components/SocialAuthForm";
 import { resolveSignInRole } from "../types/signIn.types";
 import type { SignUpFormValues, SignUpRequest } from "../types/auth.types";
 import { useSignUp } from "../mutations/auth.mutation";
-import { useAuthStore } from "../store/auth.store";
+import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { useAuthModalNavigation } from "./useAuthPortal";
 import { useAuthScreenLegalFooter } from "./authScreen.utils";
 

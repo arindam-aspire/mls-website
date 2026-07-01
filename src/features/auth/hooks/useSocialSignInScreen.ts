@@ -6,7 +6,7 @@ import {
   resolveSocialSignUpViewForAccountType,
 } from "../authViews";
 import type { SocialAccountType } from "../components/SocialAuthForm";
-import { useAuthStore } from "../store/auth.store";
+import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { useAuthModalNavigation } from "./useAuthPortal";
 import { useAuthScreenLegalFooter } from "./authScreen.utils";
 

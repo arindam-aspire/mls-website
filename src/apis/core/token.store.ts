@@ -5,18 +5,27 @@ const REFRESH_TOKEN_KEY = "refresh_token";
 const REMEMBER_ME_KEY = "rememberMe";
 const USERNAME_KEY = "username";
 
-const cookieOptions: Cookies.CookieAttributes = {
-  secure: process.env.NODE_ENV === "production",
-  sameSite: "Strict",
-};
+function getCookieOptions(): Cookies.CookieAttributes {
+  const isHttps =
+    typeof window !== "undefined"
+      ? window.location.protocol === "https:"
+      : process.env.NODE_ENV === "production";
 
-const persistentCookieOptions: Cookies.CookieAttributes = {
-  ...cookieOptions,
-  expires: 7,
-};
+  return {
+    secure: isHttps,
+    sameSite: "Strict",
+  };
+}
+
+function getPersistentCookieOptions(): Cookies.CookieAttributes {
+  return {
+    ...getCookieOptions(),
+    expires: 7,
+  };
+}
 
 function rememberMeCookieOptions(rememberMe: boolean): Cookies.CookieAttributes {
-  return rememberMe ? persistentCookieOptions : cookieOptions;
+  return rememberMe ? getPersistentCookieOptions() : getCookieOptions();
 }
 
 export const tokenStore = {
@@ -26,7 +35,7 @@ export const tokenStore = {
   },
   setAccessToken: (token: string): void => {
     Cookies.set(ACCESS_TOKEN_KEY, token, {
-      ...cookieOptions,
+      ...getCookieOptions(),
       expires: 1,
     });
   },

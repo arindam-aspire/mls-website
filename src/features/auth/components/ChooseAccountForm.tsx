@@ -5,7 +5,7 @@ import { Button } from "@/src/components/ui";
 import { cn } from "@/src/lib/cn";
 import { authFormOverlineClasses, bodyTextClasses } from "@/src/lib/typography";
 import { AUTH_VIEW } from "../authViews";
-import { useAuthStore } from "../store/auth.store";
+import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import type { ChooseAccountMode, ChooseAccountType } from "../types/chooseAccount.types";
 
 export type { ChooseAccountMode, ChooseAccountType } from "../types/chooseAccount.types";

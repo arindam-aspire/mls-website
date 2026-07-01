@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react";
 import { useTranslations } from "next-intl";
 import { AUTH_VIEW } from "../authViews";
-import { useAuthStore } from "../store/auth.store";
+import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { useAuthScreenLegalFooter } from "./authScreen.utils";
 
 export function useAccountChooseScreen() {

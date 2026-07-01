@@ -8,7 +8,7 @@ import {
   useSignInWithOtpRequest,
   useSignInWithOtpVerify,
 } from "../mutations/auth.mutation";
-import { useAuthStore } from "../store/auth.store";
+import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { useAuthModalNavigation } from "./useAuthPortal";
 import { useAuthFlowContext, useAuthScreenLegalFooter } from "./authScreen.utils";
 

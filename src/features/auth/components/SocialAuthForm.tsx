@@ -12,7 +12,7 @@ import {
   resolveEmailSignInView,
   resolveEmailSignUpView,
 } from "../authViews";
-import { useAuthStore } from "../store/auth.store";
+import { useAuthStore } from "@/src/features/auth/store/auth.store";
 
 type BrandIconProps = SVGProps<SVGSVGElement>;
 

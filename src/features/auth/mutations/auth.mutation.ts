@@ -5,7 +5,7 @@ import { confirmSignUp, agencySignUp, changePassword, forgotPassword, getLoggedI
 import { useToast } from "@/src/hooks/useToast";
 import { clearNotificationQueryCache } from "@/src/features/notifications/utils/clearNotificationQueryCache";
 import { type ApiError } from "@/src/apis/core/error.normalizer";
-import { useAuthStore } from "../store/auth.store";
+import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import type {
   LoggedInUser,
   SignInResponse,

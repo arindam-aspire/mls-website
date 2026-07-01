@@ -8,7 +8,7 @@ import { useForm } from "@/src/hooks/useForm";
 import { cn } from "@/src/lib/cn";
 import { authFormOverlineClasses, bodyTextClasses } from "@/src/lib/typography";
 import { AUTH_VIEW } from "../authViews";
-import { useAuthStore } from "../store/auth.store";
+import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { SignInFormValues } from "../types/auth.types";
 
 type SignInFormProps = {

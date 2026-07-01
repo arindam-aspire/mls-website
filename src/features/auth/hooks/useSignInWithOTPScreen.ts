@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { AUTH_VIEW } from "../authViews";
 import type { SignInOtpMethod, SignInWithOTPFormValues } from "../components/SignInWithOTPForm";
 import { useSignInWithOtpRequest } from "../mutations/auth.mutation";
-import { useAuthStore } from "../store/auth.store";
+import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { useAuthModalNavigation } from "./useAuthPortal";
 import { useAuthFlowContext, useAuthScreenLegalFooter } from "./authScreen.utils";
 import { useToast } from "@/src/hooks/useToast";

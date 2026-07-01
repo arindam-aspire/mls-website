@@ -7,7 +7,7 @@ import {
   resolveSignInViewAfterPasswordReset,
   resolveSignInViewFromSignUpReturnView,
 } from "../authViews";
-import { useAuthStore } from "../store/auth.store";
+import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { getAuthContextFromStack, isAgencyContextFromStack } from "./authStack.utils";
 
 export function useAuthScreenLegalFooter() {

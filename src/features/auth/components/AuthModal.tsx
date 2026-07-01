@@ -8,7 +8,7 @@ import {
 } from "@/src/components/ui";
 import { AUTH_VIEW, type AuthView } from "../authViews";
 import { readAuthModalSession } from "../store/authModalStorage";
-import { useAuthStore } from "../store/auth.store";
+import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { AgencyEmailSignInScreen } from "../screens/AgencyEmailSignInScreen";
 import { AgencyRegistrationScreen } from "../screens/AgencyRegistrationScreen";
 import { AgencySignInScreen } from "../screens/AgencySignInScreen";
