@@ -8,8 +8,12 @@ import type { AppLocale } from "@/src/i18n/routing";
 import { useToast } from "@/src/hooks/useToast";
 import type { ApiError } from "@/src/apis/core/error.normalizer";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
-import { isSuperAdminUser } from "@/src/features/auth/utils/profileMenuRoleAccess";
+import {
+  isAgencyUser,
+  isSuperAdminUser,
+} from "@/src/features/auth/utils/profileMenuRoleAccess";
 import type { ListTableView, PinnedColumns, SortConfig } from "@abdoun/abdoun-library";
+import { PROPERTY_CREATE_SUBMISSION_ID_PARAM } from "../constants/propertyCreate.constants";
 import {
   ADMIN_PROPERTY_SUBMISSION_STATUS_FILTER_VALUES,
   type AdminPropertySubmissionStatusFilterValue,
@@ -28,6 +32,7 @@ import { buildMyListingTableColumns } from "../utils/buildMyListingTableColumns"
 import {
   useGetAdminPropertySubmissions,
   useAssignAdminPropertyAgent,
+  useDeactivateAdminPropertySubmission,
   useReviewAdminPropertySubmission,
 } from "../mutations/property.mutation";
 import type {
@@ -115,6 +120,8 @@ export function useAdminPropertySubmissionsTable({
     useState<LibraryPropertyListing | null>(null);
   const [pendingUnassignListing, setPendingUnassignListing] =
     useState<LibraryPropertyListing | null>(null);
+  const [pendingDeactivateListing, setPendingDeactivateListing] =
+    useState<LibraryPropertyListing | null>(null);
   const [pendingAssignListing, setPendingAssignListing] =
     useState<LibraryPropertyListing | null>(null);
   const [assignAgentModalMode, setAssignAgentModalMode] =
@@ -128,6 +135,8 @@ export function useAdminPropertySubmissionsTable({
     useGetAdminPropertySubmissions();
   const { mutate: reviewAdminPropertySubmission, isPending: isReviewingSubmission } =
     useReviewAdminPropertySubmission();
+  const { mutate: deactivateAdminPropertySubmission, isPending: isDeactivatingSubmission } =
+    useDeactivateAdminPropertySubmission();
   const { mutate: assignAdminPropertyAgent, isPending: isAssigningAgent } =
     useAssignAdminPropertyAgent();
 
@@ -170,11 +179,28 @@ export function useAdminPropertySubmissionsTable({
     () => ({
       assignAgent: t("workflow.assignAgent"),
       approve: t("workflow.approve"),
+      deactivate: t("workflow.deactivate"),
+      edit: t("workflow.edit"),
       reject: t("workflow.reject"),
       reassign: t("workflow.reassign"),
       unassign: t("workflow.unassign"),
     }),
     [t],
+  );
+
+  const adminRowActionOptions = useMemo(
+    () => {
+      const isSuperAdmin = isSuperAdminUser(user);
+      const isAgencyAdmin = isAgencyUser(user);
+
+      return {
+        canReviewSubmissions: isSuperAdmin || isAgencyAdmin,
+        canManageAgentAssignment: isAgencyAdmin,
+        canDeactivateSubmissions: isSuperAdmin,
+        canEditRejectedSubmissions: isAgencyAdmin,
+      };
+    },
+    [user],
   );
 
   const submissionIdByPropertyId = useMemo(() => {
@@ -190,7 +216,7 @@ export function useAdminPropertySubmissionsTable({
   const tableListings = useMemo(() => {
     return mapAdminPropertySubmissionListItems(listings ?? [], {
       adminRowActionLabels,
-      canReviewSubmissions: isSuperAdminUser(user),
+      adminRowActionOptions,
     }).map((row) => {
       const key = row.status.key;
 
@@ -206,7 +232,7 @@ export function useAdminPropertySubmissionsTable({
         },
       };
     });
-  }, [adminRowActionLabels, listings, tStatus, user]);
+  }, [adminRowActionLabels, adminRowActionOptions, listings, tStatus]);
 
   const tableLocale = useMemo(() => resolveLibraryLocale(locale), [locale]);
 
@@ -251,6 +277,21 @@ export function useAdminPropertySubmissionsTable({
       router.push(`/propert-details/${listing.id}`);
     },
     [router],
+  );
+
+  const navigateToSubmissionEdit = useCallback(
+    (propertyId: string) => {
+      const submissionId = submissionIdByPropertyId.get(propertyId);
+
+      if (!submissionId) {
+        return;
+      }
+
+      router.push(
+        `/property-create?${PROPERTY_CREATE_SUBMISSION_ID_PARAM}=${encodeURIComponent(submissionId)}`,
+      );
+    },
+    [router, submissionIdByPropertyId],
   );
 
   const openAssignAgentModal = useCallback(
@@ -402,6 +443,59 @@ export function useAdminPropertySubmissionsTable({
     toast,
   ]);
 
+  const openDeactivateConfirm = useCallback((listing: LibraryPropertyListing) => {
+    setPendingDeactivateListing(listing);
+  }, []);
+
+  const closeDeactivateConfirm = useCallback(() => {
+    if (isDeactivatingSubmission) {
+      return;
+    }
+
+    setPendingDeactivateListing(null);
+  }, [isDeactivatingSubmission]);
+
+  const confirmDeactivateListing = useCallback(() => {
+    if (!pendingDeactivateListing || isDeactivatingSubmission) {
+      return;
+    }
+
+    const submissionId = submissionIdByPropertyId.get(pendingDeactivateListing.property_id);
+
+    if (!submissionId) {
+      return;
+    }
+
+    setReviewingSubmissionId(submissionId);
+
+    deactivateAdminPropertySubmission(submissionId, {
+      onSuccess: (response) => {
+        toast.success(t("deactivateSuccessTitle"), {
+          description: response.message ?? t("deactivateSuccessDescription"),
+        });
+        setReviewingSubmissionId(null);
+        setPendingDeactivateListing(null);
+        fetchAdminPropertySubmissions(requestParams);
+      },
+      onError: (error) => {
+        setReviewingSubmissionId(null);
+        const apiError = error as unknown as ApiError;
+        toast.error(t("deactivateError"), {
+          description: apiError.message,
+        });
+      },
+    });
+  }, [
+    deactivateAdminPropertySubmission,
+    fetchAdminPropertySubmissions,
+    isDeactivatingSubmission,
+    pendingDeactivateListing,
+    requestParams,
+    submissionIdByPropertyId,
+    t,
+    toast,
+  ]);
+
   const openApproveConfirm = useCallback((listing: LibraryPropertyListing) => {
     setPendingApproveListing(listing);
   }, []);
@@ -523,6 +617,20 @@ export function useAdminPropertySubmissionsTable({
     ],
   );
 
+  const onRowAction = useCallback(
+    (actionId: string, listing: LibraryPropertyListing) => {
+      if (actionId === "edit") {
+        navigateToSubmissionEdit(listing.property_id);
+        return;
+      }
+
+      if (actionId === "deactivate") {
+        openDeactivateConfirm(listing);
+      }
+    },
+    [navigateToSubmissionEdit, openDeactivateConfirm],
+  );
+
   const workflowActions = useMemo(
     () => ({
       view: {
@@ -551,7 +659,9 @@ export function useAdminPropertySubmissionsTable({
       },
       continue: {
         label: t("workflow.continue"),
-        onClick: navigateToPropertyView,
+        onClick: (listing: LibraryPropertyListing) => {
+          navigateToSubmissionEdit(listing.property_id);
+        },
       },
       rejected_reason: {
         label: t("workflow.viewRejectedReason"),
@@ -560,7 +670,16 @@ export function useAdminPropertySubmissionsTable({
         },
       },
     }),
-    [navigateToPropertyView, openApproveConfirm, openAssignModal, openRejectModal, openReassignModal, openUnassignConfirm, t],
+    [
+      navigateToPropertyView,
+      navigateToSubmissionEdit,
+      openApproveConfirm,
+      openAssignModal,
+      openRejectModal,
+      openReassignModal,
+      openUnassignConfirm,
+      t,
+    ],
   );
 
   const onClickProperty = useCallback(
@@ -568,6 +687,13 @@ export function useAdminPropertySubmissionsTable({
       navigateToPropertyView(listing);
     },
     [navigateToPropertyView],
+  );
+
+  const listingRowActionOptions = useMemo(
+    () => ({
+      onRowAction,
+    }),
+    [onRowAction],
   );
 
   const allColumns = useMemo(
@@ -578,8 +704,9 @@ export function useAdminPropertySubmissionsTable({
         appLocale: locale,
         onClick: onClickProperty,
         workflowActions,
+        listingRowActionOptions,
       }),
-    [locale, onClickProperty, t, tableLocale, workflowActions],
+    [listingRowActionOptions, locale, onClickProperty, t, tableLocale, workflowActions],
   );
 
   const columns = useMemo(
@@ -616,16 +743,28 @@ export function useAdminPropertySubmissionsTable({
     [columnVisibility, t],
   );
 
+  const rejectedSubmissionReviewReason = useMemo(() => {
+    if (!rejectedReasonListing) {
+      return "";
+    }
+
+    const sourceItem = listings?.find(
+      (item) => item.property_id === rejectedReasonListing.property_id,
+    );
+
+    return sourceItem?.review_reason?.trim() ?? "";
+  }, [listings, rejectedReasonListing]);
+
   const rejectedReasonModal = useMemo(
     () => ({
       open: rejectedReasonListing !== null,
       title: t("rejectedReasonModal.title"),
-      reason: "",
+      reason: rejectedSubmissionReviewReason,
       emptyReason: t("rejectedReasonModal.empty"),
       closeLabel: t("rejectedReasonModal.close"),
       onClose: () => setRejectedReasonListing(null),
     }),
-    [rejectedReasonListing, t],
+    [rejectedReasonListing, rejectedSubmissionReviewReason, t],
   );
 
   const isApprovingPendingListing = useMemo(() => {
@@ -755,6 +894,52 @@ export function useAdminPropertySubmissionsTable({
     ],
   );
 
+  const isDeactivatingPendingListing = useMemo(() => {
+    if (!pendingDeactivateListing) {
+      return false;
+    }
+
+    const submissionId = submissionIdByPropertyId.get(pendingDeactivateListing.property_id);
+
+    return Boolean(submissionId && reviewingSubmissionId === submissionId && isDeactivatingSubmission);
+  }, [
+    isDeactivatingSubmission,
+    pendingDeactivateListing,
+    reviewingSubmissionId,
+    submissionIdByPropertyId,
+  ]);
+
+  const deactivateConfirmModal = useMemo(
+    () => {
+      if (!enabled || !pendingDeactivateListing) {
+        return null;
+      }
+
+      return {
+        open: true,
+        title: t("deactivateConfirmTitle"),
+        description: t("deactivateConfirmDescription", {
+          title: resolveListingTitle(pendingDeactivateListing, tableLocale),
+        }),
+        confirmLabel: t("workflow.deactivate"),
+        cancelLabel: t("cancelLabel"),
+        deactivatingLabel: t("deactivatingLabel"),
+        isLoading: isDeactivatingPendingListing,
+        onClose: closeDeactivateConfirm,
+        onConfirm: confirmDeactivateListing,
+      };
+    },
+    [
+      closeDeactivateConfirm,
+      confirmDeactivateListing,
+      enabled,
+      isDeactivatingPendingListing,
+      pendingDeactivateListing,
+      t,
+      tableLocale,
+    ],
+  );
+
   const isAssigningPendingListing = useMemo(() => {
     if (!pendingAssignListing) {
       return false;
@@ -849,7 +1034,7 @@ export function useAdminPropertySubmissionsTable({
     workflowActions,
     onClickProperty,
     onClickDelete: undefined,
-    onRowAction: undefined,
+    onRowAction,
     columns,
     pinnedColumns,
     listTitle: t("pageTitle"),
@@ -860,6 +1045,7 @@ export function useAdminPropertySubmissionsTable({
     assignAgentModal,
     rejectSubmissionModal,
     unassignConfirmModal,
+    deactivateConfirmModal,
     deleteConfirmModal: null,
     canViewDelete: false,
   };

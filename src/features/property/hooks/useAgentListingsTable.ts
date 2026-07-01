@@ -597,6 +597,7 @@ export function useAgentListingsTable({
     assignAgentModal: null,
     rejectSubmissionModal: null,
     unassignConfirmModal: null,
+    deactivateConfirmModal: null,
     canViewDelete: true,
   };
 }

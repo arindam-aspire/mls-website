@@ -1,6 +1,7 @@
 import type { AdminPropertySubmissionListItem, AgentPropertyListItem } from "../types/property.types";
 import {
   buildAdminListingRowActions,
+  type AdminListingRowActionOptions,
   type AdminListingRowActionLabels,
 } from "../constants/adminListingRowActions.constants";
 import {
@@ -11,7 +12,7 @@ import {
 
 export type MapAdminPropertySubmissionListItemsOptions = MapAgentPropertyListItemsOptions & {
   adminRowActionLabels?: AdminListingRowActionLabels;
-  canReviewSubmissions?: boolean;
+  adminRowActionOptions?: AdminListingRowActionOptions;
 };
 
 export function mapAdminSubmissionToAgentPropertyListItem(
@@ -26,7 +27,7 @@ export function mapAdminSubmissionToAgentPropertyListItem(
     type_slug: "",
     category_name: "",
     category_slug: "",
-    status_name: item.status,
+    status_name: item.status_label?.trim() || item.status,
     status_slug: item.status,
     price: "",
     currency: "",
@@ -37,7 +38,7 @@ export function mapAdminSubmissionToAgentPropertyListItem(
     submission_status: item.status,
     submission_submitted_at: item.submitted_at,
     submission_reviewed_at: item.reviewed_at,
-    submission_review_reason: null,
+    submission_review_reason: item.review_reason ?? null,
     submission_workflow_label: item.status,
     can_edit_submission: false,
     can_delete_submission: false,
@@ -73,7 +74,7 @@ export function mapAdminPropertySubmissionListItems(
       actions: buildAdminListingRowActions(
         item,
         options.adminRowActionLabels,
-        options.canReviewSubmissions,
+        options.adminRowActionOptions,
       ),
     };
   });

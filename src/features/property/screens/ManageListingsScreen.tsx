@@ -13,7 +13,7 @@ import { useRouter } from "@/src/i18n/navigation";
 import { cn } from "@/src/lib/cn";
 import { bodyLargeTextClasses, headingPageClasses } from "@/src/lib/typography";
 import { ListTableView } from "@abdoun/abdoun-library";
-import { Plus, Trash2, CheckCircle2, UserMinus } from "lucide-react";
+import { Plus, Trash2, CheckCircle2, UserMinus, XCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback, useMemo } from "react";
 
@@ -39,6 +39,7 @@ export default function ManageListingsScreen() {
     assignAgentModal,
     rejectSubmissionModal,
     unassignConfirmModal,
+    deactivateConfirmModal,
     onClickDelete,
     onRowAction,
     workflowActions,
@@ -166,6 +167,24 @@ export default function ManageListingsScreen() {
           confirmIcon={<UserMinus className="size-4" aria-hidden />}
           isLoading={unassignConfirmModal.isLoading}
           loadingLabel={unassignConfirmModal.unassigningLabel}
+        />
+      ) : null}
+
+      {deactivateConfirmModal ? (
+        <ConfirmModal
+          open={deactivateConfirmModal.open}
+          onClose={deactivateConfirmModal.onClose}
+          onConfirm={deactivateConfirmModal.onConfirm}
+          onCancel={deactivateConfirmModal.onClose}
+          variant="danger"
+          title={deactivateConfirmModal.title}
+          description={deactivateConfirmModal.description}
+          confirmLabel={deactivateConfirmModal.confirmLabel}
+          cancelLabel={deactivateConfirmModal.cancelLabel}
+          cancelColor="inherit"
+          confirmIcon={<XCircle className="size-4" aria-hidden />}
+          isLoading={deactivateConfirmModal.isLoading}
+          loadingLabel={deactivateConfirmModal.deactivatingLabel}
         />
       ) : null}
 

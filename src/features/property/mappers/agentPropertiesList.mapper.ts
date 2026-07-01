@@ -36,6 +36,9 @@ function normalizeSubmissionStatusKey(value: string | null | undefined): string 
     approved: "approved",
     draft: "draft",
     rejected: "rejected",
+    "deal-closure-requested": "deal_closure_requested",
+    "deal-closed": "deal_closed",
+    deactivated: "deactivated",
     submitted: "submitted",
     "pending-approval": "pending-approval",
     "pending-admin-approval": "pending_admin_approval",
@@ -49,13 +52,23 @@ function normalizeSubmissionStatusKey(value: string | null | undefined): string 
 
 function resolveAgentListingDisplayStatusKey(item: AgentPropertyListItem): string {
   const submissionStatus = normalizeSubmissionStatusKey(item.submission_status);
+  const workflowStatus = normalizeSubmissionStatusKey(item.submission_workflow_label);
 
-  if (submissionStatus === "active" || submissionStatus === "rejected") {
+  if (workflowStatus === "deal_closure_requested") {
+    return workflowStatus;
+  }
+
+  if (
+    submissionStatus === "active" ||
+    submissionStatus === "rejected" ||
+    submissionStatus === "deal_closed" ||
+    submissionStatus === "deactivated"
+  ) {
     return submissionStatus;
   }
 
   return (
-    normalizeSubmissionStatusKey(item.submission_workflow_label) ||
+    workflowStatus ||
     normalizeSubmissionStatusKey(item.status_slug) ||
     submissionStatus ||
     ""

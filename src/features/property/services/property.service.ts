@@ -14,6 +14,7 @@ import type {
 import type {
   AdminPropertyAssignAgentRequestBody,
   AdminPropertyAssignAgentResponse,
+  AdminPropertySubmissionDeactivateResponse,
   AdminPropertySubmissionReviewRequestBody,
   AdminPropertySubmissionReviewResponse,
   AdminPropertySubmissionsListParams,
@@ -107,6 +108,16 @@ export async function reviewAdminPropertySubmission(
     method: "POST",
     auth: true,
     body,
+  });
+}
+
+export async function deactivateAdminPropertySubmission(
+  submissionId: string,
+): Promise<AdminPropertySubmissionDeactivateResponse> {
+  return apiClient.request<AdminPropertySubmissionDeactivateResponse>({
+    endpoint: propertyEndpoints.ADMIN_PROPERTY_SUBMISSION_DEACTIVATE(submissionId),
+    method: "POST",
+    auth: true,
   });
 }
 

@@ -23,6 +23,7 @@ const MY_LISTING_ROW_ACTION_ICONS: Record<string, ReactNode> = {
   delete: <Trash2 className={iconClassName} aria-hidden />,
   assign: <UserPlus className={iconClassName} aria-hidden />,
   approve: <CheckCircle2 className={iconClassName} aria-hidden />,
+  deactivate: <XCircle className={iconClassName} aria-hidden />,
   reject: <XCircle className={iconClassName} aria-hidden />,
   reassign: <UserCog className={iconClassName} aria-hidden />,
   unassign: <UserMinus className={iconClassName} aria-hidden />,

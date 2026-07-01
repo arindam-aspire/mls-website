@@ -32,7 +32,7 @@ function isAgencyRoleName(roleName: string | null | undefined): boolean {
 
 /** Agency portal users (`admin` / legacy `agency`). */
 export function isAgencyUser(user: LoggedInUser | null | undefined): boolean {
-  return isAgencyRoleName(user?.roles?.[0]?.name);
+  return user?.roles?.some((role) => isAgencyRoleName(role.name)) ?? false;
 }
 
 export function isOwnerUser(user: LoggedInUser | null | undefined): boolean {

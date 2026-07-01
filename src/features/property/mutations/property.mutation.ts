@@ -16,6 +16,7 @@ import {
   getFavoriteList,
   getPropertyDetails,
   deletePropertySubmission,
+  deactivateAdminPropertySubmission,
   getPropertyDraftSubmission,
   getPropertyFeatureCatalog,
   getPropertyList,
@@ -205,6 +206,13 @@ export const useReviewAdminPropertySubmission = () => {
       submissionId: string;
       body: Parameters<typeof reviewAdminPropertySubmission>[1];
     }) => reviewAdminPropertySubmission(submissionId, body),
+  });
+};
+
+export const useDeactivateAdminPropertySubmission = () => {
+  return useMutation({
+    mutationFn: (submissionId: string) =>
+      deactivateAdminPropertySubmission(submissionId),
   });
 };
 

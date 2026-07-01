@@ -202,6 +202,7 @@ export type AdminPropertySubmissionListItem = {
   submitted_by: string;
   submitted_by_name: string;
   status: string;
+  status_label?: string | null;
   property_id: string;
   agent_user_id: string | null;
   agent_name: string | null;
@@ -214,6 +215,7 @@ export type AdminPropertySubmissionListItem = {
   current_step: number;
   submitted_at: string;
   reviewed_at: string | null;
+  review_reason?: string | null;
 };
 
 export type AdminPropertySubmissionsListData = {
@@ -250,6 +252,13 @@ export type AdminPropertySubmissionReviewRequestBody =
   | AdminPropertySubmissionReviewRejectBody;
 
 export type AdminPropertySubmissionReviewResponse = {
+  success: boolean;
+  message: string | null;
+  data: unknown;
+  error: unknown;
+};
+
+export type AdminPropertySubmissionDeactivateResponse = {
   success: boolean;
   message: string | null;
   data: unknown;

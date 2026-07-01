@@ -108,6 +108,8 @@ export const propertyEndpoints = {
   },
   ADMIN_PROPERTY_SUBMISSION_REVIEW: (submissionId: string): string =>
     `/admin/property-submissions/${encodeURIComponent(submissionId)}/review`,
+  ADMIN_PROPERTY_SUBMISSION_DEACTIVATE: (submissionId: string): string =>
+    `/admin/property-submissions/${encodeURIComponent(submissionId)}/deactivate`,
   ADMIN_PROPERTY_ASSIGN_AGENT: (propertyId: string): string =>
     `/admin/properties/${encodeURIComponent(propertyId)}/assign-agent`,
   AGENT_PROPERTY_DRAFTS: (params: AgentPropertyDraftsListParams): string => {
