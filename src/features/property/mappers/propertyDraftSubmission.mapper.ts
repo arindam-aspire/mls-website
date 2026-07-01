@@ -375,6 +375,38 @@ function formatPriceField(value: number | null | undefined): string {
   return String(value);
 }
 
+function formatPropertyAgeField(value: string | number | null | undefined): string | null {
+  if (value == null) {
+    return null;
+  }
+
+  const text = String(value).trim();
+
+  if (!text) {
+    return null;
+  }
+
+  const numericAge = Number(text);
+
+  if (Number.isFinite(numericAge) && /^\d+(\.\d+)?$/.test(text)) {
+    if (numericAge <= 0) {
+      return "new";
+    }
+
+    if (numericAge <= 5) {
+      return "1-5";
+    }
+
+    if (numericAge <= 10) {
+      return "6-10";
+    }
+
+    return "10+";
+  }
+
+  return text;
+}
+
 function mapFeatureIdsToSelectedAmenities(
   featureIds: number[] | undefined,
   featuresAndAmenities: FeaturesAndAmenities,
@@ -472,7 +504,7 @@ export function mapPropertyDraftSubmissionToPropertyFormValues(
       bathrooms: details.bathrooms ?? null,
       built_up_area: formatNumberField(details.built_up_area),
       parking_spaces: details.parking_spaces ?? null,
-      property_age: details.property_age ?? null,
+      property_age: formatPropertyAgeField(details.property_age),
       total_floor: formatNumberField(details.total_floors),
       completion_status: details.completion_status ?? null,
       occupancy: details.occupancy ?? null,

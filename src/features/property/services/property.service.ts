@@ -1,4 +1,5 @@
 import { apiClient } from "@/src/apis/clients/api.client";
+import { tokenStore } from "@/src/apis/core/token.store";
 import { propertyEndpoints } from "@/src/apis/endpoints/propertyEndpoints";
 import { userEndpoints } from "@/src/apis/endpoints/userEndpoints";
 import type {
@@ -55,7 +56,7 @@ export async function getPropertyDetails(
   return apiClient.request<PropertyDetailsResponse>({
     endpoint: propertyEndpoints.PROPERTY_DETAILS(id),
     method: "GET",
-    auth: false,
+    auth: tokenStore.hasAuthCredentials(),
   });
 }
 
@@ -65,7 +66,7 @@ export async function getSimilarProperties(
   return apiClient.request<PropertySimilarResponse>({
     endpoint: propertyEndpoints.PROPERTY_SIMILAR(id),
     method: "GET",
-    auth: false,
+    auth: tokenStore.hasAuthCredentials(),
   });
 }
 

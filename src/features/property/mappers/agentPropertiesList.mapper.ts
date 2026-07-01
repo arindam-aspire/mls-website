@@ -6,6 +6,7 @@ import {
 import type { ComponentProps } from "react";
 import {
   buildRejectedListingRowActions,
+  buildAgentListingRowActions,
   type MyListingRejectedRowActionLabels,
 } from "../constants/myListingRowActions.constants";
 import type { AgentPropertyListItem } from "../types/property.types";
@@ -22,14 +23,43 @@ export type MyListingTableRow = LibraryPropertyListing & {
   submission_review_reason?: string | null;
 };
 
+function normalizeSubmissionStatusKey(value: string | null | undefined): string {
+  const normalized = value?.trim().toLowerCase();
+
+  if (!normalized) {
+    return "";
+  }
+
+  const token = normalized.replace(/[_\s]+/g, "-");
+  const aliases: Record<string, string> = {
+    active: "active",
+    approved: "approved",
+    draft: "draft",
+    rejected: "rejected",
+    submitted: "submitted",
+    "pending-approval": "pending-approval",
+    "pending-admin-approval": "pending_admin_approval",
+    "changes-requested": "changes_requested",
+    "in-progress": "in_progress",
+    verified: "verified",
+  };
+
+  return aliases[token] ?? normalized;
+}
+
 function resolveAgentListingDisplayStatusKey(item: AgentPropertyListItem): string {
-  const submissionStatus = item.submission_status?.trim();
+  const submissionStatus = normalizeSubmissionStatusKey(item.submission_status);
 
   if (submissionStatus === "active" || submissionStatus === "rejected") {
     return submissionStatus;
   }
 
-  return item.submission_workflow_label?.trim() || item.status_slug || submissionStatus || "";
+  return (
+    normalizeSubmissionStatusKey(item.submission_workflow_label) ||
+    normalizeSubmissionStatusKey(item.status_slug) ||
+    submissionStatus ||
+    ""
+  );
 }
 
 function isRejectedWorkflow(item: AgentPropertyListItem): boolean {
@@ -104,8 +134,10 @@ export function mapAgentPropertyListItem(
     reviewedDate: item.submission_reviewed_at ?? "",
     submission_review_reason: item.submission_review_reason,
     actions:
-      isRejectedWorkflow(item) && options?.rejectedRowActionLabels
-        ? buildRejectedListingRowActions(item, options.rejectedRowActionLabels)
+      options?.rejectedRowActionLabels
+        ? isRejectedWorkflow(item)
+          ? buildRejectedListingRowActions(item, options.rejectedRowActionLabels)
+          : buildAgentListingRowActions(item, options.rejectedRowActionLabels)
         : undefined,
   };
 }

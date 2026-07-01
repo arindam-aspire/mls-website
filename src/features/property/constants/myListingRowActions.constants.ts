@@ -1,3 +1,4 @@
+import type { PropertyListingRowActionDescriptor } from "@abdoun/abdoun-library";
 import type { AgentPropertyListItem } from "../types/property.types";
 
 export type MyListingRejectedRowActionLabels = {
@@ -23,4 +24,29 @@ export function buildRejectedListingRowActions(
       hidden: !item.can_delete_submission,
     },
   ];
+}
+
+export function buildAgentListingRowActions(
+  item: AgentPropertyListItem,
+  labels: MyListingRejectedRowActionLabels,
+) {
+  const actions: PropertyListingRowActionDescriptor[] = [{ id: "view" }];
+
+  if (item.can_edit_submission) {
+    actions.push({ id: "edit", label: labels.edit });
+  }
+
+  if (item.submission_review_reason?.trim()) {
+    actions.push({ id: "rejected_reason" });
+  }
+
+  if (item.can_delete_submission) {
+    actions.push({
+      id: "delete",
+      label: labels.delete,
+      tone: "danger" as const,
+    });
+  }
+
+  return actions;
 }
