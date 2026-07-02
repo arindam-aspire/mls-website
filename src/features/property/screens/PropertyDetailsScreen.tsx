@@ -1,6 +1,8 @@
 "use client";
 
 import { PropertyView, SimilarProperties } from "@abdoun/abdoun-library";
+import { CheckCircle2, UserMinus, XCircle } from "lucide-react";
+import { ConfirmModal } from "@/src/components/common/ConfirmModal";
 import { UpcomingFeatureModal } from "@/src/components/common/UpcomingFeatureModal";
 import { useRouter } from "@/src/i18n/navigation";
 import {
@@ -8,6 +10,8 @@ import {
   headingPageClasses,
 } from "@/src/lib/typography";
 import { cn } from "@/src/lib/cn";
+import { AssignAgentModal } from "../components/AssignAgentModal";
+import { RejectSubmissionModal } from "../components/RejectSubmissionModal";
 import { usePropertyDetails } from "../hooks/usePropertyDetails";
 
 type PropertyDetailsScreenProps = {
@@ -31,6 +35,10 @@ export default function PropertyDetailsScreen({
     openAgentEmail,
     similarListings,
     isSimilarLoading,
+    statusActionCard,
+    workflowConfirmModal,
+    rejectWorkflowModal,
+    assignAgentModal,
     upcomingFeatureModal,
   } = usePropertyDetails(propertyId);
 
@@ -52,6 +60,62 @@ export default function PropertyDetailsScreen({
         open={upcomingFeatureModal.open}
         onClose={upcomingFeatureModal.onClose}
       />
+
+      {workflowConfirmModal ? (
+        <ConfirmModal
+          open={workflowConfirmModal.open}
+          onClose={workflowConfirmModal.onClose}
+          onConfirm={workflowConfirmModal.onConfirm}
+          onCancel={workflowConfirmModal.onClose}
+          variant={workflowConfirmModal.variant}
+          title={workflowConfirmModal.title}
+          description={workflowConfirmModal.description}
+          confirmLabel={workflowConfirmModal.confirmLabel}
+          cancelLabel={workflowConfirmModal.cancelLabel}
+          cancelColor="inherit"
+          confirmIcon={
+            workflowConfirmModal.variant === "danger" ? (
+              workflowConfirmModal.confirmLabel.includes("Unassign") ? (
+                <UserMinus className="size-4" aria-hidden />
+              ) : (
+                <XCircle className="size-4" aria-hidden />
+              )
+            ) : (
+              <CheckCircle2 className="size-4" aria-hidden />
+            )
+          }
+          isLoading={workflowConfirmModal.isLoading}
+          loadingLabel={workflowConfirmModal.loadingLabel}
+        />
+      ) : null}
+
+      {assignAgentModal ? (
+        <AssignAgentModal
+          open={assignAgentModal.open}
+          listingTitle={assignAgentModal.listingTitle}
+          mode={assignAgentModal.mode}
+          isAssigning={assignAgentModal.isAssigning}
+          onClose={assignAgentModal.onClose}
+          onAssign={assignAgentModal.onAssign}
+        />
+      ) : null}
+
+      {rejectWorkflowModal ? (
+        <RejectSubmissionModal
+          open={rejectWorkflowModal.open}
+          listingTitle={rejectWorkflowModal.listingTitle}
+          isSubmitting={rejectWorkflowModal.isSubmitting}
+          title={rejectWorkflowModal.title}
+          description={rejectWorkflowModal.description}
+          reasonLabel={rejectWorkflowModal.reasonLabel}
+          reasonPlaceholder={rejectWorkflowModal.reasonPlaceholder}
+          submitLabel={rejectWorkflowModal.submitLabel}
+          submittingLabel={rejectWorkflowModal.submittingLabel}
+          onClose={rejectWorkflowModal.onClose}
+          onSubmit={rejectWorkflowModal.onSubmit}
+        />
+      ) : null}
+
       <PropertyView
         isLoading={isLoading}
         applicationKey={applicationKey}
@@ -62,6 +126,7 @@ export default function PropertyDetailsScreen({
         showOwner
         features={featureCatalog}
         tabs={tabs}
+        statusActionCard={statusActionCard}
         onClickFavourite={toggleFavourite}
         onClickAgentEmail={openAgentEmail}
       />

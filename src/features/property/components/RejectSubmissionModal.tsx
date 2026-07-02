@@ -21,6 +21,12 @@ type RejectSubmissionModalProps = {
   open: boolean;
   listingTitle: string;
   isSubmitting?: boolean;
+  title?: string;
+  description?: string;
+  reasonLabel?: string;
+  reasonPlaceholder?: string;
+  submitLabel?: string;
+  submittingLabel?: string;
   onClose: () => void;
   onSubmit: (reason: string) => void;
 };
@@ -29,6 +35,12 @@ export function RejectSubmissionModal({
   open,
   listingTitle,
   isSubmitting = false,
+  title: titleOverride,
+  description: descriptionOverride,
+  reasonLabel: reasonLabelOverride,
+  reasonPlaceholder: reasonPlaceholderOverride,
+  submitLabel: submitLabelOverride,
+  submittingLabel: submittingLabelOverride,
   onClose,
   onSubmit,
 }: RejectSubmissionModalProps) {
@@ -48,6 +60,12 @@ export function RejectSubmissionModal({
     open,
     listingTitle,
     isSubmitting,
+    title: titleOverride,
+    description: descriptionOverride,
+    reasonLabel: reasonLabelOverride,
+    reasonPlaceholder: reasonPlaceholderOverride,
+    submitLabel: submitLabelOverride,
+    submittingLabel: submittingLabelOverride,
     onClose,
     onSubmit,
   });

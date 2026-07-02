@@ -5,12 +5,15 @@ import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { PropertyView } from "@abdoun/abdoun-library";
 import { useLocale, useTranslations } from "next-intl";
+import type { ApiError } from "@/src/apis/core/error.normalizer";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
 import type { AppLocale } from "@/src/i18n/routing";
 import { tokenStore } from "@/src/apis/core/token.store";
+import { useToast } from "@/src/hooks/useToast";
 import { canTrackRecentPropertyView } from "@/src/features/auth/utils/profileMenuRoleAccess";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { hasPropertyDetailsRestrictedTabsAccess } from "@/src/lib/auth/propertyDetailsTabAccess";
+import { PROPERTY_CREATE_SUBMISSION_ID_PARAM } from "../constants/propertyCreate.constants";
 import {
   PROPERTY_DETAILS_DEFAULT_TAB,
   PROPERTY_DETAILS_PUBLIC_TAB_VALUES,
@@ -21,10 +24,15 @@ import {
 import { mapFeatureCatalogItems } from "../mappers/propertyFeatures.mapper";
 import {
   useAddRecentView,
+  useAssignAdminPropertyAgent,
+  useDeactivateAdminPropertySubmission,
   useGetPropertyDetails,
   useGetPropertyFeatureCatalog,
   useGetSimilarProperties,
+  useReviewAdminPropertySubmission,
+  useReviewDealClosure,
 } from "../mutations/property.mutation";
+import type { AssignAgentModalMode } from "../types/assignAgentModal.types";
 import type {
   PropertyDetails,
   PropertyFeatureDefinition,
@@ -35,6 +43,16 @@ import { usePropertyFavouriteToggle } from "./usePropertyFavouriteToggle";
 
 type PropertyViewProps = ComponentProps<typeof PropertyView>;
 type PropertyViewLocale = NonNullable<PropertyViewProps["locale"]>;
+type PropertyStatusActionCard = NonNullable<PropertyViewProps["statusActionCard"]>;
+type PropertyStatusActionCardAction = NonNullable<PropertyStatusActionCard["actions"]>[number];
+
+type PropertyDetailsConfirmAction =
+  | "approve"
+  | "unassign"
+  | "deactivate"
+  | "approve_deal_closure";
+
+type PropertyDetailsRejectAction = "reject" | "reject_deal_closure";
 
 const APPLICATION_KEY = "abdoun_web" as const;
 
@@ -81,6 +99,47 @@ function resolveDetailsId(
   return Number.isFinite(parsedId) ? parsedId : 0;
 }
 
+function getPropertyDetailsStatusActionCard(
+  propertyDetails: PropertyDetails | undefined,
+): PropertyStatusActionCard | undefined {
+  const card = propertyDetails?.status_action_card;
+  const workflowActionLabels =
+    propertyDetails?.workflow_actions
+      ?.map((action) => action.label?.trim())
+      .filter((label): label is string => Boolean(label)) ?? [];
+
+  if (!card && workflowActionLabels.length === 0) {
+    return undefined;
+  }
+
+  const statusLabel = (card?.statusLabel ?? card?.status_label)?.trim();
+  const pendingActions = (card?.pendingActions ?? card?.pending_actions ?? workflowActionLabels)
+    .map((action) => action.trim())
+    .filter((action): action is string => Boolean(action));
+
+  if (!statusLabel && pendingActions.length === 0) {
+    return undefined;
+  }
+
+  return {
+    statusLabel,
+    pendingActions,
+  };
+}
+
+function getLocalizedPropertyTitle(
+  propertyDetails: PropertyDetails | undefined,
+  locale: PropertyViewLocale,
+): string {
+  const title = propertyDetails?.title;
+
+  if (!title) {
+    return "this listing";
+  }
+
+  return title[locale]?.trim() || title.en?.trim() || "this listing";
+}
+
 export function usePropertyDetails(propertyId: string) {
   // 1. Router & navigation
   const router = useRouter();
@@ -91,6 +150,8 @@ export function usePropertyDetails(propertyId: string) {
 
   // 2. UI utilities
   const tDetails = useTranslations("propertyList.details");
+  const tManage = useTranslations("propertyList.manageListings");
+  const toast = useToast();
 
   // 3. Global state (Zustand)
   const user = useAuthStore((state) => state.user);
@@ -148,6 +209,14 @@ export function usePropertyDetails(propertyId: string) {
   const [isFeaturesSettled, setIsFeaturesSettled] = useState(false);
   const [similarListings, setSimilarListings] = useState<PropertyListing[]>([]);
   const [isSimilarSettled, setIsSimilarSettled] = useState(false);
+  const [assignAgentModalMode, setAssignAgentModalMode] =
+    useState<AssignAgentModalMode | null>(null);
+  const [pendingConfirmAction, setPendingConfirmAction] =
+    useState<PropertyDetailsConfirmAction | null>(null);
+  const [pendingRejectAction, setPendingRejectAction] =
+    useState<PropertyDetailsRejectAction | null>(null);
+  const [runningWorkflowActionId, setRunningWorkflowActionId] =
+    useState<string | null>(null);
 
   // 5. Data fetching / queries
   const {
@@ -167,6 +236,14 @@ export function usePropertyDetails(propertyId: string) {
   } = useGetSimilarProperties();
 
   const { mutate: addRecentView } = useAddRecentView();
+  const { mutate: reviewAdminPropertySubmission, isPending: isReviewingSubmission } =
+    useReviewAdminPropertySubmission();
+  const { mutate: deactivateAdminPropertySubmission, isPending: isDeactivatingSubmission } =
+    useDeactivateAdminPropertySubmission();
+  const { mutate: assignAdminPropertyAgent, isPending: isAssigningAgent } =
+    useAssignAdminPropertyAgent();
+  const { mutate: reviewDealClosure, isPending: isReviewingDealClosure } =
+    useReviewDealClosure();
 
   const loadPropertyDetails = useCallback(() => {
     fetchPropertyDetails(propertyId, {
@@ -228,6 +305,19 @@ export function usePropertyDetails(propertyId: string) {
 
     return applyDetailsFavouriteState(detailsWithId, propertyId);
   }, [applyDetailsFavouriteState, propertyDetails, propertyId]);
+
+  const detailPropertyId = propertyDetailsWithFavourites?.property_id?.trim() ?? "";
+  const detailSubmissionId = propertyDetailsWithFavourites?.submission_id?.trim() ?? "";
+  const detailDealClosureId = propertyDetailsWithFavourites?.deal_closure_id?.trim() ?? "";
+  const detailTitle = useMemo(
+    () => getLocalizedPropertyTitle(propertyDetailsWithFavourites, locale),
+    [locale, propertyDetailsWithFavourites],
+  );
+  const isWorkflowActionPending =
+    isReviewingSubmission ||
+    isDeactivatingSubmission ||
+    isAssigningAgent ||
+    isReviewingDealClosure;
 
   const isFavouriteLoading = useMemo(() => {
     if (!propertyDetailsWithFavourites) {
@@ -320,8 +410,661 @@ export function usePropertyDetails(propertyId: string) {
     [openUpcomingFeature],
   );
 
+  const showMissingWorkflowContext = useCallback(
+    (message = "The selected workflow action cannot be completed because required details are missing.") => {
+      toast.error("Action unavailable", {
+        description: message,
+      });
+    },
+    [toast],
+  );
+
+  const refreshDetailsAfterWorkflowAction = useCallback(() => {
+    setIsDetailsSettled(false);
+    loadPropertyDetails();
+  }, [loadPropertyDetails]);
+
+  const closeAssignAgentModal = useCallback(() => {
+    if (isAssigningAgent) {
+      return;
+    }
+
+    setAssignAgentModalMode(null);
+  }, [isAssigningAgent]);
+
+  const onAssignAgent = useCallback(
+    (agentId: string) => {
+      if (!detailPropertyId || !assignAgentModalMode || isAssigningAgent) {
+        if (!detailPropertyId) {
+          showMissingWorkflowContext("Property id is missing for agent assignment.");
+        }
+        return;
+      }
+
+      const actionId = assignAgentModalMode === "reassign" ? "reassign" : "assign";
+      setRunningWorkflowActionId(actionId);
+
+      assignAdminPropertyAgent(
+        {
+          propertyId: detailPropertyId,
+          body: { agent_id: agentId },
+        },
+        {
+          onSuccess: (response) => {
+            const isReassign = assignAgentModalMode === "reassign";
+
+            toast.success(
+              isReassign ? tManage("reassignAgentSuccessTitle") : tManage("assignAgentSuccessTitle"),
+              {
+                description:
+                  response.message ??
+                  (isReassign
+                    ? tManage("reassignAgentSuccessDescription")
+                    : tManage("assignAgentSuccessDescription")),
+              },
+            );
+            setRunningWorkflowActionId(null);
+            setAssignAgentModalMode(null);
+            refreshDetailsAfterWorkflowAction();
+          },
+          onError: (error) => {
+            const apiError = error as unknown as ApiError;
+            setRunningWorkflowActionId(null);
+            toast.error(tManage("assignAgentError"), {
+              description: apiError.message,
+            });
+          },
+        },
+      );
+    },
+    [
+      assignAdminPropertyAgent,
+      assignAgentModalMode,
+      detailPropertyId,
+      isAssigningAgent,
+      refreshDetailsAfterWorkflowAction,
+      showMissingWorkflowContext,
+      tManage,
+      toast,
+    ],
+  );
+
+  const closeWorkflowConfirmModal = useCallback(() => {
+    if (isWorkflowActionPending) {
+      return;
+    }
+
+    setPendingConfirmAction(null);
+  }, [isWorkflowActionPending]);
+
+  const closeRejectWorkflowModal = useCallback(() => {
+    if (isWorkflowActionPending) {
+      return;
+    }
+
+    setPendingRejectAction(null);
+  }, [isWorkflowActionPending]);
+
+  const confirmWorkflowAction = useCallback(() => {
+    if (!pendingConfirmAction || isWorkflowActionPending) {
+      return;
+    }
+
+    if (pendingConfirmAction === "approve") {
+      if (!detailSubmissionId) {
+        showMissingWorkflowContext("Submission id is missing for approval.");
+        return;
+      }
+
+      setRunningWorkflowActionId("approve");
+      reviewAdminPropertySubmission(
+        {
+          submissionId: detailSubmissionId,
+          body: { action: "approve" },
+        },
+        {
+          onSuccess: (response) => {
+            toast.success(tManage("approveSuccessTitle"), {
+              description: response.message ?? tManage("approveSuccessDescription"),
+            });
+            setRunningWorkflowActionId(null);
+            setPendingConfirmAction(null);
+            refreshDetailsAfterWorkflowAction();
+          },
+          onError: (error) => {
+            const apiError = error as unknown as ApiError;
+            setRunningWorkflowActionId(null);
+            toast.error(tManage("approveError"), {
+              description: apiError.message,
+            });
+          },
+        },
+      );
+      return;
+    }
+
+    if (pendingConfirmAction === "unassign") {
+      if (!detailPropertyId) {
+        showMissingWorkflowContext("Property id is missing for agent unassignment.");
+        return;
+      }
+
+      setRunningWorkflowActionId("unassign");
+      assignAdminPropertyAgent(
+        {
+          propertyId: detailPropertyId,
+          body: { agent_id: null },
+        },
+        {
+          onSuccess: (response) => {
+            toast.success(tManage("unassignSuccessTitle"), {
+              description: response.message ?? tManage("unassignSuccessDescription"),
+            });
+            setRunningWorkflowActionId(null);
+            setPendingConfirmAction(null);
+            refreshDetailsAfterWorkflowAction();
+          },
+          onError: (error) => {
+            const apiError = error as unknown as ApiError;
+            setRunningWorkflowActionId(null);
+            toast.error(tManage("unassignError"), {
+              description: apiError.message,
+            });
+          },
+        },
+      );
+      return;
+    }
+
+    if (pendingConfirmAction === "deactivate") {
+      if (!detailSubmissionId) {
+        showMissingWorkflowContext("Submission id is missing for deactivation.");
+        return;
+      }
+
+      setRunningWorkflowActionId("deactivate");
+      deactivateAdminPropertySubmission(detailSubmissionId, {
+        onSuccess: (response) => {
+          toast.success(tManage("deactivateSuccessTitle"), {
+            description: response.message ?? tManage("deactivateSuccessDescription"),
+          });
+          setRunningWorkflowActionId(null);
+          setPendingConfirmAction(null);
+          refreshDetailsAfterWorkflowAction();
+        },
+        onError: (error) => {
+          const apiError = error as unknown as ApiError;
+          setRunningWorkflowActionId(null);
+          toast.error(tManage("deactivateError"), {
+            description: apiError.message,
+          });
+        },
+      });
+      return;
+    }
+
+    if (pendingConfirmAction === "approve_deal_closure") {
+      if (!detailDealClosureId) {
+        showMissingWorkflowContext("Deal closure id is missing for review.");
+        return;
+      }
+
+      setRunningWorkflowActionId("approve_deal_closure");
+      reviewDealClosure(
+        {
+          closureId: detailDealClosureId,
+          body: { action: "approve" },
+        },
+        {
+          onSuccess: (response) => {
+            toast.success("Deal closure approved", {
+              description: response.message ?? "The deal closure request was approved.",
+            });
+            setRunningWorkflowActionId(null);
+            setPendingConfirmAction(null);
+            refreshDetailsAfterWorkflowAction();
+          },
+          onError: (error) => {
+            const apiError = error as unknown as ApiError;
+            setRunningWorkflowActionId(null);
+            toast.error("Failed to approve deal closure", {
+              description: apiError.message,
+            });
+          },
+        },
+      );
+    }
+  }, [
+    assignAdminPropertyAgent,
+    deactivateAdminPropertySubmission,
+    detailDealClosureId,
+    detailPropertyId,
+    detailSubmissionId,
+    isWorkflowActionPending,
+    pendingConfirmAction,
+    refreshDetailsAfterWorkflowAction,
+    reviewAdminPropertySubmission,
+    reviewDealClosure,
+    showMissingWorkflowContext,
+    tManage,
+    toast,
+  ]);
+
+  const confirmRejectWorkflowAction = useCallback(
+    (reason: string) => {
+      if (!pendingRejectAction || isWorkflowActionPending) {
+        return;
+      }
+
+      if (pendingRejectAction === "reject") {
+        if (!detailSubmissionId) {
+          showMissingWorkflowContext("Submission id is missing for rejection.");
+          return;
+        }
+
+        setRunningWorkflowActionId("reject");
+        reviewAdminPropertySubmission(
+          {
+            submissionId: detailSubmissionId,
+            body: { action: "reject", reason },
+          },
+          {
+            onSuccess: (response) => {
+              toast.success(tManage("rejectSuccessTitle"), {
+                description: response.message ?? tManage("rejectSuccessDescription"),
+              });
+              setRunningWorkflowActionId(null);
+              setPendingRejectAction(null);
+              refreshDetailsAfterWorkflowAction();
+            },
+            onError: (error) => {
+              const apiError = error as unknown as ApiError;
+              setRunningWorkflowActionId(null);
+              toast.error(tManage("rejectError"), {
+                description: apiError.message,
+              });
+            },
+          },
+        );
+        return;
+      }
+
+      if (!detailDealClosureId) {
+        showMissingWorkflowContext("Deal closure id is missing for review.");
+        return;
+      }
+
+      setRunningWorkflowActionId("reject_deal_closure");
+      reviewDealClosure(
+        {
+          closureId: detailDealClosureId,
+          body: { action: "reject", reason },
+        },
+        {
+          onSuccess: (response) => {
+            toast.success("Deal closure rejected", {
+              description: response.message ?? "The deal closure request was rejected.",
+            });
+            setRunningWorkflowActionId(null);
+            setPendingRejectAction(null);
+            refreshDetailsAfterWorkflowAction();
+          },
+          onError: (error) => {
+            const apiError = error as unknown as ApiError;
+            setRunningWorkflowActionId(null);
+            toast.error("Failed to reject deal closure", {
+              description: apiError.message,
+            });
+          },
+        },
+      );
+    },
+    [
+      detailDealClosureId,
+      detailSubmissionId,
+      isWorkflowActionPending,
+      pendingRejectAction,
+      refreshDetailsAfterWorkflowAction,
+      reviewAdminPropertySubmission,
+      reviewDealClosure,
+      showMissingWorkflowContext,
+      tManage,
+      toast,
+    ],
+  );
+
+  const onStatusWorkflowActionClick = useCallback(
+    (actionId: string) => {
+      if (isWorkflowActionPending) {
+        return;
+      }
+
+      if (actionId === "assign") {
+        setAssignAgentModalMode("assign");
+        return;
+      }
+
+      if (actionId === "reassign") {
+        setAssignAgentModalMode("reassign");
+        return;
+      }
+
+      if (actionId === "approve") {
+        setPendingConfirmAction("approve");
+        return;
+      }
+
+      if (actionId === "reject") {
+        setPendingRejectAction("reject");
+        return;
+      }
+
+      if (actionId === "unassign") {
+        setPendingConfirmAction("unassign");
+        return;
+      }
+
+      if (actionId === "deactivate") {
+        setPendingConfirmAction("deactivate");
+        return;
+      }
+
+      if (actionId === "approve_deal_closure") {
+        setPendingConfirmAction("approve_deal_closure");
+        return;
+      }
+
+      if (actionId === "reject_deal_closure") {
+        setPendingRejectAction("reject_deal_closure");
+        return;
+      }
+
+      if (actionId === "edit") {
+        if (!detailSubmissionId) {
+          showMissingWorkflowContext("Submission id is missing for editing.");
+          return;
+        }
+
+        router.push(
+          `/property-create?${PROPERTY_CREATE_SUBMISSION_ID_PARAM}=${encodeURIComponent(detailSubmissionId)}`,
+        );
+      }
+    },
+    [
+      detailSubmissionId,
+      isWorkflowActionPending,
+      router,
+      showMissingWorkflowContext,
+    ],
+  );
+
+  const workflowActionButtons = useMemo<PropertyStatusActionCardAction[]>(() => {
+    const actions = propertyDetailsWithFavourites?.workflow_actions ?? [];
+
+    return actions.flatMap((action): PropertyStatusActionCardAction[] => {
+      if (action.hidden) {
+        return [];
+      }
+
+      if (action.id === "review_deal_closure") {
+        return [
+          {
+            id: "approve_deal_closure",
+            label: "Approve Deal Closure",
+            tone: "success",
+            disabled: isWorkflowActionPending || !detailDealClosureId,
+            isLoading:
+              runningWorkflowActionId === "approve_deal_closure" &&
+              isReviewingDealClosure,
+            loadingLabel: "Approving...",
+            onClick: () => onStatusWorkflowActionClick("approve_deal_closure"),
+          },
+          {
+            id: "reject_deal_closure",
+            label: "Reject Deal Closure",
+            tone: "danger",
+            disabled: isWorkflowActionPending || !detailDealClosureId,
+            isLoading:
+              runningWorkflowActionId === "reject_deal_closure" &&
+              isReviewingDealClosure,
+            loadingLabel: "Rejecting...",
+            onClick: () => onStatusWorkflowActionClick("reject_deal_closure"),
+          },
+        ];
+      }
+
+      const actionLabels: Record<string, string> = {
+        assign: tManage("workflow.assignAgent"),
+        approve: tManage("workflow.approve"),
+        deactivate: tManage("workflow.deactivate"),
+        edit: tManage("workflow.edit"),
+        reject: tManage("workflow.reject"),
+        reassign: tManage("workflow.reassign"),
+        unassign: tManage("workflow.unassign"),
+      };
+
+      if (!Object.prototype.hasOwnProperty.call(actionLabels, action.id)) {
+        return [];
+      }
+
+      const requiresSubmissionId = ["approve", "reject", "deactivate", "edit"].includes(
+        action.id,
+      );
+      const requiresPropertyId = ["assign", "reassign", "unassign"].includes(action.id);
+      const missingRequiredContext =
+        (requiresSubmissionId && !detailSubmissionId) ||
+        (requiresPropertyId && !detailPropertyId);
+      const tone =
+        action.tone === "danger" || action.id === "reject" || action.id === "unassign" || action.id === "deactivate"
+          ? "danger"
+          : action.id === "approve"
+            ? "success"
+            : "default";
+      const loadingByAction: Record<string, boolean> = {
+        assign: runningWorkflowActionId === "assign" && isAssigningAgent,
+        reassign: runningWorkflowActionId === "reassign" && isAssigningAgent,
+        unassign: runningWorkflowActionId === "unassign" && isAssigningAgent,
+        approve: runningWorkflowActionId === "approve" && isReviewingSubmission,
+        reject: runningWorkflowActionId === "reject" && isReviewingSubmission,
+        deactivate:
+          runningWorkflowActionId === "deactivate" && isDeactivatingSubmission,
+        edit: false,
+      };
+
+      return [
+        {
+          id: action.id,
+          label: action.label?.trim() || actionLabels[action.id],
+          tone,
+          disabled:
+            Boolean(action.disabled) ||
+            isWorkflowActionPending ||
+            missingRequiredContext,
+          isLoading: loadingByAction[action.id] ?? false,
+          loadingLabel:
+            action.id === "assign"
+              ? tManage("assignAgentModal.assigningLabel")
+              : action.id === "reassign"
+                ? tManage("assignAgentModal.reassigningLabel")
+                : action.id === "unassign"
+                  ? tManage("unassigningLabel")
+                  : action.id === "approve"
+                    ? tManage("approvingLabel")
+                    : action.id === "reject"
+                      ? tManage("rejectSubmissionModal.submittingLabel")
+                      : action.id === "deactivate"
+                        ? tManage("deactivatingLabel")
+                        : undefined,
+          onClick: () => onStatusWorkflowActionClick(action.id),
+        },
+      ];
+    });
+  }, [
+    detailDealClosureId,
+    detailPropertyId,
+    detailSubmissionId,
+    isAssigningAgent,
+    isDeactivatingSubmission,
+    isReviewingDealClosure,
+    isReviewingSubmission,
+    isWorkflowActionPending,
+    onStatusWorkflowActionClick,
+    propertyDetailsWithFavourites?.workflow_actions,
+    runningWorkflowActionId,
+    tManage,
+  ]);
+
+  const statusActionCard = useMemo(() => {
+    const card = getPropertyDetailsStatusActionCard(propertyDetailsWithFavourites);
+
+    if (!card && workflowActionButtons.length === 0) {
+      return undefined;
+    }
+
+    return {
+      ...(card ?? {}),
+      actions: workflowActionButtons,
+    };
+  }, [propertyDetailsWithFavourites, workflowActionButtons]);
+
   // 8. Refs
   const lastRecordedRecentViewIdRef = useRef<string | null>(null);
+
+  const workflowConfirmModal = useMemo(() => {
+    if (!pendingConfirmAction) {
+      return null;
+    }
+
+    const base = {
+      open: true,
+      cancelLabel: tManage("cancelLabel"),
+      onClose: closeWorkflowConfirmModal,
+      onConfirm: confirmWorkflowAction,
+    };
+
+    if (pendingConfirmAction === "approve") {
+      return {
+        ...base,
+        variant: "primary" as const,
+        title: tManage("approveConfirmTitle"),
+        description: tManage("approveConfirmDescription", { title: detailTitle }),
+        confirmLabel: tManage("workflow.approve"),
+        loadingLabel: tManage("approvingLabel"),
+        isLoading:
+          runningWorkflowActionId === "approve" && isReviewingSubmission,
+      };
+    }
+
+    if (pendingConfirmAction === "unassign") {
+      return {
+        ...base,
+        variant: "danger" as const,
+        title: tManage("unassignConfirmTitle"),
+        description: tManage("unassignConfirmDescription", { title: detailTitle }),
+        confirmLabel: tManage("workflow.unassign"),
+        loadingLabel: tManage("unassigningLabel"),
+        isLoading:
+          runningWorkflowActionId === "unassign" && isAssigningAgent,
+      };
+    }
+
+    if (pendingConfirmAction === "deactivate") {
+      return {
+        ...base,
+        variant: "danger" as const,
+        title: tManage("deactivateConfirmTitle"),
+        description: tManage("deactivateConfirmDescription", { title: detailTitle }),
+        confirmLabel: tManage("workflow.deactivate"),
+        loadingLabel: tManage("deactivatingLabel"),
+        isLoading:
+          runningWorkflowActionId === "deactivate" && isDeactivatingSubmission,
+      };
+    }
+
+    return {
+      ...base,
+      variant: "success" as const,
+      title: "Approve deal closure?",
+      description: `"${detailTitle}" will be marked as deal closed.`,
+      confirmLabel: "Approve Deal Closure",
+      loadingLabel: "Approving...",
+      isLoading:
+        runningWorkflowActionId === "approve_deal_closure" &&
+        isReviewingDealClosure,
+    };
+  }, [
+    closeWorkflowConfirmModal,
+    confirmWorkflowAction,
+    detailTitle,
+    isAssigningAgent,
+    isDeactivatingSubmission,
+    isReviewingDealClosure,
+    isReviewingSubmission,
+    pendingConfirmAction,
+    runningWorkflowActionId,
+    tManage,
+  ]);
+
+  const rejectWorkflowModal = useMemo(() => {
+    if (!pendingRejectAction) {
+      return null;
+    }
+
+    const isDealClosureReject = pendingRejectAction === "reject_deal_closure";
+
+    return {
+      open: true,
+      listingTitle: detailTitle,
+      isSubmitting:
+        runningWorkflowActionId === pendingRejectAction &&
+        (isDealClosureReject ? isReviewingDealClosure : isReviewingSubmission),
+      onClose: closeRejectWorkflowModal,
+      onSubmit: confirmRejectWorkflowAction,
+      ...(isDealClosureReject
+        ? {
+            title: "Reject deal closure?",
+            description: `Provide a reason for rejecting the deal closure request for "${detailTitle}".`,
+            reasonLabel: "Rejection reason",
+            reasonPlaceholder: "Explain why this deal closure request is being rejected...",
+            submitLabel: "Reject Deal Closure",
+            submittingLabel: "Rejecting...",
+          }
+        : {}),
+    };
+  }, [
+    closeRejectWorkflowModal,
+    confirmRejectWorkflowAction,
+    detailTitle,
+    isReviewingDealClosure,
+    isReviewingSubmission,
+    pendingRejectAction,
+    runningWorkflowActionId,
+  ]);
+
+  const assignAgentModal = useMemo(() => {
+    if (!assignAgentModalMode) {
+      return null;
+    }
+
+    return {
+      open: true,
+      listingTitle: detailTitle,
+      mode: assignAgentModalMode,
+      isAssigning:
+        (runningWorkflowActionId === "assign" ||
+          runningWorkflowActionId === "reassign") &&
+        isAssigningAgent,
+      onClose: closeAssignAgentModal,
+      onAssign: onAssignAgent,
+    };
+  }, [
+    assignAgentModalMode,
+    closeAssignAgentModal,
+    detailTitle,
+    isAssigningAgent,
+    onAssignAgent,
+    runningWorkflowActionId,
+  ]);
 
   // 9. Effects
   useEffect(() => {
@@ -413,6 +1156,10 @@ export function usePropertyDetails(propertyId: string) {
     openAgentEmail,
     similarListings: similarListingsWithFavourites,
     isSimilarLoading,
+    statusActionCard,
+    workflowConfirmModal,
+    rejectWorkflowModal,
+    assignAgentModal,
     upcomingFeatureModal: {
       open: isUpcomingFeatureModalOpen,
       onClose: closeUpcomingFeature,

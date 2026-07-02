@@ -8,6 +8,12 @@ type UseRejectSubmissionModalParams = {
   open: boolean;
   listingTitle: string;
   isSubmitting?: boolean;
+  title?: string;
+  description?: string;
+  reasonLabel?: string;
+  reasonPlaceholder?: string;
+  submitLabel?: string;
+  submittingLabel?: string;
   onClose: () => void;
   onSubmit: (reason: string) => void;
 };
@@ -16,6 +22,12 @@ export function useRejectSubmissionModal({
   open,
   listingTitle,
   isSubmitting = false,
+  title,
+  description,
+  reasonLabel,
+  reasonPlaceholder,
+  submitLabel,
+  submittingLabel,
   onClose,
   onSubmit,
 }: UseRejectSubmissionModalParams) {
@@ -68,13 +80,13 @@ export function useRejectSubmissionModal({
   }, [open]);
 
   return {
-    title: t("title"),
-    description: t("description", { title: listingTitle }),
+    title: title ?? t("title"),
+    description: description ?? t("description", { title: listingTitle }),
     reason,
-    reasonLabel: t("reasonLabel"),
-    reasonPlaceholder: t("reasonPlaceholder"),
-    submitLabel: t("submit"),
-    submittingLabel: t("submittingLabel"),
+    reasonLabel: reasonLabel ?? t("reasonLabel"),
+    reasonPlaceholder: reasonPlaceholder ?? t("reasonPlaceholder"),
+    submitLabel: submitLabel ?? t("submit"),
+    submittingLabel: submittingLabel ?? t("submittingLabel"),
     cancelLabel: tManage("cancelLabel"),
     closeModal,
     onReasonChange,

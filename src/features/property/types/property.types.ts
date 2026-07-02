@@ -3,7 +3,32 @@ import type { PropertyListingStatus, PropertyView } from "@abdoun/abdoun-library
 
 type PropertyViewProps = ComponentProps<typeof PropertyView>;
 
-export type PropertyDetails = NonNullable<PropertyViewProps["propertyDetails"]>;
+export type PropertyDetailsStatusActionCard = {
+  status_label?: string | null;
+  pending_actions?: string[] | null;
+  statusLabel?: string | null;
+  pendingActions?: string[] | null;
+};
+
+export type PropertyDetailsWorkflowAction = {
+  id: string;
+  label?: string | null;
+  tone?: "default" | "primary" | "danger" | "success" | null;
+  hidden?: boolean | null;
+  disabled?: boolean | null;
+};
+
+export type PropertyDetails = NonNullable<PropertyViewProps["propertyDetails"]> & {
+  property_id?: string | null;
+  submission_id?: string | null;
+  status_action_card?: PropertyDetailsStatusActionCard | null;
+  workflow_actions?: PropertyDetailsWorkflowAction[] | null;
+  workflow_status?: string | null;
+  workflow_stage?: string | null;
+  current_actor?: string | null;
+  assigned_agent_id?: string | null;
+  deal_closure_id?: string | null;
+};
 
 export type PropertyFeatureDefinition = NonNullable<
   PropertyViewProps["features"]
@@ -276,6 +301,18 @@ export type AdminPropertyAssignAgentRequestBody = {
 };
 
 export type AdminPropertyAssignAgentResponse = {
+  success: boolean;
+  message: string | null;
+  data: unknown;
+  error: unknown;
+};
+
+export type DealClosureReviewRequestBody = {
+  action: "approve" | "reject";
+  reason?: string | null;
+};
+
+export type DealClosureReviewResponse = {
   success: boolean;
   message: string | null;
   data: unknown;

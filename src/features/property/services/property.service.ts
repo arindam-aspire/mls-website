@@ -23,6 +23,8 @@ import type {
   AgentPropertiesListResponse,
   AgentPropertyDraftsListParams,
   AgentPropertyDraftsListResponse,
+  DealClosureReviewRequestBody,
+  DealClosureReviewResponse,
   FavoriteAddBody,
   FavoriteAddResponse,
   FavoriteListParams,
@@ -118,6 +120,18 @@ export async function deactivateAdminPropertySubmission(
     endpoint: propertyEndpoints.ADMIN_PROPERTY_SUBMISSION_DEACTIVATE(submissionId),
     method: "POST",
     auth: true,
+  });
+}
+
+export async function reviewDealClosure(
+  closureId: string,
+  body: DealClosureReviewRequestBody,
+): Promise<DealClosureReviewResponse> {
+  return apiClient.request<DealClosureReviewResponse>({
+    endpoint: propertyEndpoints.DEAL_CLOSURE_REVIEW(closureId),
+    method: "POST",
+    auth: true,
+    body,
   });
 }
 

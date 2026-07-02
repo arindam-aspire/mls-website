@@ -23,6 +23,7 @@ import {
   getRecentViewsList,
   removeFavorite,
   removeRecentView,
+  reviewDealClosure,
   reviewAdminPropertySubmission,
   getSimilarProperties,
   savePropertyDraftSubmission,
@@ -225,6 +226,18 @@ export const useAssignAdminPropertyAgent = () => {
       propertyId: string;
       body: Parameters<typeof assignAdminPropertyAgent>[1];
     }) => assignAdminPropertyAgent(propertyId, body),
+  });
+};
+
+export const useReviewDealClosure = () => {
+  return useMutation({
+    mutationFn: ({
+      closureId,
+      body,
+    }: {
+      closureId: string;
+      body: Parameters<typeof reviewDealClosure>[1];
+    }) => reviewDealClosure(closureId, body),
   });
 };
 

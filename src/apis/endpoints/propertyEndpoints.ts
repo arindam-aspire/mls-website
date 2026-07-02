@@ -112,6 +112,8 @@ export const propertyEndpoints = {
     `/admin/property-submissions/${encodeURIComponent(submissionId)}/deactivate`,
   ADMIN_PROPERTY_ASSIGN_AGENT: (propertyId: string): string =>
     `/admin/properties/${encodeURIComponent(propertyId)}/assign-agent`,
+  DEAL_CLOSURE_REVIEW: (closureId: string): string =>
+    `/deal-closures/${encodeURIComponent(closureId)}/review`,
   AGENT_PROPERTY_DRAFTS: (params: AgentPropertyDraftsListParams): string => {
     const search = new URLSearchParams({
       page: String(params.page),
