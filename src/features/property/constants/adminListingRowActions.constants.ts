@@ -22,6 +22,10 @@ function normalizeSubmissionStatus(status: string): string {
   return status.trim().toLowerCase();
 }
 
+function normalizeWorkflowStage(stage: string | null | undefined): string {
+  return stage?.trim().toLowerCase() ?? "";
+}
+
 /** Per-row action menu for admin manage-listings (`GET /admin/property-submissions`). */
 export function buildAdminListingRowActions(
   item: AdminPropertySubmissionListItem,
@@ -29,6 +33,7 @@ export function buildAdminListingRowActions(
   options: AdminListingRowActionOptions = {},
 ): PropertyListingRowActionDescriptor[] {
   const status = normalizeSubmissionStatus(item.status);
+  const workflowStage = normalizeWorkflowStage(item.workflow_stage);
 
   if (status === "active") {
     const actions: PropertyListingRowActionDescriptor[] = [{ id: "view" }];
@@ -48,9 +53,6 @@ export function buildAdminListingRowActions(
 
   if (status === "rejected") {
     const actions: PropertyListingRowActionDescriptor[] = [{ id: "view" }];
-    if (options.canEditRejectedSubmissions) {
-      actions.unshift({ id: "edit", label: labels.edit });
-    }
     if (item.review_reason?.trim()) {
       actions.push({ id: "rejected_reason" });
     }
@@ -69,7 +71,25 @@ export function buildAdminListingRowActions(
 
   if (status === "pending-approval") {
     const actions: PropertyListingRowActionDescriptor[] = [{ id: "view" }];
-    if (options.canReviewSubmissions) {
+    if (
+      options.canManageAgentAssignment &&
+      workflowStage === "awaiting_agency_assignment"
+    ) {
+      actions.unshift({ id: "assign", label: labels.assignAgent });
+      return actions;
+    }
+    if (
+      options.canManageAgentAssignment &&
+      workflowStage === "awaiting_agency_review" &&
+      !item.has_assigned_agent
+    ) {
+      actions.unshift({ id: "assign", label: labels.assignAgent });
+    }
+    if (
+      options.canReviewSubmissions &&
+      workflowStage === "awaiting_agency_review" &&
+      item.has_assigned_agent
+    ) {
       actions.unshift({ id: "approve", label: labels.approve });
       actions.splice(1, 0, { id: "reject", label: labels.reject, tone: "danger" });
     }

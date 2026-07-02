@@ -153,6 +153,9 @@ export type AgentPropertyListItem = {
   submission_reviewed_at: string | null;
   submission_review_reason: string | null;
   submission_workflow_label: string;
+  workflow_stage?: string | null;
+  current_actor?: string | null;
+  submission_origin?: string | null;
   can_edit_submission: boolean;
   can_delete_submission: boolean;
   agency: unknown | null;
@@ -203,6 +206,9 @@ export type AdminPropertySubmissionListItem = {
   submitted_by_name: string;
   status: string;
   status_label?: string | null;
+  workflow_stage?: string | null;
+  current_actor?: string | null;
+  submission_origin?: string | null;
   property_id: string;
   agent_user_id: string | null;
   agent_name: string | null;

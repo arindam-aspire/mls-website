@@ -3,7 +3,12 @@
 import type { BreadcrumbItem } from "@/src/components/ui/breadcrumb";
 import { getPhoneInputCountryByCode } from "@/src/components/ui/phone-input/countries";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
-import { isOwnerUser, resolveListingsMenuPath } from "@/src/features/auth/utils/profileMenuRoleAccess";
+import {
+  isAgentUser,
+  isOwnerUser,
+  resolveListingsMenuPath,
+} from "@/src/features/auth/utils/profileMenuRoleAccess";
+import type { LoggedInUser } from "@/src/features/auth/types/auth.types";
 import {
   useGetLocationTaxonomy,
   useGetPropertyTaxonomy,
@@ -71,11 +76,29 @@ function getLocationTaxonomyTotal(
   return payload.total;
 }
 
-function resolveSubmissionFormAccess(data: PropertyDraftSubmissionData) {
+function resolveSubmissionFormAccess(
+  data: PropertyDraftSubmissionData,
+  user: LoggedInUser | null | undefined,
+) {
   const status = data.status?.trim().toLowerCase();
+  const workflowStage = data.workflow_stage?.trim().toLowerCase();
+  const isAssignedAgent =
+    Boolean(data.assigned_agent_id && user?.id === data.assigned_agent_id) ||
+    (!data.assigned_agent_id && isAgentUser(user));
+  const isOwnerEditable =
+    status === "rejected" &&
+    (workflowStage === "returned_to_owner" || !workflowStage) &&
+    isOwnerUser(user);
+  const isAgentEditable =
+    (workflowStage === "with_agent" || workflowStage === "returned_to_agent") &&
+    isAssignedAgent;
 
   return {
-    canEdit: status !== "submitted" && status !== "pending-approval",
+    canEdit:
+      status === "draft" ||
+      status === "in_progress" ||
+      isOwnerEditable ||
+      isAgentEditable,
     rejectionReason:
       status === "rejected" ? data.review_reason?.trim() || null : null,
   };
@@ -239,12 +262,12 @@ export function usePropertyCreateScreen() {
         }
         draftHydratedForRef.current = draftResponse.data.submission_id;
 
-        const formAccess = resolveSubmissionFormAccess(draftResponse.data);
+        const formAccess = resolveSubmissionFormAccess(draftResponse.data, user);
         setCanEditSubmission(formAccess.canEdit);
         setRejectionReason(formAccess.rejectionReason);
       }
     },
-    [fetchPropertyDraftSubmission],
+    [fetchPropertyDraftSubmission, user],
   );
 
   // 7. Callbacks

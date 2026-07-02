@@ -32,6 +32,7 @@ import {
 export function LandingHeader() {
   const user = useAuthStore((state) => state.user);
   const isLoadingUser = useAuthStore((state) => state.isLoadingUser);
+  const openAuth = useAuthStore((state) => state.openAuth);
   const { hasUnread: hasUnreadNotifications, unreadCount: notificationUnreadCount } =
     useHeaderNotificationUnreadCount({
     enabled: Boolean(user),
@@ -59,7 +60,7 @@ export function LandingHeader() {
   const logoSrc = overHero ? mlsLogoDark : mlsLogoLight;
 
   const openChooseAccount = () => {
-    useAuthStore.getState().openAuth(AUTH_VIEW.chooseAccount);
+    openAuth(AUTH_VIEW.chooseAccount);
   };
 
   const handleLocaleChange = (nextLocale: string) => {

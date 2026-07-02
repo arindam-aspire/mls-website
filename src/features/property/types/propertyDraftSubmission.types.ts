@@ -155,6 +155,10 @@ export type PropertyDraftSubmissionData = {
   submission_id: string;
   agency_id?: string | null;
   status: string;
+  workflow_stage?: string | null;
+  current_actor?: string | null;
+  submission_origin?: string | null;
+  assigned_agent_id?: string | null;
   current_step: number;
   last_completed_step: number;
   step_completion: PropertyDraftSubmissionStepCompletion;

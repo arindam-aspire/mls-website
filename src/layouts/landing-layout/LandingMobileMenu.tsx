@@ -123,10 +123,11 @@ function useMobileMenuSections(
   onOpenChangePasswordModal: () => void,
 ) {
   const user = useAuthStore((state) => state.user);
+  const openAuthAction = useAuthStore((state) => state.openAuth);
   const { theme, setTheme } = useTheme();
 
   const openAuth = () => {
-    useAuthStore.getState().openAuth(AUTH_VIEW.chooseAccount);
+    openAuthAction(AUTH_VIEW.chooseAccount);
     onClose();
   };
 
@@ -179,6 +180,7 @@ function useMobileMenuAccountFooter(
 ) {
   const user = useAuthStore((state) => state.user);
   const isLoadingUser = useAuthStore((state) => state.isLoadingUser);
+  const openAuth = useAuthStore((state) => state.openAuth);
 
   const roleLabel =
     user?.roles[0]?.name ?? user?.roles[0]?.description ?? user?.email ?? "";
@@ -188,7 +190,7 @@ function useMobileMenuAccountFooter(
     isLoadingUser,
     roleLabel,
     handleSignIn: () => {
-      useAuthStore.getState().openAuth(AUTH_VIEW.chooseAccount);
+      openAuth(AUTH_VIEW.chooseAccount);
       onClose();
     },
     handleProfilePress: () => {

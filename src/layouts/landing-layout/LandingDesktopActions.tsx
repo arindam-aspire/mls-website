@@ -29,11 +29,12 @@ export function LandingDesktopActions({ overHero }: LandingDesktopActionsProps) 
   const router = useRouter();
   const pathname = usePathname();
   const { user, isLoadingUser } = useAuthStore();
+  const openAuth = useAuthStore((state) => state.openAuth);
 
   const localeOptions = useMemo(() => buildHeaderLocaleOptions(t), [t]);
 
   const openChooseAccount = () => {
-    useAuthStore.getState().openAuth(AUTH_VIEW.chooseAccount);
+    openAuth(AUTH_VIEW.chooseAccount);
   };
 
   const handleLocaleChange = (nextLocale: AppLocale) => {
