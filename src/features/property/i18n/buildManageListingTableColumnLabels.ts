@@ -2,6 +2,7 @@ type ManageListingsTranslator = (
   key:
     | "columns.property"
     | "columns.status"
+    | "columns.submittedBy"
     | "columns.submission"
     | "columns.submittedByEmpty"
     | "columns.submittedOnEmpty"
@@ -13,6 +14,7 @@ export function buildManageListingTableColumnLabels(t: ManageListingsTranslator)
   return {
     property: t("columns.property"),
     status: t("columns.status"),
+    submittedBy: t("columns.submittedBy"),
     submission: t("columns.submission"),
     submittedByEmpty: t("columns.submittedByEmpty"),
     submittedOnEmpty: t("columns.submittedOnEmpty"),

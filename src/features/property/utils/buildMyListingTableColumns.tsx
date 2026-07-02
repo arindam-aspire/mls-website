@@ -21,6 +21,7 @@ type LibraryTitleLocale = keyof LibraryPropertyListing["title"];
 type MyListingTableColumnLabels = {
   property: string;
   status: string;
+  submittedBy?: string;
   submission: string;
   submittedByEmpty: string;
   submittedOnEmpty: string;
@@ -46,6 +47,10 @@ function resolveSubmittedBy(row: LibraryPropertyListing): string {
   }
 
   return row.brokerName?.trim() ?? "";
+}
+
+function resolveRowSubmittedBy(row: LibraryPropertyListing): string {
+  return row.submission_submitted_by?.trim() ?? "";
 }
 
 function resolveSubmittedOnDate(row: LibraryPropertyListing): string {
@@ -104,6 +109,14 @@ function renderSubmissionCell(
         </span>
       ) : null}
     </div>
+  );
+}
+
+function renderSubmittedByCell(row: LibraryPropertyListing, emptyLabel: string) {
+  return (
+    <span className="block w-full min-w-0 truncate text-sm font-medium text-text">
+      {resolveRowSubmittedBy(row) || emptyLabel}
+    </span>
   );
 }
 function renderPropertyCell(
@@ -185,13 +198,28 @@ export function buildMyListingTableColumns({
         </div>
       ),
     },
+      ...(labels.submittedBy
+        ? [
+            {
+              id: "submittedBy",
+              header: labels.submittedBy,
+              align: "start" as const,
+              sortable: true,
+              minWidth: 168,
+              getSortValue: (row: LibraryPropertyListing) =>
+                resolveRowSubmittedBy(row),
+              render: (row: LibraryPropertyListing) =>
+                renderSubmittedByCell(row, labels.submittedByEmpty),
+            },
+          ]
+        : []),
     {
       id: "submission",
       header: labels.submission,
       align: "start",
       sortable: true,
       minWidth: 168,
-      getSortValue: (row) => {
+      getSortValue: (row: LibraryPropertyListing) => {
         const submittedOnDate = resolveSubmittedOnDate(row);
 
         if (!submittedOnDate) {
@@ -218,7 +246,7 @@ export function buildMyListingTableColumns({
       align: "start",
       sortable: true,
       cellClassName: "whitespace-nowrap text-text/80",
-      getSortValue: (row) => {
+      getSortValue: (row: LibraryPropertyListing) => {
         const reviewedDate = resolveReviewedDate(row);
 
         if (!reviewedDate) {

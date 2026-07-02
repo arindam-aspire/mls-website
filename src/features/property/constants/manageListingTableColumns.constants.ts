@@ -1,6 +1,7 @@
 export const MANAGE_LISTING_TABLE_COLUMN_IDS = [
   "title",
   "status",
+  "submittedBy",
   "submission",
   "reviewedOn",
   "actions",
@@ -17,6 +18,7 @@ export type ManageListingAlwaysVisibleColumnId =
 /** Shown in the toggle-columns popover. */
 export const MANAGE_LISTING_TOGGLEABLE_COLUMN_IDS = [
   "status",
+  "submittedBy",
   "submission",
   "reviewedOn",
 ] as const;
@@ -31,16 +33,23 @@ export type ManageListingColumnVisibility = Record<
 
 export const DEFAULT_MANAGE_LISTING_COLUMN_VISIBILITY: ManageListingColumnVisibility = {
   status: true,
+  submittedBy: true,
   submission: true,
   reviewedOn: true,
 };
 
 export const MANAGE_LISTING_COLUMN_I18N_KEY: Record<
   ManageListingTableColumnId,
-  "property" | "status" | "submission" | "reviewedOn" | "actions"
+  | "property"
+  | "status"
+  | "submittedBy"
+  | "submission"
+  | "reviewedOn"
+  | "actions"
 > = {
   title: "property",
   status: "status",
+  submittedBy: "submittedBy",
   submission: "submission",
   reviewedOn: "reviewedOn",
   actions: "actions",
