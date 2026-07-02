@@ -167,7 +167,7 @@ export default function DashboardScreen() {
             <KpiCard
               label="Pending Reviews"
               value={pendingSubmissionCount}
-              helper="Property submissions waiting for Super Admin approval."
+              helper="Property submissions waiting for agency admin review."
               icon={FileClock}
               tone="amber"
             />

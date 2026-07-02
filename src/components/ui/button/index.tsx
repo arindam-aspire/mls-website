@@ -1,8 +1,7 @@
 "use client";
 
-import { Button as HeadlessButton } from "@headlessui/react";
 import { Loader2 } from "lucide-react";
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import type {
   ButtonColor,
   ButtonProps,
@@ -119,9 +118,11 @@ export function Button({
 }: ButtonProps) {
   const isDisabled = Boolean(disabled || isLoading);
   const label = isLoading ? (loadingLabel ?? children) : children;
+  const [isHovered, setIsHovered] = useState(false);
+  const [isActive, setIsActive] = useState(false);
 
   return (
-    <HeadlessButton
+    <button
       suppressHydrationWarning
       id={id}
       type={type}
@@ -133,6 +134,20 @@ export function Button({
       aria-busy={isLoading || undefined}
       aria-disabled={isDisabled || undefined}
       onClick={onClick}
+      data-disabled={isDisabled ? "" : undefined}
+      data-hover={!isDisabled && isHovered ? "" : undefined}
+      data-active={!isDisabled && isActive ? "" : undefined}
+      onPointerEnter={() => setIsHovered(true)}
+      onPointerLeave={() => {
+        setIsHovered(false);
+        setIsActive(false);
+      }}
+      onPointerDown={() => setIsActive(true)}
+      onPointerUp={() => setIsActive(false)}
+      onBlur={() => {
+        setIsHovered(false);
+        setIsActive(false);
+      }}
       className={cn(
         baseClasses,
         isRounded ? "rounded-full" : "rounded-lg",
@@ -161,7 +176,7 @@ export function Button({
           {iconEnd != null && <ButtonIcon icon={iconEnd} size={size} />}
         </>
       )}
-    </HeadlessButton>
+    </button>
   );
 }
 
