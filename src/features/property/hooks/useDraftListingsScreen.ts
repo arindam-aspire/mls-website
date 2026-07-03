@@ -1,6 +1,5 @@
 "use client";
 
-import type { DraftListItemData } from "@abdoun/abdoun-library";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/src/i18n/navigation";
@@ -135,7 +134,7 @@ export function useDraftListingsScreen() {
 
   // 7. Callbacks
   const onResume = useCallback(
-    (item: DraftListItemData) => {
+    (item: MappedDraftListItem) => {
       const submissionId = String(item.id);
       router.push(
         `/property-create?${PROPERTY_CREATE_SUBMISSION_ID_PARAM}=${encodeURIComponent(submissionId)}`,
@@ -144,7 +143,7 @@ export function useDraftListingsScreen() {
     [router],
   );
 
-  const onDelete = useCallback((_item: DraftListItemData) => {
+  const onDelete = useCallback((_item: MappedDraftListItem) => {
     // Delete draft API not wired yet.
   }, []);
 

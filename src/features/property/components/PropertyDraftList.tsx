@@ -1,4 +1,4 @@
-import type { DraftListItemData, DraftListPagination } from "@abdoun/abdoun-library";
+import type { ComponentProps } from "react";
 import {
   DraftListEmpty,
   DraftListCard,
@@ -8,13 +8,15 @@ import {
 import { cn } from "@/src/lib/cn";
 import type { MappedDraftListItem } from "../mappers/agentPropertyDraftsList.mapper";
 
+type DraftListPagination = ComponentProps<typeof TablePaginition>;
+
 type PropertyDraftListProps = {
   items: MappedDraftListItem[];
   isLoading?: boolean;
   loadingCount?: number;
-  onResume?: (item: DraftListItemData) => void;
-  onDelete?: (item: DraftListItemData) => void;
-  getDeleteLoading?: (item: DraftListItemData) => boolean;
+  onResume?: (item: MappedDraftListItem) => void;
+  onDelete?: (item: MappedDraftListItem) => void;
+  getDeleteLoading?: (item: MappedDraftListItem) => boolean;
   resumeLabel?: string;
   size?: "sm" | "md" | "lg";
   emptyStateContent?: {
@@ -74,8 +76,8 @@ export function PropertyDraftList({
               <li key={item.id}>
                 <DraftListCard
                   item={item}
-                  onResume={item.canEdit ? onResume : undefined}
-                  onDelete={item.canDelete ? onDelete : undefined}
+                  onResume={item.canEdit && onResume ? () => onResume(item) : undefined}
+                  onDelete={item.canDelete && onDelete ? () => onDelete(item) : undefined}
                   isDeleteLoading={getDeleteLoading?.(item)}
                   resumeLabel={resumeLabel}
                   size={size}

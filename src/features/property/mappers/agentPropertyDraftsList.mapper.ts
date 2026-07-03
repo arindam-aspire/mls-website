@@ -1,10 +1,10 @@
-import {
-  propertyFormSteps,
-  type DraftListItemData,
-} from "@abdoun/abdoun-library";
+import type { ComponentProps } from "react";
+import { DraftListCard, propertyFormSteps } from "@abdoun/abdoun-library";
 import type { AgentPropertyDraftListItem } from "../types/property.types";
 
-export type MappedDraftListItem = DraftListItemData & {
+type LibraryDraftListItem = ComponentProps<typeof DraftListCard>["item"];
+
+export type MappedDraftListItem = LibraryDraftListItem & {
   canEdit: boolean;
   canDelete: boolean;
 };
