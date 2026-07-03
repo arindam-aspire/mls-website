@@ -148,6 +148,7 @@
       "property": "Property",
       "propertyName": "Property Name",
       "submittedBy": "Submitted By",
+      "agentName": "Agent Name",
       "submittedByEmpty": "—",
       "reference": "Reference",
       "status": "Status",

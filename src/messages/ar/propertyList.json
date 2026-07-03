@@ -148,6 +148,7 @@
       "property": "العقار",
       "propertyName": "Property Name",
       "submittedBy": "مُرسَل بواسطة",
+      "agentName": "اسم الوكيل",
       "submittedByEmpty": "—",
       "reference": "المرجع",
       "status": "الحالة",

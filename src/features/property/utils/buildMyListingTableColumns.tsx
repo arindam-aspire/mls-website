@@ -22,6 +22,7 @@ type MyListingTableColumnLabels = {
   property: string;
   status: string;
   submittedBy?: string;
+  agentName?: string;
   submission: string;
   submittedByEmpty: string;
   submittedOnEmpty: string;
@@ -51,6 +52,10 @@ function resolveSubmittedBy(row: LibraryPropertyListing): string {
 
 function resolveRowSubmittedBy(row: LibraryPropertyListing): string {
   return row.submission_submitted_by?.trim() ?? "";
+}
+
+function resolveAgentName(row: LibraryPropertyListing): string {
+  return row.agent?.name?.trim() ?? "";
 }
 
 function resolveSubmittedOnDate(row: LibraryPropertyListing): string {
@@ -93,7 +98,6 @@ function renderSubmissionCell(
     resolveSubmittedOnDate(row),
     appLocale,
   );
-  const assignedAgent = row.agent?.name?.trim();
 
   return (
     <div className="min-w-0">
@@ -103,11 +107,6 @@ function renderSubmissionCell(
       <span className="mt-0.5 block w-full min-w-0 truncate text-xs text-muted">
         {formattedDate ?? labels.submittedOnEmpty}
       </span>
-      {assignedAgent ? (
-        <span className="mt-0.5 block w-full min-w-0 truncate text-xs text-muted">
-          Assigned: {assignedAgent}
-        </span>
-      ) : null}
     </div>
   );
 }
@@ -119,6 +118,15 @@ function renderSubmittedByCell(row: LibraryPropertyListing, emptyLabel: string) 
     </span>
   );
 }
+
+function renderAgentNameCell(row: LibraryPropertyListing, emptyLabel: string) {
+  return (
+    <span className="block w-full min-w-0 truncate text-sm font-medium text-text">
+      {resolveAgentName(row) || emptyLabel}
+    </span>
+  );
+}
+
 function renderPropertyCell(
   row: LibraryPropertyListing,
   tableLocale: LibraryTitleLocale,
@@ -210,6 +218,20 @@ export function buildMyListingTableColumns({
                 resolveRowSubmittedBy(row),
               render: (row: LibraryPropertyListing) =>
                 renderSubmittedByCell(row, labels.submittedByEmpty),
+            },
+          ]
+        : []),
+      ...(labels.agentName
+        ? [
+            {
+              id: "agentName",
+              header: labels.agentName,
+              align: "start" as const,
+              sortable: true,
+              minWidth: 168,
+              getSortValue: (row: LibraryPropertyListing) => resolveAgentName(row),
+              render: (row: LibraryPropertyListing) =>
+                renderAgentNameCell(row, labels.submittedByEmpty),
             },
           ]
         : []),

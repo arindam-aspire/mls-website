@@ -148,6 +148,7 @@
       "property": "Bien",
       "propertyName": "Nom du bien",
       "submittedBy": "Soumis par",
+      "agentName": "Nom de l'agent",
       "submittedByEmpty": "—",
       "reference": "Référence",
       "status": "Statut",
