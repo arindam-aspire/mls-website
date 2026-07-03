@@ -153,6 +153,7 @@ export type PropertyDraftSubmissionStepCompletion = {
 
 export type PropertyDraftSubmissionData = {
   submission_id: string;
+  submitted_by?: string | null;
   agency_id?: string | null;
   status: string;
   workflow_stage?: string | null;

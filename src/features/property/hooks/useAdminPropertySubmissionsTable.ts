@@ -192,10 +192,11 @@ export function useAdminPropertySubmissionsTable({
     () => {
       const isSuperAdmin = isSuperAdminUser(user);
       const isAgencyAdmin = isAgencyUser(user);
+      const canManageWorkflow = isSuperAdmin || isAgencyAdmin;
 
       return {
-        canReviewSubmissions: isAgencyAdmin,
-        canManageAgentAssignment: isAgencyAdmin,
+        canReviewSubmissions: canManageWorkflow,
+        canManageAgentAssignment: canManageWorkflow,
         canDeactivateSubmissions: isSuperAdmin,
         canEditRejectedSubmissions: false,
       };

@@ -12,6 +12,7 @@ import { UserRole } from "@/src/lib/auth/roles";
 import { getAgencyList } from "@/src/features/profile/services/profile.service";
 
 const DASHBOARD_PAGE_SIZE = 5;
+const WORKFLOW_QUEUE_STATUSES = ["submitted", "agent-assigned", "pending-approval"] as const;
 
 export function useDashboardScreen() {
   const user = useAuthStore((state) => state.user);
@@ -27,13 +28,30 @@ export function useDashboardScreen() {
   });
 
   const pendingSubmissionsQuery = useQuery({
-    queryKey: ["dashboard", "property-submissions", "pending-approval"],
-    queryFn: () =>
-      getAdminPropertySubmissions({
-        page: 1,
-        pageSize: DASHBOARD_PAGE_SIZE,
-        status: "pending-approval",
-      }),
+    queryKey: ["dashboard", "property-submissions", "workflow-queue"],
+    queryFn: async () => {
+      const responses = await Promise.all(
+        WORKFLOW_QUEUE_STATUSES.map((status) =>
+          getAdminPropertySubmissions({
+            page: 1,
+            pageSize: DASHBOARD_PAGE_SIZE,
+            status,
+          }),
+        ),
+      );
+      const items = responses.flatMap((response) => response.data?.items ?? []);
+      const total = responses.reduce(
+        (sum, response) => sum + (response.data?.total ?? 0),
+        0,
+      );
+
+      return {
+        data: {
+          items: items.slice(0, DASHBOARD_PAGE_SIZE),
+          total,
+        },
+      };
+    },
     enabled: canReviewSubmissions,
   });
 

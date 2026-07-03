@@ -40,6 +40,7 @@ function normalizeSubmissionStatusKey(value: string | null | undefined): string 
     "deal-closed": "deal_closed",
     deactivated: "deactivated",
     submitted: "submitted",
+    "agent-assigned": "agent_assigned",
     "pending-approval": "pending-approval",
     "pending-admin-approval": "pending_admin_approval",
     "changes-requested": "changes_requested",

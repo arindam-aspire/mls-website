@@ -82,22 +82,25 @@ function resolveSubmissionFormAccess(
 ) {
   const status = data.status?.trim().toLowerCase();
   const workflowStage = data.workflow_stage?.trim().toLowerCase();
+  const userId = user?.id ? String(user.id) : "";
+  const submittedBy = data.submitted_by ? String(data.submitted_by) : "";
   const isAssignedAgent =
-    Boolean(data.assigned_agent_id && user?.id === data.assigned_agent_id) ||
+    Boolean(data.assigned_agent_id && userId === String(data.assigned_agent_id)) ||
     (!data.assigned_agent_id && isAgentUser(user));
-  const isOwnerEditable =
-    status === "rejected" &&
-    (workflowStage === "returned_to_owner" || !workflowStage) &&
-    isOwnerUser(user);
+  const isSubmitter = Boolean(userId && submittedBy && userId === submittedBy);
+  const isRejectedEditable = status === "rejected" && (isSubmitter || isAssignedAgent);
   const isAgentEditable =
-    (workflowStage === "with_agent" || workflowStage === "returned_to_agent") &&
+    (status === "agent-assigned" ||
+      workflowStage === "agent-assigned" ||
+      workflowStage === "with_agent" ||
+      workflowStage === "returned_to_agent") &&
     isAssignedAgent;
 
   return {
     canEdit:
       status === "draft" ||
       status === "in_progress" ||
-      isOwnerEditable ||
+      isRejectedEditable ||
       isAgentEditable,
     rejectionReason:
       status === "rejected" ? data.review_reason?.trim() || null : null,
