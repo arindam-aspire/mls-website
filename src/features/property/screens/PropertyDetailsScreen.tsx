@@ -226,6 +226,7 @@ export default function PropertyDetailsScreen({
         showOwner
         features={featureCatalog}
         tabs={tabs}
+        statusActionCard={statusActionCard}
         onClickFavourite={toggleFavourite}
         onClickAgentEmail={openAgentEmail}
       />

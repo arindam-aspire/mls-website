@@ -113,7 +113,8 @@ function getPropertyDetailsStatusActionCard(
   }
 
   const statusLabel = (card?.statusLabel ?? card?.status_label)?.trim();
-  const pendingActions = (card?.pendingActions ?? card?.pending_actions ?? workflowActionLabels)
+  const cardPendingActions = card?.pendingActions ?? card?.pending_actions ?? [];
+  const pendingActions = (cardPendingActions.length > 0 ? cardPendingActions : workflowActionLabels)
     .map((action) => action.trim())
     .filter((action): action is string => Boolean(action));
 
@@ -921,8 +922,15 @@ export function usePropertyDetails(propertyId: string) {
       return undefined;
     }
 
+    const fallbackPendingActions = workflowActionButtons
+      .map((action) => action.label?.trim())
+      .filter((label): label is string => Boolean(label));
+    const cardPendingActions = card?.pendingActions ?? card?.pending_actions ?? [];
+
     return {
-      ...(card ?? {}),
+      statusLabel: card?.statusLabel ?? card?.status_label ?? undefined,
+      pendingActions:
+        cardPendingActions.length > 0 ? cardPendingActions : fallbackPendingActions,
       actions: workflowActionButtons,
     };
   }, [propertyDetailsWithFavourites, workflowActionButtons]);

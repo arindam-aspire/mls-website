@@ -31,6 +31,8 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 mls-local.log
+frontend-network*.log
+frontend-python-detached-3000*.log
 
 # env files (can opt-in for committing if needed)
 .env*
