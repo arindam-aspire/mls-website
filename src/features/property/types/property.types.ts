@@ -8,6 +8,17 @@ export type PropertyDetailsStatusActionCard = {
   pending_actions?: string[] | null;
   statusLabel?: string | null;
   pendingActions?: string[] | null;
+  actions?: PropertyDetailsStatusActionCardAction[];
+};
+
+export type PropertyDetailsStatusActionCardAction = {
+  id: string;
+  label: string;
+  tone?: "default" | "primary" | "danger" | "success";
+  disabled?: boolean;
+  isLoading?: boolean;
+  loadingLabel?: string;
+  onClick?: () => void;
 };
 
 export type PropertyDetailsWorkflowAction = {

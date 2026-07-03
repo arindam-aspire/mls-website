@@ -37,14 +37,14 @@ import type {
   PropertyDetails,
   PropertyFeatureDefinition,
   PropertyListing,
+  PropertyDetailsStatusActionCard,
+  PropertyDetailsStatusActionCardAction,
 } from "../types/property.types";
 import { normalizePropertyListing } from "../utils/normalizePropertyListingStatus";
 import { usePropertyFavouriteToggle } from "./usePropertyFavouriteToggle";
 
 type PropertyViewProps = ComponentProps<typeof PropertyView>;
 type PropertyViewLocale = NonNullable<PropertyViewProps["locale"]>;
-type PropertyStatusActionCard = NonNullable<PropertyViewProps["statusActionCard"]>;
-type PropertyStatusActionCardAction = NonNullable<PropertyStatusActionCard["actions"]>[number];
 
 type PropertyDetailsConfirmAction =
   | "approve"
@@ -101,7 +101,7 @@ function resolveDetailsId(
 
 function getPropertyDetailsStatusActionCard(
   propertyDetails: PropertyDetails | undefined,
-): PropertyStatusActionCard | undefined {
+): PropertyDetailsStatusActionCard | undefined {
   const card = propertyDetails?.status_action_card;
   const workflowActionLabels =
     propertyDetails?.workflow_actions
@@ -798,10 +798,10 @@ export function usePropertyDetails(propertyId: string) {
     ],
   );
 
-  const workflowActionButtons = useMemo<PropertyStatusActionCardAction[]>(() => {
+  const workflowActionButtons = useMemo<PropertyDetailsStatusActionCardAction[]>(() => {
     const actions = propertyDetailsWithFavourites?.workflow_actions ?? [];
 
-    return actions.flatMap((action): PropertyStatusActionCardAction[] => {
+    return actions.flatMap((action): PropertyDetailsStatusActionCardAction[] => {
       if (action.hidden) {
         return [];
       }
