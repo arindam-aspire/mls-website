@@ -33,6 +33,7 @@ import {
   useGetAdminPropertySubmissions,
   useAssignAdminPropertyAgent,
   useDeactivateAdminPropertySubmission,
+  useDeletePropertySubmission,
   useReviewAdminPropertySubmission,
 } from "../mutations/property.mutation";
 import type {
@@ -122,12 +123,15 @@ export function useAdminPropertySubmissionsTable({
     useState<LibraryPropertyListing | null>(null);
   const [pendingDeactivateListing, setPendingDeactivateListing] =
     useState<LibraryPropertyListing | null>(null);
+  const [pendingDeleteListing, setPendingDeleteListing] =
+    useState<LibraryPropertyListing | null>(null);
   const [pendingAssignListing, setPendingAssignListing] =
     useState<LibraryPropertyListing | null>(null);
   const [assignAgentModalMode, setAssignAgentModalMode] =
     useState<AssignAgentModalMode>("assign");
   const [assigningPropertyId, setAssigningPropertyId] = useState<string | null>(null);
   const [reviewingSubmissionId, setReviewingSubmissionId] = useState<string | null>(null);
+  const [deletingSubmissionId, setDeletingSubmissionId] = useState<string | null>(null);
 
   // 5. Data fetching / queries
   const toast = useToast();
@@ -139,6 +143,8 @@ export function useAdminPropertySubmissionsTable({
     useDeactivateAdminPropertySubmission();
   const { mutate: assignAdminPropertyAgent, isPending: isAssigningAgent } =
     useAssignAdminPropertyAgent();
+  const { mutate: deletePropertySubmission, isPending: isDeletingSubmission } =
+    useDeletePropertySubmission(LISTINGS_NAMESPACE);
 
   const requestParams = useMemo(
     () => buildRequestParams(status, page, pageSize),
@@ -180,6 +186,7 @@ export function useAdminPropertySubmissionsTable({
       assignAgent: t("workflow.assignAgent"),
       approve: t("workflow.approve"),
       deactivate: t("workflow.deactivate"),
+      delete: t("workflow.delete"),
       edit: t("workflow.edit"),
       reject: t("workflow.reject"),
       reassign: t("workflow.reassign"),
@@ -225,15 +232,34 @@ export function useAdminPropertySubmissionsTable({
         return row;
       }
 
-      return {
+      const withStatusLabel = {
         ...row,
         status: {
           ...row.status,
           label: tStatus(key),
         },
       };
+
+      if (
+        deletingSubmissionId &&
+        submissionIdByPropertyId.get(row.property_id) === deletingSubmissionId
+      ) {
+        return {
+          ...withStatusLabel,
+          is_delete_loading: true,
+        };
+      }
+
+      return withStatusLabel;
     });
-  }, [adminRowActionLabels, adminRowActionOptions, listings, tStatus]);
+  }, [
+    adminRowActionLabels,
+    adminRowActionOptions,
+    deletingSubmissionId,
+    listings,
+    submissionIdByPropertyId,
+    tStatus,
+  ]);
 
   const tableLocale = useMemo(() => resolveLibraryLocale(locale), [locale]);
 
@@ -448,6 +474,55 @@ export function useAdminPropertySubmissionsTable({
     setPendingDeactivateListing(listing);
   }, []);
 
+  const openDeleteConfirm = useCallback((listing: LibraryPropertyListing) => {
+    setPendingDeleteListing(listing);
+  }, []);
+
+  const closeDeleteConfirm = useCallback(() => {
+    if (isDeletingSubmission) {
+      return;
+    }
+
+    setPendingDeleteListing(null);
+  }, [isDeletingSubmission]);
+
+  const confirmDeleteListing = useCallback(() => {
+    if (!pendingDeleteListing || isDeletingSubmission) {
+      return;
+    }
+
+    const submissionId = submissionIdByPropertyId.get(pendingDeleteListing.property_id);
+
+    if (!submissionId) {
+      return;
+    }
+
+    setDeletingSubmissionId(submissionId);
+
+    deletePropertySubmission(submissionId, {
+      onSuccess: (response) => {
+        toast.success(t("deleteSuccessTitle"), {
+          description: response.message ?? t("deleteSuccessDescription"),
+        });
+        setDeletingSubmissionId(null);
+        setPendingDeleteListing(null);
+        fetchAdminPropertySubmissions(requestParams);
+      },
+      onError: () => {
+        setDeletingSubmissionId(null);
+      },
+    });
+  }, [
+    deletePropertySubmission,
+    fetchAdminPropertySubmissions,
+    isDeletingSubmission,
+    pendingDeleteListing,
+    requestParams,
+    submissionIdByPropertyId,
+    t,
+    toast,
+  ]);
+
   const closeDeactivateConfirm = useCallback(() => {
     if (isDeactivatingSubmission) {
       return;
@@ -628,8 +703,12 @@ export function useAdminPropertySubmissionsTable({
       if (actionId === "deactivate") {
         openDeactivateConfirm(listing);
       }
+
+      if (actionId === "delete") {
+        openDeleteConfirm(listing);
+      }
     },
-    [navigateToSubmissionEdit, openDeactivateConfirm],
+    [navigateToSubmissionEdit, openDeactivateConfirm, openDeleteConfirm],
   );
 
   const workflowActions = useMemo(
@@ -670,6 +749,10 @@ export function useAdminPropertySubmissionsTable({
           setRejectedReasonListing(listing);
         },
       },
+      delete: {
+        label: t("workflow.delete"),
+        onClick: openDeleteConfirm,
+      },
     }),
     [
       navigateToPropertyView,
@@ -679,6 +762,7 @@ export function useAdminPropertySubmissionsTable({
       openRejectModal,
       openReassignModal,
       openUnassignConfirm,
+      openDeleteConfirm,
       t,
     ],
   );
@@ -693,8 +777,10 @@ export function useAdminPropertySubmissionsTable({
   const listingRowActionOptions = useMemo(
     () => ({
       onRowAction,
+      canViewDelete: true,
+      onClickDelete: openDeleteConfirm,
     }),
-    [onRowAction],
+    [onRowAction, openDeleteConfirm],
   );
 
   const allColumns = useMemo(
@@ -766,6 +852,37 @@ export function useAdminPropertySubmissionsTable({
       onClose: () => setRejectedReasonListing(null),
     }),
     [rejectedReasonListing, rejectedSubmissionReviewReason, t],
+  );
+
+  const deleteConfirmModal = useMemo(
+    () => {
+      if (!enabled || !pendingDeleteListing) {
+        return null;
+      }
+
+      return {
+        open: true,
+        title: t("deleteConfirmTitle"),
+        description: t("deleteConfirmDescription", {
+          title: resolveListingTitle(pendingDeleteListing, tableLocale),
+        }),
+        confirmLabel: t("workflow.delete"),
+        cancelLabel: t("cancelLabel"),
+        deletingLabel: t("deletingLabel"),
+        isLoading: isDeletingSubmission,
+        onClose: closeDeleteConfirm,
+        onConfirm: confirmDeleteListing,
+      };
+    },
+    [
+      closeDeleteConfirm,
+      confirmDeleteListing,
+      enabled,
+      isDeletingSubmission,
+      pendingDeleteListing,
+      t,
+      tableLocale,
+    ],
   );
 
   const isApprovingPendingListing = useMemo(() => {
@@ -1034,7 +1151,7 @@ export function useAdminPropertySubmissionsTable({
     noDataFound,
     workflowActions,
     onClickProperty,
-    onClickDelete: undefined,
+    onClickDelete: openDeleteConfirm,
     onRowAction,
     columns,
     pinnedColumns,
@@ -1047,7 +1164,7 @@ export function useAdminPropertySubmissionsTable({
     rejectSubmissionModal,
     unassignConfirmModal,
     deactivateConfirmModal,
-    deleteConfirmModal: null,
-    canViewDelete: false,
+    deleteConfirmModal,
+    canViewDelete: true,
   };
 }

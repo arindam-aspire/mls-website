@@ -132,7 +132,15 @@ function PropertyStatusActionPanel({
 }
 
 function PropertyOwnersPanel({ owners }: { owners?: PropertyOwner[] }) {
-  const visibleOwners = owners?.filter((owner) => owner.full_name?.trim()) ?? [];
+  const visibleOwners =
+    owners?.filter((owner) =>
+      Boolean(
+        owner.full_name?.trim() ||
+          owner.email?.trim() ||
+          owner.phone?.trim() ||
+          owner.address?.trim(),
+      ),
+    ) ?? [];
 
   if (visibleOwners.length === 0) {
     return null;
@@ -160,13 +168,16 @@ function PropertyOwnersPanel({ owners }: { owners?: PropertyOwner[] }) {
       <div className="grid gap-3 md:grid-cols-2">
         {visibleOwners.map((owner, index) => (
           <article
-            key={owner.owner_id || `${owner.full_name}-${index}`}
+            key={owner.owner_id || `${owner.full_name || owner.email || owner.phone}-${index}`}
             className="rounded-lg border border-secondary/10 bg-page p-3"
           >
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <h3 className="truncate text-sm font-semibold text-text">
-                  {owner.full_name}
+                  {owner.full_name?.trim() ||
+                    owner.email?.trim() ||
+                    owner.phone?.trim() ||
+                    `Owner ${index + 1}`}
                 </h3>
                 {owner.nationality ? (
                   <p className="text-xs text-muted">{owner.nationality}</p>

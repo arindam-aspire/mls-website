@@ -6,7 +6,7 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 const workspaceRoot = path.resolve(process.cwd(), "..");
 const allowedDevOrigins = (
   process.env.NEXT_ALLOWED_DEV_ORIGINS ??
-  "192.168.68.127,192.168.1.106,192.168.68.129,192.168.68.101,10.26.208.90"
+  "192.168.68.120,192.168.68.127,192.168.1.106,192.168.68.129,192.168.68.101,10.26.208.90"
 )
   .split(",")
   .map((origin) => origin.trim())

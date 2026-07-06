@@ -9,6 +9,7 @@ export type AdminListingRowActionLabels = {
   edit: string;
   reassign: string;
   unassign: string;
+  delete: string;
 };
 
 export type AdminListingRowActionOptions = {
@@ -42,6 +43,9 @@ export function buildAdminListingRowActions(
     const actions: PropertyListingRowActionDescriptor[] = [{ id: "view" }];
     if (item.review_reason?.trim()) {
       actions.push({ id: "rejected_reason" });
+    }
+    if (item.can_delete_submission) {
+      actions.push({ id: "delete", label: labels.delete, tone: "danger" });
     }
     return actions;
   }

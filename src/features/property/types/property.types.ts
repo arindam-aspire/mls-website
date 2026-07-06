@@ -259,6 +259,7 @@ export type AdminPropertySubmissionListItem = {
   submitted_at: string;
   reviewed_at: string | null;
   review_reason?: string | null;
+  can_delete_submission?: boolean;
 };
 
 export type AdminPropertySubmissionsListData = {

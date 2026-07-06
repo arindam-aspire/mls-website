@@ -44,7 +44,7 @@ export function mapAdminSubmissionToAgentPropertyListItem(
     current_actor: item.current_actor,
     submission_origin: item.submission_origin,
     can_edit_submission: false,
-    can_delete_submission: false,
+    can_delete_submission: Boolean(item.can_delete_submission),
     agency: null,
     submitted_by: item.submitted_by_name?.trim() || item.submitted_by?.trim() || null,
     agent_user_id: item.agent_user_id,
