@@ -3,6 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CheckCircle2, Copy, Mail, Plus, RefreshCcw, XCircle } from "lucide-react";
 import { useMemo, useState } from "react";
+import { LicenseDocumentUpload } from "@/src/components/common/LicenseDocumentUpload";
 import { Button, CopyLinkBar, Input } from "@/src/components/ui";
 import {
   createAgencyInvitation,
@@ -10,6 +11,7 @@ import {
   getAgencyList,
   reviewAgency,
   sendAgencyPasswordLink,
+  uploadOfflineAgencyLegalDocument,
 } from "@/src/features/profile/services/profile.service";
 import type {
   AgencyInvitationCreateRequest,
@@ -19,10 +21,12 @@ import type {
 import { useToast } from "@/src/hooks/useToast";
 import { cn } from "@/src/lib/cn";
 import { bodyLargeTextClasses, headingPageClasses } from "@/src/lib/typography";
+import { validateLicenseDocumentFile } from "@/src/lib/validateLicenseDocumentFile";
 
 const AGENCY_LIST_QUERY_KEY = ["agency", "super-admin-list"] as const;
+const AGENCY_LIST_PAGE_SIZE = 10;
 
-type OfflineAgencyForm = AgencyOfflineRegistrationRequest;
+type OfflineAgencyForm = Omit<AgencyOfflineRegistrationRequest, "legal_document_s3_link">;
 type InvitationForm = Required<Pick<AgencyInvitationCreateRequest, "email">> &
   Omit<AgencyInvitationCreateRequest, "email">;
 
@@ -31,7 +35,6 @@ const emptyOfflineForm: OfflineAgencyForm = {
   agency_trade_name: "",
   email: "",
   phone: "",
-  legal_document_s3_link: "",
   website: "",
   address: "",
   city: "",
@@ -55,7 +58,6 @@ function compactOfflineForm(form: OfflineAgencyForm): AgencyOfflineRegistrationR
     agency_trade_name: form.agency_trade_name.trim(),
     email: form.email.trim(),
     phone: form.phone.trim(),
-    legal_document_s3_link: form.legal_document_s3_link?.trim() || null,
     website: form.website?.trim() || null,
     address: form.address?.trim() || null,
     city: form.city?.trim() || null,
@@ -99,15 +101,23 @@ export function AgenciesScreen() {
   const toast = useToast();
   const queryClient = useQueryClient();
   const [offlineForm, setOfflineForm] = useState<OfflineAgencyForm>(emptyOfflineForm);
+  const [offlineLegalDocument, setOfflineLegalDocument] = useState<File | null>(null);
+  const [offlineLegalDocumentError, setOfflineLegalDocumentError] = useState<string>();
   const [invitationForm, setInvitationForm] = useState<InvitationForm>(emptyInvitationForm);
   const [latestLink, setLatestLink] = useState<{ label: string; value: string } | null>(null);
+  const [agencyPage, setAgencyPage] = useState(1);
+  const agencySkip = (agencyPage - 1) * AGENCY_LIST_PAGE_SIZE;
 
   const { data, isLoading, isFetching } = useQuery({
-    queryKey: AGENCY_LIST_QUERY_KEY,
-    queryFn: () => getAgencyList({ skip: 0, limit: 100 }),
+    queryKey: [...AGENCY_LIST_QUERY_KEY, agencyPage, AGENCY_LIST_PAGE_SIZE],
+    queryFn: () => getAgencyList({ skip: agencySkip, limit: AGENCY_LIST_PAGE_SIZE }),
   });
 
   const agencies = data?.items ?? [];
+  const agencyTotal = data?.total ?? agencies.length;
+  const agencyTotalPages = Math.max(1, Math.ceil(agencyTotal / AGENCY_LIST_PAGE_SIZE));
+  const hasPreviousAgencyPage = agencyPage > 1;
+  const hasNextAgencyPage = agencyPage < agencyTotalPages;
   const activeCount = useMemo(
     () => agencies.filter((agency) => agency.is_active && agency.is_verified).length,
     [agencies],
@@ -123,10 +133,26 @@ export function AgenciesScreen() {
   };
 
   const createOfflineMutation = useMutation({
-    mutationFn: (body: AgencyOfflineRegistrationRequest) => createOfflineAgency(body),
+    mutationFn: async ({
+      body,
+      legalDocument,
+    }: {
+      body: AgencyOfflineRegistrationRequest;
+      legalDocument: File;
+    }) => {
+      const legalDocumentUrl = await uploadOfflineAgencyLegalDocument(legalDocument);
+
+      return createOfflineAgency({
+        ...body,
+        legal_document_s3_link: legalDocumentUrl,
+      });
+    },
     onSuccess: (response) => {
+      setAgencyPage(1);
       invalidateAgencies();
       setOfflineForm(emptyOfflineForm);
+      setOfflineLegalDocument(null);
+      setOfflineLegalDocumentError(undefined);
       const link = response.data.password_setup_link;
       if (link) {
         setLatestLink({ label: "Password creation link", value: link });
@@ -211,11 +237,11 @@ export function AgenciesScreen() {
         </div>
         <div className="grid grid-cols-2 gap-3 sm:flex">
           <div className="rounded-lg border border-secondary/15 bg-surface px-4 py-3">
-            <p className="text-xs font-medium text-muted">Active</p>
+            <p className="text-xs font-medium text-muted">Page Active</p>
             <p className="text-xl font-bold text-text">{activeCount}</p>
           </div>
           <div className="rounded-lg border border-secondary/15 bg-surface px-4 py-3">
-            <p className="text-xs font-medium text-muted">Pending</p>
+            <p className="text-xs font-medium text-muted">Page Pending</p>
             <p className="text-xl font-bold text-text">{pendingCount}</p>
           </div>
         </div>
@@ -237,7 +263,25 @@ export function AgenciesScreen() {
           className="rounded-lg border border-secondary/15 bg-surface p-5 shadow-sm"
           onSubmit={(event) => {
             event.preventDefault();
-            createOfflineMutation.mutate(compactOfflineForm(offlineForm));
+            if (!offlineLegalDocument) {
+              setOfflineLegalDocumentError("Legal document is required.");
+              return;
+            }
+
+            const fileError = validateLicenseDocumentFile(offlineLegalDocument, {
+              invalidType: "Upload a PDF, JPG, JPEG, or PNG document.",
+              tooLarge: "Legal document must be 10 MB or smaller.",
+            });
+
+            if (fileError) {
+              setOfflineLegalDocumentError(fileError);
+              return;
+            }
+
+            createOfflineMutation.mutate({
+              body: compactOfflineForm(offlineForm),
+              legalDocument: offlineLegalDocument,
+            });
           }}
         >
           <div className="mb-4 flex items-center gap-2">
@@ -249,7 +293,27 @@ export function AgenciesScreen() {
             <Input label="Trade name" isRequired value={offlineForm.agency_trade_name} onChange={(event) => setOfflineForm((prev) => ({ ...prev, agency_trade_name: event.target.value }))} />
             <Input label="Email" isRequired type="email" value={offlineForm.email} onChange={(event) => setOfflineForm((prev) => ({ ...prev, email: event.target.value }))} />
             <Input label="Phone" isRequired value={offlineForm.phone} onChange={(event) => setOfflineForm((prev) => ({ ...prev, phone: event.target.value }))} />
-            <Input label="Legal document URL" value={offlineForm.legal_document_s3_link ?? ""} onChange={(event) => setOfflineForm((prev) => ({ ...prev, legal_document_s3_link: event.target.value }))} />
+            <LicenseDocumentUpload
+              className="sm:col-span-2"
+              label="Legal document"
+              uploadPrompt="Upload legal document"
+              uploadHint="PDF, JPG, JPEG, or PNG up to 10 MB"
+              selectedFileName={offlineLegalDocument?.name ?? null}
+              error={offlineLegalDocumentError}
+              isRequired
+              isUploading={createOfflineMutation.isPending}
+              uploadingLabel="Creating agency..."
+              variant="compact"
+              onFileSelect={(file) => {
+                const fileError = validateLicenseDocumentFile(file, {
+                  invalidType: "Upload a PDF, JPG, JPEG, or PNG document.",
+                  tooLarge: "Legal document must be 10 MB or smaller.",
+                });
+
+                setOfflineLegalDocument(file);
+                setOfflineLegalDocumentError(fileError ?? undefined);
+              }}
+            />
             <Input label="Website" value={offlineForm.website ?? ""} onChange={(event) => setOfflineForm((prev) => ({ ...prev, website: event.target.value }))} />
             <Input label="City" value={offlineForm.city ?? ""} onChange={(event) => setOfflineForm((prev) => ({ ...prev, city: event.target.value }))} />
             <Input label="Country" value={offlineForm.country ?? ""} onChange={(event) => setOfflineForm((prev) => ({ ...prev, country: event.target.value }))} />
@@ -290,7 +354,11 @@ export function AgenciesScreen() {
         <div className="flex items-center justify-between gap-3 border-b border-secondary/10 px-5 py-4">
           <div>
             <h2 className="text-lg font-bold text-text">Agency Registry</h2>
-            <p className="text-sm text-muted">{isFetching ? "Refreshing..." : `${agencies.length} agencies loaded`}</p>
+            <p className="text-sm text-muted">
+              {isFetching
+                ? "Refreshing..."
+                : `${agencies.length} of ${agencyTotal} agencies loaded`}
+            </p>
           </div>
           <Button
             type="button"
@@ -358,6 +426,33 @@ export function AgenciesScreen() {
               )}
             </tbody>
           </table>
+        </div>
+        <div className="flex flex-col gap-3 border-t border-secondary/10 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-muted">
+            Page {agencyPage} of {agencyTotalPages}
+          </p>
+          <div className="flex gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              color="inherit"
+              size="sm"
+              disabled={!hasPreviousAgencyPage || isFetching}
+              onClick={() => setAgencyPage((page) => Math.max(1, page - 1))}
+            >
+              Previous
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              color="inherit"
+              size="sm"
+              disabled={!hasNextAgencyPage || isFetching}
+              onClick={() => setAgencyPage((page) => Math.min(agencyTotalPages, page + 1))}
+            >
+              Next
+            </Button>
+          </div>
         </div>
       </section>
     </div>

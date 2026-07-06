@@ -3,6 +3,7 @@ export const agencyEndpoints = {
     `/agency/list?skip=${params.skip}&limit=${params.limit}`,
   OFFLINE_REGISTRATION: "/agency/offline-registration",
   INVITATIONS: "/agency/invitations",
+  PASSWORD_SETUP: "/agency/password/setup",
   review: (agencyId: string) => `/agency/${agencyId}/review`,
   passwordLink: (agencyId: string) => `/agency/${agencyId}/password-link`,
   byId: (agencyId: string) => `/agency/${agencyId}`,

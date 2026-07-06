@@ -317,6 +317,11 @@ export type AgencyReviewRequest = {
   reason?: string | null;
 };
 
+export type AgencyPasswordSetupRequest = {
+  token: string;
+  password: string;
+};
+
 export type AgencyWorkflowResponseData = {
   agency: Agency;
   password_setup_token?: string | null;

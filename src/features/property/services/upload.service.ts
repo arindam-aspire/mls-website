@@ -1,10 +1,9 @@
 import { apiClient } from "@/src/apis/clients/api.client";
 import { uploadEndpoints } from "@/src/apis/endpoints/uploadEndpoints";
 import type {
-  UploadPresignedUrlOwnerRequest,
+  UploadPresignedUrlRequest,
   UploadPresignedUrlResponse,
   UploadPresignedUrlSubmissionContext,
-  UploadPresignedUrlSubmissionRequest,
 } from "@/src/features/property/types/upload.types";
 import { resolveOwnerDocumentContentType } from "@/src/lib/resolveOwnerDocumentContentType";
 import { resolveProfileImageContentType } from "@/src/features/profile/utils/validateProfileImageFile";
@@ -15,7 +14,7 @@ type UploadContentTypeResolver = (file: File) => string;
 type UploadSubmissionTarget = string | { submission_id?: string; draft_client_id?: string };
 
 export async function requestUploadPresignedUrl(
-  body: UploadPresignedUrlOwnerRequest | UploadPresignedUrlSubmissionRequest,
+  body: UploadPresignedUrlRequest,
 ): Promise<UploadPresignedUrlResponse> {
   return apiClient.request<UploadPresignedUrlResponse>({
     endpoint: uploadEndpoints.PRESIGNED_URL,
@@ -27,7 +26,7 @@ export async function requestUploadPresignedUrl(
 
 async function uploadWithPresignedUrl(
   file: File,
-  presignBody: UploadPresignedUrlOwnerRequest | UploadPresignedUrlSubmissionRequest,
+  presignBody: UploadPresignedUrlRequest,
 ): Promise<string> {
   const contentType = presignBody.content_type;
   const presignResponse = await requestUploadPresignedUrl(presignBody);

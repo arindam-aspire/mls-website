@@ -3,10 +3,12 @@ import { agencyEndpoints } from "@/src/apis/endpoints/agencyEndpoints";
 import { profileEndpoints } from "@/src/apis/endpoints/profileEndpoints";
 import { getLoggedInUser } from "@/src/features/auth/services/auth.service";
 import type { LoggedInUser } from "@/src/features/auth/types/auth.types";
+import { requestUploadPresignedUrl } from "@/src/features/property/services/upload.service";
 import {
   assignUserAgency,
   assignUserAgencyAndRefreshUser,
 } from "@/src/features/user/services/user.service";
+import { resolveUploadedFileUrl } from "@/src/lib/resolveUploadedFileUrl";
 import { putFileToPresignedUrl } from "@/src/lib/upload";
 import { resolveLicenseDocumentContentType } from "@/src/lib/validateLicenseDocumentFile";
 import {
@@ -23,6 +25,7 @@ import type {
   AgencyLogoUploadRequest,
   AgencyLogoUploadResponse,
   AgencyOfflineRegistrationRequest,
+  AgencyPasswordSetupRequest,
   AgencyReviewRequest,
   AgencyWorkflowResponse,
   DeleteAgencyLogoResponse,
@@ -105,6 +108,28 @@ export async function createOfflineAgency(
   });
 }
 
+export async function uploadOfflineAgencyLegalDocument(file: File): Promise<string> {
+  const contentType = resolveLicenseDocumentContentType(file);
+  const response = await requestUploadPresignedUrl({
+    context: "agency_legal_document",
+    file_name: file.name,
+    content_type: contentType,
+    file_size: file.size,
+  });
+
+  const uploadUrl = response.data?.upload_url;
+
+  if (!response.success || !uploadUrl) {
+    throw new Error(response.message ?? "Legal document upload failed");
+  }
+
+  if (!uploadUrl.startsWith("dev://")) {
+    await putFileToPresignedUrl(uploadUrl, file, contentType);
+  }
+
+  return resolveUploadedFileUrl(uploadUrl, response.data?.file_url);
+}
+
 export async function createAgencyInvitation(
   body: AgencyInvitationCreateRequest,
 ): Promise<AgencyInvitationResponse> {
@@ -125,6 +150,17 @@ export async function reviewAgency(
     method: "POST",
     body,
     auth: true,
+  });
+}
+
+export async function setupAgencyPassword(
+  body: AgencyPasswordSetupRequest,
+): Promise<AgencyWorkflowResponse> {
+  return authClient.request<AgencyWorkflowResponse>({
+    endpoint: agencyEndpoints.PASSWORD_SETUP,
+    method: "POST",
+    body,
+    auth: false,
   });
 }
 
@@ -275,7 +311,9 @@ export async function uploadAgencyLegalDocument(
     file_size: file.size,
   });
 
-  await putFileToPresignedUrl(response.data.upload_url, file, contentType);
+  if (!response.data.upload_url.startsWith("dev://")) {
+    await putFileToPresignedUrl(response.data.upload_url, file, contentType);
+  }
 
   const refreshed = await getAgencyById(agencyId);
   return refreshed.data;

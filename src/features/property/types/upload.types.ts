@@ -4,9 +4,12 @@ export type UploadPresignedUrlSubmissionContext =
   | "property_media_image"
   | "property_document";
 
+export type UploadPresignedUrlAgencyContext = "agency_legal_document";
+
 export type UploadPresignedUrlContext =
   | UploadPresignedUrlOwnerContext
-  | UploadPresignedUrlSubmissionContext;
+  | UploadPresignedUrlSubmissionContext
+  | UploadPresignedUrlAgencyContext;
 
 type UploadPresignedUrlFileFields = {
   file_name: string;
@@ -25,9 +28,14 @@ export type UploadPresignedUrlSubmissionRequest = UploadPresignedUrlFileFields &
   context: UploadPresignedUrlSubmissionContext;
 };
 
+export type UploadPresignedUrlAgencyRequest = UploadPresignedUrlFileFields & {
+  context: UploadPresignedUrlAgencyContext;
+};
+
 export type UploadPresignedUrlRequest =
   | UploadPresignedUrlOwnerRequest
-  | UploadPresignedUrlSubmissionRequest;
+  | UploadPresignedUrlSubmissionRequest
+  | UploadPresignedUrlAgencyRequest;
 
 export type UploadPresignedUrlData = {
   upload_url: string;
