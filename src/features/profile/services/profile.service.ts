@@ -16,6 +16,7 @@ import {
 } from "../utils/validateProfileImageFile";
 import type {
   Agency,
+  AgencyActivationRequest,
   AgencyInvitationCreateRequest,
   AgencyInvitationResponse,
   AgencyLegalDocumentUploadRequest,
@@ -73,7 +74,15 @@ export async function getAgencyList(
   const limit = params.limit ?? DEFAULT_AGENCY_LIST_LIMIT;
 
   const response = await apiClient.request<AgencyListResponse>({
-    endpoint: agencyEndpoints.LIST({ skip, limit }),
+    endpoint: agencyEndpoints.LIST({
+      skip,
+      limit,
+      search: params.search,
+      agencyStatus: params.agencyStatus,
+      verificationStatus: params.verificationStatus,
+      sortBy: params.sortBy,
+      sortOrder: params.sortOrder,
+    }),
     method: "GET",
     auth: true,
   });
@@ -147,6 +156,18 @@ export async function reviewAgency(
 ): Promise<AgencyWorkflowResponse> {
   return apiClient.request<AgencyWorkflowResponse>({
     endpoint: agencyEndpoints.review(agencyId),
+    method: "POST",
+    body,
+    auth: true,
+  });
+}
+
+export async function updateAgencyActivation(
+  agencyId: string,
+  body: AgencyActivationRequest,
+): Promise<AgencyWorkflowResponse> {
+  return apiClient.request<AgencyWorkflowResponse>({
+    endpoint: agencyEndpoints.activation(agencyId),
     method: "POST",
     body,
     auth: true,

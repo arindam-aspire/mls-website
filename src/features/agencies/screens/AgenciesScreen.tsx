@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { CheckCircle2, Copy, Mail, Plus, RefreshCcw, XCircle } from "lucide-react";
+import { CheckCircle2, Copy, Mail, Plus, Power, PowerOff, RefreshCcw, XCircle } from "lucide-react";
 import { useMemo, useState } from "react";
 import { LicenseDocumentUpload } from "@/src/components/common/LicenseDocumentUpload";
 import { Button, CopyLinkBar, Input } from "@/src/components/ui";
@@ -11,6 +11,7 @@ import {
   getAgencyList,
   reviewAgency,
   sendAgencyPasswordLink,
+  updateAgencyActivation,
   uploadOfflineAgencyLegalDocument,
 } from "@/src/features/profile/services/profile.service";
 import type {
@@ -25,6 +26,7 @@ import { validateLicenseDocumentFile } from "@/src/lib/validateLicenseDocumentFi
 
 const AGENCY_LIST_QUERY_KEY = ["agency", "super-admin-list"] as const;
 const AGENCY_LIST_PAGE_SIZE = 10;
+const AGENCY_PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const;
 
 type OfflineAgencyForm = Omit<AgencyOfflineRegistrationRequest, "legal_document_s3_link">;
 type InvitationForm = Required<Pick<AgencyInvitationCreateRequest, "email">> &
@@ -79,20 +81,45 @@ function compactInvitationForm(form: InvitationForm): AgencyInvitationCreateRequ
 }
 
 function StatusBadge({ agency }: { agency: AgencyListItem }) {
-  const label = agency.status || (agency.is_active ? "ACTIVE" : "PENDING_APPROVAL");
-  const isActive = agency.is_active && agency.is_verified;
+  const label = agency.agency_status || (agency.is_active ? "Active" : "Inactive");
+  const isActive = agency.is_active;
   return (
     <span
       className={cn(
         "inline-flex rounded-full px-2.5 py-1 text-xs font-semibold",
         isActive
           ? "bg-emerald-50 text-emerald-700"
-          : label === "REJECTED"
+          : "bg-slate-100 text-slate-700",
+      )}
+    >
+      {label}
+    </span>
+  );
+}
+
+function VerificationBadge({ agency }: { agency: AgencyListItem }) {
+  const label =
+    agency.verification_status ||
+    (agency.is_verified
+      ? "Verified"
+      : agency.status === "REJECTED"
+        ? "Rejected"
+        : "Pending Verification");
+  const isRejected = label.toLowerCase() === "rejected";
+  const isVerified = label.toLowerCase() === "verified";
+
+  return (
+    <span
+      className={cn(
+        "inline-flex rounded-full px-2.5 py-1 text-xs font-semibold",
+        isVerified
+          ? "bg-emerald-50 text-emerald-700"
+          : isRejected
             ? "bg-rose-50 text-rose-700"
             : "bg-amber-50 text-amber-700",
       )}
     >
-      {label.replaceAll("_", " ")}
+      {label}
     </span>
   );
 }
@@ -106,11 +133,34 @@ export function AgenciesScreen() {
   const [invitationForm, setInvitationForm] = useState<InvitationForm>(emptyInvitationForm);
   const [latestLink, setLatestLink] = useState<{ label: string; value: string } | null>(null);
   const [agencyPage, setAgencyPage] = useState(1);
-  const agencySkip = (agencyPage - 1) * AGENCY_LIST_PAGE_SIZE;
+  const [agencyPageSize, setAgencyPageSize] =
+    useState<(typeof AGENCY_PAGE_SIZE_OPTIONS)[number]>(AGENCY_LIST_PAGE_SIZE);
+  const [agencySearch, setAgencySearch] = useState("");
+  const [agencyStatusFilter, setAgencyStatusFilter] = useState("");
+  const [verificationStatusFilter, setVerificationStatusFilter] = useState("");
+  const [agencySortOrder, setAgencySortOrder] = useState<"asc" | "desc">("desc");
+  const agencySkip = (agencyPage - 1) * agencyPageSize;
 
   const { data, isLoading, isFetching } = useQuery({
-    queryKey: [...AGENCY_LIST_QUERY_KEY, agencyPage, AGENCY_LIST_PAGE_SIZE],
-    queryFn: () => getAgencyList({ skip: agencySkip, limit: AGENCY_LIST_PAGE_SIZE }),
+    queryKey: [
+      ...AGENCY_LIST_QUERY_KEY,
+      agencyPage,
+      agencyPageSize,
+      agencySearch,
+      agencyStatusFilter,
+      verificationStatusFilter,
+      agencySortOrder,
+    ],
+    queryFn: () =>
+      getAgencyList({
+        skip: agencySkip,
+        limit: agencyPageSize,
+        search: agencySearch.trim() || undefined,
+        agencyStatus: agencyStatusFilter || undefined,
+        verificationStatus: verificationStatusFilter || undefined,
+        sortBy: "created_at",
+        sortOrder: agencySortOrder,
+      }),
   });
 
   const agencies = data?.items ?? [];
@@ -123,7 +173,7 @@ export function AgenciesScreen() {
     [agencies],
   );
   const pendingCount = useMemo(
-    () => agencies.filter((agency) => agency.status === "PENDING_APPROVAL").length,
+    () => agencies.filter((agency) => agency.verification_status === "Pending Verification").length,
     [agencies],
   );
 
@@ -213,6 +263,20 @@ export function AgenciesScreen() {
     },
     onError: (error: Error) => {
       toast.error("Could not generate password link", { description: error.message });
+    },
+  });
+
+  const activationMutation = useMutation({
+    mutationFn: ({ agencyId, isActive }: { agencyId: string; isActive: boolean }) =>
+      updateAgencyActivation(agencyId, { is_active: isActive }),
+    onSuccess: (response) => {
+      invalidateAgencies();
+      toast.success(response.data.agency.is_active ? "Agency activated" : "Agency deactivated", {
+        description: response.message ?? "Agency access was updated.",
+      });
+    },
+    onError: (error: Error) => {
+      toast.error("Could not update agency activation", { description: error.message });
     },
   });
 
@@ -371,24 +435,97 @@ export function AgenciesScreen() {
             Refresh
           </Button>
         </div>
+        <div className="grid gap-3 border-b border-secondary/10 px-5 py-4 md:grid-cols-[minmax(14rem,1fr)_12rem_14rem_10rem_8rem]">
+          <Input
+            label="Search"
+            value={agencySearch}
+            onChange={(event) => {
+              setAgencyPage(1);
+              setAgencySearch(event.target.value);
+            }}
+          />
+          <label className="flex flex-col gap-1 text-sm font-medium text-text">
+            Agency Status
+            <select
+              className="rounded-lg border border-secondary/20 bg-surface px-3 py-2 text-sm text-text"
+              value={agencyStatusFilter}
+              onChange={(event) => {
+                setAgencyPage(1);
+                setAgencyStatusFilter(event.target.value);
+              }}
+            >
+              <option value="">All</option>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </label>
+          <label className="flex flex-col gap-1 text-sm font-medium text-text">
+            Verification Status
+            <select
+              className="rounded-lg border border-secondary/20 bg-surface px-3 py-2 text-sm text-text"
+              value={verificationStatusFilter}
+              onChange={(event) => {
+                setAgencyPage(1);
+                setVerificationStatusFilter(event.target.value);
+              }}
+            >
+              <option value="">All</option>
+              <option value="pending verification">Pending Verification</option>
+              <option value="verified">Verified</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </label>
+          <label className="flex flex-col gap-1 text-sm font-medium text-text">
+            Sort
+            <select
+              className="rounded-lg border border-secondary/20 bg-surface px-3 py-2 text-sm text-text"
+              value={agencySortOrder}
+              onChange={(event) => {
+                setAgencyPage(1);
+                setAgencySortOrder(event.target.value === "asc" ? "asc" : "desc");
+              }}
+            >
+              <option value="desc">Newest</option>
+              <option value="asc">Oldest</option>
+            </select>
+          </label>
+          <label className="flex flex-col gap-1 text-sm font-medium text-text">
+            Rows
+            <select
+              className="rounded-lg border border-secondary/20 bg-surface px-3 py-2 text-sm text-text"
+              value={agencyPageSize}
+              onChange={(event) => {
+                setAgencyPage(1);
+                setAgencyPageSize(Number(event.target.value) as typeof agencyPageSize);
+              }}
+            >
+              {AGENCY_PAGE_SIZE_OPTIONS.map((size) => (
+                <option key={size} value={size}>
+                  {size}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-secondary/10 text-sm">
             <thead className="bg-page">
               <tr className="text-left text-xs font-semibold uppercase text-muted">
                 <th className="px-5 py-3">Agency</th>
                 <th className="px-5 py-3">Contact</th>
-                <th className="px-5 py-3">Status</th>
+                <th className="px-5 py-3">Verification Status</th>
+                <th className="px-5 py-3">Agency Status</th>
                 <th className="px-5 py-3 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-secondary/10">
               {isLoading ? (
                 <tr>
-                  <td className="px-5 py-8 text-center text-muted" colSpan={4}>Loading agencies...</td>
+                  <td className="px-5 py-8 text-center text-muted" colSpan={5}>Loading agencies...</td>
                 </tr>
               ) : agencies.length === 0 ? (
                 <tr>
-                  <td className="px-5 py-8 text-center text-muted" colSpan={4}>No agencies found.</td>
+                  <td className="px-5 py-8 text-center text-muted" colSpan={5}>No agencies found.</td>
                 </tr>
               ) : (
                 agencies.map((agency) => (
@@ -401,13 +538,14 @@ export function AgenciesScreen() {
                       <p className="text-text">{agency.email}</p>
                       <p className="text-xs text-muted">{agency.phone || "No phone"}</p>
                     </td>
+                    <td className="px-5 py-4"><VerificationBadge agency={agency} /></td>
                     <td className="px-5 py-4"><StatusBadge agency={agency} /></td>
                     <td className="px-5 py-4">
                       <div className="flex justify-end gap-2">
                         {agency.status === "PENDING_APPROVAL" ? (
                           <>
                             <Button type="button" size="sm" color="success" iconStart={<CheckCircle2 className="size-4" />} onClick={() => reviewMutation.mutate({ agencyId: agency.id, action: "approve" })}>
-                              Approve
+                              Verify
                             </Button>
                             <Button type="button" size="sm" color="danger" variant="outline" iconStart={<XCircle className="size-4" />} onClick={() => reviewMutation.mutate({ agencyId: agency.id, action: "reject" })}>
                               Reject
@@ -417,6 +555,19 @@ export function AgenciesScreen() {
                         {agency.status === "APPROVED" || agency.status === "ACTIVE" ? (
                           <Button type="button" size="sm" variant="outline" color="inherit" iconStart={<Copy className="size-4" />} onClick={() => passwordLinkMutation.mutate(agency.id)}>
                             Password Link
+                          </Button>
+                        ) : null}
+                        {agency.is_verified ? (
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            color={agency.is_active ? "danger" : "success"}
+                            iconStart={agency.is_active ? <PowerOff className="size-4" /> : <Power className="size-4" />}
+                            isLoading={activationMutation.isPending}
+                            onClick={() => activationMutation.mutate({ agencyId: agency.id, isActive: !agency.is_active })}
+                          >
+                            {agency.is_active ? "Deactivate" : "Activate"}
                           </Button>
                         ) : null}
                       </div>

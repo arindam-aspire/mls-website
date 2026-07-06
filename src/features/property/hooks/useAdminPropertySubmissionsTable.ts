@@ -198,12 +198,11 @@ export function useAdminPropertySubmissionsTable({
   const adminRowActionOptions = useMemo(
     () => {
       const isSuperAdmin = isSuperAdminUser(user);
-      const isAgencyAdmin = isAgencyUser(user);
-      const canManageWorkflow = isSuperAdmin || isAgencyAdmin;
+      const canAgencyAdminManageWorkflow = isAgencyUser(user) && !isSuperAdmin;
 
       return {
-        canReviewSubmissions: canManageWorkflow,
-        canManageAgentAssignment: canManageWorkflow,
+        canReviewSubmissions: canAgencyAdminManageWorkflow,
+        canManageAgentAssignment: canAgencyAdminManageWorkflow,
         canDeactivateSubmissions: isSuperAdmin,
         canEditRejectedSubmissions: false,
       };

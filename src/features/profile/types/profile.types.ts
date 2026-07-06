@@ -74,6 +74,8 @@ export type Agency = {
   is_active: boolean;
   is_verified: boolean;
   status?: string;
+  agency_status?: string;
+  verification_status?: string;
   currency: AgencyCurrency;
   measurement_unit: AgencyMeasurementUnit;
   created_at: string;
@@ -317,6 +319,10 @@ export type AgencyReviewRequest = {
   reason?: string | null;
 };
 
+export type AgencyActivationRequest = {
+  is_active: boolean;
+};
+
 export type AgencyPasswordSetupRequest = {
   token: string;
   password: string;
@@ -377,6 +383,11 @@ export type EditAgencyFormValues = {
 export type AgencyListParams = {
   skip?: number;
   limit?: number;
+  search?: string;
+  agencyStatus?: string;
+  verificationStatus?: string;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
 };
 
 /** Single row from `GET /agency/list` (`data[]`). */
@@ -400,6 +411,8 @@ export type AgencyListItemRaw = {
   is_active: boolean;
   is_verified: boolean;
   status?: string;
+  agency_status?: string;
+  verification_status?: string;
   created_at: string;
   updated_at: string;
 };
@@ -412,6 +425,8 @@ export type AgencyListItem = {
   email: string;
   phone: string;
   status: string;
+  agency_status?: string;
+  verification_status?: string;
   is_active: boolean;
   is_verified: boolean;
   created_at: string;

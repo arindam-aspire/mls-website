@@ -66,6 +66,14 @@ function normalizeAgencyListItem(raw: AgencyListItemRaw): AgencyListItem | null 
     email: raw.email?.trim() ?? "",
     phone: raw.phone?.trim() ?? "",
     status: raw.status?.trim() || (raw.is_active ? "ACTIVE" : "PENDING_APPROVAL"),
+    agency_status: raw.agency_status?.trim() || (raw.is_active ? "Active" : "Inactive"),
+    verification_status:
+      raw.verification_status?.trim() ||
+      (raw.is_verified
+        ? "Verified"
+        : raw.status === "REJECTED"
+          ? "Rejected"
+          : "Pending Verification"),
     is_active: Boolean(raw.is_active),
     is_verified: Boolean(raw.is_verified),
     created_at: raw.created_at?.trim() ?? "",
