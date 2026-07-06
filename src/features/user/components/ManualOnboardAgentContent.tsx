@@ -13,7 +13,11 @@ export type ManualOnboardAgentContentProps = ManualOnboardAgentFormProps & {
     temporaryPassword: string;
     copyPasswordLabel: string;
     passwordHint: string;
+    setupLinkLabel?: string;
+    setupLink?: string | null;
+    copySetupLinkLabel?: string;
     onCopyPassword: () => void;
+    onCopySetupLink?: () => void;
   } | null;
 };
 

@@ -86,11 +86,17 @@
         "descriptionWithName": "تمت إضافة {name} بنجاح.",
         "temporaryPasswordLabel": "كلمة المرور المؤقتة",
         "copyPassword": "نسخ كلمة المرور",
+        "setupLinkLabel": "رابط إنشاء كلمة المرور",
+        "copySetupLink": "نسخ الرابط",
+        "copySetupLinkSuccessTitle": "تم نسخ الرابط",
+        "copySetupLinkSuccessDescription": "رابط إنشاء كلمة المرور في الحافظة.",
+        "copySetupLinkErrorTitle": "تعذر نسخ الرابط",
+        "copySetupLinkErrorDescription": "انسخ الرابط يدوياً من الحقل أعلاه.",
         "copyPasswordSuccessTitle": "تم نسخ كلمة المرور",
         "copyPasswordSuccessDescription": "كلمة المرور المؤقتة في الحافظة.",
         "copyPasswordErrorTitle": "تعذر نسخ كلمة المرور",
         "copyPasswordErrorDescription": "انسخ كلمة المرور يدوياً من الحقل أعلاه.",
-        "passwordHint": "يجب على الوكيل تغيير كلمة المرور بعد أول تسجيل دخول.",
+        "passwordHint": "يبقى الوكيل غير نشط حتى ينشئ كلمة مرور دائمة من الرابط.",
         "done": "تم"
       },
       "validation": {

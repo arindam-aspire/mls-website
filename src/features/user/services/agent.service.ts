@@ -156,7 +156,12 @@ export async function manualOnboardAgent(
 
   return {
     message: response.message ?? "",
-    agent: response.data,
+    agent: {
+      ...response.data,
+      inviteLink: response.data.inviteLink
+        ? parseAgentInviteLink(response.data.inviteLink)
+        : response.data.inviteLink,
+    },
   };
 }
 

@@ -165,6 +165,7 @@ export type ManualOnboardAgentData = {
   serviceArea: string;
   status: string;
   temporaryPassword: string;
+  inviteLink?: string | null;
 };
 
 export type ManualOnboardAgentResult = {

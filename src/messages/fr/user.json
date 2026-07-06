@@ -86,11 +86,17 @@
         "descriptionWithName": "{name} a été intégré avec succès.",
         "temporaryPasswordLabel": "Mot de passe temporaire",
         "copyPassword": "Copier le mot de passe",
+        "setupLinkLabel": "Lien de création du mot de passe",
+        "copySetupLink": "Copier le lien",
+        "copySetupLinkSuccessTitle": "Lien copié",
+        "copySetupLinkSuccessDescription": "Le lien de création du mot de passe est dans le presse-papiers.",
+        "copySetupLinkErrorTitle": "Impossible de copier le lien",
+        "copySetupLinkErrorDescription": "Copiez le lien manuellement depuis le champ ci-dessus.",
         "copyPasswordSuccessTitle": "Mot de passe copié",
         "copyPasswordSuccessDescription": "Le mot de passe temporaire est dans le presse-papiers.",
         "copyPasswordErrorTitle": "Impossible de copier le mot de passe",
         "copyPasswordErrorDescription": "Copiez le mot de passe manuellement depuis le champ ci-dessus.",
-        "passwordHint": "L'agent doit changer ce mot de passe après sa première connexion.",
+        "passwordHint": "L'agent reste inactif jusqu'à la création d'un mot de passe permanent depuis le lien.",
         "done": "Terminé"
       },
       "validation": {

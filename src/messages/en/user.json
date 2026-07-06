@@ -86,11 +86,17 @@
         "descriptionWithName": "{name} was onboarded successfully.",
         "temporaryPasswordLabel": "Temporary password",
         "copyPassword": "Copy password",
+        "setupLinkLabel": "Password setup link",
+        "copySetupLink": "Copy link",
+        "copySetupLinkSuccessTitle": "Setup link copied",
+        "copySetupLinkSuccessDescription": "The password setup link is on your clipboard.",
+        "copySetupLinkErrorTitle": "Could not copy setup link",
+        "copySetupLinkErrorDescription": "Copy the setup link manually from the field above.",
         "copyPasswordSuccessTitle": "Password copied",
         "copyPasswordSuccessDescription": "The temporary password is on your clipboard.",
         "copyPasswordErrorTitle": "Could not copy password",
         "copyPasswordErrorDescription": "Copy the password manually from the field above.",
-        "passwordHint": "The agent should change this password after their first sign-in.",
+        "passwordHint": "The agent remains inactive until they create a permanent password from the setup link.",
         "done": "Done"
       },
       "validation": {

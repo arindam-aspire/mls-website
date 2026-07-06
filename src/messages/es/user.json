@@ -86,11 +86,17 @@
         "descriptionWithName": "{name} se incorporó correctamente.",
         "temporaryPasswordLabel": "Contraseña temporal",
         "copyPassword": "Copiar contraseña",
+        "setupLinkLabel": "Enlace para crear contraseña",
+        "copySetupLink": "Copiar enlace",
+        "copySetupLinkSuccessTitle": "Enlace copiado",
+        "copySetupLinkSuccessDescription": "El enlace para crear la contraseña está en el portapapeles.",
+        "copySetupLinkErrorTitle": "No se pudo copiar el enlace",
+        "copySetupLinkErrorDescription": "Copie el enlace manualmente desde el campo de arriba.",
         "copyPasswordSuccessTitle": "Contraseña copiada",
         "copyPasswordSuccessDescription": "La contraseña temporal está en el portapapeles.",
         "copyPasswordErrorTitle": "No se pudo copiar la contraseña",
         "copyPasswordErrorDescription": "Copie la contraseña manualmente desde el campo de arriba.",
-        "passwordHint": "El agente debe cambiar esta contraseña después del primer inicio de sesión.",
+        "passwordHint": "El agente permanece inactivo hasta que cree una contraseña permanente desde el enlace.",
         "done": "Listo"
       },
       "validation": {

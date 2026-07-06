@@ -231,6 +231,25 @@ export function useManualOnboardAgentModal() {
     }
   }, [onboardResult?.agent.temporaryPassword, t, toast]);
 
+  const onCopySetupLink = useCallback(async () => {
+    const setupLink = onboardResult?.agent.inviteLink;
+
+    if (!setupLink) {
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(setupLink);
+      toast.success(t("success.copySetupLinkSuccessTitle"), {
+        description: t("success.copySetupLinkSuccessDescription"),
+      });
+    } catch {
+      toast.error(t("success.copySetupLinkErrorTitle"), {
+        description: t("success.copySetupLinkErrorDescription"),
+      });
+    }
+  }, [onboardResult?.agent.inviteLink, t, toast]);
+
   useEffect(() => {
     if (wasOpenRef.current && !isOpen) {
       setFullName("");
@@ -312,8 +331,12 @@ export function useManualOnboardAgentModal() {
             passwordLabel: t("success.temporaryPasswordLabel"),
             temporaryPassword: onboardResult.agent.temporaryPassword,
             copyPasswordLabel: t("success.copyPassword"),
+            setupLinkLabel: t("success.setupLinkLabel"),
+            setupLink: onboardResult.agent.inviteLink,
+            copySetupLinkLabel: t("success.copySetupLink"),
             passwordHint: t("success.passwordHint"),
             onCopyPassword,
+            onCopySetupLink,
           }
         : null,
     },

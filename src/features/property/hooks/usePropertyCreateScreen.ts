@@ -138,6 +138,7 @@ export function usePropertyCreateScreen() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [canEditSubmission, setCanEditSubmission] = useState(true);
   const [rejectionReason, setRejectionReason] = useState<string | null>(null);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [submissionId, setSubmissionId] = useState<string | null>(() =>
     searchParams.get(PROPERTY_CREATE_SUBMISSION_ID_PARAM),
   );
@@ -225,6 +226,12 @@ export function usePropertyCreateScreen() {
   const minStepIndex = INITIAL_PROPERTY_FORM_ACTIVE_STEP;
   const maxStepIndex = propertyFormSteps.length;
 
+  const markUnsavedChanges = useCallback(() => {
+    if (canEditSubmission) {
+      setHasUnsavedChanges(true);
+    }
+  }, [canEditSubmission]);
+
   const syncSubmissionIdInUrl = useCallback(
     (nextSubmissionId: string) => {
       setSubmissionId(nextSubmissionId);
@@ -310,13 +317,14 @@ export function usePropertyCreateScreen() {
   const onNext = useCallback(
     (nextPropertyDetails: PropertyFormValues) => {
       setPropertyDetails(nextPropertyDetails);
+      markUnsavedChanges();
       setActiveStep((previous) => {
         const nextStep = Math.min(previous + 1, maxStepIndex);
         setMaxReachedStep((maxPrevious) => Math.max(maxPrevious, nextStep));
         return nextStep;
       });
     },
-    [maxStepIndex],
+    [markUnsavedChanges, maxStepIndex],
   );
 
   const onPrevious = useCallback(() => {
@@ -326,11 +334,12 @@ export function usePropertyCreateScreen() {
   const onStepClick = useCallback(
     (step: number, _step: PropertyFormStep, nextPropertyDetails: PropertyFormValues) => {
       setPropertyDetails(nextPropertyDetails);
+      markUnsavedChanges();
       setActiveStep(step);
       const nextMaxReachedStep = nextPropertyDetails.max_reached_step ?? step;
       setMaxReachedStep((maxPrevious) => Math.max(maxPrevious, nextMaxReachedStep));
     },
-    [],
+    [markUnsavedChanges],
   );
 
   const onSubmit = useCallback(async () => {
@@ -366,6 +375,7 @@ export function usePropertyCreateScreen() {
           toast.success(t("submitSuccess"), {
             description: submitResponse.message ?? undefined,
           });
+          setHasUnsavedChanges(false);
           router.push(listingsPath);
           return;
         }
@@ -403,6 +413,7 @@ export function usePropertyCreateScreen() {
         toast.success(t("submitSuccess"), {
           description: submitResponse.message ?? undefined,
         });
+        setHasUnsavedChanges(false);
         router.push(listingsPath);
         return;
       }
@@ -470,6 +481,7 @@ export function usePropertyCreateScreen() {
             draftHydratedForRef.current = nextSubmissionId;
             syncSubmissionIdInUrl(nextSubmissionId);
           }
+          setHasUnsavedChanges(false);
 
           toast.success(t("draftSaveSuccess"), {
             description: response.message ?? undefined,
@@ -498,6 +510,39 @@ export function usePropertyCreateScreen() {
       toast,
       updateDraftSubmission,
     ],
+  );
+
+  const onUploadOwnerDocumentWithDirty = useCallback(
+    async (...args: Parameters<typeof onUploadOwnerDocument>) => {
+      const result = await onUploadOwnerDocument(...args);
+      if (result) {
+        markUnsavedChanges();
+      }
+      return result;
+    },
+    [markUnsavedChanges, onUploadOwnerDocument],
+  );
+
+  const onUploadPropertyMediaWithDirty = useCallback(
+    async (...args: Parameters<typeof onUploadPropertyMedia>) => {
+      const result = await onUploadPropertyMedia(...args);
+      if (result) {
+        markUnsavedChanges();
+      }
+      return result;
+    },
+    [markUnsavedChanges, onUploadPropertyMedia],
+  );
+
+  const onUploadPropertyDocumentWithDirty = useCallback(
+    async (...args: Parameters<typeof onUploadPropertyDocument>) => {
+      const result = await onUploadPropertyDocument(...args);
+      if (result) {
+        markUnsavedChanges();
+      }
+      return result;
+    },
+    [markUnsavedChanges, onUploadPropertyDocument],
   );
 
   // 9. Effects
@@ -552,6 +597,23 @@ export function usePropertyCreateScreen() {
   }, [submissionId, user]);
 
   useEffect(() => {
+    if (!hasUnsavedChanges || !canEditSubmission) {
+      return;
+    }
+
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [canEditSubmission, hasUnsavedChanges]);
+
+  useEffect(() => {
     if (hasInitializedRef.current) {
       return;
     }
@@ -585,9 +647,9 @@ export function usePropertyCreateScreen() {
     onStepClick,
     onSubmit,
     onDraft,
-    onUploadOwnerDocument,
-    onUploadPropertyMedia,
-    onUploadPropertyDocument,
+    onUploadOwnerDocument: onUploadOwnerDocumentWithDirty,
+    onUploadPropertyMedia: onUploadPropertyMediaWithDirty,
+    onUploadPropertyDocument: onUploadPropertyDocumentWithDirty,
     reloadCreateCatalog: () =>
       loadCreateCatalog(searchParams.get(PROPERTY_CREATE_SUBMISSION_ID_PARAM)),
   };

@@ -32,6 +32,7 @@ export type PropertyDetailsWorkflowAction = {
 export type PropertyDetails = NonNullable<PropertyViewProps["propertyDetails"]> & {
   property_id?: string | null;
   submission_id?: string | null;
+  owners?: PropertyOwner[];
   status_action_card?: PropertyDetailsStatusActionCard | null;
   workflow_actions?: PropertyDetailsWorkflowAction[] | null;
   workflow_status?: string | null;

@@ -12,7 +12,11 @@ export type ManualOnboardSuccessPanelProps = {
   temporaryPassword: string;
   copyPasswordLabel: string;
   passwordHint: string;
+  setupLinkLabel?: string;
+  setupLink?: string | null;
+  copySetupLinkLabel?: string;
   onCopyPassword: () => void;
+  onCopySetupLink?: () => void;
 };
 
 export function ManualOnboardSuccessPanel({
@@ -22,7 +26,11 @@ export function ManualOnboardSuccessPanel({
   temporaryPassword,
   copyPasswordLabel,
   passwordHint,
+  setupLinkLabel,
+  setupLink,
+  copySetupLinkLabel,
   onCopyPassword,
+  onCopySetupLink,
 }: ManualOnboardSuccessPanelProps) {
   return (
     <div className="overflow-hidden rounded-xl border border-secondary/15 bg-surface">
@@ -46,6 +54,14 @@ export function ManualOnboardSuccessPanel({
           copyLabel={copyPasswordLabel}
           onCopy={onCopyPassword}
         />
+        {setupLink ? (
+          <CopyLinkBar
+            label={setupLinkLabel ?? "Password setup link"}
+            value={setupLink}
+            copyLabel={copySetupLinkLabel ?? "Copy link"}
+            onCopy={onCopySetupLink ?? (() => undefined)}
+          />
+        ) : null}
         <p className={cn("text-muted", bodyTextClasses)}>{passwordHint}</p>
       </div>
     </div>
