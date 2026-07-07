@@ -20,7 +20,17 @@ export type AdminListingRowActionOptions = {
 };
 
 function normalizeSubmissionStatus(status: string): string {
-  return status.trim().toLowerCase();
+  const token = status.trim().toLowerCase().replace(/[_\s]+/g, "-");
+
+  const aliases: Record<string, string> = {
+    "agent-assigned": "agent-assigned",
+    "pending-admin-approval": "pending-approval",
+    "pending-approval": "pending-approval",
+    "deal-closure-requested": "deal-closure-requested",
+    "deal-closed": "deal-closed",
+  };
+
+  return aliases[token] ?? token;
 }
 
 /** Per-row action menu for admin manage-listings (`GET /admin/property-submissions`). */
