@@ -13,10 +13,10 @@ Maps `@abdoun/abdoun-library` `PropertyFormValues` ↔ draft submission API payl
 - `mapPropertyDraftSubmissionToPropertyFormValues` — reverse map `GET /property-submissions/{id}` `data` into `PropertyFormValues` (incl. `active_step` / `max_reached_step`).
 - `current_step` matches `activeStep` (1-based, same as `@abdoun/abdoun-library`).
 - Map form sections to API payload keys (`basic_information`, `location`, `owner_information`, etc.).
-- Transform values: `area_ids[0]` → `area_id`, `permit_dld_number` → `permit_number`, `total_floor` → `total_floors`, numeric strings → numbers, owner `country_code`+`phone_number` → `phone`, `social_security_id` → `ssi`, `owner_address` → `address`, `nationality` → `nationality`, media `name`/`uri` → `file_name`/`url`.
-- Map `selected_amenities` (library uses feature `name`) ↔ API `feature_ids` (catalog `id` values such as `47`, `54`, `60`) within the taxonomy-filtered catalog.
+- Transform values: `area_ids[0]` → `area_id`, `permit_dld_number` → `permit_number`, `total_floor` → `total_floors`, numeric strings → numbers, owner `country_code`+`phone_number` → `phone`, `social_security_id` → `ssi`, `owner_address` → `address`, `nationality` → `nationality`, media `name`/`uri` → `file_name`/`url`, and split `media_upload.media_files` into API `images` vs `videos`.
+- Map `selected_amenities` + `feature_ids` (library stores both FEATURE and AMENITY selections in `amenities`) ↔ API `amenities.feature_ids` (catalog `id` values) within the taxonomy-filtered catalog.
 - Map `terms_acceptance` ↔ `review_submit` on hydrate/save; draft saves default flags to `false` unless form values are present; `{ forSubmit: true }` sets all review flags `true` before submit.
-- `pricing.currency` to `"JOD"`; `media_documents.videos` to `[]`.
+- `pricing.currency` to `"JOD"`; map uploaded media files into `media_documents.images` and `media_documents.videos`, and hydrate draft `images` + `videos` back into `media_upload.media_files`.
 
 # Exports
 

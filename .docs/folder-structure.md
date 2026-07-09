@@ -868,6 +868,8 @@ mls_website/
 │   │       │   ├── RejectSubmissionModal.tsx
 │   │       │   ├── PropertyListAdvancedFilters.tsx
 │   │       │   ├── PropertyListFilters.tsx
+│   │       │   ├── PropertyListingStatusBadge.tsx
+│   │       │   ├── PropertyCreateUnsavedChangesModal.tsx
 │   │       │   ├── PropertyDraftList.tsx
 │   │       │   ├── MyListingFilters.tsx
 │   │       │   ├── MyListingRejectedReasonModal.tsx
@@ -876,6 +878,7 @@ mls_website/
 │   │       │   ├── adminListingRowActions.constants.ts
 │   │       │   ├── myListingRowActions.constants.ts
 │   │       │   ├── adminPropertySubmissionStatusFilters.constants.ts
+│   │       │   ├── propertyCreateFormSteps.constants.ts
 │   │       │   ├── manageListingTableColumns.constants.ts
 │   │       │   ├── myListingStatusFilters.constants.ts
 │   │       │   ├── myListingTableColumns.constants.ts
@@ -892,6 +895,7 @@ mls_website/
 │   │       │   ├── useOwnerDocumentUpload.ts
 │   │       │   ├── usePropertyMediaUpload.ts
 │   │       │   ├── usePropertyCreateScreen.ts
+│   │       │   ├── usePropertyCreateUnsavedChanges.ts
 │   │       │   ├── usePropertyDetails.ts
 │   │       │   ├── usePropertyFavouriteToggle.ts
 │   │       │   ├── usePropertyList.ts
@@ -904,7 +908,8 @@ mls_website/
 │   │       │   ├── useSavedSearchesScreen.ts
 │   │       │   └── usePropertySearchFilters.ts
 │   │       ├── i18n/
-│   │       │   └── buildManageListingTableColumnLabels.ts
+│   │       │   ├── buildManageListingTableColumnLabels.ts
+│   │       │   └── propertyCreateOwnerInfo.i18n.ts
 │   │       ├── mappers/
 │   │       │   ├── adminPropertySubmissions.mapper.ts
 │   │       │   ├── agentPropertiesList.mapper.ts
@@ -940,6 +945,9 @@ mls_website/
 │   │       │   └── upload.types.ts
 │   │       └── utils/
 │   │           ├── applyFavoriteFlagsToListings.ts
+│   │           ├── propertyCreateDirtyState.utils.ts
+│   │           ├── propertyCreateOwnerInfo.utils.ts
+│   │           ├── propertyListingStatusBadgeColors.ts
 │   │           ├── buildMyListingTableColumns.tsx
 │   │           ├── createMyListingRowActionsResolver.ts
 │   │           ├── myListingRowActionIcons.tsx
@@ -997,7 +1005,10 @@ mls_website/
 │   │   ├── localeFlags.ts
 │   │   ├── navigation.ts
 │   │   ├── request.ts
-│   │   └── routing.ts
+│   │   ├── routing.ts
+│   │   └── stripLocalePrefixFromPath.ts
+│   ├── navigation/
+│   │   └── navigationGuard.ts
 │   ├── layouts/
 │   │   ├── shared/
 │   │   │   ├── buildHeaderLocaleOptions.ts

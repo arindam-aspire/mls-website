@@ -80,8 +80,11 @@ export type PropertyDraftSubmissionMediaImage = {
   display_order?: number;
 };
 
-/** Reserved for future video uploads; always sent as an empty array today. */
-export type PropertyDraftSubmissionMediaVideo = never;
+export type PropertyDraftSubmissionMediaVideo = {
+  file_name?: string;
+  url?: string;
+  display_order?: number;
+};
 
 export type PropertyDraftSubmissionMediaDocument = {
   file_name?: string;

@@ -1,9 +1,9 @@
 import type { AppLocale } from "@/src/i18n/routing";
 import { formatListingSubmittedDate } from "@/src/features/property/utils/formatListingSubmittedDate";
 import { cn } from "@/src/lib/cn";
+import { PropertyListingStatusBadge } from "@/src/features/property/components/PropertyListingStatusBadge";
 import {
   buildPropertyTableColumns,
-  ListingStatusBadge,
   type ListTableView,
   type PropertyTableWorkflowActionsConfig,
   type TableColumn,
@@ -202,7 +202,7 @@ export function buildMyListingTableColumns({
       cellClassName: "whitespace-nowrap",
       render: (row) => (
         <div className="flex justify-center">
-          <ListingStatusBadge status={row.status} />
+          <PropertyListingStatusBadge status={row.status} />
         </div>
       ),
     },

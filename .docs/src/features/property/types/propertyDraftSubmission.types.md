@@ -22,7 +22,7 @@ TypeScript request-body shapes for property **draft submission** (create / save 
 | `PropertyDraftSubmissionPropertyDetails` | Bedrooms, area, permit, etc. |
 | `PropertyDraftSubmissionPricing` | Numeric price fields + currency |
 | `PropertyDraftSubmissionAmenities` | `feature_ids` (feature catalog ids) |
-| `PropertyDraftSubmissionMediaDocuments` | Images, empty `videos`, documents, urls |
+| `PropertyDraftSubmissionMediaDocuments` | Images, videos, documents, urls |
 | `PropertyDraftSubmissionReviewSubmit` | Terms / privacy / display / fees flags |
 | `PropertyDraftSubmissionPayload` | Mapped submission data (`payload` object) |
 | `PropertyDraftSubmissionRequestBody` | `{ payload, current_step, last_completed_step }` POST body (create) |
@@ -34,7 +34,7 @@ TypeScript request-body shapes for property **draft submission** (create / save 
 
 - Request shape: `{ "payload": { … }, "current_step": 1, "last_completed_step": 1 }` on the first form step — `current_step` matches `activeStep`; `last_completed_step` matches `max_reached_step` (1-based, same as the library).
 - Draft `payload`: omit any section or field the user has not filled yet; nested objects and array items also use optional keys.
-- `videos` is typed as `PropertyDraftSubmissionMediaVideo[]` but the app always sends `[]` until video upload exists.
+- `media_documents.images` carries uploaded property images; `media_documents.videos` carries uploaded property videos.
 - `review_submit` booleans default to `false` on draft unless the UI sets them explicitly.
 - Mapper from `PropertyFormValues` is not in this file; add under `src/features/property/mappers/` when wiring the API.
 

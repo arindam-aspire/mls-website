@@ -1,7 +1,6 @@
 "use client";
 
 import type { BreadcrumbItem } from "@/src/components/ui/breadcrumb";
-import { getPhoneInputCountryByCode } from "@/src/components/ui/phone-input/countries";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import {
   isAgentUser,
@@ -29,6 +28,17 @@ import {
   INITIAL_PROPERTY_FORM_ACTIVE_STEP,
   INITIAL_PROPERTY_FORM_VALUES,
 } from "@/src/features/property/constants/propertyForm.constants";
+import {
+  DEFAULT_AGENCY_CURRENCY,
+  DEFAULT_AGENCY_MEASUREMENT_UNIT,
+  type AgencyCurrency,
+  type AgencyMeasurementUnit,
+} from "@/src/features/profile/constants/agencyPreferences";
+import { getAgencyById } from "@/src/features/profile/services/profile.service";
+import {
+  normalizeAgencyCurrency,
+  normalizeAgencyMeasurementUnit,
+} from "@/src/features/profile/utils/agencyPreferences.utils";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
 import {
   buildPropertyDraftSubmissionRequestBody,
@@ -42,6 +52,8 @@ import {
   mapPropertyCategoriesForPropertyForm,
 } from "@/src/features/property/mappers/propertyForm.mapper";
 import { useOwnerDocumentUpload } from "@/src/features/property/hooks/useOwnerDocumentUpload";
+import { buildPropertyCreateOwnerInfoValidationMessages } from "@/src/features/property/i18n/propertyCreateOwnerInfo.i18n";
+import { usePropertyCreateUnsavedChanges } from "@/src/features/property/hooks/usePropertyCreateUnsavedChanges";
 import { usePropertyMediaUpload } from "@/src/features/property/hooks/usePropertyMediaUpload";
 import {
   useGetPropertyDraftSubmission,
@@ -54,7 +66,14 @@ import {
 import type { FeatureCatalogItem } from "@/src/features/property/types/property.types";
 import type { PropertyDraftSubmissionData } from "@/src/features/property/types/propertyDraftSubmission.types";
 import {
+  buildLoggedInOwnerInfoItem,
+  buildPropertyCreateOwnerInfoConfig,
+  hasOwnerInfoRowContent,
+  resolveReadOnlyOwnerIndicesForLoggedInOwner,
+} from "@/src/features/property/utils/propertyCreateOwnerInfo.utils";
+import {
   propertyFormSteps,
+  type OwnerInfoConfig,
   type PropertyFormStep,
   type PropertyFormValues,
 } from "@abdoun/abdoun-library";
@@ -62,6 +81,7 @@ import { useToast } from "@/src/hooks/useToast";
 import { Home, List } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 function getLocationTaxonomyTotal(
@@ -115,6 +135,7 @@ export function usePropertyCreateScreen() {
 
   // 2. UI utilities
   const t = useTranslations("propertyList.propertyCreate");
+  const tOwnerInfo = useTranslations("propertyList.propertyCreate.ownerInfo");
   const tCommon = useTranslations("common");
   const toast = useToast();
 
@@ -138,7 +159,6 @@ export function usePropertyCreateScreen() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [canEditSubmission, setCanEditSubmission] = useState(true);
   const [rejectionReason, setRejectionReason] = useState<string | null>(null);
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [submissionId, setSubmissionId] = useState<string | null>(() =>
     searchParams.get(PROPERTY_CREATE_SUBMISSION_ID_PARAM),
   );
@@ -150,6 +170,17 @@ export function usePropertyCreateScreen() {
   const draftHydratedForRef = useRef<string | null>(null);
   const hasInitializedRef = useRef(false);
   const hasAppliedDefaultOwnerRef = useRef(false);
+  const hasEstablishedBaselineRef = useRef(false);
+  const establishBaselineTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
+  const livePayloadGetterRef = useRef<(() => PropertyFormValues) | null>(null);
+  const commitSavedSnapshotRef = useRef<(propertyDetails: PropertyFormValues) => void>(
+    () => {},
+  );
+  const onDraftRef = useRef<(propertyDetails: PropertyFormValues) => Promise<boolean>>(
+    async () => false,
+  );
 
   // 5. Data fetching / queries
   const { mutateAsync: fetchPropertyTaxonomy } = useGetPropertyTaxonomy();
@@ -226,11 +257,62 @@ export function usePropertyCreateScreen() {
   const minStepIndex = INITIAL_PROPERTY_FORM_ACTIVE_STEP;
   const maxStepIndex = propertyFormSteps.length;
 
-  const markUnsavedChanges = useCallback(() => {
-    if (canEditSubmission) {
-      setHasUnsavedChanges(true);
-    }
-  }, [canEditSubmission]);
+  const resolvedAgencyId = useMemo(
+    () =>
+      (
+        selectedAgencyId ??
+        searchParams.get(PROPERTY_CREATE_AGENCY_ID_PARAM) ??
+        user?.agency?.agency_id ??
+        ""
+      ).trim(),
+    [searchParams, selectedAgencyId, user?.agency?.agency_id],
+  );
+
+  const { data: agencyResponse } = useQuery({
+    queryKey: ["agency", resolvedAgencyId],
+    queryFn: () => getAgencyById(resolvedAgencyId),
+    enabled: resolvedAgencyId.length > 0,
+  });
+
+  const pricingCurrency = useMemo(
+    (): AgencyCurrency =>
+      normalizeAgencyCurrency(agencyResponse?.data?.currency ?? DEFAULT_AGENCY_CURRENCY),
+    [agencyResponse?.data?.currency],
+  );
+
+  const measurementUnit = useMemo(
+    (): AgencyMeasurementUnit =>
+      normalizeAgencyMeasurementUnit(
+        agencyResponse?.data?.measurement_unit ?? DEFAULT_AGENCY_MEASUREMENT_UNIT,
+      ),
+    [agencyResponse?.data?.measurement_unit],
+  );
+
+  const ownerInfoValidationMessages = useMemo(
+    () => buildPropertyCreateOwnerInfoValidationMessages(tOwnerInfo),
+    [tOwnerInfo],
+  );
+
+  const ownerInfoConfig = useMemo((): OwnerInfoConfig => {
+    const readOnlyOwnerIndices = isOwnerUser(user)
+      ? resolveReadOnlyOwnerIndicesForLoggedInOwner(
+          propertyDetails.owner_info?.owners,
+          user?.email,
+          !submissionId,
+        )
+      : [];
+
+    return buildPropertyCreateOwnerInfoConfig({
+      requireDocuments: true,
+      validationMessages: ownerInfoValidationMessages,
+      readOnlyOwnerIndices,
+    });
+  }, [
+    ownerInfoValidationMessages,
+    propertyDetails.owner_info?.owners,
+    submissionId,
+    user,
+  ]);
 
   const syncSubmissionIdInUrl = useCallback(
     (nextSubmissionId: string) => {
@@ -275,7 +357,10 @@ export function usePropertyCreateScreen() {
         const formAccess = resolveSubmissionFormAccess(draftResponse.data, user);
         setCanEditSubmission(formAccess.canEdit);
         setRejectionReason(formAccess.rejectionReason);
+        return hydratedDetails;
       }
+
+      return null;
     },
     [fetchPropertyDraftSubmission, user],
   );
@@ -317,14 +402,13 @@ export function usePropertyCreateScreen() {
   const onNext = useCallback(
     (nextPropertyDetails: PropertyFormValues) => {
       setPropertyDetails(nextPropertyDetails);
-      markUnsavedChanges();
       setActiveStep((previous) => {
         const nextStep = Math.min(previous + 1, maxStepIndex);
         setMaxReachedStep((maxPrevious) => Math.max(maxPrevious, nextStep));
         return nextStep;
       });
     },
-    [markUnsavedChanges, maxStepIndex],
+    [maxStepIndex],
   );
 
   const onPrevious = useCallback(() => {
@@ -334,23 +418,29 @@ export function usePropertyCreateScreen() {
   const onStepClick = useCallback(
     (step: number, _step: PropertyFormStep, nextPropertyDetails: PropertyFormValues) => {
       setPropertyDetails(nextPropertyDetails);
-      markUnsavedChanges();
       setActiveStep(step);
       const nextMaxReachedStep = nextPropertyDetails.max_reached_step ?? step;
       setMaxReachedStep((maxPrevious) => Math.max(maxPrevious, nextMaxReachedStep));
     },
-    [markUnsavedChanges],
+    [],
   );
 
   const onSubmit = useCallback(async () => {
-    const currentStep = activeStep;
-    const lastCompletedStep = Math.max(maxReachedStep, currentStep);
+    const livePayload = livePayloadGetterRef.current?.() ?? propertyDetails;
+    const currentStep = livePayload.active_step ?? activeStep;
+    const lastCompletedStep = Math.max(
+      livePayload.max_reached_step ?? maxReachedStep,
+      currentStep,
+    );
     const detailsForSubmit: PropertyFormValues = {
-      ...propertyDetails,
+      ...livePayload,
       active_step: currentStep,
       max_reached_step: lastCompletedStep,
     };
-    const submitPayloadOptions = { forSubmit: true } as const;
+    const submitPayloadOptions = {
+      forSubmit: true as const,
+      currency: pricingCurrency,
+    };
     const agencyId = selectedAgencyId ?? searchParams.get(PROPERTY_CREATE_AGENCY_ID_PARAM);
     const listingsPath = resolveListingsMenuPath(user) ?? "/my-listings";
 
@@ -375,7 +465,7 @@ export function usePropertyCreateScreen() {
           toast.success(t("submitSuccess"), {
             description: submitResponse.message ?? undefined,
           });
-          setHasUnsavedChanges(false);
+          commitSavedSnapshotRef.current(detailsForSubmit);
           router.push(listingsPath);
           return;
         }
@@ -413,7 +503,7 @@ export function usePropertyCreateScreen() {
         toast.success(t("submitSuccess"), {
           description: submitResponse.message ?? undefined,
         });
-        setHasUnsavedChanges(false);
+        commitSavedSnapshotRef.current(detailsForSubmit);
         router.push(listingsPath);
         return;
       }
@@ -429,9 +519,10 @@ export function usePropertyCreateScreen() {
     }
   }, [
     activeStep,
-    featuresAndAmenities,
-    maxReachedStep,
-    propertyDetails,
+      featuresAndAmenities,
+      maxReachedStep,
+      pricingCurrency,
+      propertyDetails,
     router,
     searchParams,
     selectedAgencyId,
@@ -445,7 +536,7 @@ export function usePropertyCreateScreen() {
   ]);
 
   const onDraft = useCallback(
-    async (nextPropertyDetails: PropertyFormValues) => {
+    async (nextPropertyDetails: PropertyFormValues): Promise<boolean> => {
       setPropertyDetails(nextPropertyDetails);
 
       const currentStep = nextPropertyDetails.active_step ?? activeStep;
@@ -462,7 +553,7 @@ export function usePropertyCreateScreen() {
                 featuresAndAmenities,
                 currentStep,
                 lastCompletedStep,
-                { agencyId },
+                { agencyId, currency: pricingCurrency },
               ),
             })
           : await saveDraftSubmission(
@@ -471,7 +562,7 @@ export function usePropertyCreateScreen() {
                 featuresAndAmenities,
                 currentStep,
                 lastCompletedStep,
-                { agencyId },
+                { agencyId, currency: pricingCurrency },
               ),
             );
 
@@ -481,26 +572,29 @@ export function usePropertyCreateScreen() {
             draftHydratedForRef.current = nextSubmissionId;
             syncSubmissionIdInUrl(nextSubmissionId);
           }
-          setHasUnsavedChanges(false);
+          commitSavedSnapshotRef.current(nextPropertyDetails);
 
           toast.success(t("draftSaveSuccess"), {
             description: response.message ?? undefined,
           });
-          return;
+          return true;
         }
 
         toast.error(t("draftSaveError"), {
           description: response.message ?? undefined,
         });
+        return false;
       } catch (error) {
         const message = error instanceof Error ? error.message : undefined;
         toast.error(t("draftSaveError"), { description: message });
+        return false;
       }
     },
     [
       activeStep,
       featuresAndAmenities,
       maxReachedStep,
+      pricingCurrency,
       saveDraftSubmission,
       searchParams,
       selectedAgencyId,
@@ -512,37 +606,54 @@ export function usePropertyCreateScreen() {
     ],
   );
 
-  const onUploadOwnerDocumentWithDirty = useCallback(
-    async (...args: Parameters<typeof onUploadOwnerDocument>) => {
-      const result = await onUploadOwnerDocument(...args);
-      if (result) {
-        markUnsavedChanges();
-      }
-      return result;
-    },
-    [markUnsavedChanges, onUploadOwnerDocument],
-  );
+  onDraftRef.current = onDraft;
 
-  const onUploadPropertyMediaWithDirty = useCallback(
-    async (...args: Parameters<typeof onUploadPropertyMedia>) => {
-      const result = await onUploadPropertyMedia(...args);
-      if (result) {
-        markUnsavedChanges();
-      }
-      return result;
-    },
-    [markUnsavedChanges, onUploadPropertyMedia],
-  );
+  const {
+    dirtyStepIds,
+    hasUnsavedChanges,
+    commitSavedSnapshot,
+    onLivePayloadChange,
+    unsavedChangesModal,
+  } = usePropertyCreateUnsavedChanges({
+    enabled: !isCatalogLoading,
+    canEdit: canEditSubmission,
+    isDraftSaving,
+    onDraft: (propertyDetails) => onDraftRef.current(propertyDetails),
+    livePayloadGetterRef,
+  });
 
-  const onUploadPropertyDocumentWithDirty = useCallback(
-    async (...args: Parameters<typeof onUploadPropertyDocument>) => {
-      const result = await onUploadPropertyDocument(...args);
-      if (result) {
-        markUnsavedChanges();
+  commitSavedSnapshotRef.current = commitSavedSnapshot;
+
+  const handleLivePayloadChange = useCallback(
+    (payload: PropertyFormValues) => {
+      const canEstablishBaseline =
+        !hasEstablishedBaselineRef.current &&
+        !isCatalogLoading &&
+        (!submissionId || draftHydratedForRef.current === submissionId);
+
+      if (canEstablishBaseline) {
+        if (establishBaselineTimerRef.current != null) {
+          clearTimeout(establishBaselineTimerRef.current);
+        }
+
+        establishBaselineTimerRef.current = setTimeout(() => {
+          establishBaselineTimerRef.current = null;
+
+          if (hasEstablishedBaselineRef.current) {
+            return;
+          }
+
+          const livePayload = livePayloadGetterRef.current?.() ?? payload;
+          hasEstablishedBaselineRef.current = true;
+          commitSavedSnapshot(livePayload);
+        }, 0);
+
+        return;
       }
-      return result;
+
+      onLivePayloadChange(payload);
     },
-    [markUnsavedChanges, onUploadPropertyDocument],
+    [commitSavedSnapshot, isCatalogLoading, onLivePayloadChange, submissionId],
   );
 
   // 9. Effects
@@ -554,64 +665,30 @@ export function usePropertyCreateScreen() {
     hasAppliedDefaultOwnerRef.current = true;
     setPropertyDetails((previous) => {
       const existingOwners = previous.owner_info?.owners ?? [];
-      const hasOwnerContent = existingOwners.some((owner) =>
-        [
-          owner.owner_name,
-          owner.email,
-          owner.phone_number,
-          owner.social_security_id,
-          owner.nationality,
-          owner.owner_address,
-        ].some((value) => value?.trim()) || owner.owner_documents.length > 0,
-      );
+      const hasOwnerContent = existingOwners.some(hasOwnerInfoRowContent);
 
       if (hasOwnerContent) {
         return previous;
       }
 
-      const jordan = getPhoneInputCountryByCode("JO");
-      const rawPhone = user.phone_number?.trim() ?? "";
-      const phoneNumber =
-        jordan && rawPhone.startsWith(jordan.dialCode)
-          ? rawPhone.slice(jordan.dialCode.length).replace(/\D/g, "")
-          : rawPhone.replace(/\D/g, "");
-
-      return {
+      const nextDetails = {
         ...previous,
         owner_info: {
-          owners: [
-            {
-              owner_name: user.full_name ?? "",
-              email: user.email ?? "",
-              country_code: jordan?.dialCode ?? "+962",
-              phone_number: phoneNumber,
-              social_security_id: "",
-              nationality: "",
-              owner_address: "",
-              owner_documents: [],
-            },
-          ],
+          owners: [buildLoggedInOwnerInfoItem(user)],
         },
       };
+
+      queueMicrotask(() => {
+        const livePayload = livePayloadGetterRef.current?.() ?? nextDetails;
+        if (!hasEstablishedBaselineRef.current) {
+          hasEstablishedBaselineRef.current = true;
+          commitSavedSnapshotRef.current(livePayload);
+        }
+      });
+
+      return nextDetails;
     });
   }, [submissionId, user]);
-
-  useEffect(() => {
-    if (!hasUnsavedChanges || !canEditSubmission) {
-      return;
-    }
-
-    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      event.preventDefault();
-      event.returnValue = "";
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [canEditSubmission, hasUnsavedChanges]);
 
   useEffect(() => {
     if (hasInitializedRef.current) {
@@ -623,6 +700,14 @@ export function usePropertyCreateScreen() {
       searchParams.get(PROPERTY_CREATE_SUBMISSION_ID_PARAM),
     );
   }, [loadCreateCatalog, searchParams]);
+
+  useEffect(() => {
+    return () => {
+      if (establishBaselineTimerRef.current != null) {
+        clearTimeout(establishBaselineTimerRef.current);
+      }
+    };
+  }, []);
 
   // 10. Return values
   return {
@@ -642,14 +727,22 @@ export function usePropertyCreateScreen() {
     submissionId,
     canEditSubmission,
     rejectionReason,
+    hasUnsavedChanges,
+    dirtyStepIds,
+    livePayloadGetterRef,
+    onLivePayloadChange: handleLivePayloadChange,
+    ownerInfoConfig,
+    pricingCurrency,
+    measurementUnit,
+    unsavedChangesModal,
     onNext,
     onPrevious,
     onStepClick,
     onSubmit,
     onDraft,
-    onUploadOwnerDocument: onUploadOwnerDocumentWithDirty,
-    onUploadPropertyMedia: onUploadPropertyMediaWithDirty,
-    onUploadPropertyDocument: onUploadPropertyDocumentWithDirty,
+    onUploadOwnerDocument,
+    onUploadPropertyMedia,
+    onUploadPropertyDocument,
     reloadCreateCatalog: () =>
       loadCreateCatalog(searchParams.get(PROPERTY_CREATE_SUBMISSION_ID_PARAM)),
   };

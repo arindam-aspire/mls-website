@@ -11,13 +11,16 @@ Screen hook for `PropertyCreateScreen`: page copy, breadcrumb, create-form catal
 - On mount, fetch in parallel:
   - `GET /property-taxonomy`
   - `GET /location-taxonomy`
-  - `GET /features?is_active=true`
+  - `GET /features?is_active=true` (single catalog for both Features and Amenities; `feature_group` `FEATURE` \| `AMENITY`)
 - When `submission_id` is in the query on **initial mount** (e.g. resume from draft listings), after catalogs load, `GET /property-submissions/{id}` hydrates the form. `draftHydratedForRef` is set only after a successful fetch (not from the URL on mount), so resume still loads data while first draft save + URL sync does not re-fetch.
 - From draft `status`: `submitted` → `canEditSubmission: false` (read-only `PropertyForm`); `rejected` → `rejectionReason` from `review_reason` (library resubmit alert + Resubmit label).
 - Map catalog payloads to `@abdoun/abdoun-library` `PropertyForm` prop shapes via `propertyForm.mapper`.
 - Own `activeStep` and wire `onNext`, `onPrevious`, `onStepClick` against `propertyFormSteps`.
-- `onDraft` → `POST /property-submissions` when no `submission_id` query; `PATCH /property-submissions/{submissionId}` with `{ action: "save_draft", current_step, last_completed_step, payload }` when resuming a draft. `last_completed_step` comes from `max_reached_step` / hook `maxReachedStep`. On first save, persist `data.submission_id` in the URL query.
+- `onDraft` → `POST /property-submissions` when no `submission_id` query; `PATCH /property-submissions/{submissionId}` when resuming. Returns `boolean` success for unsaved-changes modal. Clears dirty baseline on success.
+- **Unsaved-changes baseline:** After catalog load (and draft hydration when `submission_id` is present), the dirty baseline is taken from the library `PropertyForm` **live payload** (deferred one tick), not from the API mapper output — avoids false “unsaved changes” when resuming a draft without edits.
+- **Unsaved changes:** delegates to [usePropertyCreateUnsavedChanges.md](./usePropertyCreateUnsavedChanges.md) — per-step dirty tracking, navigation guard + link/back/keyboard refresh interception, custom modal (**Save as Draft** / **Discard** / **Cancel**). Requires library `onLivePayloadChange` + `livePayloadGetterRef` (v0.1.70+).
 - Owner document upload via `useOwnerDocumentUpload` (`context: owner_document`).
+- **Owner step (`ownerInfoConfig`):** requires at least one uploaded document per owner (Next disabled until valid); localized validation via `propertyList.propertyCreate.ownerInfo`; owner-role users get auto-filled first owner on new create and read-only name/phone/email on rows matching their account email (draft resume included). See [propertyCreateOwnerInfo.utils.md](../utils/propertyCreateOwnerInfo.utils.md).
 - Media step uploads via `usePropertyMediaUpload(submissionId)` — `property_media_image` → `media_files`, `property_document` → `documents`; presign uses `submission_id` (save draft first if missing).
 - `onSubmit` → when **no** `submission_id`: `POST /property-submissions/submit` with `{ payload, confirm_submit: true }` (full form mapped via `buildPropertySubmissionDirectSubmitRequestBody`). When `submission_id` exists: `PATCH` draft with `forSubmit` flags, then `POST /property-submissions/{id}/submit` with `{ confirm_submit: true }`. Library gates Submit until all terms are accepted. Success toast + redirect to role listings path.
 
@@ -45,7 +48,7 @@ Screen hook for `PropertyCreateScreen`: page copy, breadcrumb, create-form catal
 
 # Exports
 
-- `usePropertyCreateScreen()` — page copy, breadcrumb, `PropertyForm` props (`activeStep`, `maxReachedStep`, `categoryTaxonomy`, `locationTaxonomyForForm`, `featuresAndAmenities`, `propertyDetails`, navigation/upload/submit callbacks, `isDraftLoading`, `isSubmitting`), `isCatalogLoading`, `reloadCreateCatalog`
+- `usePropertyCreateScreen()` — page copy, breadcrumb, `PropertyForm` props, `unsavedChangesModal`, `livePayloadGetterRef`, `onLivePayloadChange`, `hasUnsavedChanges`, `dirtyStepIds`, `isCatalogLoading`, `reloadCreateCatalog`
 
 # Actions / Inputs
 
@@ -55,7 +58,7 @@ Screen hook for `PropertyCreateScreen`: page copy, breadcrumb, create-form catal
 | `onPrevious` | Decrement `activeStep` (min 0) |
 | `onStepClick(index, step, propertyDetails)` | Persist values when moving forward; set `activeStep` and update `maxReachedStep` |
 | `onSubmit` | No `submission_id`: direct `POST /property-submissions/submit`. With id: PATCH draft + POST submit; sets `isSubmitting` on `PropertyForm` |
-| `onDraft(propertyDetails)` | Persist library payload (incl. `active_step`), POST or PATCH draft save |
+| `onDraft(propertyDetails)` | POST or PATCH draft save; returns `true` when API succeeds |
 | `onUploadOwnerDocument` | From `useOwnerDocumentUpload` — presign + PUT; returns remote `uri` or `null` on failure |
 | `onUploadPropertyMedia` | From `usePropertyMediaUpload` — presign + PUT (`property_media_image`) |
 | `onUploadPropertyDocument` | From `usePropertyMediaUpload` — presign + PUT (`property_document`) |

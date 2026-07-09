@@ -6,7 +6,8 @@ Project source module.
 
 # Responsibilities
 
-- Project source module.
+- Hold a module-level reference to the Next.js `AppRouterInstance` (set by `NavigationInitializer`).
+- **`navigateTo`**, **`navigateReplace`**, **`navigateBack`** — run [navigationGuard.md](../navigation/navigationGuard.md) interceptors before imperative navigation (e.g. logout redirect).
 
 # Imports
 

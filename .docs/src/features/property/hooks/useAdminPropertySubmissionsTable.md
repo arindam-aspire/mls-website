@@ -14,6 +14,7 @@ Admin manage-listings table hook: fetches `GET /admin/property-submissions`, map
 - **Assign Agent** and **Reassign** open [AssignAgentModal.md](../components/AssignAgentModal.md) (`GET /agents`); both call `PATCH /admin/properties/{propertyId}/assign-agent` with `{ "agent_id": "…" }` then refresh the table. **Reject** opens [RejectSubmissionModal.md](../components/RejectSubmissionModal.md) then `POST /admin/property-submissions/{submissionId}/review` with `{ "action": "reject", "reason": "…" }`. **Unassign** opens a confirm modal then `PATCH /admin/properties/{propertyId}/assign-agent` with `{ "agent_id": null }`.
 - Expose `approveConfirmModal`, `assignAgentModal`, `rejectSubmissionModal`, and `unassignConfirmModal` for [ManageListingsScreen.md](../screens/ManageListingsScreen.md).
 - Expose the same screen contract as `useAgentListingsTable` except: no search filter, no delete confirm modal, `canViewDelete: false`.
+- `navigateToPropertyView` opens `/propert-details/{listing.id}` in a new tab.
 - Status filter options: `submitted`, `approved`, `rejected` only.
 
 # Imports

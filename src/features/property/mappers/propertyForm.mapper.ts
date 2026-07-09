@@ -10,7 +10,13 @@ type PropertyFormFeaturesAndAmenities = PropertyFormProps["featuresAndAmenities"
 function toLibraryFeatureGroup(
   featureGroup: FeatureCatalogItem["feature_group"],
 ): string {
-  return featureGroup === "AMENITY" ? "AMENITIES" : featureGroup;
+  const normalized = featureGroup.toUpperCase();
+
+  if (normalized === "AMENITY" || normalized === "AMENITIES") {
+    return "AMENITIES";
+  }
+
+  return "FEATURE";
 }
 
 export function mapPropertyCategoriesForPropertyForm(

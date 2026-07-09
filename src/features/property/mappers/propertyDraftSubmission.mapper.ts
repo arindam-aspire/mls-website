@@ -64,6 +64,26 @@ function parsePrice(value: string | undefined): number {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
+function isVideoMediaFile(file: { name?: string; mimeType?: string | null }): boolean {
+  if (file.mimeType?.startsWith("video/")) {
+    return true;
+  }
+
+  const lowerName = file.name?.toLowerCase() ?? "";
+  return [".mp4", ".mov", ".webm"].some((extension) => lowerName.endsWith(extension));
+}
+
+function isImageMediaFile(file: { name?: string; mimeType?: string | null }): boolean {
+  if (file.mimeType?.startsWith("image/")) {
+    return true;
+  }
+
+  const lowerName = file.name?.toLowerCase() ?? "";
+  return [".jpg", ".jpeg", ".png", ".webp", ".gif"].some((extension) =>
+    lowerName.endsWith(extension),
+  );
+}
+
 const DEFAULT_OWNER_COUNTRY_CODE = "+962";
 
 const OWNER_DIAL_CODES = ["+962", "+966", "+971", "+20", "+1"] as const;
@@ -155,6 +175,8 @@ export type BuildPropertyDraftSubmissionPayloadOptions = {
   forSubmit?: boolean;
   /** Selected agency for owner-created listings; backend falls back to auth context for agency users. */
   agencyId?: string | null;
+  /** Agency display currency; defaults to JOD when omitted. */
+  currency?: string;
 };
 
 function mapReviewSubmit(
@@ -259,7 +281,7 @@ export function buildPropertyDraftSubmissionPayload(
       price: parsePrice(pricing.price),
       service_charge: parsePrice(pricing.service_charge),
       maintenance_fee: parsePrice(pricing.maintenance_fee),
-      currency: "JOD",
+      currency: options?.currency ?? "JOD",
     };
   }
 
@@ -275,10 +297,19 @@ export function buildPropertyDraftSubmissionPayload(
   }
 
   if (media != null) {
-    const images = media.media_files.map((file, index) => ({
+    const imageFiles = media.media_files.filter((file) => isImageMediaFile(file));
+    const videoFiles = media.media_files.filter((file) => isVideoMediaFile(file));
+
+    const images = imageFiles.map((file, index) => ({
       file_name: file.name,
       url: file.uri,
       is_primary: index === 0,
+      display_order: index,
+    }));
+
+    const videos = videoFiles.map((file, index) => ({
+      file_name: file.name,
+      url: file.uri,
       display_order: index,
     }));
 
@@ -290,7 +321,7 @@ export function buildPropertyDraftSubmissionPayload(
 
     payload.media_documents = {
       images: images.length > 0 ? images : undefined,
-      videos: [],
+      videos: videos.length > 0 ? videos : undefined,
       documents: documents.length > 0 ? documents : undefined,
       youtube_url: media.youtube_url || undefined,
       virtual_tour_url: media.virtual_tour_url?.trim()
@@ -523,25 +554,44 @@ export function mapPropertyDraftSubmissionToPropertyFormValues(
     };
   }
 
-  const selectedAmenities = mapFeatureIdsToSelectedAmenities(
-    payload.amenities?.feature_ids,
-    featuresAndAmenities,
-    categoryId,
-    propertyTypeId,
-  );
+  const amenityFeatureIds = payload.amenities?.feature_ids ?? [];
 
-  if (selectedAmenities.length > 0) {
+  if (amenityFeatureIds.length > 0) {
+    const selectedAmenities = mapFeatureIdsToSelectedAmenities(
+      amenityFeatureIds,
+      featuresAndAmenities,
+      categoryId,
+      propertyTypeId,
+    );
+
     propertyDetails.amenities = {
       selected_amenities: selectedAmenities,
+      feature_ids: amenityFeatureIds,
     };
   }
 
   if (media != null) {
-    propertyDetails.media_upload = {
-      media_files: (media.images ?? []).map((image) => ({
+    const mediaFiles = [
+      ...(media.images ?? []).map((image) => ({
         name: image.file_name ?? "",
         uri: image.url ?? "",
+        mimeType: image.file_name?.toLowerCase().endsWith(".gif")
+          ? "image/gif"
+          : undefined,
       })),
+      ...(media.videos ?? []).map((video) => ({
+        name: video.file_name ?? "",
+        uri: video.url ?? "",
+        mimeType: video.file_name?.toLowerCase().endsWith(".mov")
+          ? "video/quicktime"
+          : video.file_name?.toLowerCase().endsWith(".webm")
+            ? "video/webm"
+            : "video/mp4",
+      })),
+    ];
+
+    propertyDetails.media_upload = {
+      media_files: mediaFiles,
       youtube_url: media.youtube_url ?? "",
       virtual_tour_url: media.virtual_tour_url ?? "",
       documents: (media.documents ?? []).map((document) => ({

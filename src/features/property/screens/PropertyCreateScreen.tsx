@@ -1,6 +1,7 @@
 "use client";
 
 import { Breadcrumb } from "@/src/components/ui/breadcrumb";
+import { PropertyCreateUnsavedChangesModal } from "@/src/features/property/components/PropertyCreateUnsavedChangesModal";
 import { PropertyCreateScreenSkeleton } from "@/src/features/property/components/PropertyCreateScreenSkeleton";
 import { usePropertyCreateScreen } from "@/src/features/property/hooks/usePropertyCreateScreen";
 import { cn } from "@/src/lib/cn";
@@ -33,6 +34,12 @@ export default function PropertyCreateScreen() {
     onUploadOwnerDocument,
     onUploadPropertyMedia,
     onUploadPropertyDocument,
+    livePayloadGetterRef,
+    onLivePayloadChange,
+    ownerInfoConfig,
+    pricingCurrency,
+    measurementUnit,
+    unsavedChangesModal,
   } = usePropertyCreateScreen();
 
   if (isCatalogLoading) {
@@ -76,7 +83,14 @@ export default function PropertyCreateScreen() {
         onUploadPropertyDocument={onUploadPropertyDocument}
         canEdit={canEditSubmission}
         rejectionReason={rejectionReason}
+        livePayloadGetterRef={livePayloadGetterRef}
+        onLivePayloadChange={onLivePayloadChange}
+        ownerInfoConfig={ownerInfoConfig}
+        pricingCurrency={pricingCurrency}
+        measurementUnit={measurementUnit}
       />
+
+      <PropertyCreateUnsavedChangesModal {...unsavedChangesModal} />
     </div>
   );
 }

@@ -15,7 +15,7 @@ Shared agent listings table hook: fetches `GET /agent-properties`, maps rows for
 - Build `pagination` for `ListTableView` (page size options 10, 15, 20).
 - Expose `noDataFound`, `workflowActions`, per-row action handlers, and `onClickProperty`.
 - For **`submission_workflow_label === "rejected"`** rows, per-row `actions` drive the menu: View, Edit, View Rejected Reason, Delete.
-- `navigateToPropertyView` → `/propert-details/{listing.id}`.
+- `navigateToPropertyView` → opens `/propert-details/{listing.id}` in a new tab.
 - Rejected-reason and delete-confirm modals as `rejectedReasonModal` and `deleteConfirmModal`.
 - Own `columnVisibility` state; filter `columns` and `sortConfig` for hidden columns.
 - Map app locale `es` → library title locale `esp` for column rendering.

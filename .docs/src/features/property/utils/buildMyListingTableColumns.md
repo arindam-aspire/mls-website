@@ -9,7 +9,7 @@ Builds custom `ListTableView` columns for **My Listings** and **Manage Listings*
 - Return `TableColumn<PropertyListing>[]` for `@abdoun/abdoun-library` `ListTableView`.
 - Column order: `title` (property name + reference), `status`, `submission`, `reviewedOn`, `actions`.
 - Sortable columns: **Property** (`title`), **Submission** (`submission`, sorts by submitted-on timestamp), and **Reviewed on** (`reviewedOn`); client-side via `ListTableView` `sortConfig`.
-- Reuse library `ListingStatusBadge` for status cells.
+- Reuse app `PropertyListingStatusBadge` for status cells (MLS-specific status color mapping).
 - Reuse library `buildPropertyTableColumns` only to obtain the actions column (`createWorkflowActionsResolver` + row menu).
 - Format dates via `formatListingSubmittedDate` (date + time, 12-hour AM/PM). **Submission** cell: primary line = submitter (`submission_submitted_by`, then agency/broker fallbacks); secondary line = submitted-on date (`validatedDate` / `submitted_on`). **Reviewed on** uses `reviewedDate` = `submission_reviewed_at`.
 

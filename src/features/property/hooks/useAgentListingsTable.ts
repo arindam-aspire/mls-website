@@ -3,7 +3,7 @@
 import type { ComponentProps } from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { useRouter } from "@/src/i18n/navigation";
+import { getPathname, useRouter } from "@/src/i18n/navigation";
 import type { AppLocale } from "@/src/i18n/routing";
 import type { ListTableView, PinnedColumns, SortConfig } from "@abdoun/abdoun-library";
 import { PROPERTY_CREATE_SUBMISSION_ID_PARAM } from "../constants/propertyCreate.constants";
@@ -260,9 +260,14 @@ export function useAgentListingsTable({
 
   const navigateToPropertyView = useCallback(
     (listing: LibraryPropertyListing) => {
-      router.push(`/propert-details/${listing.id}`);
+      const url = getPathname({
+        locale,
+        href: `/propert-details/${listing.id}`,
+      });
+
+      window.open(url, "_blank", "noopener,noreferrer");
     },
-    [router],
+    [getPathname, locale],
   );
 
   const navigateToSubmissionEdit = useCallback(

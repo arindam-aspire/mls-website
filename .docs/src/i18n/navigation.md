@@ -1,68 +1,31 @@
 # File Overview
 
-next-intl routing, navigation, or request config.
+Locale-aware Next.js navigation from **next-intl**, with a wrapped `useRouter` that runs [navigationGuard.md](../navigation/navigationGuard.md) interceptors before programmatic navigation.
 
 **Source:** `src/i18n/navigation.ts`
 
 # Responsibilities
 
-- next-intl routing, navigation, or request config.
+- Re-export `Link`, `redirect`, `usePathname`, and `getPathname` from `createNavigation(routing)`.
+- Export **`useRouter()`** that wraps the next-intl router:
+  - **`push`** / **`replace`** — normalize href with [stripLocalePrefixFromPath.md](./stripLocalePrefixFromPath.md), run interceptors, then navigate.
+  - **`back`** — run interceptors with `{ href: "", action: "back" }`.
 
 # Imports
 
-- `import { routing } from "./routing"`
+- `createNavigation` from `next-intl/navigation`
+- `runNavigationInterceptors` from `@/src/navigation/navigationGuard`
+- `routing` from `./routing`
 
 # Exports
 
-_See source exports._
-
-# State Management
-
-_No significant state; presentational or config module._
-
-# API Usage
-
-_N/A unless extended._
-
-# Navigation
-
-_No direct navigation._
-
-# Props / Parameters
-
-_N/A — non-component module._
-
-# Actions / Inputs
-
-## Inputs
-
-_No explicit inputs detected._
-
-## Actions
-
-_No explicit actions detected._
-
-## Validations
-
-_No explicit validations detected._
-
-## Show/Hide Controls
-
-_No explicit show/hide controls detected._
-
-# UI Details
-
-_N/A._
-
-# Flow Description
-
-See source in `src/i18n/navigation.ts` for step-by-step behavior aligned with [application.md](../../application.md) (path relative may vary).
-
-# Dependencies
-
-- Parent feature or route that imports this file.
-- See **Imports** for direct module dependencies.
+- `Link`, `redirect`, `usePathname`, `getPathname`, `useRouter`
 
 # Notes
 
-- Keep in sync when `src/i18n/navigation.ts` changes.
+- `<Link>` clicks are still captured separately on Create Property via document-level capture when the unsaved-changes guard is active; the router wrapper covers `router.push` / profile menu / drawer navigation paths.
+
+# Dependencies
+
+- [routing.md](./routing.md)
+- [navigationGuard.md](../navigation/navigationGuard.md)

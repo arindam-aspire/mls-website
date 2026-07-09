@@ -9,7 +9,7 @@ Create-property screen at `/en/property-create`. Loads taxonomy/feature catalog 
 - Render localized page title and subtitle.
 - Show role-aware breadcrumb on `md+` (hidden on `sm`) in the header row right section.
 - Show `PropertyCreateScreenSkeleton` while catalog APIs load.
-- Render `PropertyForm` with mapped catalog data and step navigation from `usePropertyCreateScreen`.
+- Render `PropertyForm` with mapped catalog data, `ownerInfoConfig`, and step navigation from `usePropertyCreateScreen`.
 
 # Imports
 
@@ -38,6 +38,8 @@ Screen receives all form props from `usePropertyCreateScreen()` — see hook doc
 - Requires `@abdoun/abdoun-library` v0.1.61+ for `PropertyForm` `canEdit` / `rejectionReason` (read-only submitted, resubmit alert when rejected).
 - Passes `canEdit` and `rejectionReason` from draft submission `status` / `review_reason`.
 - Passes `isDraftLoading={isDraftSaving}` and `isSubmitting` to disable the form while draft save or submit is in flight.
+- Passes `livePayloadGetterRef` and `onLivePayloadChange` to `PropertyForm` for unsaved-change detection (`@abdoun/abdoun-library` v0.1.70+).
+- Renders [PropertyCreateUnsavedChangesModal.md](../components/PropertyCreateUnsavedChangesModal.md) when leaving the page with unsaved step edits.
 
 # Flow Description
 
