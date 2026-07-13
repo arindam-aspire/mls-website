@@ -38,7 +38,7 @@ Screen receives all form props from `usePropertyCreateScreen()` — see hook doc
 - Requires `@abdoun/abdoun-library` v0.1.61+ for `PropertyForm` `canEdit` / `rejectionReason` (read-only submitted, resubmit alert when rejected).
 - Passes `canEdit` and `rejectionReason` from draft submission `status` / `review_reason`.
 - Passes `isDraftLoading={isDraftSaving}` and `isSubmitting` to disable the form while draft save or submit is in flight.
-- Passes `livePayloadGetterRef` and `onLivePayloadChange` to `PropertyForm` for unsaved-change detection (`@abdoun/abdoun-library` v0.1.70+).
+- Unsaved-change detection uses `propertyDetails` from `usePropertyCreateScreen` (not library live-payload props on `PropertyForm` in `@abdoun/abdoun-library` v0.1.79).
 - Renders [PropertyCreateUnsavedChangesModal.md](../components/PropertyCreateUnsavedChangesModal.md) when leaving the page with unsaved step edits.
 
 # Flow Description

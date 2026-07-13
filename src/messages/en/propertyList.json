@@ -68,6 +68,10 @@
       "features": "Features",
       "locations": "Location",
       "documents": "Documents"
+    },
+    "owners": {
+      "title": "Owner details",
+      "noContact": "No contact info"
     }
   },
   "favourites": {

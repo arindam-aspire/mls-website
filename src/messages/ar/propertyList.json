@@ -68,6 +68,10 @@
       "features": "الميزات",
       "locations": "الموقع",
       "documents": "المستندات"
+    },
+    "owners": {
+      "title": "تفاصيل المالك",
+      "noContact": "لا توجد معلومات اتصال"
     }
   },
   "favourites": {

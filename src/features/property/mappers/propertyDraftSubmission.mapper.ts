@@ -1,5 +1,6 @@
 import { PROPERTY_DRAFT_SUBMISSION_SAVE_ACTION } from "@/src/features/property/constants/propertyCreate.constants";
 import type {
+  PropertyDraftSubmissionCurrency,
   PropertyDraftSubmissionData,
   PropertyDraftSubmissionPayload,
   PropertyDraftSubmissionRequestBody,
@@ -176,7 +177,7 @@ export type BuildPropertyDraftSubmissionPayloadOptions = {
   /** Selected agency for owner-created listings; backend falls back to auth context for agency users. */
   agencyId?: string | null;
   /** Agency display currency; defaults to JOD when omitted. */
-  currency?: string;
+  currency?: PropertyDraftSubmissionCurrency;
 };
 
 function mapReviewSubmit(

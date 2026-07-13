@@ -15,7 +15,7 @@ TypeScript request-body shapes for property **draft submission** (create / save 
 | Type | Purpose |
 | --- | --- |
 | `PropertyDraftSubmissionListingPurpose` | `"sale"` \| `"rent"` |
-| `PropertyDraftSubmissionCurrency` | `"JOD"` |
+| `PropertyDraftSubmissionCurrency` | `AgencyCurrency` (`"JOD"` \| `"USD"`) |
 | `PropertyDraftSubmissionBasicInformation` | Title, description, taxonomy ids |
 | `PropertyDraftSubmissionLocation` | City, first area, address |
 | `PropertyDraftSubmissionOwnerInformation` | Owners with merged phone, `nationality`, `ssi`, `address`, and document urls |

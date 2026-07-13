@@ -18,7 +18,7 @@ Screen hook for `PropertyCreateScreen`: page copy, breadcrumb, create-form catal
 - Own `activeStep` and wire `onNext`, `onPrevious`, `onStepClick` against `propertyFormSteps`.
 - `onDraft` → `POST /property-submissions` when no `submission_id` query; `PATCH /property-submissions/{submissionId}` when resuming. Returns `boolean` success for unsaved-changes modal. Clears dirty baseline on success.
 - **Unsaved-changes baseline:** After catalog load (and draft hydration when `submission_id` is present), the dirty baseline is taken from the library `PropertyForm` **live payload** (deferred one tick), not from the API mapper output — avoids false “unsaved changes” when resuming a draft without edits.
-- **Unsaved changes:** delegates to [usePropertyCreateUnsavedChanges.md](./usePropertyCreateUnsavedChanges.md) — per-step dirty tracking, navigation guard + link/back/keyboard refresh interception, custom modal (**Save as Draft** / **Discard** / **Cancel**). Requires library `onLivePayloadChange` + `livePayloadGetterRef` (v0.1.70+).
+- **Unsaved changes:** delegates to [usePropertyCreateUnsavedChanges.md](./usePropertyCreateUnsavedChanges.md) — per-step dirty tracking, navigation guard + link/back/keyboard refresh interception, custom modal (**Save as Draft** / **Discard** / **Cancel**). Tracks `propertyDetails` from the screen hook until `@abdoun/abdoun-library` ships live payload callbacks.
 - Owner document upload via `useOwnerDocumentUpload` (`context: owner_document`).
 - **Owner step (`ownerInfoConfig`):** requires at least one uploaded document per owner (Next disabled until valid); localized validation via `propertyList.propertyCreate.ownerInfo`; owner-role users get auto-filled first owner on new create and read-only name/phone/email on rows matching their account email (draft resume included). See [propertyCreateOwnerInfo.utils.md](../utils/propertyCreateOwnerInfo.utils.md).
 - Media step uploads via `usePropertyMediaUpload(submissionId)` — `property_media_image` → `media_files`, `property_document` → `documents`; presign uses `submission_id` (save draft first if missing).
@@ -48,7 +48,7 @@ Screen hook for `PropertyCreateScreen`: page copy, breadcrumb, create-form catal
 
 # Exports
 
-- `usePropertyCreateScreen()` — page copy, breadcrumb, `PropertyForm` props, `unsavedChangesModal`, `livePayloadGetterRef`, `onLivePayloadChange`, `hasUnsavedChanges`, `dirtyStepIds`, `isCatalogLoading`, `reloadCreateCatalog`
+- `usePropertyCreateScreen()` — page copy, breadcrumb, `PropertyForm` props, `unsavedChangesModal`, `hasUnsavedChanges`, `dirtyStepIds`, `isCatalogLoading`, `reloadCreateCatalog`
 
 # Actions / Inputs
 

@@ -6,7 +6,9 @@ Feature or shared UI component.
 
 # Responsibilities
 
-- Feature or shared UI component.
+- Wrap Headless UI popover primitives with shared MLS styling and RTL-aware defaults.
+- Provide a reusable `PopoverButton` trigger with project button sizing, semantic color tokens, and hydration-warning suppression for browser extensions that inject client-only attributes.
+- Expose `PopoverPanel` helpers for anchored and fullscreen overlays.
 
 # Imports
 
@@ -44,19 +46,21 @@ _No direct navigation._
 
 ## Inputs
 
-_No explicit inputs detected._
+- `PopoverButton` accepts Headless UI popover trigger props plus shared class names.
+- `PopoverPanel` accepts `anchor`, `fullScreen`, `modal`, and `transition` behavior.
 
 ## Actions
 
-_No explicit actions detected._
+- Trigger press toggles the popover open/closed through Headless UI state management.
+- Fullscreen panels render through a portal and default to modal behavior.
 
 ## Validations
 
-_No explicit validations detected._
+- `_N/A_`
 
 ## Show/Hide Controls
 
-_No explicit show/hide controls detected._
+- `PopoverPanel` resolves a locale-aware default anchor: `bottom start` for LTR and `bottom end` for RTL.
 
 # UI Details
 
@@ -68,7 +72,10 @@ _No explicit show/hide controls detected._
 
 # Flow Description
 
-See source in `src/components/ui/popover/index.tsx` for step-by-step behavior aligned with [application.md](../../application.md) (path relative may vary).
+1. `Popover` and `PopoverGroup` wrap the matching Headless UI primitives with shared classes.
+2. `PopoverButton` renders the trigger with shared control styling and `suppressHydrationWarning` so extension-injected attributes like `fdprocessedid` do not cause React hydration mismatch warnings.
+3. `PopoverPanel` chooses an RTL-aware default anchor unless an explicit anchor is provided.
+4. When `fullScreen` is enabled, the panel becomes a portal-backed modal sheet with page-level layout classes.
 
 # Dependencies
 
@@ -77,4 +84,5 @@ See source in `src/components/ui/popover/index.tsx` for step-by-step behavior al
 
 # Notes
 
+- `suppressHydrationWarning` is intentionally limited to the trigger element so real content mismatches elsewhere still surface during development.
 - Keep in sync when `src/components/ui/popover/index.tsx` changes.

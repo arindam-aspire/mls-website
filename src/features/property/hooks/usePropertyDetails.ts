@@ -22,6 +22,7 @@ import {
   type PropertyDetailsTabValue,
 } from "../constants/propertyDetailsTabs.constants";
 import { mapFeatureCatalogItems } from "../mappers/propertyFeatures.mapper";
+import { mapPropertyDetailsForPropertyView } from "../mappers/mapPropertyDetailsForPropertyView";
 import {
   useAddRecentView,
   useAssignAdminPropertyAgent,
@@ -41,6 +42,14 @@ import type {
   PropertyDetailsStatusActionCardAction,
 } from "../types/property.types";
 import { normalizePropertyListing } from "../utils/normalizePropertyListingStatus";
+import {
+  openPropertyAgentEmail,
+  openPropertyAgentPhone,
+  openPropertyAgentWhatsApp,
+  openPropertyOwnerEmail,
+  openPropertyOwnerPhone,
+  openPropertyOwnerWhatsApp,
+} from "../utils/propertyContactActions.utils";
 import { usePropertyFavouriteToggle } from "./usePropertyFavouriteToggle";
 
 type PropertyViewProps = ComponentProps<typeof PropertyView>;
@@ -163,6 +172,8 @@ export function usePropertyDetails(propertyId: string) {
     () => hasPropertyDetailsRestrictedTabsAccess(user),
     [user],
   );
+
+  const showOwnerDetails = Boolean(user);
 
   const tabOptions = useMemo(() => {
     const values = canViewRestrictedTabs
@@ -304,8 +315,16 @@ export function usePropertyDetails(propertyId: string) {
       id: resolveDetailsId(propertyDetails, propertyId),
     };
 
-    return applyDetailsFavouriteState(detailsWithId, propertyId);
+    const favouriteDetails = applyDetailsFavouriteState(detailsWithId, propertyId);
+
+    if (!favouriteDetails) {
+      return undefined;
+    }
+
+    return mapPropertyDetailsForPropertyView(favouriteDetails);
   }, [applyDetailsFavouriteState, propertyDetails, propertyId]);
+
+  const showAgentDetails = Boolean(propertyDetailsWithFavourites?.agent);
 
   const detailPropertyId = propertyDetailsWithFavourites?.property_id?.trim() ?? "";
   const detailSubmissionId = propertyDetailsWithFavourites?.submission_id?.trim() ?? "";
@@ -406,9 +425,44 @@ export function usePropertyDetails(propertyId: string) {
 
   const openAgentEmail = useCallback(
     (_id: number) => {
-      openUpcomingFeature();
+      openPropertyAgentEmail(propertyDetailsWithFavourites);
     },
-    [openUpcomingFeature],
+    [propertyDetailsWithFavourites],
+  );
+
+  const openAgentPhone = useCallback(
+    (_id: number) => {
+      openPropertyAgentPhone(propertyDetailsWithFavourites);
+    },
+    [propertyDetailsWithFavourites],
+  );
+
+  const openAgentWhatsApp = useCallback(
+    (_id: number) => {
+      openPropertyAgentWhatsApp(propertyDetailsWithFavourites);
+    },
+    [propertyDetailsWithFavourites],
+  );
+
+  const openOwnerEmail = useCallback(
+    (_propertyId: number, ownerId?: number) => {
+      openPropertyOwnerEmail(propertyDetailsWithFavourites, ownerId);
+    },
+    [propertyDetailsWithFavourites],
+  );
+
+  const openOwnerPhone = useCallback(
+    (_propertyId: number, ownerId?: number) => {
+      openPropertyOwnerPhone(propertyDetailsWithFavourites, ownerId);
+    },
+    [propertyDetailsWithFavourites],
+  );
+
+  const openOwnerWhatsApp = useCallback(
+    (_propertyId: number, ownerId?: number) => {
+      openPropertyOwnerWhatsApp(propertyDetailsWithFavourites, ownerId);
+    },
+    [propertyDetailsWithFavourites],
   );
 
   const showMissingWorkflowContext = useCallback(
@@ -1160,8 +1214,16 @@ export function usePropertyDetails(propertyId: string) {
     applicationKey: APPLICATION_KEY,
     featureCatalog,
     tabs,
+    canViewRestrictedTabs,
+    showOwnerDetails,
+    showAgentDetails,
     toggleFavourite,
     openAgentEmail,
+    openAgentPhone,
+    openAgentWhatsApp,
+    openOwnerEmail,
+    openOwnerPhone,
+    openOwnerWhatsApp,
     similarListings: similarListingsWithFavourites,
     isSimilarLoading,
     statusActionCard,

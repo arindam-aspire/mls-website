@@ -34,8 +34,6 @@ export default function PropertyCreateScreen() {
     onUploadOwnerDocument,
     onUploadPropertyMedia,
     onUploadPropertyDocument,
-    livePayloadGetterRef,
-    onLivePayloadChange,
     ownerInfoConfig,
     pricingCurrency,
     measurementUnit,
@@ -83,8 +81,6 @@ export default function PropertyCreateScreen() {
         onUploadPropertyDocument={onUploadPropertyDocument}
         canEdit={canEditSubmission}
         rejectionReason={rejectionReason}
-        livePayloadGetterRef={livePayloadGetterRef}
-        onLivePayloadChange={onLivePayloadChange}
         ownerInfoConfig={ownerInfoConfig}
         pricingCurrency={pricingCurrency}
         measurementUnit={measurementUnit}

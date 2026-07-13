@@ -29,10 +29,31 @@ export type PropertyDetailsWorkflowAction = {
   disabled?: boolean | null;
 };
 
+export type PropertyAgentContactAction = {
+  type: "email" | "phone" | "whatsapp";
+  label: string;
+  enabled: boolean;
+  href: string | null;
+};
+
+export type PropertyDetailsAgent = NonNullable<
+  PropertyViewProps["propertyDetails"]
+>["agent"] & {
+  contact_actions?: Partial<
+    Record<"email" | "phone" | "whatsapp", PropertyAgentContactAction>
+  >;
+  actions?: PropertyAgentContactAction[];
+};
+
 export type PropertyDetails = NonNullable<PropertyViewProps["propertyDetails"]> & {
   property_id?: string | null;
   submission_id?: string | null;
   owners?: PropertyOwner[];
+  agent?: PropertyDetailsAgent | null;
+  agent_name?: string | null;
+  agent_email?: string | null;
+  agent_phone?: string | null;
+  agent_user_id?: string | null;
   status_action_card?: PropertyDetailsStatusActionCard | null;
   workflow_actions?: PropertyDetailsWorkflowAction[] | null;
   workflow_status?: string | null;

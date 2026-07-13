@@ -97,6 +97,7 @@ export function PopoverButton({
 }: PopoverTriggerProps) {
   return (
     <HeadlessPopoverButton
+      suppressHydrationWarning
       className={mergeHeadlessClassName(triggerBaseClasses, className)}
       {...rest}
     >

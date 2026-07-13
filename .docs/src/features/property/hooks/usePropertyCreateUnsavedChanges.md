@@ -6,7 +6,7 @@ Guards **Create Property** against losing in-progress edits: custom modal for in
 
 # Responsibilities
 
-- Compare live `@abdoun/abdoun-library` `PropertyForm` payload (via `onLivePayloadChange` / `livePayloadGetterRef`) against the last saved snapshot (draft save, draft hydrate, or initial baseline).
+- Compare `propertyDetails` from `usePropertyCreateScreen` against the last saved snapshot (draft save, draft hydrate, or initial baseline). Updates when the parent form state changes (e.g. step navigation, draft save).
 - Track dirty PropertyForm step ids (`setup`, `location`, `details`, …) using [propertyCreateDirtyState.utils.md](../utils/propertyCreateDirtyState.utils.md).
 - Register a [navigationGuard.md](../../../navigation/navigationGuard.md) interceptor when unsaved and editable — blocks `router.push` / `replace` / `back` and imperative `navigateTo` until the user chooses an action.
 - Intercept internal `<a>` clicks and browser **Back** (`popstate`) when guard is active. DOM `href` values are normalized via [stripLocalePrefixFromPath.md](../../../i18n/stripLocalePrefixFromPath.md) before `router.push` so paths like `/en/dashboard` do not become `/en/en/dashboard`.
@@ -21,7 +21,7 @@ Guards **Create Property** against losing in-progress edits: custom modal for in
 | `canEdit` | Read-only submitted forms skip the guard |
 | `isDraftSaving` | Loading state for modal **Save as Draft** |
 | `onDraft` | Existing draft save handler; must return `true` on success |
-| `livePayloadGetterRef` | Ref to library `PropertyForm` live payload getter |
+| `propertyDetails` | Current `PropertyFormValues` owned by the create screen hook |
 
 # Actions / Inputs
 

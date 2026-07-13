@@ -24,7 +24,6 @@ import {
   useMemo,
   useRef,
   useState,
-  type RefObject,
 } from "react";
 
 type PendingNavigationAction = "push" | "back" | "reload";
@@ -49,14 +48,8 @@ type UsePropertyCreateUnsavedChangesParams = {
   canEdit: boolean;
   isDraftSaving: boolean;
   onDraft: (propertyDetails: PropertyFormValues) => Promise<boolean>;
-  livePayloadGetterRef: RefObject<(() => PropertyFormValues) | null>;
+  propertyDetails: PropertyFormValues;
 };
-
-function resolveLivePayload(
-  getterRef: RefObject<(() => PropertyFormValues) | null>,
-): PropertyFormValues | null {
-  return getterRef.current?.() ?? null;
-}
 
 function isSameDocumentLocation(href: string): boolean {
   if (typeof window === "undefined") {
@@ -94,7 +87,7 @@ export function usePropertyCreateUnsavedChanges({
   canEdit,
   isDraftSaving,
   onDraft,
-  livePayloadGetterRef,
+  propertyDetails,
 }: UsePropertyCreateUnsavedChangesParams) {
   const router = useRouter();
   const t = useTranslations("propertyList.propertyCreate.unsavedChanges");
@@ -135,15 +128,19 @@ export function usePropertyCreateUnsavedChanges({
   }, []);
 
   const onLivePayloadChange = useCallback(
-    (propertyDetails: PropertyFormValues) => {
+    (nextPropertyDetails: PropertyFormValues) => {
       if (!enabled || !canEdit) {
         return;
       }
 
-      syncDirtyState(propertyDetails);
+      syncDirtyState(nextPropertyDetails);
     },
     [canEdit, enabled, syncDirtyState],
   );
+
+  useEffect(() => {
+    onLivePayloadChange(propertyDetails);
+  }, [onLivePayloadChange, propertyDetails]);
 
   const closePrompt = useCallback(() => {
     setPendingNavigation(null);
@@ -207,13 +204,7 @@ export function usePropertyCreateUnsavedChanges({
 
   const handleSaveDraftFromPrompt = useCallback(async () => {
     const navigation = pendingNavigation;
-    const livePayload = resolveLivePayload(livePayloadGetterRef);
-
-    if (!livePayload) {
-      return;
-    }
-
-    const didSave = await onDraft(livePayload);
+    const didSave = await onDraft(propertyDetails);
 
     if (!didSave) {
       return;
@@ -227,9 +218,9 @@ export function usePropertyCreateUnsavedChanges({
   }, [
     closePrompt,
     completePendingNavigation,
-    livePayloadGetterRef,
     onDraft,
     pendingNavigation,
+    propertyDetails,
   ]);
 
   useEffect(() => {

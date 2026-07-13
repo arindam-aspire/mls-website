@@ -171,10 +171,6 @@ export function usePropertyCreateScreen() {
   const hasInitializedRef = useRef(false);
   const hasAppliedDefaultOwnerRef = useRef(false);
   const hasEstablishedBaselineRef = useRef(false);
-  const establishBaselineTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
-    null,
-  );
-  const livePayloadGetterRef = useRef<(() => PropertyFormValues) | null>(null);
   const commitSavedSnapshotRef = useRef<(propertyDetails: PropertyFormValues) => void>(
     () => {},
   );
@@ -426,14 +422,13 @@ export function usePropertyCreateScreen() {
   );
 
   const onSubmit = useCallback(async () => {
-    const livePayload = livePayloadGetterRef.current?.() ?? propertyDetails;
-    const currentStep = livePayload.active_step ?? activeStep;
+    const currentStep = propertyDetails.active_step ?? activeStep;
     const lastCompletedStep = Math.max(
-      livePayload.max_reached_step ?? maxReachedStep,
+      propertyDetails.max_reached_step ?? maxReachedStep,
       currentStep,
     );
     const detailsForSubmit: PropertyFormValues = {
-      ...livePayload,
+      ...propertyDetails,
       active_step: currentStep,
       max_reached_step: lastCompletedStep,
     };
@@ -612,51 +607,32 @@ export function usePropertyCreateScreen() {
     dirtyStepIds,
     hasUnsavedChanges,
     commitSavedSnapshot,
-    onLivePayloadChange,
     unsavedChangesModal,
   } = usePropertyCreateUnsavedChanges({
     enabled: !isCatalogLoading,
     canEdit: canEditSubmission,
     isDraftSaving,
     onDraft: (propertyDetails) => onDraftRef.current(propertyDetails),
-    livePayloadGetterRef,
+    propertyDetails,
   });
 
   commitSavedSnapshotRef.current = commitSavedSnapshot;
 
-  const handleLivePayloadChange = useCallback(
-    (payload: PropertyFormValues) => {
-      const canEstablishBaseline =
-        !hasEstablishedBaselineRef.current &&
-        !isCatalogLoading &&
-        (!submissionId || draftHydratedForRef.current === submissionId);
-
-      if (canEstablishBaseline) {
-        if (establishBaselineTimerRef.current != null) {
-          clearTimeout(establishBaselineTimerRef.current);
-        }
-
-        establishBaselineTimerRef.current = setTimeout(() => {
-          establishBaselineTimerRef.current = null;
-
-          if (hasEstablishedBaselineRef.current) {
-            return;
-          }
-
-          const livePayload = livePayloadGetterRef.current?.() ?? payload;
-          hasEstablishedBaselineRef.current = true;
-          commitSavedSnapshot(livePayload);
-        }, 0);
-
-        return;
-      }
-
-      onLivePayloadChange(payload);
-    },
-    [commitSavedSnapshot, isCatalogLoading, onLivePayloadChange, submissionId],
-  );
-
   // 9. Effects
+  useEffect(() => {
+    if (
+      hasEstablishedBaselineRef.current ||
+      isCatalogLoading ||
+      (submissionId != null && draftHydratedForRef.current !== submissionId) ||
+      (!submissionId && isOwnerUser(user))
+    ) {
+      return;
+    }
+
+    hasEstablishedBaselineRef.current = true;
+    commitSavedSnapshot(propertyDetails);
+  }, [commitSavedSnapshot, isCatalogLoading, propertyDetails, submissionId, user]);
+
   useEffect(() => {
     if (hasAppliedDefaultOwnerRef.current || !user || !isOwnerUser(user) || submissionId) {
       return;
@@ -679,11 +655,8 @@ export function usePropertyCreateScreen() {
       };
 
       queueMicrotask(() => {
-        const livePayload = livePayloadGetterRef.current?.() ?? nextDetails;
-        if (!hasEstablishedBaselineRef.current) {
-          hasEstablishedBaselineRef.current = true;
-          commitSavedSnapshotRef.current(livePayload);
-        }
+        hasEstablishedBaselineRef.current = true;
+        commitSavedSnapshotRef.current(nextDetails);
       });
 
       return nextDetails;
@@ -700,14 +673,6 @@ export function usePropertyCreateScreen() {
       searchParams.get(PROPERTY_CREATE_SUBMISSION_ID_PARAM),
     );
   }, [loadCreateCatalog, searchParams]);
-
-  useEffect(() => {
-    return () => {
-      if (establishBaselineTimerRef.current != null) {
-        clearTimeout(establishBaselineTimerRef.current);
-      }
-    };
-  }, []);
 
   // 10. Return values
   return {
@@ -729,8 +694,6 @@ export function usePropertyCreateScreen() {
     rejectionReason,
     hasUnsavedChanges,
     dirtyStepIds,
-    livePayloadGetterRef,
-    onLivePayloadChange: handleLivePayloadChange,
     ownerInfoConfig,
     pricingCurrency,
     measurementUnit,

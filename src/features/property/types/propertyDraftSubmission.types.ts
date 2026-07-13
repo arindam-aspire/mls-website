@@ -1,8 +1,10 @@
+import type { AgencyCurrency } from "@/src/features/profile/constants/agencyPreferences";
+
 /** Listing purpose sent to draft-submission API (`basic_information.listing_purpose`). */
 export type PropertyDraftSubmissionListingPurpose = "sale" | "rent";
 
-/** Fixed currency for draft-submission pricing (`pricing.currency`). */
-export type PropertyDraftSubmissionCurrency = "JOD";
+/** Agency currency for draft-submission pricing (`pricing.currency`). */
+export type PropertyDraftSubmissionCurrency = AgencyCurrency;
 
 export type PropertyDraftSubmissionBasicInformation = {
   listing_purpose?: PropertyDraftSubmissionListingPurpose | null;

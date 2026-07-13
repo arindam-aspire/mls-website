@@ -259,6 +259,7 @@ mls_website/
 │       │       │   ├── AssignAgentListItem.md
 │       │       │   ├── AssignAgentModal.md
 │       │       │   ├── AssignAgentModalSkeleton.md
+│       │       │   ├── PropertyDetailsOwnersSection.md
 │       │       │   ├── RejectSubmissionModal.md
 │       │       │   ├── PropertyListAdvancedFilters.md
 │       │       │   ├── PropertyListFilters.md
@@ -279,6 +280,7 @@ mls_website/
 │       │       ├── mappers/
 │       │       │   ├── README.md
 │       │       │   ├── favoriteList.mapper.md
+│       │       │   ├── mapPropertyDetailsForPropertyView.md
 │       │       │   ├── propertyFeatures.mapper.md
 │       │       │   └── propertyList.mapper.md
 │       │       ├── mutations/
@@ -865,6 +867,7 @@ mls_website/
 │   │       │   ├── AssignAgentListItem.tsx
 │   │       │   ├── AssignAgentModal.tsx
 │   │       │   ├── AssignAgentModalSkeleton.tsx
+│   │       │   ├── PropertyDetailsOwnersSection.tsx
 │   │       │   ├── RejectSubmissionModal.tsx
 │   │       │   ├── PropertyListAdvancedFilters.tsx
 │   │       │   ├── PropertyListFilters.tsx
@@ -909,12 +912,14 @@ mls_website/
 │   │       │   └── usePropertySearchFilters.ts
 │   │       ├── i18n/
 │   │       │   ├── buildManageListingTableColumnLabels.ts
-│   │       │   └── propertyCreateOwnerInfo.i18n.ts
+│   │       │   ├── propertyCreateOwnerInfo.i18n.ts
+│   │       │   └── propertyDetailsOwners.i18n.ts
 │   │       ├── mappers/
 │   │       │   ├── adminPropertySubmissions.mapper.ts
 │   │       │   ├── agentPropertiesList.mapper.ts
 │   │       │   ├── agentPropertyDraftsList.mapper.ts
 │   │       │   ├── favoriteList.mapper.ts
+│   │       │   ├── mapPropertyDetailsForPropertyView.ts
 │   │       │   ├── propertyDraftSubmission.mapper.ts
 │   │       │   ├── propertyForm.mapper.ts
 │   │       │   ├── recentViewsList.mapper.ts
@@ -944,6 +949,7 @@ mls_website/
 │   │       │   ├── propertyDraftSubmission.types.ts
 │   │       │   └── upload.types.ts
 │   │       └── utils/
+│   │           ├── propertyContactActions.utils.ts
 │   │           ├── applyFavoriteFlagsToListings.ts
 │   │           ├── propertyCreateDirtyState.utils.ts
 │   │           ├── propertyCreateOwnerInfo.utils.ts

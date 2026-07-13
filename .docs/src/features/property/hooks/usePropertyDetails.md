@@ -10,7 +10,7 @@ Custom hook for the property details flow. Fetches a single property by id, expo
 - Fetch `GET /properties/:id/similar` when `propertyId` changes (separate `isSimilarLoading`; does not block `PropertyView`).
 - Map app locale (`es` → `esp`) for `@abdoun/abdoun-library` `PropertyView`.
 - Manage detail tabs synced to URL `tab`. **Overview** and **Features** are public; **Location** and **Documents** only for signed-in **admin** (agency), **agent**, and **owner**.
-- Expose favourite and agent email handlers (favourite → add/remove APIs via `usePropertyFavouriteToggle`; agent email → upcoming modal).
+- Expose favourite and contact handlers (favourite → add/remove APIs via `usePropertyFavouriteToggle`; agent/owner email, phone, WhatsApp → `propertyContactActions.utils` using API contact fields).
 - After details load, signed-in **registered_user** / **owner** POST `addRecentView` once per `propertyId` (silent; no UI).
 
 # Imports
@@ -79,8 +79,17 @@ On similar success: `response.data.items` → favourite flags applied → `simil
 | `applicationKey` | `"abdoun_web"` |
 | `featureCatalog` | Feature/amenity definitions for features tab |
 | `tabs` | `{ tabOptions, activeTab, onTabChange }` |
+| `canViewRestrictedTabs` | `true` for agency / agent / owner — gates workflow panel |
+| `showOwnerDetails` | `true` when signed in — passed to `PropertyView.showOwner` for a single owner |
+| `propertyViewOwners` | Normalized owners for the details view (from API `owners[]` or library `owner`) |
+| `propertyViewOwnerLabels` | Localized labels for `PropertyDetailsOwnersSection` |
 | `toggleFavourite` | Guest → auth modal; signed-in → POST/DELETE favourite (`PropertyListing` or numeric id) |
-| `openAgentEmail` | Opens upcoming modal (receives property numeric id) |
+| `openAgentEmail` | Opens `mailto:` for `propertyDetails.agent.email` when present; guests with `contact_actions.*.enabled === false` → auth modal |
+| `openAgentPhone` | Opens `tel:` for `propertyDetails.agent.phone` when present; guests with disabled action → auth modal |
+| `openAgentWhatsApp` | Opens WhatsApp for `agent.whatsapp` or `agent.phone` when present; guests with disabled action → auth modal |
+| `openOwnerEmail` | Opens `mailto:` for resolved owner email (`ownerId` when multiple) |
+| `openOwnerPhone` | Opens `tel:` for resolved owner phone |
+| `openOwnerWhatsApp` | Opens WhatsApp for resolved owner phone |
 | `similarListings` | Similar items with favourite flags for `SimilarProperties.data` |
 | `isSimilarLoading` | Similar fetch pending |
 | `upcomingFeatureModal` | `{ open, onClose }` for `UpcomingFeatureModal` |
@@ -96,13 +105,14 @@ _N/A — hook only._
 3. On mount or `propertyId` change, fetch property details.
 4. Similar listings and main details merge favourite state from `usePropertyFavouriteToggle`.
 5. Tab change calls `router.replace` with updated `tab` param.
-6. Screen passes values to `PropertyView` / `SimilarProperties`; upcoming modal only for agent email.
+6. Screen passes values to `PropertyView` / `SimilarProperties`; contact actions use native `mailto:`, `tel:`, and WhatsApp links (no-op when contact field missing).
 
 # Dependencies
 
 - [../mutations/property.mutation.md](../mutations/property.mutation.md)
 - [../services/property.service.md](../services/property.service.md)
 - [../mappers/propertyFeatures.mapper.md](../mappers/propertyFeatures.mapper.md)
+- [../utils/propertyContactActions.utils.md](../utils/propertyContactActions.utils.md)
 - [usePropertyFavouriteToggle.md](./usePropertyFavouriteToggle.md)
 - [../screens/PropertyDetailsScreen.md](../screens/PropertyDetailsScreen.md)
 

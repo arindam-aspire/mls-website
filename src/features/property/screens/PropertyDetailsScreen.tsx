@@ -3,13 +3,8 @@
 import { PropertyView, SimilarProperties } from "@abdoun/abdoun-library";
 import {
   CheckCircle2,
-  FileText,
   ListChecks,
-  Mail,
-  MapPin,
-  Phone,
   UserMinus,
-  Users,
   XCircle,
 } from "lucide-react";
 import { ConfirmModal } from "@/src/components/common/ConfirmModal";
@@ -25,10 +20,7 @@ import { cn } from "@/src/lib/cn";
 import { AssignAgentModal } from "../components/AssignAgentModal";
 import { RejectSubmissionModal } from "../components/RejectSubmissionModal";
 import { usePropertyDetails } from "../hooks/usePropertyDetails";
-import type {
-  PropertyDetailsStatusActionCard,
-  PropertyOwner,
-} from "../types/property.types";
+import type { PropertyDetailsStatusActionCard } from "../types/property.types";
 
 type PropertyDetailsScreenProps = {
   propertyId: string;
@@ -131,102 +123,6 @@ function PropertyStatusActionPanel({
   );
 }
 
-function PropertyOwnersPanel({ owners }: { owners?: PropertyOwner[] }) {
-  const visibleOwners =
-    owners?.filter((owner) =>
-      Boolean(
-        owner.full_name?.trim() ||
-          owner.email?.trim() ||
-          owner.phone?.trim() ||
-          owner.address?.trim(),
-      ),
-    ) ?? [];
-
-  if (visibleOwners.length === 0) {
-    return null;
-  }
-
-  return (
-    <section
-      className="rounded-xl border border-secondary/15 bg-surface p-4 shadow-sm sm:p-5"
-      aria-label="Property owners"
-    >
-      <div className="mb-4 flex items-center gap-2">
-        <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary-light text-primary">
-          <Users className="size-4" aria-hidden />
-        </span>
-        <div className="min-w-0">
-          <h2 className="text-sm font-semibold text-text">Property owners</h2>
-          <p className="text-sm text-muted">
-            {visibleOwners.length === 1
-              ? "1 owner associated with this property"
-              : `${visibleOwners.length} owners associated with this property`}
-          </p>
-        </div>
-      </div>
-
-      <div className="grid gap-3 md:grid-cols-2">
-        {visibleOwners.map((owner, index) => (
-          <article
-            key={owner.owner_id || `${owner.full_name || owner.email || owner.phone}-${index}`}
-            className="rounded-lg border border-secondary/10 bg-page p-3"
-          >
-            <div className="flex items-start justify-between gap-3">
-              <div className="min-w-0">
-                <h3 className="truncate text-sm font-semibold text-text">
-                  {owner.full_name?.trim() ||
-                    owner.email?.trim() ||
-                    owner.phone?.trim() ||
-                    `Owner ${index + 1}`}
-                </h3>
-                {owner.nationality ? (
-                  <p className="text-xs text-muted">{owner.nationality}</p>
-                ) : null}
-              </div>
-              {index === 0 ? (
-                <span className="shrink-0 rounded-full bg-primary-light px-2 py-1 text-xs font-medium text-primary">
-                  Primary
-                </span>
-              ) : null}
-            </div>
-
-            <div className="mt-3 space-y-2 text-sm text-muted">
-              {owner.email ? (
-                <p className="flex min-w-0 items-center gap-2">
-                  <Mail className="size-4 shrink-0" aria-hidden />
-                  <span className="truncate">{owner.email}</span>
-                </p>
-              ) : null}
-              {owner.phone ? (
-                <p className="flex min-w-0 items-center gap-2">
-                  <Phone className="size-4 shrink-0" aria-hidden />
-                  <span className="truncate">{owner.phone}</span>
-                </p>
-              ) : null}
-              {owner.address ? (
-                <p className="flex min-w-0 items-center gap-2">
-                  <MapPin className="size-4 shrink-0" aria-hidden />
-                  <span className="truncate">{owner.address}</span>
-                </p>
-              ) : null}
-              {owner.documents?.length ? (
-                <p className="flex min-w-0 items-center gap-2">
-                  <FileText className="size-4 shrink-0" aria-hidden />
-                  <span>
-                    {owner.documents.length === 1
-                      ? "1 document"
-                      : `${owner.documents.length} documents`}
-                  </span>
-                </p>
-              ) : null}
-            </div>
-          </article>
-        ))}
-      </div>
-    </section>
-  );
-}
-
 export default function PropertyDetailsScreen({
   propertyId,
 }: PropertyDetailsScreenProps) {
@@ -242,8 +138,16 @@ export default function PropertyDetailsScreen({
     tabs,
     toggleFavourite,
     openAgentEmail,
+    openAgentPhone,
+    openAgentWhatsApp,
+    openOwnerEmail,
+    openOwnerPhone,
+    openOwnerWhatsApp,
     similarListings,
     isSimilarLoading,
+    canViewRestrictedTabs,
+    showOwnerDetails,
+    showAgentDetails,
     statusActionCard,
     workflowConfirmModal,
     rejectWorkflowModal,
@@ -331,17 +235,24 @@ export default function PropertyDetailsScreen({
         propertyDetails={propertyDetails}
         isFavouriteLoading={isFavouriteLoading}
         locale={locale}
-        showAgent
-        showOwner
+        showAgent={showAgentDetails}
+        showOwner={showOwnerDetails}
+        showStatusActionCard={false}
+        showPropertyMetrics={false}
         features={featureCatalog}
         tabs={tabs}
         onClickFavourite={toggleFavourite}
         onClickAgentEmail={openAgentEmail}
+        onClickAgentPhone={openAgentPhone}
+        onClickAgentWhatsApp={openAgentWhatsApp}
+        onClickOwnerEmail={openOwnerEmail}
+        onClickOwnerPhone={openOwnerPhone}
+        onClickOwnerWhatsApp={openOwnerWhatsApp}
       />
 
-      <PropertyStatusActionPanel statusActionCard={statusActionCard} />
-
-      <PropertyOwnersPanel owners={propertyDetails?.owners} />
+      {canViewRestrictedTabs ? (
+        <PropertyStatusActionPanel statusActionCard={statusActionCard} />
+      ) : null}
 
       <SimilarProperties
         title="Similar Properties"
