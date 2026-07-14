@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocale } from "next-intl";
 import { getPathname, usePathname, useRouter } from "@/src/i18n/navigation";
 import type { AppLocale } from "@/src/i18n/routing";
@@ -32,6 +32,7 @@ import {
   parsePropertyListUrlParams,
 } from "../utils/parsePropertyListUrlParams";
 import { usePropertySearchFilters } from "./usePropertySearchFilters";
+import { usePropertyContactModalActions } from "@/src/features/contact/hooks/usePropertyContactModalActions";
 
 const DEFAULT_SORT = DEFAULT_PROPERTY_LIST_SORT;
 
@@ -123,6 +124,8 @@ export function usePropertyList() {
   );
 
   // 3. Global state (Zustand)
+  const user = useAuthStore((state) => state.user);
+  const isLoadingUser = useAuthStore((state) => state.isLoadingUser);
   const {
     propertyListings,
     setPropertyListings,
@@ -131,8 +134,6 @@ export function usePropertyList() {
 
   // 4. Local state
   const [layoutVariant, setLayoutVariant] = useState<"grid" | "list">("grid");
-  const [isUpcomingFeatureModalOpen, setIsUpcomingFeatureModalOpen] =
-    useState(false);
   const [isSaveSearchModalOpen, setIsSaveSearchModalOpen] = useState(false);
   const [saveSearchFilterItems, setSaveSearchFilterItems] = useState<
     SaveSearchFilterItem[]
@@ -143,6 +144,8 @@ export function usePropertyList() {
   const [saveSearchModalSavedSearchId, setSaveSearchModalSavedSearchId] = useState<
     string | undefined
   >();
+  /** Tracks guest vs authenticated so list refetches after `/auth/me` (or login). */
+  const listAuthKeyRef = useRef<string | null>(null);
 
   // 5. Data fetching / queries
   const {
@@ -200,6 +203,9 @@ export function usePropertyList() {
     [listParams, savedSearchDetail?.data],
   );
 
+  const propertyListRequestParamsRef = useRef(propertyListRequestParams);
+  propertyListRequestParamsRef.current = propertyListRequestParams;
+
   // 6. Derived / memoized values
   const listings = useMemo(
     () =>
@@ -254,13 +260,8 @@ export function usePropertyList() {
     })();
   }, [listParams.savedSearchId, listParams.similar_to, pathname, router]);
 
-  const openUpcomingFeature = useCallback(() => {
-    setIsUpcomingFeatureModalOpen(true);
-  }, []);
-
-  const closeUpcomingFeature = useCallback(() => {
-    setIsUpcomingFeatureModalOpen(false);
-  }, []);
+  const { contactModal, onClickEmail, onClickCall, onClickWhatsApp } =
+    usePropertyContactModalActions();
 
   const openSaveSearchModal = useCallback(() => {
     setIsSaveSearchModalOpen(true);
@@ -276,8 +277,6 @@ export function usePropertyList() {
       filterItems: SaveSearchFilterItem[];
       searchCriteria: SavedSearchCriteria;
     }) => {
-      setIsUpcomingFeatureModalOpen(false);
-
       const { user: currentUser, isLoadingUser } = useAuthStore.getState();
       const hasAccessToken = Boolean(tokenStore.getAccessToken());
       const isAuthenticated =
@@ -373,18 +372,6 @@ export function usePropertyList() {
     [locale],
   );
 
-  const onClickEmail = useCallback(() => {
-    openUpcomingFeature();
-  }, [openUpcomingFeature]);
-
-  const onClickCall = useCallback(() => {
-    openUpcomingFeature();
-  }, [openUpcomingFeature]);
-
-  const onClickWhatsApp = useCallback(() => {
-    openUpcomingFeature();
-  }, [openUpcomingFeature]);
-
   // 9. Effects
   useEffect(() => {
     if (!isHydratingSavedSearch) {
@@ -452,6 +439,34 @@ export function usePropertyList() {
     fetchProperties(propertyListRequestParams);
   }, [fetchProperties, isHydratingSavedSearch, propertyListRequestParams]);
 
+  // After AuthProvider `/auth/me` (token + user), refetch list so agent/owner/actions hydrate.
+  useEffect(() => {
+    if (isHydratingSavedSearch || isLoadingUser) {
+      return;
+    }
+
+    const hasAccessToken = Boolean(tokenStore.getAccessToken());
+    const nextAuthKey =
+      hasAccessToken && user ? `auth:${user.id}` : "guest";
+    const previousAuthKey = listAuthKeyRef.current;
+
+    if (previousAuthKey === nextAuthKey) {
+      return;
+    }
+
+    listAuthKeyRef.current = nextAuthKey;
+
+    // Guest boot: base params effect already fetched without auth.
+    if (nextAuthKey === "guest" && previousAuthKey == null) {
+      return;
+    }
+
+    // Token + me settled (or login / logout while on this page) → reload list.
+    if (nextAuthKey.startsWith("auth:") || previousAuthKey?.startsWith("auth:")) {
+      fetchProperties(propertyListRequestParamsRef.current);
+    }
+  }, [fetchProperties, isHydratingSavedSearch, isLoadingUser, user]);
+
   // 10. Return values
   return {
     listings,
@@ -470,10 +485,7 @@ export function usePropertyList() {
     onClickEmail,
     onClickCall,
     onClickWhatsApp,
-    upcomingFeatureModal: {
-      open: isUpcomingFeatureModalOpen,
-      onClose: closeUpcomingFeature,
-    },
+    contactModal,
     saveSearchModal: {
       open: isSaveSearchModalOpen,
       onClose: closeSaveSearchModal,

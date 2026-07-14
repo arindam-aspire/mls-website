@@ -1,0 +1,212 @@
+{
+  "pageTitle": "Leads",
+  "pageSubtitle": "Track inquiries, conversations, and close requests across your agency.",
+  "detailsPageTitle": "Lead details",
+  "list": {
+    "tableTitle": "Leads",
+    "searchPlaceholder": "Search by lead number, customer, or property…",
+    "filters": {
+      "status": "Status",
+      "statusAll": "All statuses",
+      "agent": "Agent",
+      "agentAll": "All agents",
+      "agentPlaceholder": "Filter by agent id…",
+      "dateFrom": "From",
+      "dateTo": "To",
+      "property": "Property",
+      "propertyPlaceholder": "Property id…",
+      "clear": "Clear filters"
+    },
+    "columns": {
+      "leadNo": "Lead No",
+      "property": "Property",
+      "customer": "Customer",
+      "status": "Status",
+      "assignedAgent": "Assigned Agent",
+      "createdDate": "Created Date",
+      "actions": "Actions"
+    },
+    "viewDetails": "View details",
+    "noDataTitle": "No leads found",
+    "noDataDescription": "Try adjusting your search or filters.",
+    "fetchErrorTitle": "Could not load leads",
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "pageOf": "Page {page} of {totalPages}"
+    }
+  },
+  "status": {
+    "NEW": "New",
+    "IN_PROGRESS": "In progress",
+    "REQUEST_FOR_CLOSE": "Close requested",
+    "CLOSED": "Closed"
+  },
+  "source": {
+    "EMAIL_FORM": "Email form",
+    "PHONE": "Phone",
+    "WHATSAPP": "WhatsApp",
+    "MANUAL_ADMIN": "Manual (admin)",
+    "AGENT_MANUAL": "Manual (agent)",
+    "OFFLINE_MANUAL": "Offline"
+  },
+  "tabs": {
+    "overview": "Overview",
+    "conversation": "Conversation",
+    "notes": "Internal notes",
+    "timeline": "Activity",
+    "close": "Close request"
+  },
+  "details": {
+    "backToList": "Back to leads",
+    "customerInfo": "Customer info",
+    "propertyInfo": "Property info",
+    "inquiry": "Inquiry",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "communicationMode": "Communication mode",
+    "propertyTitle": "Property",
+    "propertyId": "Property id",
+    "propertyHash": "Property hash",
+    "inquiryType": "Inquiry type",
+    "source": "Source",
+    "message": "Message",
+    "leadNumber": "Lead number",
+    "status": "Status",
+    "assignedAgent": "Assigned agent",
+    "createdAt": "Created",
+    "lastActivity": "Last activity",
+    "unassigned": "Unassigned",
+    "emptyValue": "—",
+    "fetchErrorTitle": "Could not load lead",
+    "notFound": "This lead could not be found or you do not have access."
+  },
+  "actions": {
+    "reply": "Reply",
+    "addNote": "Add note",
+    "updateStatus": "Update status",
+    "requestClose": "Request close",
+    "assign": "Assign agent",
+    "reassign": "Reassign agent",
+    "approveClose": "Approve close",
+    "rejectClose": "Reject close",
+    "overrideStatus": "Override status",
+    "emailCustomer": "Email customer",
+    "callCustomer": "Call customer",
+    "whatsappCustomer": "WhatsApp customer"
+  },
+  "conversation": {
+    "title": "Conversation",
+    "emptyTitle": "No messages yet",
+    "emptyDescription": "Send a reply to start the conversation with this lead.",
+    "channel": "Channel",
+    "channelInApp": "In-app",
+    "channelEmail": "Email",
+    "channelSms": "SMS",
+    "listUnavailable": "Message history will appear here when the API list endpoint is available. You can still send replies."
+  },
+  "notes": {
+    "title": "Internal notes",
+    "emptyTitle": "No notes yet",
+    "emptyDescription": "Add an internal note for your team.",
+    "listUnavailable": "Notes history will appear here when the API list endpoint is available. You can still add notes."
+  },
+  "timeline": {
+    "title": "Activity timeline",
+    "emptyTitle": "No activity yet",
+    "emptyDescription": "Activity will appear as the lead progresses.",
+    "events": {
+      "created": "Lead created",
+      "assigned": "Agent assigned",
+      "requestClose": "Close requested",
+      "closed": "Lead closed",
+      "lastActivity": "Last activity"
+    }
+  },
+  "close": {
+    "title": "Close request",
+    "pendingDescription": "An agent requested to close this lead. Review and approve or reject.",
+    "notPendingDescription": "No close request is pending for this lead.",
+    "requestCloseAt": "Requested at",
+    "closedAt": "Closed at",
+    "reasonLabel": "Reason",
+    "reasonPlaceholder": "Optional reason…"
+  },
+  "modals": {
+    "reply": {
+      "title": "Reply to lead",
+      "description": "Send a message related to this inquiry.",
+      "messageLabel": "Message",
+      "messagePlaceholder": "Write your reply…",
+      "messageRequired": "A reply message is required.",
+      "channelLabel": "Channel",
+      "submit": "Send reply",
+      "cancel": "Cancel"
+    },
+    "note": {
+      "title": "Add internal note",
+      "description": "Notes are visible to your agency team only.",
+      "noteLabel": "Note",
+      "notePlaceholder": "Write an internal note…",
+      "noteRequired": "A note is required.",
+      "submit": "Save note",
+      "cancel": "Cancel"
+    },
+    "status": {
+      "title": "Update status",
+      "overrideTitle": "Override status",
+      "description": "Change the workflow status for this lead.",
+      "statusLabel": "Status",
+      "reasonLabel": "Reason",
+      "reasonPlaceholder": "Optional reason…",
+      "submit": "Update status",
+      "cancel": "Cancel"
+    },
+    "requestClose": {
+      "title": "Request close?",
+      "description": "This will mark the lead as awaiting admin approval to close.",
+      "confirm": "Request close",
+      "cancel": "Cancel"
+    },
+    "approveClose": {
+      "title": "Approve close?",
+      "description": "This will permanently close the lead.",
+      "reasonLabel": "Reason",
+      "reasonPlaceholder": "Optional close reason…",
+      "confirm": "Approve and close",
+      "cancel": "Cancel"
+    },
+    "rejectClose": {
+      "title": "Reject close request?",
+      "description": "The lead will return to In progress.",
+      "reasonLabel": "Reason",
+      "reasonPlaceholder": "Optional rejection reason…",
+      "confirm": "Reject close",
+      "cancel": "Cancel"
+    }
+  },
+  "mutations": {
+    "assignSuccessTitle": "Agent assigned",
+    "assignSuccessDescription": "The lead assignment was updated.",
+    "assignErrorTitle": "Could not assign agent",
+    "statusSuccessTitle": "Status updated",
+    "statusSuccessDescription": "The lead status was updated.",
+    "statusErrorTitle": "Could not update status",
+    "requestCloseSuccessTitle": "Close requested",
+    "requestCloseSuccessDescription": "An admin will review this close request.",
+    "requestCloseErrorTitle": "Could not request close",
+    "closeSuccessTitle": "Lead closed",
+    "closeSuccessDescription": "The lead was closed successfully.",
+    "closeErrorTitle": "Could not close lead",
+    "rejectCloseSuccessTitle": "Close rejected",
+    "rejectCloseSuccessDescription": "The lead is back in progress.",
+    "rejectCloseErrorTitle": "Could not reject close",
+    "noteSuccessTitle": "Note added",
+    "noteSuccessDescription": "Your internal note was saved.",
+    "noteErrorTitle": "Could not add note",
+    "messageSuccessTitle": "Reply sent",
+    "messageSuccessDescription": "Your message was sent.",
+    "messageErrorTitle": "Could not send reply"
+  }
+}

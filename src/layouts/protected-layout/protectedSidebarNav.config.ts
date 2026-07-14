@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   List,
   Search,
+  UsersRound,
   type LucideIcon,
 } from "lucide-react";
 import type { PermissionKey } from "@/src/lib/auth/permissions";
@@ -60,6 +61,12 @@ export const PROTECTED_SIDEBAR_NAV_SECTIONS: ProtectedSidebarNavSectionConfig[] 
           href: "/manage-listings",
           icon: List,
           permission: "MANAGE_LISTINGS",
+        },
+        {
+          labelKey: "leads",
+          href: "/leads",
+          icon: UsersRound,
+          permission: "LEADS",
         },
         {
           labelKey: "draftListings",

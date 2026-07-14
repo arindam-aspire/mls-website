@@ -218,6 +218,8 @@ All paths below are **without** locale; prepend `/<locale>` (e.g. `/en/my-listin
 | `/recently-viewed` | `(main)/recently-viewed/page.tsx` | `RecentlyViewedScreen` — guarded by `useAuthorize("RECENTLY_VIEWED")` |
 | `/owners` | `(main)/owners/page.tsx` | `OwnersScreen` — guarded by `useAuthorize("OWNERS")` (admin only); list from `GET /agency/{agency_id}/owners` |
 | `/agents` | `(main)/agents/page.tsx` | `AgentsScreen` (placeholder) — guarded by `useAuthorize("AGENTS")` (admin only) |
+| `/leads` | `(main)/leads/page.tsx` | `LeadsScreen` — guarded by `useAuthorize("LEADS")` (super_admin, agency admin, agent) |
+| `/leads/[leadId]` | `(main)/leads/[leadId]/page.tsx` | `LeadDetailsScreen` — conversation / notes / timeline / close tabs |
 | `/property-list` | `(property)/property-list/page.tsx` | `PropertyListScreen` (`PropertyCardList`) |
 | `/propert-details/:id` | `(property)/propert-details/[id]/page.tsx` | `PropertyDetailsScreen` (`PropertyView`) |
 | `/inquiries` | `(property)/inquiries/page.tsx` | `InquiriesScreen` (Coming Soon) |
@@ -494,6 +496,7 @@ Session persistence helpers: `src/features/auth/store/authModalStorage.ts`.
 | --- | --- |
 | `PROFILE` | agency, agent, owner, user |
 | `DASHBOARD` | agency, agent, owner |
+| `LEADS` | super_admin, agency, agent |
 
 **`useAuthorize` behavior:**
 
@@ -744,7 +747,7 @@ Enforced via `.cursor/rules/`:
 Exports `proxy` (Next.js 16 middleware entry). Flow:
 
 1. Run **next-intl** middleware (`createMiddleware(routing)`).
-2. Strip locale prefix from pathname and check **protected routes**: `/dashboard`, `/manage-listings`, `/draft-listings`, `/my-profile`, `/agency-settings`, `/notification-settings`, `/my-listings`, `/property-create`, `/property-update`, `/saved-searches`, `/favourites`, `/recently-viewed`, `/owners`, `/agents`.
+2. Strip locale prefix from pathname and check **protected routes**: `/dashboard`, `/manage-listings`, `/draft-listings`, `/my-profile`, `/agency-settings`, `/notification-settings`, `/my-listings`, `/property-create`, `/property-update`, `/saved-searches`, `/favourites`, `/recently-viewed`, `/owners`, `/agents`, `/leads`.
 3. If protected and no `access_token` cookie → redirect to `/` (same origin).
 4. Otherwise return the i18n response.
 

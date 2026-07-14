@@ -16,6 +16,8 @@
   "propertyUpdate": "Update Property",
   "owners": "Owners",
   "agents": "Agents",
+  "leads": "Leads",
+  "leadDetails": "Lead Details",
   "agencySettings": "Agency Settings",
   "notificationSettings": "Notification Settings"
 }

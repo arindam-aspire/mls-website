@@ -16,12 +16,58 @@ function resolveSavedSearchId(notification: NotificationRecord): string | null {
   return null;
 }
 
+function resolveLeadId(notification: NotificationRecord): string | null {
+  const fromMetadata =
+    notification.data?.metadata?.lead_id?.trim() ||
+    notification.data?.metadata?.entity_id?.trim();
+  if (fromMetadata) {
+    return fromMetadata;
+  }
+
+  const fromEntityId = notification.data?.entity_id?.trim();
+  if (fromEntityId) {
+    return fromEntityId;
+  }
+
+  return null;
+}
+
+const LEAD_TYPE_KEY_PREFIXES = [
+  "lead_",
+  "LEAD_",
+] as const;
+
 export function resolveNotificationHref(notification: NotificationRecord): string {
   if (notification.eventType === NOTIFICATION_EVENT_TYPE.SAVED_SEARCH_CREATED) {
     const savedSearchId = resolveSavedSearchId(notification);
     if (savedSearchId) {
       return buildSavedSearchPropertyListHref(savedSearchId);
     }
+  }
+
+  const leadId = resolveLeadId(notification);
+  const typeKey = notification.typeKey ?? "";
+  const isLeadNotification =
+    LEAD_TYPE_KEY_PREFIXES.some((prefix) => typeKey.startsWith(prefix)) ||
+    typeKey.toUpperCase().startsWith("LEAD_");
+
+  if (isLeadNotification) {
+    if (leadId) {
+      if (
+        typeKey.toUpperCase().includes("MESSAGE") ||
+        typeKey.toUpperCase().includes("LEAD_MESSAGE")
+      ) {
+        return `/leads/${leadId}?tab=conversation`;
+      }
+      if (
+        typeKey.toUpperCase().includes("CLOSURE") ||
+        typeKey.toUpperCase().includes("CLOSE")
+      ) {
+        return `/leads/${leadId}?tab=close`;
+      }
+      return `/leads/${leadId}`;
+    }
+    return "/leads";
   }
 
   const redirectPath = notification.data?.metadata?.redirect_path?.trim();

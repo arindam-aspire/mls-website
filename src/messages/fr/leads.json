@@ -1,0 +1,212 @@
+{
+  "pageTitle": "Prospects",
+  "pageSubtitle": "Suivez les demandes, conversations et demandes de clôture de votre agence.",
+  "detailsPageTitle": "Détail du prospect",
+  "list": {
+    "tableTitle": "Prospects",
+    "searchPlaceholder": "Rechercher par numéro, client ou bien…",
+    "filters": {
+      "status": "Statut",
+      "statusAll": "Tous les statuts",
+      "agent": "Agent",
+      "agentAll": "Tous les agents",
+      "agentPlaceholder": "Filtrer par id d'agent…",
+      "dateFrom": "Du",
+      "dateTo": "Au",
+      "property": "Bien",
+      "propertyPlaceholder": "Id du bien…",
+      "clear": "Effacer les filtres"
+    },
+    "columns": {
+      "leadNo": "N° prospect",
+      "property": "Bien",
+      "customer": "Client",
+      "status": "Statut",
+      "assignedAgent": "Agent assigné",
+      "createdDate": "Date de création",
+      "actions": "Actions"
+    },
+    "viewDetails": "Voir les détails",
+    "noDataTitle": "Aucun prospect",
+    "noDataDescription": "Essayez d'ajuster la recherche ou les filtres.",
+    "fetchErrorTitle": "Impossible de charger les prospects",
+    "pagination": {
+      "previous": "Précédent",
+      "next": "Suivant",
+      "pageOf": "Page {page} sur {totalPages}"
+    }
+  },
+  "status": {
+    "NEW": "Nouveau",
+    "IN_PROGRESS": "En cours",
+    "REQUEST_FOR_CLOSE": "Clôture demandée",
+    "CLOSED": "Clos"
+  },
+  "source": {
+    "EMAIL_FORM": "Formulaire e-mail",
+    "PHONE": "Téléphone",
+    "WHATSAPP": "WhatsApp",
+    "MANUAL_ADMIN": "Manuel (admin)",
+    "AGENT_MANUAL": "Manuel (agent)",
+    "OFFLINE_MANUAL": "Hors ligne"
+  },
+  "tabs": {
+    "overview": "Aperçu",
+    "conversation": "Conversation",
+    "notes": "Notes internes",
+    "timeline": "Activité",
+    "close": "Demande de clôture"
+  },
+  "details": {
+    "backToList": "Retour aux prospects",
+    "customerInfo": "Infos client",
+    "propertyInfo": "Infos bien",
+    "inquiry": "Demande",
+    "name": "Nom",
+    "email": "E-mail",
+    "phone": "Téléphone",
+    "communicationMode": "Mode de communication",
+    "propertyTitle": "Bien",
+    "propertyId": "Id du bien",
+    "propertyHash": "Hash du bien",
+    "inquiryType": "Type de demande",
+    "source": "Source",
+    "message": "Message",
+    "leadNumber": "Numéro de prospect",
+    "status": "Statut",
+    "assignedAgent": "Agent assigné",
+    "createdAt": "Créé le",
+    "lastActivity": "Dernière activité",
+    "unassigned": "Non assigné",
+    "emptyValue": "—",
+    "fetchErrorTitle": "Impossible de charger le prospect",
+    "notFound": "Ce prospect est introuvable ou vous n'y avez pas accès."
+  },
+  "actions": {
+    "reply": "Répondre",
+    "addNote": "Ajouter une note",
+    "updateStatus": "Mettre à jour le statut",
+    "requestClose": "Demander la clôture",
+    "assign": "Assigner un agent",
+    "reassign": "Réassigner un agent",
+    "approveClose": "Approuver la clôture",
+    "rejectClose": "Rejeter la clôture",
+    "overrideStatus": "Forcer le statut",
+    "emailCustomer": "E-mail au client",
+    "callCustomer": "Appeler le client",
+    "whatsappCustomer": "WhatsApp au client"
+  },
+  "conversation": {
+    "title": "Conversation",
+    "emptyTitle": "Aucun message pour l'instant",
+    "emptyDescription": "Envoyez une réponse pour démarrer la conversation.",
+    "channel": "Canal",
+    "channelInApp": "In-app",
+    "channelEmail": "E-mail",
+    "channelSms": "SMS",
+    "listUnavailable": "L'historique apparaîtra lorsque l'endpoint de liste sera disponible. Vous pouvez déjà envoyer des réponses."
+  },
+  "notes": {
+    "title": "Notes internes",
+    "emptyTitle": "Aucune note pour l'instant",
+    "emptyDescription": "Ajoutez une note interne pour votre équipe.",
+    "listUnavailable": "L'historique apparaîtra lorsque l'endpoint de liste sera disponible. Vous pouvez déjà ajouter des notes."
+  },
+  "timeline": {
+    "title": "Chronologie d'activité",
+    "emptyTitle": "Aucune activité pour l'instant",
+    "emptyDescription": "L'activité apparaîtra au fil de l'avancement du prospect.",
+    "events": {
+      "created": "Prospect créé",
+      "assigned": "Agent assigné",
+      "requestClose": "Clôture demandée",
+      "closed": "Prospect clos",
+      "lastActivity": "Dernière activité"
+    }
+  },
+  "close": {
+    "title": "Demande de clôture",
+    "pendingDescription": "Un agent a demandé la clôture. Examinez puis approuvez ou rejetez.",
+    "notPendingDescription": "Aucune demande de clôture en attente.",
+    "requestCloseAt": "Demandé le",
+    "closedAt": "Clos le",
+    "reasonLabel": "Motif",
+    "reasonPlaceholder": "Motif facultatif…"
+  },
+  "modals": {
+    "reply": {
+      "title": "Répondre au prospect",
+      "description": "Envoyez un message lié à cette demande.",
+      "messageLabel": "Message",
+      "messagePlaceholder": "Rédigez votre réponse…",
+      "messageRequired": "Le message de réponse est obligatoire.",
+      "channelLabel": "Canal",
+      "submit": "Envoyer la réponse",
+      "cancel": "Annuler"
+    },
+    "note": {
+      "title": "Ajouter une note interne",
+      "description": "Les notes ne sont visibles que par l'équipe de l'agence.",
+      "noteLabel": "Note",
+      "notePlaceholder": "Rédigez une note interne…",
+      "noteRequired": "La note est obligatoire.",
+      "submit": "Enregistrer la note",
+      "cancel": "Annuler"
+    },
+    "status": {
+      "title": "Mettre à jour le statut",
+      "overrideTitle": "Forcer le statut",
+      "description": "Modifiez le statut du workflow pour ce prospect.",
+      "statusLabel": "Statut",
+      "reasonLabel": "Motif",
+      "reasonPlaceholder": "Motif facultatif…",
+      "submit": "Mettre à jour",
+      "cancel": "Annuler"
+    },
+    "requestClose": {
+      "title": "Demander la clôture ?",
+      "description": "Le prospect passera en attente d'approbation de clôture par un administrateur.",
+      "confirm": "Demander la clôture",
+      "cancel": "Annuler"
+    },
+    "approveClose": {
+      "title": "Approuver la clôture ?",
+      "description": "Cela clôturera définitivement le prospect.",
+      "reasonLabel": "Motif",
+      "reasonPlaceholder": "Motif de clôture facultatif…",
+      "confirm": "Approuver et clôturer",
+      "cancel": "Annuler"
+    },
+    "rejectClose": {
+      "title": "Rejeter la demande de clôture ?",
+      "description": "Le prospect repassera En cours.",
+      "reasonLabel": "Motif",
+      "reasonPlaceholder": "Motif de rejet facultatif…",
+      "confirm": "Rejeter la clôture",
+      "cancel": "Annuler"
+    }
+  },
+  "mutations": {
+    "assignSuccessTitle": "Agent assigné",
+    "assignSuccessDescription": "L'assignation du prospect a été mise à jour.",
+    "assignErrorTitle": "Impossible d'assigner l'agent",
+    "statusSuccessTitle": "Statut mis à jour",
+    "statusSuccessDescription": "Le statut du prospect a été mis à jour.",
+    "statusErrorTitle": "Impossible de mettre à jour le statut",
+    "requestCloseSuccessTitle": "Clôture demandée",
+    "requestCloseSuccessDescription": "Un administrateur examinera cette demande.",
+    "requestCloseErrorTitle": "Impossible de demander la clôture",
+    "closeSuccessTitle": "Prospect clos",
+    "closeSuccessDescription": "Le prospect a été clos avec succès.",
+    "closeErrorTitle": "Impossible de clôturer le prospect",
+    "rejectCloseSuccessTitle": "Clôture rejetée",
+    "rejectCloseSuccessDescription": "Le prospect est de nouveau en cours.",
+    "rejectCloseErrorTitle": "Impossible de rejeter la clôture",
+    "noteSuccessTitle": "Note ajoutée",
+    "noteSuccessDescription": "Votre note interne a été enregistrée.",
+    "noteErrorTitle": "Impossible d'ajouter la note",
+    "messageSuccessTitle": "Réponse envoyée",
+    "messageSuccessDescription": "Votre message a été envoyé.",
+    "messageErrorTitle": "Impossible d'envoyer la réponse"
+  }
+}
