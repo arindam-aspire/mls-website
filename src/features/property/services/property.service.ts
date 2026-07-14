@@ -49,7 +49,7 @@ export async function getPropertyList(
   return apiClient.request<PropertyListResponse>({
     endpoint: propertyEndpoints.PROPERTY_LIST(params),
     method: "GET",
-    auth: false,
+    auth: tokenStore.hasAuthCredentials(),
   });
 }
 

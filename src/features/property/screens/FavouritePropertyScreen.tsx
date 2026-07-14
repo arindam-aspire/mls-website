@@ -1,6 +1,6 @@
 "use client";
 
-import { UpcomingFeatureModal } from "@/src/components/common/UpcomingFeatureModal";
+import { ContactModal } from "@/src/features/contact/components/ContactModal";
 import { Button } from "@/src/components/ui/button";
 import { PropertyCardList } from "@abdoun/abdoun-library";
 import { cn } from "@/src/lib/cn";
@@ -24,7 +24,7 @@ export default function FavouritePropertyScreen() {
     onClickEmail,
     onClickCall,
     onClickWhatsApp,
-    upcomingFeatureModal,
+    contactModal,
   } = useFavouritePropertyList();
 
   const emptyState = useMemo(
@@ -48,10 +48,7 @@ export default function FavouritePropertyScreen() {
 
   return (
     <>
-      <UpcomingFeatureModal
-        open={upcomingFeatureModal.open}
-        onClose={upcomingFeatureModal.onClose}
-      />
+      <ContactModal contactModal={contactModal} />
 
       <div className="flex w-full min-w-0 flex-col gap-2 md:gap-4 lg:gap-6">
         <div className="min-w-0">
@@ -66,7 +63,7 @@ export default function FavouritePropertyScreen() {
           buttonSize={cardButtonSize}
           pagination={pagination}
           noDataFound={emptyState}
-          canViewAgents
+          canViewAgents={false}
           canViewOwners
           canViewBadges
           onClick={onClickProperty}

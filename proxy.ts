@@ -25,6 +25,7 @@ const PROTECTED_ROUTES = [
   "/recently-viewed",
   "/owners",
   "/agents",
+  "/leads",
   "/set-new-password",
 ];
 

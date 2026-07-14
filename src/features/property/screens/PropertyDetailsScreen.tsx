@@ -8,7 +8,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { ConfirmModal } from "@/src/components/common/ConfirmModal";
-import { UpcomingFeatureModal } from "@/src/components/common/UpcomingFeatureModal";
+import { ContactModal } from "@/src/features/contact/components/ContactModal";
 import { Button } from "@/src/components/ui/button";
 import type { ButtonColor, ButtonVariant } from "@/src/components/ui/button/types";
 import { useRouter } from "@/src/i18n/navigation";
@@ -145,6 +145,9 @@ export default function PropertyDetailsScreen({
     openOwnerWhatsApp,
     similarListings,
     isSimilarLoading,
+    onSimilarClickEmail,
+    onSimilarClickCall,
+    onSimilarClickWhatsApp,
     canViewRestrictedTabs,
     showOwnerDetails,
     showAgentDetails,
@@ -152,7 +155,7 @@ export default function PropertyDetailsScreen({
     workflowConfirmModal,
     rejectWorkflowModal,
     assignAgentModal,
-    upcomingFeatureModal,
+    contactModal,
   } = usePropertyDetails(propertyId);
 
   if (!isLoading && (isError || !propertyDetails)) {
@@ -169,10 +172,7 @@ export default function PropertyDetailsScreen({
 
   return (
     <div className="flex flex-col gap-4 sm:gap-6">
-      <UpcomingFeatureModal
-        open={upcomingFeatureModal.open}
-        onClose={upcomingFeatureModal.onClose}
-      />
+      <ContactModal contactModal={contactModal} />
 
       {workflowConfirmModal ? (
         <ConfirmModal
@@ -276,6 +276,9 @@ export default function PropertyDetailsScreen({
           router.push(`/propert-details/${item.id}`);
         }}
         onClickFavourite={toggleFavourite}
+        onClickEmail={onSimilarClickEmail}
+        onClickCall={onSimilarClickCall}
+        onClickWhatsApp={onSimilarClickWhatsApp}
       />
     </div>
   );

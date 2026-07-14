@@ -18,6 +18,8 @@ const PAGE_METADATA_KEYS = [
   "propertyUpdate",
   "owners",
   "agents",
+  "leads",
+  "leadDetails",
   "agencySettings",
   "notificationSettings",
 ] as const;

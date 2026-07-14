@@ -17,6 +17,7 @@ import {
   resolveRecentViewPropertyId,
 } from "../utils/resolveRecentViewPropertyId";
 import { usePropertyFavouriteToggle } from "./usePropertyFavouriteToggle";
+import { usePropertyContactModalActions } from "@/src/features/contact/hooks/usePropertyContactModalActions";
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_PAGE_SIZE = 10;
@@ -58,13 +59,14 @@ export function useRecentlyViewedScreen() {
     toggleFavourite,
   } = usePropertyFavouriteToggle();
 
+  const { contactModal, onClickEmail, onClickCall, onClickWhatsApp } =
+    usePropertyContactModalActions();
+
   // 4. Local state
   const [page, setPage] = useState(DEFAULT_PAGE);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [listings, setListings] = useState<PropertyListing[] | null>(null);
   const [paginationMeta, setPaginationMeta] = useState<PaginationMeta | undefined>();
-  const [isUpcomingFeatureModalOpen, setIsUpcomingFeatureModalOpen] =
-    useState(false);
   const [deletingRecentViewId, setDeletingRecentViewId] = useState<string | null>(
     null,
   );
@@ -159,14 +161,6 @@ export function useRecentlyViewedScreen() {
   const onBrowseProperties = useCallback(() => {
     router.push("/property-list");
   }, [router]);
-
-  const openUpcomingFeature = useCallback(() => {
-    setIsUpcomingFeatureModalOpen(true);
-  }, []);
-
-  const closeUpcomingFeature = useCallback(() => {
-    setIsUpcomingFeatureModalOpen(false);
-  }, []);
 
   const onClickProperty = useCallback(
     (item: PropertyListing) => {
@@ -307,18 +301,6 @@ export function useRecentlyViewedScreen() {
     ],
   );
 
-  const onClickEmail = useCallback(() => {
-    openUpcomingFeature();
-  }, [openUpcomingFeature]);
-
-  const onClickCall = useCallback(() => {
-    openUpcomingFeature();
-  }, [openUpcomingFeature]);
-
-  const onClickWhatsApp = useCallback(() => {
-    openUpcomingFeature();
-  }, [openUpcomingFeature]);
-
   // 9. Effects
   useEffect(() => {
     fetchRecentViews(page, pageSize);
@@ -345,9 +327,6 @@ export function useRecentlyViewedScreen() {
     onClickEmail,
     onClickCall,
     onClickWhatsApp,
-    upcomingFeatureModal: {
-      open: isUpcomingFeatureModalOpen,
-      onClose: closeUpcomingFeature,
-    },
+    contactModal,
   };
 }

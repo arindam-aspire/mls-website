@@ -1,0 +1,37 @@
+{
+  "emailTitle": "Correo",
+  "whatsappTitle": "WhatsApp",
+  "callTitle": "Llamada",
+  "toLabel": "Para",
+  "sentToLabel": "Enviado a",
+  "nameLabel": "Nombre",
+  "emailLabel": "Correo",
+  "phoneLabel": "Teléfono",
+  "phonePlaceholder": "7X XXX XXXX",
+  "phoneSearchPlaceholder": "Buscar país…",
+  "phoneEmptySearchLabel": "Sin resultados",
+  "messageLabel": "Mensaje",
+  "keepInformedLabel": "Manténganme informado sobre propiedades similares.",
+  "agencyNameLabel": "Agencia / Agente",
+  "phoneNumberLabel": "Número de teléfono",
+  "propertyLabel": "Propiedad",
+  "sendLabel": "Enviar",
+  "cancelLabel": "Cancelar",
+  "callConfirmTitle": "¿Iniciar llamada?",
+  "callConfirmDescription": "Se abrirá el marcador de tu dispositivo para llamar al destinatario.",
+  "callConfirmLabel": "Llamar",
+  "callCancelLabel": "Cancelar",
+  "defaultMessageTemplate": "Me gustaría consultar sobre su propiedad {propertyTitle} - #{propertyReference}. Por favor, contácteme a la mayor brevedad.",
+  "emailSubject": "Consulta sobre {propertyTitle} (#{propertyReference})",
+  "validation": {
+    "nameRequired": "El nombre es obligatorio.",
+    "emailRequired": "El correo es obligatorio.",
+    "emailInvalid": "Introduce un correo válido.",
+    "messageRequired": "El mensaje es obligatorio."
+  },
+  "errors": {
+    "sendErrorTitle": "No se puede contactar",
+    "missingRecipientEmail": "No hay correo del destinatario para este anuncio.",
+    "missingRecipientPhone": "No hay teléfono del destinatario para este anuncio."
+  }
+}

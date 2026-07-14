@@ -23,6 +23,8 @@ export const PERMISSIONS = {
   AGENCIES: [UserRole.SUPER_ADMIN],
   OWNERS: [UserRole.SUPER_ADMIN, UserRole.AGENCY],
   AGENTS: [UserRole.SUPER_ADMIN, UserRole.AGENCY],
+  /** Lead management (`/leads`) — agency admins, agents, and super admin. */
+  LEADS: [UserRole.SUPER_ADMIN, UserRole.AGENCY, UserRole.AGENT],
   /** Agency profile settings (`/agency-settings`). */
   AGENCY_SETTINGS: [UserRole.AGENCY],
   /** Notification preferences (`/notification-settings`). */

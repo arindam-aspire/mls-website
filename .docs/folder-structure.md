@@ -53,6 +53,10 @@ mls_website/
 │   │       │   │   └── page.md
 │   │       │   ├── agents/
 │   │       │   │   └── page.md
+│   │       │   ├── leads/
+│   │       │   │   ├── page.md
+│   │       │   │   └── [leadId]/
+│   │       │   │       └── page.md
 │   │       │   ├── (profile)/
 │   │       │   │   ├── my-profile/
 │   │       │   │   │   └── page.md
@@ -122,6 +126,16 @@ mls_website/
 │       │   │   └── mutations/
 │       │   │       ├── README.md
 │       │   │       └── landing.mutation.md
+│       │   ├── leads/
+│       │   │   ├── README.md
+│       │   │   ├── hooks/
+│       │   │   │   ├── useLeadDetailsScreen.md
+│       │   │   │   └── useLeadsScreen.md
+│       │   │   ├── screens/
+│       │   │   │   ├── LeadDetailsScreen.md
+│       │   │   │   └── LeadsScreen.md
+│       │   │   └── services/
+│       │   │       └── lead.service.md
 │       │   ├── loading/
 │       │   │   ├── README.md
 │       │   │   └── screens/
@@ -415,6 +429,10 @@ mls_website/
 │   │   │   │   └── page.tsx
 │   │   │   ├── agents/
 │   │   │   │   └── page.tsx
+│   │   │   ├── leads/
+│   │   │   │   ├── page.tsx
+│   │   │   │   └── [leadId]/
+│   │   │   │       └── page.tsx
 │   │   │   ├── (profile)/
 │   │   │   │   ├── my-profile/
 │   │   │   │   │   └── page.tsx
@@ -466,6 +484,7 @@ mls_website/
 │   │   └── endpoints/
 │   │       ├── agencyEndpoints.ts
 │   │       ├── agentEndpoints.ts
+│   │       ├── leadEndpoints.ts
 │   │       ├── authEndpoints.ts
 │   │       ├── index.ts
 │   │       ├── ownerEndpoints.ts
@@ -670,6 +689,42 @@ mls_website/
 │   │   │       └── user.types.ts
 │   │   ├── dashboard/
 │   │   │   └── screens/
+│   │   ├── contact/
+│   │   │   ├── components/
+│   │   │   │   └── ContactModal.tsx
+│   │   │   ├── hooks/
+│   │   │   │   ├── useContactModal.ts
+│   │   │   │   └── usePropertyContactModalActions.ts
+│   │   │   ├── mappers/
+│   │   │   │   ├── mapContactModalContext.ts
+│   │   │   │   └── mapLeadToContactContext.ts
+│   │   │   ├── types/
+│   │   │   │   └── contactModal.types.ts
+│   │   │   └── utils/
+│   │   │       └── contactMessage.utils.ts
+│   │   ├── leads/
+│   │   │   ├── components/
+│   │   │   │   ├── LeadListFilters.tsx
+│   │   │   │   ├── LeadListTable.tsx
+│   │   │   │   ├── LeadScreenSkeletons.tsx
+│   │   │   │   └── LeadStatusBadge.tsx
+│   │   │   ├── constants/
+│   │   │   │   ├── leadList.constants.ts
+│   │   │   │   └── leadStatus.constants.ts
+│   │   │   ├── hooks/
+│   │   │   │   ├── useLeadDetailsScreen.ts
+│   │   │   │   └── useLeadsScreen.ts
+│   │   │   ├── mutations/
+│   │   │   │   └── lead.mutation.ts
+│   │   │   ├── screens/
+│   │   │   │   ├── LeadDetailsScreen.tsx
+│   │   │   │   └── LeadsScreen.tsx
+│   │   │   ├── services/
+│   │   │   │   └── lead.service.ts
+│   │   │   ├── types/
+│   │   │   │   └── lead.types.ts
+│   │   │   └── utils/
+│   │   │       └── leadDisplay.utils.ts
 │   │   ├── loading/
 │   │   │   └── screens/
 │   │   │       └── index.tsx

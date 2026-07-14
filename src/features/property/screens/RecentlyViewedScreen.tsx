@@ -1,7 +1,7 @@
 "use client";
 
 import { ConfirmModal } from "@/src/components/common/ConfirmModal";
-import { UpcomingFeatureModal } from "@/src/components/common/UpcomingFeatureModal";
+import { ContactModal } from "@/src/features/contact/components/ContactModal";
 import { Button } from "@/src/components/ui/button";
 import { PropertyCardList } from "@abdoun/abdoun-library";
 import { useRecentlyViewedScreen } from "@/src/features/property/hooks/useRecentlyViewedScreen";
@@ -30,7 +30,7 @@ export default function RecentlyViewedScreen() {
     onClickEmail,
     onClickCall,
     onClickWhatsApp,
-    upcomingFeatureModal,
+    contactModal,
   } = useRecentlyViewedScreen();
 
   const emptyState = useMemo(
@@ -54,10 +54,7 @@ export default function RecentlyViewedScreen() {
 
   return (
     <>
-      <UpcomingFeatureModal
-        open={upcomingFeatureModal.open}
-        onClose={upcomingFeatureModal.onClose}
-      />
+      <ContactModal contactModal={contactModal} />
 
       <ConfirmModal
         open={deleteConfirmModal.open}
@@ -122,7 +119,7 @@ export default function RecentlyViewedScreen() {
           layoutVariant="grid"
           pagination={pagination}
           noDataFound={emptyState}
-          canViewAgents
+          canViewAgents={false}
           canViewOwners
           canViewBadges
           onClick={onClickProperty}

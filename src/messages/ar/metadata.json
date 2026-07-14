@@ -16,6 +16,8 @@
   "propertyUpdate": "تحديث العقار",
   "owners": "الملاك",
   "agents": "الوكلاء",
+  "leads": "العملاء المحتملون",
+  "leadDetails": "تفاصيل العميل المحتمل",
   "agencySettings": "إعدادات الوكالة",
   "notificationSettings": "إعدادات الإشعارات"
 }

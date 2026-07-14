@@ -1,0 +1,37 @@
+{
+  "emailTitle": "E-mail",
+  "whatsappTitle": "WhatsApp",
+  "callTitle": "Appel",
+  "toLabel": "À",
+  "sentToLabel": "Envoyé à",
+  "nameLabel": "Nom",
+  "emailLabel": "E-mail",
+  "phoneLabel": "Téléphone",
+  "phonePlaceholder": "7X XXX XXXX",
+  "phoneSearchPlaceholder": "Rechercher un pays…",
+  "phoneEmptySearchLabel": "Aucun résultat",
+  "messageLabel": "Message",
+  "keepInformedLabel": "Tenez-moi informé des biens similaires.",
+  "agencyNameLabel": "Agence / Agent",
+  "phoneNumberLabel": "Numéro de téléphone",
+  "propertyLabel": "Bien",
+  "sendLabel": "Envoyer",
+  "cancelLabel": "Annuler",
+  "callConfirmTitle": "Lancer l'appel ?",
+  "callConfirmDescription": "Cela ouvrira le composeur de votre appareil pour appeler le destinataire.",
+  "callConfirmLabel": "Appeler",
+  "callCancelLabel": "Annuler",
+  "defaultMessageTemplate": "Je souhaite me renseigner sur votre bien {propertyTitle} - #{propertyReference}. Merci de me contacter dès que possible.",
+  "emailSubject": "Demande concernant {propertyTitle} (#{propertyReference})",
+  "validation": {
+    "nameRequired": "Le nom est obligatoire.",
+    "emailRequired": "L'e-mail est obligatoire.",
+    "emailInvalid": "Saisissez une adresse e-mail valide.",
+    "messageRequired": "Le message est obligatoire."
+  },
+  "errors": {
+    "sendErrorTitle": "Contact impossible",
+    "missingRecipientEmail": "Aucune adresse e-mail destinataire pour cette annonce.",
+    "missingRecipientPhone": "Aucun numéro de téléphone destinataire pour cette annonce."
+  }
+}

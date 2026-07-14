@@ -27,6 +27,42 @@ function openLogin(): void {
   useAuthStore.getState().openAuth(AUTH_VIEW.chooseAccount);
 }
 
+type ListingAgentLike = {
+  id?: number | string | null;
+  name?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  whatsapp?: string | null;
+} | null | undefined;
+
+/** True when the listing carries an agent object with identity or contact fields. */
+export function listingHasContactAgent(agent: ListingAgentLike): boolean {
+  if (!agent) return false;
+
+  return Boolean(
+    agent.id != null ||
+      agent.name?.trim() ||
+      agent.email?.trim() ||
+      agent.phone?.trim() ||
+      agent.whatsapp?.trim(),
+  );
+}
+
+/**
+ * Card Email / Call / WhatsApp: without an agent, open choose-account login.
+ * Returns false when login was opened (caller should not open ContactModal).
+ */
+export function ensureListingAgentContactAllowed(listing: {
+  agent?: ListingAgentLike;
+}): boolean {
+  if (listingHasContactAgent(listing.agent)) {
+    return true;
+  }
+
+  openLogin();
+  return false;
+}
+
 function resolveContactAction(
   contact: ContactPerson | undefined,
   type: PropertyAgentContactAction["type"],
@@ -64,6 +100,32 @@ function openAgentContactAction(
   }
 
   openContact(contact);
+}
+
+/** Returns false when auth modal was opened instead (no agent, or guest + gated action). */
+export function ensurePropertyAgentContactAllowed(
+  propertyDetails: PropertyDetails | null | undefined,
+  type: PropertyAgentContactAction["type"],
+): boolean {
+  const contact = resolvePropertyDetailsAgent(propertyDetails);
+  const hasAgent =
+    contact != null ||
+    Boolean(
+      propertyDetails?.agent_name?.trim() ||
+        propertyDetails?.agent_email?.trim() ||
+        propertyDetails?.agent_phone?.trim(),
+    );
+
+  if (!hasAgent) {
+    openLogin();
+    return false;
+  }
+
+  if (shouldOpenLoginForAgentContactAction(contact, type)) {
+    openLogin();
+    return false;
+  }
+  return true;
 }
 
 function normalizePhoneForTel(phone: string): string {
@@ -106,13 +168,40 @@ function openPhoneNumber(phone: string) {
   window.location.href = `tel:${normalized}`;
 }
 
-function openWhatsAppNumber(phone: string) {
+function openWhatsAppNumber(phone: string, text?: string) {
   const normalized = normalizePhoneForWhatsApp(phone);
   if (!normalized) {
     return;
   }
 
-  window.open(`https://wa.me/${normalized}`, "_blank", "noopener,noreferrer");
+  const url = text?.trim()
+    ? `https://wa.me/${normalized}?text=${encodeURIComponent(text.trim())}`
+    : `https://wa.me/${normalized}`;
+
+  window.open(url, "_blank", "noopener,noreferrer");
+}
+
+export function launchEmailTo(email: string, subject?: string, body?: string) {
+  const trimmed = email.trim();
+  if (!trimmed) return;
+
+  if (subject || body) {
+    const search = new URLSearchParams();
+    if (subject) search.set("subject", subject);
+    if (body) search.set("body", body);
+    window.location.href = `mailto:${trimmed}?${search.toString()}`;
+    return;
+  }
+
+  openEmailAddress(trimmed);
+}
+
+export function launchPhoneCall(phone: string) {
+  openPhoneNumber(phone);
+}
+
+export function launchWhatsAppChat(phone: string, text?: string) {
+  openWhatsAppNumber(phone, text);
 }
 
 function openContactEmail(contact: ContactPerson | undefined) {

@@ -32,8 +32,8 @@ Custom hook for the property list flow. Owns URL param sync, fetch mutation, too
 
 # State Management
 
-- **Zustand:** `propertyListParams`, `propertyListings`; `user` from auth store
-- **Local:** `layoutVariant`, save-search modal state, upcoming-feature modal
+- **Zustand:** `propertyListParams`, `propertyListings`; `user` / `isLoadingUser` from auth store (wait for `/auth/me`, then refetch list for agent/owner)
+- **Local:** `layoutVariant`, save-search modal state, `listAuthKeyRef` for auth-transition refetch
 - **React Query:** list mutation; favourites via `usePropertyFavouriteToggle`; saved search detail for modal initial name
 - **Filters:** `usePropertySearchFilters` (drafts, taxonomy, handlers)
 
@@ -87,11 +87,12 @@ _N/A — hook only._
 2. If `savedSearchId` only (no `category`/`status`), fetch saved search and `router.replace` with `query_string` + `savedSearchId`; skip property fetch until hydrated.
 3. `usePropertySearchFilters({ filterParams: listParams, updateFilterParams: updateSearchParams, onResetSearch, onSaveSearch, savedSearchId })` → `filters`.
 4. `resolvePropertyListRequestParams`: if filters ≠ saved search record, omit `savedSearchId` from the property list API call only (URL unchanged).
-5. `useEffect` → `fetchProperties` when not hydrating.
-6. When `user` is set, `useGetAllFavorites` loads the full favourites list.
-7. Mutation success writes items + pagination meta to store.
-8. `listings` memo applies favourite flags from the lookup before render.
-9. Screen spreads `filters` into `PropertyListFilters`.
+5. `useEffect` → `fetchProperties` when not hydrating (optional Bearer when `tokenStore.hasAuthCredentials()`).
+6. After `AuthProvider` `GET /auth/me` settles (token + `user`), refetch `GET /properties` so agent / owner / contact actions hydrate. Same refetch on login/logout while staying on the list page.
+7. When `user` is set, `useGetAllFavorites` loads the full favourites list.
+8. Mutation success writes items + pagination meta to store.
+9. `listings` memo applies favourite flags from the lookup before render.
+10. Screen spreads `filters` into `PropertyListFilters`.
 
 # Dependencies
 
@@ -106,3 +107,4 @@ _N/A — hook only._
 - Favourite hearts reflect saved favourites when signed in; heart toggle calls add/remove favourite APIs (guests see auth modal).
 - Sort is synced via URL `sort` query param and sent to the API; changing sort resets `page` to `1`.
 - **`onResetSearch`** restores default list params but keeps URL **`similar_to`** when set.
+- List auth refetch keys off `user` / `isLoadingUser` from the auth store (me is owned by `AuthProvider`, not duplicated in this hook).

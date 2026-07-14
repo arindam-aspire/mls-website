@@ -16,6 +16,8 @@
   "propertyUpdate": "Modifier le bien",
   "owners": "Propriétaires",
   "agents": "Agents",
+  "leads": "Prospects",
+  "leadDetails": "Détail du prospect",
   "agencySettings": "Paramètres de l'agence",
   "notificationSettings": "Paramètres de notification"
 }

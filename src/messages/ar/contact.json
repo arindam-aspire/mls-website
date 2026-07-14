@@ -1,0 +1,37 @@
+{
+  "emailTitle": "البريد الإلكتروني",
+  "whatsappTitle": "واتساب",
+  "callTitle": "اتصال",
+  "toLabel": "إلى",
+  "sentToLabel": "يُرسل إلى",
+  "nameLabel": "الاسم",
+  "emailLabel": "البريد الإلكتروني",
+  "phoneLabel": "الهاتف",
+  "phonePlaceholder": "7X XXX XXXX",
+  "phoneSearchPlaceholder": "ابحث عن الدولة…",
+  "phoneEmptySearchLabel": "لا توجد نتائج",
+  "messageLabel": "الرسالة",
+  "keepInformedLabel": "أبقني على اطلاع بالعقارات المشابهة.",
+  "agencyNameLabel": "الوكالة / الوكيل",
+  "phoneNumberLabel": "رقم الهاتف",
+  "propertyLabel": "العقار",
+  "sendLabel": "إرسال",
+  "cancelLabel": "إلغاء",
+  "callConfirmTitle": "بدء الاتصال؟",
+  "callConfirmDescription": "سيُفتح تطبيق الاتصال على جهازك للاتصال بالمستلم.",
+  "callConfirmLabel": "اتصال",
+  "callCancelLabel": "إلغاء",
+  "defaultMessageTemplate": "أود الاستفسار عن عقاركم {propertyTitle} - #{propertyReference}. يرجى التواصل معي في أقرب وقت ممكن.",
+  "emailSubject": "استفسار عن {propertyTitle} (#{propertyReference})",
+  "validation": {
+    "nameRequired": "الاسم مطلوب.",
+    "emailRequired": "البريد الإلكتروني مطلوب.",
+    "emailInvalid": "أدخل بريداً إلكترونياً صالحاً.",
+    "messageRequired": "الرسالة مطلوبة."
+  },
+  "errors": {
+    "sendErrorTitle": "تعذر التواصل",
+    "missingRecipientEmail": "لا يتوفر بريد للمستلم لهذا الإعلان.",
+    "missingRecipientPhone": "لا يتوفر رقم هاتف للمستلم لهذا الإعلان."
+  }
+}
