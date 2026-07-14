@@ -10,7 +10,7 @@ Presigned upload helpers for property create (owner documents, media images, pro
 - `uploadOwnerDocument` — `context: "owner_document"`.
 - `uploadPropertyMediaImage` — `context: "property_media_image"` (`media_files`).
 - `uploadPropertyDocument` — `context: "property_document"` (`documents`).
-- Each helper presigns, `PUT`s bytes to `upload_url`, returns stable public URI via `resolveUploadedFileUrl`.
+- Each helper presigns, `POST`s bytes to `upload_url`, returns a readable URI via `resolveUploadedFileUrl` (prefers `signed_read_url`, then legacy `file_url`).
 
 # Exports
 
@@ -47,7 +47,7 @@ Property media (`media_files` / `documents`):
 }
 ```
 
-Response `data.upload_url` → **PUT** file (no `apiClient`). Prefer `data.file_url` for the stored URI when present.
+Response `data.upload_url` → **POST** file (no `apiClient`). Prefer `data.signed_read_url` for preview; fall back to `data.file_url` / stripped upload URL. Persist `object_key` when the feature needs a stable file reference.
 
 # Dependencies
 

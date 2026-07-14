@@ -20,6 +20,13 @@ function mapAgentListStatus(status: string): AgentStatus {
   const mapped = mapAgentApiStatus(status);
   const overrideKey = AGENT_STATUS_KEY_OVERRIDES[normalized];
 
+  if (normalized === "PENDING_PASSWORD") {
+    return {
+      key: "pending",
+      label: mapped.label,
+    };
+  }
+
   if (overrideKey) {
     return {
       key: overrideKey,

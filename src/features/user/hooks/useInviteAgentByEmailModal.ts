@@ -1,14 +1,23 @@
 "use client";
 
+import { formatPhoneNumberE164 } from "@/src/features/profile/utils/formatPhoneNumberE164";
+import { getPhoneInputCountryByCode } from "@/src/components/ui/phone-input/countries";
+import { useToast } from "@/src/hooks/useToast";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useToast } from "@/src/hooks/useToast";
 import { useInviteAgentByEmail } from "../mutations/agent.mutation";
 import type { AgentInviteResult } from "../types/agent.types";
-import { validateInviteEmailValue } from "../utils/validateOnboardAgentForms";
+import {
+  mapAgentInviteMutationFieldErrors,
+  resolveAgentApiErrorMessage,
+} from "../utils/agentOnboardingErrors.utils";
+import { validateInviteContactValue } from "../utils/validateOnboardAgentForms";
+import type { InviteAgentContactMethod } from "../components/InviteAgentContactForm";
 
 type InviteFormErrors = {
   email?: string;
+  phone?: string;
+  contact?: string;
 };
 
 const EMPTY_INVITE_FORM_ERRORS: InviteFormErrors = {};
@@ -16,12 +25,16 @@ const EMPTY_INVITE_FORM_ERRORS: InviteFormErrors = {};
 export function useInviteAgentByEmailModal() {
   const t = useTranslations("user.agents.inviteByEmailModal");
   const tAuth = useTranslations("auth");
+  const tErrors = useTranslations("user.agents.errors");
   const toast = useToast();
   const { mutateAsync: inviteAgent, reset: resetInviteMutation, isPending: isGenerating } =
     useInviteAgentByEmail();
 
   const [isOpen, setIsOpen] = useState(false);
+  const [contactMethod, setContactMethod] = useState<InviteAgentContactMethod>("email");
   const [email, setEmail] = useState("");
+  const [phoneCountryCode, setPhoneCountryCode] = useState("JO");
+  const [phoneNationalNumber, setPhoneNationalNumber] = useState("");
   const [errors, setErrors] = useState<InviteFormErrors>(EMPTY_INVITE_FORM_ERRORS);
   const [inviteResult, setInviteResult] = useState<AgentInviteResult | null>(null);
 
@@ -56,6 +69,18 @@ export function useInviteAgentByEmailModal() {
     [tAuth],
   );
 
+  const onContactMethodChange = useCallback(
+    (method: InviteAgentContactMethod) => {
+      if (hasGeneratedInvite) {
+        return;
+      }
+
+      setContactMethod(method);
+      setErrors(EMPTY_INVITE_FORM_ERRORS);
+    },
+    [hasGeneratedInvite],
+  );
+
   const onEmailChange = useCallback(
     (value: string) => {
       if (hasGeneratedInvite) {
@@ -68,36 +93,112 @@ export function useInviteAgentByEmailModal() {
     [hasGeneratedInvite],
   );
 
+  const onPhoneCountryChange = useCallback(
+    (value: string) => {
+      if (hasGeneratedInvite) {
+        return;
+      }
+
+      setPhoneCountryCode(value);
+      setErrors(EMPTY_INVITE_FORM_ERRORS);
+    },
+    [hasGeneratedInvite],
+  );
+
+  const onPhoneNationalNumberChange = useCallback(
+    (value: string) => {
+      if (hasGeneratedInvite) {
+        return;
+      }
+
+      setPhoneNationalNumber(value);
+      setErrors(EMPTY_INVITE_FORM_ERRORS);
+    },
+    [hasGeneratedInvite],
+  );
+
   const onGenerateInvite = useCallback(async () => {
     if (isGenerating || hasGeneratedInvite) {
       return;
     }
 
-    const emailError = validateInviteEmailValue(email);
+    const country = getPhoneInputCountryByCode(phoneCountryCode);
+    const e164Phone = country
+      ? formatPhoneNumberE164(country.dialCode, phoneNationalNumber)
+      : "";
 
-    if (emailError) {
-      setErrors({
-        email: resolveEmailErrorMessage(emailError),
-      });
+    const contactError = validateInviteContactValue({
+      contactMethod,
+      email,
+      phoneNationalNumber,
+      e164Phone,
+    });
+
+    if (contactError) {
+      if (contactMethod === "email") {
+        setErrors({
+          email: resolveEmailErrorMessage(contactError),
+        });
+      } else {
+        setErrors({
+          phone:
+            contactError === "required"
+              ? tAuth("signUpPhoneRequired")
+              : tAuth("signUpPhoneInvalid"),
+        });
+      }
       return;
     }
 
     setErrors(EMPTY_INVITE_FORM_ERRORS);
 
     try {
-      const result = await inviteAgent({
-        email: email.trim(),
-      });
+      const result = await inviteAgent(
+        contactMethod === "email"
+          ? { email: email.trim() }
+          : { phone: e164Phone },
+      );
       setInviteResult(result);
-    } catch {
-      // Error toast handled in mutation.
+    } catch (error) {
+      if (error && typeof error === "object" && "message" in error) {
+        const fieldErrors = mapAgentInviteMutationFieldErrors(
+          error as Parameters<typeof mapAgentInviteMutationFieldErrors>[0],
+          {
+            duplicateEmail: tErrors("duplicateEmail"),
+            duplicatePhone: tErrors("duplicatePhone"),
+          },
+        );
+
+        if (Object.keys(fieldErrors).length > 0) {
+          setErrors(fieldErrors);
+          return;
+        }
+
+        toast.error(t("errorTitle"), {
+          description: resolveAgentApiErrorMessage(error as Error, {
+            duplicateEmail: tErrors("duplicateEmail"),
+            duplicatePhone: tErrors("duplicatePhone"),
+            invalidInvitation: tErrors("invalidInvitation"),
+            expiredInvitation: tErrors("expiredInvitation"),
+            validationError: tErrors("validationError"),
+            generic: tErrors("generic"),
+          }),
+        });
+      }
     }
   }, [
+    contactMethod,
     email,
     hasGeneratedInvite,
     inviteAgent,
     isGenerating,
+    phoneCountryCode,
+    phoneNationalNumber,
     resolveEmailErrorMessage,
+    t,
+    tAuth,
+    tErrors,
+    toast,
   ]);
 
   const onCopyLink = useCallback(async () => {
@@ -128,10 +229,11 @@ export function useInviteAgentByEmailModal() {
     const body = encodeURIComponent(
       t("generated.emailBody", { link: inviteResult.invite.inviteLink }),
     );
-    const mailtoUrl = `mailto:${encodeURIComponent(inviteResult.invite.email)}?subject=${subject}&body=${body}`;
+    const mailtoTarget = inviteResult.invite.email || email.trim();
+    const mailtoUrl = `mailto:${encodeURIComponent(mailtoTarget)}?subject=${subject}&body=${body}`;
 
     window.location.href = mailtoUrl;
-  }, [inviteResult, t]);
+  }, [email, inviteResult, t]);
 
   const onPrimaryAction = useCallback(() => {
     if (hasGeneratedInvite) {
@@ -144,7 +246,10 @@ export function useInviteAgentByEmailModal() {
 
   useEffect(() => {
     if (wasOpenRef.current && !isOpen) {
+      setContactMethod("email");
       setEmail("");
+      setPhoneCountryCode("JO");
+      setPhoneNationalNumber("");
       setErrors(EMPTY_INVITE_FORM_ERRORS);
       setInviteResult(null);
       resetInviteMutation();
@@ -154,8 +259,8 @@ export function useInviteAgentByEmailModal() {
   }, [isOpen, resetInviteMutation]);
 
   const generatedMessage = hasGeneratedInvite
-    ? t("generated.descriptionWithEmail", {
-        email: inviteResult?.invite.email ?? email.trim(),
+    ? t("generated.descriptionWithContact", {
+        contact: inviteResult?.invite.email || email.trim() || phoneNationalNumber.trim(),
       })
     : undefined;
 
@@ -178,12 +283,26 @@ export function useInviteAgentByEmailModal() {
     hasGeneratedInvite,
     onPrimaryAction,
     content: {
+      contactMethod,
       email,
+      phoneCountryCode,
+      phoneNationalNumber,
+      contactMethodEmailLabel: t("contactMethodEmail"),
+      contactMethodPhoneLabel: t("contactMethodPhone"),
       emailLabel: t("emailLabel"),
       emailPlaceholder: t("emailPlaceholder"),
+      phoneLabel: t("phoneLabel"),
+      phonePlaceholder: tAuth("signUpPhonePlaceholder"),
+      phoneSearchPlaceholder: tAuth("signUpPhoneSearchPlaceholder"),
+      phoneEmptySearchLabel: tAuth("signUpPhoneNoMatches"),
       emailError: errors.email,
-      isEmailDisabled: isGenerating || hasGeneratedInvite,
+      phoneError: errors.phone,
+      contactError: errors.contact,
+      isContactDisabled: isGenerating || hasGeneratedInvite,
+      onContactMethodChange,
       onEmailChange,
+      onPhoneCountryChange,
+      onPhoneNationalNumberChange,
       isGenerating,
       generatingMessage: t("generating"),
       generatingHint: t("generatingHint"),

@@ -1,3 +1,4 @@
+import type { AgencyCurrency } from "@/src/features/profile/constants/agencyPreferences";
 import { PROPERTY_DRAFT_SUBMISSION_SAVE_ACTION } from "@/src/features/property/constants/propertyCreate.constants";
 import type {
   PropertyDraftSubmissionCurrency,
@@ -171,6 +172,21 @@ function mapSelectedAmenitiesToFeatureIds(
   return featureIds;
 }
 
+const PROPERTY_DRAFT_SUBMISSION_DEFAULT_CURRENCY: PropertyDraftSubmissionCurrency = "JOD";
+
+function resolvePropertyDraftSubmissionCurrency(
+  currency?: PropertyDraftSubmissionCurrency,
+): PropertyDraftSubmissionCurrency {
+  return currency ?? PROPERTY_DRAFT_SUBMISSION_DEFAULT_CURRENCY;
+}
+
+/** Maps agency display currency to draft-submission pricing (API currently accepts JOD only). */
+export function toPropertyDraftSubmissionCurrency(
+  currency?: AgencyCurrency,
+): PropertyDraftSubmissionCurrency {
+  return currency === "JOD" ? "JOD" : PROPERTY_DRAFT_SUBMISSION_DEFAULT_CURRENCY;
+}
+
 export type BuildPropertyDraftSubmissionPayloadOptions = {
   /** When true, all review flags are sent as accepted (submit path after library validation). */
   forSubmit?: boolean;
@@ -282,7 +298,7 @@ export function buildPropertyDraftSubmissionPayload(
       price: parsePrice(pricing.price),
       service_charge: parsePrice(pricing.service_charge),
       maintenance_fee: parsePrice(pricing.maintenance_fee),
-      currency: options?.currency ?? "JOD",
+      currency: resolvePropertyDraftSubmissionCurrency(options?.currency),
     };
   }
 

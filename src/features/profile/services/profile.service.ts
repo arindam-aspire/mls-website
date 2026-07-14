@@ -136,7 +136,10 @@ export async function uploadOfflineAgencyLegalDocument(file: File): Promise<stri
     await putFileToPresignedUrl(uploadUrl, file, contentType);
   }
 
-  return resolveUploadedFileUrl(uploadUrl, response.data?.file_url);
+  return resolveUploadedFileUrl(uploadUrl, {
+    signedReadUrl: response.data?.signed_read_url,
+    fileUrl: response.data?.file_url,
+  });
 }
 
 export async function createAgencyInvitation(

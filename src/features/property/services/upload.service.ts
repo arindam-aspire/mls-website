@@ -41,7 +41,10 @@ async function uploadWithPresignedUrl(
     await putFileToPresignedUrl(uploadUrl, file, contentType);
   }
 
-  return resolveUploadedFileUrl(uploadUrl, presignResponse.data?.file_url);
+  return resolveUploadedFileUrl(uploadUrl, {
+    signedReadUrl: presignResponse.data?.signed_read_url,
+    fileUrl: presignResponse.data?.file_url,
+  });
 }
 
 async function uploadSubmissionFile(

@@ -6,10 +6,13 @@ export type UploadPresignedUrlSubmissionContext =
 
 export type UploadPresignedUrlAgencyContext = "agency_legal_document";
 
+export type UploadPresignedUrlAgentContext = "agent_identity_document";
+
 export type UploadPresignedUrlContext =
   | UploadPresignedUrlOwnerContext
   | UploadPresignedUrlSubmissionContext
-  | UploadPresignedUrlAgencyContext;
+  | UploadPresignedUrlAgencyContext
+  | UploadPresignedUrlAgentContext;
 
 type UploadPresignedUrlFileFields = {
   file_name: string;
@@ -32,13 +35,27 @@ export type UploadPresignedUrlAgencyRequest = UploadPresignedUrlFileFields & {
   context: UploadPresignedUrlAgencyContext;
 };
 
+export type UploadPresignedUrlAgentRequest = UploadPresignedUrlFileFields & {
+  context: UploadPresignedUrlAgentContext;
+  invitation_token?: string;
+};
+
 export type UploadPresignedUrlRequest =
   | UploadPresignedUrlOwnerRequest
   | UploadPresignedUrlSubmissionRequest
-  | UploadPresignedUrlAgencyRequest;
+  | UploadPresignedUrlAgencyRequest
+  | UploadPresignedUrlAgentRequest;
 
 export type UploadPresignedUrlData = {
   upload_url: string;
+  /** S3 object key / stable file reference for persistence. */
+  object_key?: string;
+  /** Time-limited signed URL for preview/download (preferred over public URLs). */
+  signed_read_url?: string;
+  /**
+   * Legacy public/stable URL. Prefer `signed_read_url` when present.
+   * Kept for backward compatibility with older API responses.
+   */
   file_url?: string;
 };
 

@@ -38,7 +38,9 @@ export const agentEndpoints = {
   INVITE: "/agents/invite",
   VALIDATE_INVITATION: (token: string) =>
     `/agents/invitations/validate?token=${encodeURIComponent(token)}`,
+  SUBMIT_INVITATION: "/agents/invitations/submit",
   ACCEPT_INVITATION: "/agents/invitations/accept",
+  PASSWORD_SETUP: "/agents/password/setup",
   MANUAL_ONBOARD: "/agents/manual-onboard",
   RESEND_INVITATION: (agentId: string) => `/agents/${agentId}/resend-invitation`,
   DELETE: (agentId: string) => `/agents/${agentId}`,

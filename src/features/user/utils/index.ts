@@ -7,7 +7,7 @@ export { filterAgentsByStatus } from "./filterAgentsByStatus";
 export { mapAgentListStatusFilterToApiStatus } from "./mapAgentListStatusFilterToApiStatus";
 export { mapOwnerListStatusFilterToApiStatus } from "./mapOwnerListStatusFilterToApiStatus";
 export { mapAgentSummaryToKpiMetrics } from "./mapAgentSummaryToKpiMetrics";
-export { parseAgentInviteLink } from "./parseAgentInviteLink";
+export { parseAgentInviteLink, resolveAgentInviteLinkFromPayload } from "./parseAgentInviteLink";
 export { formatManualOnboardServiceArea } from "./formatManualOnboardServiceArea";
 export {
   validateFullNameValue,

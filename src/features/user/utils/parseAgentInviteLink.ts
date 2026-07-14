@@ -35,3 +35,35 @@ export function parseAgentInviteLink(rawLink: string): string {
 
   return `${window.location.origin}${localizedPath}`;
 }
+
+type AgentInviteLinkSource = {
+  inviteLink?: string | null;
+  invitation_url?: string | null;
+  invitationUrl?: string | null;
+  invite_link?: string | null;
+};
+
+/**
+ * Resolve the invitation URL from invite/resend API payloads.
+ * Prefers `invitation_url`, then camelCase / snake_case `inviteLink` aliases.
+ */
+export function resolveAgentInviteLinkFromPayload(
+  data: AgentInviteLinkSource | null | undefined,
+): string {
+  if (!data) {
+    return "";
+  }
+
+  const raw =
+    data.invitation_url ??
+    data.invitationUrl ??
+    data.inviteLink ??
+    data.invite_link ??
+    "";
+
+  if (!raw.trim()) {
+    return "";
+  }
+
+  return parseAgentInviteLink(raw);
+}

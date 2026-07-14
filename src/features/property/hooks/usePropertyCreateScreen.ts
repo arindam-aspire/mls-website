@@ -45,6 +45,7 @@ import {
   buildPropertyDraftSubmissionUpdateRequestBody,
   buildPropertySubmissionDirectSubmitRequestBody,
   mapPropertyDraftSubmissionToPropertyFormValues,
+  toPropertyDraftSubmissionCurrency,
 } from "@/src/features/property/mappers/propertyDraftSubmission.mapper";
 import {
   mapFeatureCatalogForPropertyForm,
@@ -434,7 +435,7 @@ export function usePropertyCreateScreen() {
     };
     const submitPayloadOptions = {
       forSubmit: true as const,
-      currency: pricingCurrency,
+      currency: toPropertyDraftSubmissionCurrency(pricingCurrency),
     };
     const agencyId = selectedAgencyId ?? searchParams.get(PROPERTY_CREATE_AGENCY_ID_PARAM);
     const listingsPath = resolveListingsMenuPath(user) ?? "/my-listings";
@@ -548,7 +549,7 @@ export function usePropertyCreateScreen() {
                 featuresAndAmenities,
                 currentStep,
                 lastCompletedStep,
-                { agencyId, currency: pricingCurrency },
+                { agencyId, currency: toPropertyDraftSubmissionCurrency(pricingCurrency) },
               ),
             })
           : await saveDraftSubmission(
@@ -557,7 +558,7 @@ export function usePropertyCreateScreen() {
                 featuresAndAmenities,
                 currentStep,
                 lastCompletedStep,
-                { agencyId, currency: pricingCurrency },
+                { agencyId, currency: toPropertyDraftSubmissionCurrency(pricingCurrency) },
               ),
             );
 

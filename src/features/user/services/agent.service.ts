@@ -14,8 +14,12 @@ import type {
   AgentInvitationAcceptResponse,
   AgentInvitationPreview,
   AgentInvitationPreviewResponse,
+  AgentInvitationSubmitRequest,
+  AgentInvitationSubmitResponse,
   AgentListParams,
   AgentListResponse,
+  AgentPasswordSetupRequest,
+  AgentPasswordSetupResponse,
   AgentResendInvitationResponse,
   AgentResendInvitationResult,
   AgentSummaryData,
@@ -27,7 +31,7 @@ import type {
   ManualOnboardAgentResult,
   NormalizedAgentListResponse,
 } from "../types/agent.types";
-import { parseAgentInviteLink } from "../utils/parseAgentInviteLink";
+import { parseAgentInviteLink, resolveAgentInviteLinkFromPayload } from "../utils/parseAgentInviteLink";
 
 export async function getAgentList(
   params: AgentListParams = {},
@@ -102,7 +106,7 @@ export async function inviteAgentByEmail(
     message: response.message ?? "",
     invite: {
       ...response.data,
-      inviteLink: parseAgentInviteLink(response.data.inviteLink),
+      inviteLink: resolveAgentInviteLinkFromPayload(response.data),
     },
   };
 }
@@ -120,7 +124,49 @@ export async function validateAgentInvitation(
     throw new Error(response.message ?? "Invitation link is invalid");
   }
 
-  return response.data;
+  return {
+    ...response.data,
+    passwordSetupLink: response.data.passwordSetupLink
+      ? parseAgentInviteLink(response.data.passwordSetupLink)
+      : response.data.passwordSetupLink,
+  };
+}
+
+export async function submitAgentInvitation(
+  body: AgentInvitationSubmitRequest,
+): Promise<AgentInvitationSubmitResponse["data"]> {
+  const response = await apiClient.request<AgentInvitationSubmitResponse>({
+    endpoint: agentEndpoints.SUBMIT_INVITATION,
+    method: "POST",
+    auth: false,
+    body,
+  });
+
+  if (!response.success || !response.data) {
+    throw new Error(response.message ?? "Failed to submit agent profile");
+  }
+
+  return {
+    ...response.data,
+    passwordSetupLink: parseAgentInviteLink(response.data.passwordSetupLink),
+  };
+}
+
+export async function setupAgentPassword(
+  body: AgentPasswordSetupRequest,
+): Promise<string> {
+  const response = await apiClient.request<AgentPasswordSetupResponse>({
+    endpoint: agentEndpoints.PASSWORD_SETUP,
+    method: "POST",
+    auth: false,
+    body,
+  });
+
+  if (!response.success) {
+    throw new Error(response.message ?? "Failed to set agent password");
+  }
+
+  return response.message ?? "Agent account activated successfully";
 }
 
 export async function acceptAgentInvitation(
@@ -182,7 +228,7 @@ export async function resendAgentInvitation(
     message: response.message ?? "",
     invite: {
       ...response.data,
-      inviteLink: parseAgentInviteLink(response.data.inviteLink),
+      inviteLink: resolveAgentInviteLinkFromPayload(response.data),
     },
   };
 }

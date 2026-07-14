@@ -1,36 +1,19 @@
 "use client";
 
-import { useGetLocationTaxonomy } from "@/src/features/landing/mutations/landing.mutation";
-import { formatPhoneNumberE164 } from "@/src/features/profile/utils/formatPhoneNumberE164";
-import { usePropertyStore } from "@/src/features/property/store/property.store";
-import { getPhoneInputCountryByCode } from "@/src/components/ui/phone-input/countries";
 import { useToast } from "@/src/hooks/useToast";
 import { useTranslations } from "next-intl";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useManualOnboardAgent } from "../mutations/agent.mutation";
 import type { ManualOnboardAgentResult } from "../types/agent.types";
-import { buildServiceAreaSelectOptions } from "../utils/buildServiceAreaSelectOptions";
-import { formatManualOnboardServiceArea } from "../utils/formatManualOnboardServiceArea";
 import {
-  validateFullNameValue,
-  validateInviteEmailValue,
-  validatePhoneValue,
-  validateServiceAreaValues,
-} from "../utils/validateOnboardAgentForms";
-
-type ManualFormErrors = {
-  fullName?: string;
-  email?: string;
-  phone?: string;
-  serviceArea?: string;
-};
-
-const EMPTY_MANUAL_FORM_ERRORS: ManualFormErrors = {};
+  mapAgentInviteMutationFieldErrors,
+  resolveAgentApiErrorMessage,
+} from "../utils/agentOnboardingErrors.utils";
+import { useAgentOnboardingForm } from "./useAgentOnboardingForm";
 
 export function useManualOnboardAgentModal() {
   const t = useTranslations("user.agents.manualOnboardModal");
-  const tValidation = useTranslations("user.agents.manualOnboardModal.validation");
-  const tAuth = useTranslations("auth");
+  const tErrors = useTranslations("user.agents.errors");
   const toast = useToast();
   const {
     mutateAsync: submitManualOnboard,
@@ -38,17 +21,7 @@ export function useManualOnboardAgentModal() {
     isPending: isSubmitting,
   } = useManualOnboardAgent();
 
-  const locationTaxonomy = usePropertyStore((state) => state.locationTaxonomy);
-  const { mutate: getLocationTaxonomy, isPending: isLocationTaxonomyLoading } =
-    useGetLocationTaxonomy();
-
   const [isOpen, setIsOpen] = useState(false);
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phoneCountryCode, setPhoneCountryCode] = useState("JO");
-  const [phoneNationalNumber, setPhoneNationalNumber] = useState("");
-  const [serviceAreaValues, setServiceAreaValues] = useState<string[]>([]);
-  const [errors, setErrors] = useState<ManualFormErrors>(EMPTY_MANUAL_FORM_ERRORS);
   const [onboardResult, setOnboardResult] = useState<ManualOnboardAgentResult | null>(
     null,
   );
@@ -56,10 +29,9 @@ export function useManualOnboardAgentModal() {
   const hasSubmittedSuccessfully = onboardResult !== null;
   const wasOpenRef = useRef(false);
 
-  const serviceAreaOptions = useMemo(
-    () => buildServiceAreaSelectOptions(locationTaxonomy ?? undefined),
-    [locationTaxonomy],
-  );
+  const onboardingForm = useAgentOnboardingForm({
+    disabled: hasSubmittedSuccessfully,
+  });
 
   const openModal = useCallback(() => {
     setIsOpen(true);
@@ -73,143 +45,58 @@ export function useManualOnboardAgentModal() {
     setIsOpen(false);
   }, [isSubmitting]);
 
-  const resolveEmailErrorMessage = useCallback(
-    (error: "required" | "invalid" | null) => {
-      if (error === "required") {
-        return tAuth("signUpEmailRequired");
-      }
-
-      if (error === "invalid") {
-        return tAuth("signUpEmailInvalid");
-      }
-
-      return undefined;
-    },
-    [tAuth],
-  );
-
-  const onFullNameChange = useCallback(
-    (value: string) => {
-      if (hasSubmittedSuccessfully) {
-        return;
-      }
-
-      setFullName(value);
-      setErrors((previous) => ({ ...previous, fullName: undefined }));
-    },
-    [hasSubmittedSuccessfully],
-  );
-
-  const onEmailChange = useCallback(
-    (value: string) => {
-      if (hasSubmittedSuccessfully) {
-        return;
-      }
-
-      setEmail(value);
-      setErrors((previous) => ({ ...previous, email: undefined }));
-    },
-    [hasSubmittedSuccessfully],
-  );
-
-  const onPhoneCountryChange = useCallback(
-    (value: string) => {
-      if (hasSubmittedSuccessfully) {
-        return;
-      }
-
-      setPhoneCountryCode(value);
-      setErrors((previous) => ({ ...previous, phone: undefined }));
-    },
-    [hasSubmittedSuccessfully],
-  );
-
-  const onPhoneNationalNumberChange = useCallback(
-    (value: string) => {
-      if (hasSubmittedSuccessfully) {
-        return;
-      }
-
-      setPhoneNationalNumber(value);
-      setErrors((previous) => ({ ...previous, phone: undefined }));
-    },
-    [hasSubmittedSuccessfully],
-  );
-
-  const onServiceAreaChange = useCallback(
-    (values: string[]) => {
-      if (hasSubmittedSuccessfully) {
-        return;
-      }
-
-      setServiceAreaValues(values);
-      setErrors((previous) => ({ ...previous, serviceArea: undefined }));
-    },
-    [hasSubmittedSuccessfully],
-  );
-
   const onSubmit = useCallback(async () => {
     if (isSubmitting || hasSubmittedSuccessfully) {
       return;
     }
 
-    const country = getPhoneInputCountryByCode(phoneCountryCode);
-    const e164Phone = country
-      ? formatPhoneNumberE164(country.dialCode, phoneNationalNumber)
-      : "";
-
-    const nextErrors: ManualFormErrors = {
-      fullName:
-        validateFullNameValue(fullName) != null
-          ? tValidation("fullNameRequired")
-          : undefined,
-      email: resolveEmailErrorMessage(validateInviteEmailValue(email)),
-      phone:
-        validatePhoneValue(phoneNationalNumber, e164Phone) === "required"
-          ? tAuth("signUpPhoneRequired")
-          : validatePhoneValue(phoneNationalNumber, e164Phone) === "invalid"
-            ? tAuth("signUpPhoneInvalid")
-            : undefined,
-      serviceArea:
-        validateServiceAreaValues(serviceAreaValues) != null
-          ? tValidation("serviceAreaRequired")
-          : undefined,
-    };
+    const nextErrors = onboardingForm.validateForm();
 
     if (Object.values(nextErrors).some(Boolean)) {
-      setErrors(nextErrors);
+      onboardingForm.setFieldErrors(nextErrors);
       return;
     }
 
-    setErrors(EMPTY_MANUAL_FORM_ERRORS);
+    onboardingForm.setFieldErrors({});
 
     try {
-      const result = await submitManualOnboard({
-        fullName: fullName.trim(),
-        email: email.trim(),
-        phone: e164Phone,
-        serviceArea: formatManualOnboardServiceArea(
-          serviceAreaValues,
-          serviceAreaOptions,
-        ),
-      });
+      const result = await submitManualOnboard(onboardingForm.buildSubmitPayload());
       setOnboardResult(result);
-    } catch {
-      // Error toast handled in mutation.
+    } catch (error) {
+      if (error && typeof error === "object" && "message" in error) {
+        const fieldErrors = mapAgentInviteMutationFieldErrors(
+          error as Parameters<typeof mapAgentInviteMutationFieldErrors>[0],
+          {
+            duplicateEmail: tErrors("duplicateEmail"),
+            duplicatePhone: tErrors("duplicatePhone"),
+          },
+        );
+
+        if (Object.keys(fieldErrors).length > 0) {
+          onboardingForm.setFieldErrors(fieldErrors);
+          return;
+        }
+
+        toast.error(t("errorTitle"), {
+          description: resolveAgentApiErrorMessage(error as Error, {
+            duplicateEmail: tErrors("duplicateEmail"),
+            duplicatePhone: tErrors("duplicatePhone"),
+            invalidInvitation: tErrors("invalidInvitation"),
+            expiredInvitation: tErrors("expiredInvitation"),
+            validationError: tErrors("validationError"),
+            generic: tErrors("generic"),
+          }),
+        });
+      }
     }
   }, [
-    email,
-    fullName,
     hasSubmittedSuccessfully,
     isSubmitting,
-    phoneCountryCode,
-    phoneNationalNumber,
-    resolveEmailErrorMessage,
-    serviceAreaOptions,
-    serviceAreaValues,
+    onboardingForm,
     submitManualOnboard,
-    tAuth,
-    tValidation,
+    t,
+    tErrors,
+    toast,
   ]);
 
   const onCopyPassword = useCallback(async () => {
@@ -252,26 +139,13 @@ export function useManualOnboardAgentModal() {
 
   useEffect(() => {
     if (wasOpenRef.current && !isOpen) {
-      setFullName("");
-      setEmail("");
-      setPhoneCountryCode("JO");
-      setPhoneNationalNumber("");
-      setServiceAreaValues([]);
-      setErrors(EMPTY_MANUAL_FORM_ERRORS);
+      onboardingForm.resetForm();
       setOnboardResult(null);
       resetManualOnboardMutation();
     }
 
     wasOpenRef.current = isOpen;
-  }, [isOpen, resetManualOnboardMutation]);
-
-  useEffect(() => {
-    if (!isOpen || locationTaxonomy != null) {
-      return;
-    }
-
-    getLocationTaxonomy();
-  }, [getLocationTaxonomy, isOpen, locationTaxonomy]);
+  }, [isOpen, onboardingForm, resetManualOnboardMutation]);
 
   const successMessage =
     onboardResult?.message ||
@@ -296,33 +170,21 @@ export function useManualOnboardAgentModal() {
     hasSubmittedSuccessfully,
     onPrimaryAction: hasSubmittedSuccessfully ? closeModal : onSubmit,
     content: {
-      fullName,
-      email,
-      phoneCountryCode,
-      phoneNationalNumber,
-      serviceAreaValues,
-      serviceAreaOptions,
-      fullNameLabel: t("fullNameLabel"),
-      fullNamePlaceholder: t("fullNamePlaceholder"),
-      emailLabel: t("emailLabel"),
-      emailPlaceholder: t("emailPlaceholder"),
-      phoneLabel: t("phoneLabel"),
-      phonePlaceholder: tAuth("signUpPhonePlaceholder"),
-      phoneSearchPlaceholder: tAuth("signUpPhoneSearchPlaceholder"),
-      phoneEmptySearchLabel: tAuth("signUpPhoneNoMatches"),
-      serviceAreaLabel: t("serviceAreaLabel"),
-      serviceAreaPlaceholder: t("serviceAreaPlaceholder"),
-      fullNameError: errors.fullName,
-      emailError: errors.email,
-      phoneError: errors.phone,
-      serviceAreaError: errors.serviceArea,
+      ...onboardingForm.formState,
+      serviceAreaOptions: onboardingForm.serviceAreaOptions,
+      ...onboardingForm.labels,
+      fullNameError: onboardingForm.errors.fullName,
+      emailError: onboardingForm.errors.email,
+      phoneError: onboardingForm.errors.phone,
+      whatsappError: onboardingForm.errors.whatsappNumber,
+      serviceAreaError: onboardingForm.errors.serviceArea,
+      positionError: onboardingForm.errors.position,
+      identityDocumentError: onboardingForm.errors.identityDocument,
+      identityDocumentFileName: onboardingForm.formState.identityDocumentFileName,
       disabled: isSubmitting,
-      isServiceAreaLoading: isLocationTaxonomyLoading && serviceAreaOptions.length === 0,
-      onFullNameChange,
-      onEmailChange,
-      onPhoneCountryChange,
-      onPhoneNationalNumberChange,
-      onServiceAreaChange,
+      isServiceAreaLoading: onboardingForm.isServiceAreaLoading,
+      isIdentityDocumentUploading: onboardingForm.isIdentityDocumentUploading,
+      ...onboardingForm.handlers,
       hasSubmittedSuccessfully,
       success: onboardResult
         ? {

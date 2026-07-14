@@ -7,6 +7,7 @@ type AgentListStatusFilterLabelsTranslator = (
     | "active"
     | "inactive"
     | "invited"
+    | "pendingPassword"
     | "pending"
     | "declined",
 ) => string;
@@ -20,6 +21,7 @@ export function buildAgentListStatusFilterLabels(
     active: t("active"),
     inactive: t("inactive"),
     invited: t("invited"),
+    pendingPassword: t("pendingPassword"),
     pending: t("pending"),
     declined: t("declined"),
   } as const satisfies Record<

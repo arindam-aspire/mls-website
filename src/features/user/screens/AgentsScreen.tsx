@@ -6,6 +6,7 @@ import { AgentKPICards } from "@/src/features/user/components/AgentKPICards";
 import { AgentKPICardsSkeleton } from "@/src/features/user/components/AgentKPICardsSkeleton";
 import { AgentList } from "@/src/features/user/components/AgentList";
 import { useAgentsScreen } from "@/src/features/user/hooks/useAgentsScreen";
+import { CopyInvitationLinkModal } from "@/src/features/user/modals/CopyInvitationLinkModal";
 import { InviteAgentByEmailModal } from "@/src/features/user/modals/InviteAgentByEmailModal";
 import { ManualOnboardAgentModal } from "@/src/features/user/modals/ManualOnboardAgentModal";
 import { cn } from "@/src/lib/cn";
@@ -91,6 +92,10 @@ export function AgentsScreen() {
 
       {resendAgentConfirm.confirmModal ? (
         <ConfirmModal {...resendAgentConfirm.confirmModal} />
+      ) : null}
+
+      {resendAgentConfirm.copyLinkModal ? (
+        <CopyInvitationLinkModal {...resendAgentConfirm.copyLinkModal} />
       ) : null}
 
       {deleteAgentConfirm.confirmModal ? (

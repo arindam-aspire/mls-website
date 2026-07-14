@@ -15,7 +15,7 @@ Admin **Agents** screen with page header, KPI summary cards, and onboard action.
 - `useAgentsScreen` from `@/src/features/user/hooks/useAgentsScreen`
 - `AgentKPICards`, `AgentKPICardsSkeleton`, `AgentList` from `@/src/features/user/components`
 - `Button` from `@/src/components/ui`
-- `InviteAgentByEmailModal`, `ManualOnboardAgentModal` from `@/src/features/user/modals`
+- `InviteAgentByEmailModal`, `ManualOnboardAgentModal`, `CopyInvitationLinkModal` from `@/src/features/user/modals`
 - `ConfirmModal` from `@/src/components/common/ConfirmModal`
 - `Mail`, `UserRoundPen` from `lucide-react`
 
@@ -23,7 +23,7 @@ Admin **Agents** screen with page header, KPI summary cards, and onboard action.
 
 - **Invite by email** → `InviteAgentByEmailModal` (email field)
 - **Manual onboarding** → `ManualOnboardAgentModal` (full name, email, phone, service areas)
-- **Resend invitation** → `ConfirmModal` via `useResendAgentInvitationConfirm` (`POST /agents/{id}/resend-invitation`)
+- **Resend invitation** → `ConfirmModal` via `useResendAgentInvitationConfirm` (`POST /agents/{id}/resend-invitation`), then **Copy Invitation Link** → `CopyInvitationLinkModal` when the API returns `invitation_url` / `inviteLink`
 - **Revoke / Remove** → `ConfirmModal` via `useDeleteAgentConfirm` (`DELETE /agents/{id}`)
 
 # Exports
@@ -59,3 +59,5 @@ Admin **Agents** screen with page header, KPI summary cards, and onboard action.
 - [AgentList.md](../components/AgentList.md)
 - [InviteAgentByEmailModal.md](../modals/InviteAgentByEmailModal.md)
 - [ManualOnboardAgentModal.md](../modals/ManualOnboardAgentModal.md)
+- [CopyInvitationLinkModal.md](../modals/CopyInvitationLinkModal.md)
+- [useResendAgentInvitationConfirm.md](../hooks/useResendAgentInvitationConfirm.md)

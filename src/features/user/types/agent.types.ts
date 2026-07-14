@@ -94,14 +94,18 @@ export type AgentSummaryResponse = {
 };
 
 export type AgentInviteRequest = {
-  email: string;
+  email?: string;
+  phone?: string;
 };
 
 export type AgentInviteData = {
   id: string;
   email: string;
   status: string;
+  /** Invitation URL (camelCase API). */
   inviteLink: string;
+  /** Invitation URL (snake_case / alternate API field). */
+  invitation_url?: string;
   invitedAt: string;
   invitedBy: string;
 };
@@ -121,18 +125,59 @@ export type AgentInviteResponse = {
 
 export type AgentInvitationPreview = {
   id: string;
-  email: string;
-  fullName: string;
-  phone: string;
-  serviceArea: string;
+  email: string | null;
+  phone: string | null;
+  fullName: string | null;
+  whatsappNumber: string | null;
+  serviceArea: string | null;
+  position: string | null;
   status: string;
   expiresAt: string;
+  formSubmittedAt: string | null;
+  passwordSetupLink: string | null;
 };
 
 export type AgentInvitationPreviewResponse = {
   success: boolean;
   message: string | null;
   data: AgentInvitationPreview | null;
+  error: unknown;
+  meta: Record<string, unknown>;
+};
+
+export type AgentInvitationSubmitRequest = {
+  token: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  whatsappNumber?: string;
+  serviceArea: string;
+  position?: string;
+  identityDocument?: string;
+};
+
+export type AgentInvitationSubmitData = {
+  status: string;
+  passwordSetupLink: string;
+};
+
+export type AgentInvitationSubmitResponse = {
+  success: boolean;
+  message: string | null;
+  data: AgentInvitationSubmitData | null;
+  error: unknown;
+  meta: Record<string, unknown>;
+};
+
+export type AgentPasswordSetupRequest = {
+  token: string;
+  password: string;
+};
+
+export type AgentPasswordSetupResponse = {
+  success: boolean;
+  message: string | null;
+  data: AgentListItem | null;
   error: unknown;
   meta: Record<string, unknown>;
 };
@@ -154,7 +199,10 @@ export type ManualOnboardAgentRequest = {
   fullName: string;
   email: string;
   phone: string;
+  whatsappNumber?: string;
   serviceArea: string;
+  position?: string;
+  identityDocument?: string;
 };
 
 export type ManualOnboardAgentData = {
@@ -162,7 +210,9 @@ export type ManualOnboardAgentData = {
   email: string;
   fullName: string;
   phone: string;
+  whatsappNumber?: string | null;
   serviceArea: string;
+  position?: string | null;
   status: string;
   temporaryPassword: string;
   inviteLink?: string | null;

@@ -2,6 +2,7 @@ export const AGENT_LIST_STATUS_FILTER_VALUES = [
   "active",
   "inactive",
   "invited",
+  "pendingPassword",
   "pending",
   "declined",
 ] as const;
@@ -17,6 +18,7 @@ export const AGENT_LIST_STATUS_FILTER_TO_API_STATUS: Record<
   active: "ACTIVE",
   inactive: "INACTIVE",
   invited: "INVITED",
+  pendingPassword: "PENDING_PASSWORD",
   pending: "PENDING_REVIEW",
   declined: "DECLINED",
 };

@@ -1,11 +1,30 @@
 /**
- * Prefer the backend `file_url`; otherwise derive a stable public URL from the presigned PUT URL.
+ * Resolve a readable file URL from a presigned upload response.
+ *
+ * Prefer `signed_read_url` for preview/download. Fall back to legacy `file_url`,
+ * then strip query params from `upload_url` only as a last resort.
  */
 export function resolveUploadedFileUrl(
   uploadUrl: string,
-  fileUrl?: string | null,
+  options?: {
+    signedReadUrl?: string | null;
+    fileUrl?: string | null;
+  } | string | null,
 ): string {
-  if (fileUrl?.trim()) {
+  const signedReadUrl =
+    typeof options === "object" && options != null
+      ? options.signedReadUrl
+      : undefined;
+  const fileUrl =
+    typeof options === "string" || options == null
+      ? options
+      : options.fileUrl;
+
+  if (signedReadUrl?.trim()) {
+    return signedReadUrl.trim();
+  }
+
+  if (typeof fileUrl === "string" && fileUrl.trim()) {
     return fileUrl.trim();
   }
 

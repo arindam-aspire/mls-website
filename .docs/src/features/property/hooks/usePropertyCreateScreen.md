@@ -59,9 +59,9 @@ Screen hook for `PropertyCreateScreen`: page copy, breadcrumb, create-form catal
 | `onStepClick(index, step, propertyDetails)` | Persist values when moving forward; set `activeStep` and update `maxReachedStep` |
 | `onSubmit` | No `submission_id`: direct `POST /property-submissions/submit`. With id: PATCH draft + POST submit; sets `isSubmitting` on `PropertyForm` |
 | `onDraft(propertyDetails)` | POST or PATCH draft save; returns `true` when API succeeds |
-| `onUploadOwnerDocument` | From `useOwnerDocumentUpload` — presign + PUT; returns remote `uri` or `null` on failure |
-| `onUploadPropertyMedia` | From `usePropertyMediaUpload` — presign + PUT (`property_media_image`) |
-| `onUploadPropertyDocument` | From `usePropertyMediaUpload` — presign + PUT (`property_document`) |
+| `onUploadOwnerDocument` | From `useOwnerDocumentUpload` — presign + POST; returns remote `uri` or `null` on failure |
+| `onUploadPropertyMedia` | From `usePropertyMediaUpload` — presign + POST (`property_media_image`) |
+| `onUploadPropertyDocument` | From `usePropertyMediaUpload` — presign + POST (`property_document`) |
 
 # Dependencies
 

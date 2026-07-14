@@ -8,7 +8,7 @@ Hook for owner document uploads on the property create form. Generates a stable 
 
 - Create `draft_client_id` once per mount via `createDraftClientId` (separate UUID from media uploads).
 - Validate file type/size (PDF, DOC, DOCX; max 10 MB).
-- Delegate upload to `uploadOwnerDocument` (presign + PUT).
+- Delegate upload to `uploadOwnerDocument` (presign + POST).
 - Toast localized errors on validation or upload failure.
 - Stable `onUploadOwnerDocument` callback (`toastRef`) — pairs with `@abdoun/abdoun-library` **0.1.57+** upload state fixes (`handleOwnerDocumentUploadingChange`, `DocInput` / `MediaInput` `onUploadingChange`).
 
@@ -17,7 +17,7 @@ Hook for owner document uploads on the property create form. Generates a stable 
 | Step | Method | Endpoint | Notes |
 | --- | --- | --- | --- |
 | A | POST | `/uploads/presigned-url` | `{ draft_client_id, context: "owner_document", file_name, content_type, file_size }` |
-| B | PUT | presigned `upload_url` | Raw `putFileToPresignedUrl` — no auth headers |
+| B | POST | presigned `upload_url` | Raw `putFileToPresignedUrl` — no auth headers |
 
 # Exports
 

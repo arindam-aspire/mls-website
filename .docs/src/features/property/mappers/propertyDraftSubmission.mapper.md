@@ -16,11 +16,12 @@ Maps `@abdoun/abdoun-library` `PropertyFormValues` ↔ draft submission API payl
 - Transform values: `area_ids[0]` → `area_id`, `permit_dld_number` → `permit_number`, `total_floor` → `total_floors`, numeric strings → numbers, owner `country_code`+`phone_number` → `phone`, `social_security_id` → `ssi`, `owner_address` → `address`, `nationality` → `nationality`, media `name`/`uri` → `file_name`/`url`, and split `media_upload.media_files` into API `images` vs `videos`.
 - Map `selected_amenities` + `feature_ids` (library stores both FEATURE and AMENITY selections in `amenities`) ↔ API `amenities.feature_ids` (catalog `id` values) within the taxonomy-filtered catalog.
 - Map `terms_acceptance` ↔ `review_submit` on hydrate/save; draft saves default flags to `false` unless form values are present; `{ forSubmit: true }` sets all review flags `true` before submit.
-- `pricing.currency` from `BuildPropertyDraftSubmissionPayloadOptions.currency` (agency currency), defaulting to `"JOD"`; map uploaded media files into `media_documents.images` and `media_documents.videos`, and hydrate draft `images` + `videos` back into `media_upload.media_files`.
+- `pricing.currency` from `BuildPropertyDraftSubmissionPayloadOptions.currency` (via `toPropertyDraftSubmissionCurrency` for agency display currency → API `"JOD"`), defaulting to `"JOD"`; map uploaded media files into `media_documents.images` and `media_documents.videos`, and hydrate draft `images` + `videos` back into `media_upload.media_files`.
 
 # Exports
 
-- `BuildPropertyDraftSubmissionPayloadOptions` (`forSubmit?`)
+- `BuildPropertyDraftSubmissionPayloadOptions` (`forSubmit?`, `agencyId?`, `currency?: PropertyDraftSubmissionCurrency`)
+- `toPropertyDraftSubmissionCurrency(agencyCurrency?)` — maps agency display currency to draft-submission pricing (`"JOD"` only)
 - `buildPropertyDraftSubmissionPayload(propertyDetails, featuresAndAmenities, options?)`
 - `buildPropertyDraftSubmissionRequestBody(propertyDetails, featuresAndAmenities, currentStep, lastCompletedStep, options?)`
 - `buildPropertyDraftSubmissionUpdateRequestBody(propertyDetails, featuresAndAmenities, currentStep, lastCompletedStep, options?)`

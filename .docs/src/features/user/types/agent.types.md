@@ -24,7 +24,17 @@ TypeScript shapes for `GET /agents` and `GET /agents/summary` responses.
 | `AgentSummaryLastAgentMetadata` | Email, service area, review timestamps |
 | `AgentSummaryResponse` | Raw summary API envelope |
 
+## Invitation / onboarding types
+
+| Type | Role |
+| --- | --- |
+| `AgentInviteData` | Invite/resend payload; `inviteLink` plus optional `invitation_url` |
+| `AgentInvitationSubmitRequest` | Public submit; `position` and `identityDocument` optional |
+| `ManualOnboardAgentRequest` | Admin onboard; same optional position/identity fields |
+| `AgentResendInvitationResult` | Alias of invite result (includes invitation URL for copy modal) |
+
 ## Consumers
 
 - `useAssignAgentModal`, `AssignAgentListItem` (property feature) — list types
 - `useAgentsScreen`, `getAgentSummary` — summary types
+- Invite/resend/onboarding hooks and services — invitation types

@@ -1,10 +1,10 @@
 "use client";
 
-import { ManualOnboardAgentForm } from "./ManualOnboardAgentForm";
-import type { ManualOnboardAgentFormProps } from "./ManualOnboardAgentForm";
+import { AgentOnboardingForm } from "./AgentOnboardingForm";
+import type { AgentOnboardingFormProps } from "./AgentOnboardingForm";
 import { ManualOnboardSuccessPanel } from "./ManualOnboardSuccessPanel";
 
-export type ManualOnboardAgentContentProps = ManualOnboardAgentFormProps & {
+export type ManualOnboardAgentContentProps = AgentOnboardingFormProps & {
   hasSubmittedSuccessfully: boolean;
   success?: {
     readyTitle: string;
@@ -28,7 +28,7 @@ export function ManualOnboardAgentContent({
 }: ManualOnboardAgentContentProps) {
   return (
     <div className="flex flex-col gap-4 sm:gap-5">
-      <ManualOnboardAgentForm
+      <AgentOnboardingForm
         {...form}
         disabled={form.disabled || hasSubmittedSuccessfully}
       />

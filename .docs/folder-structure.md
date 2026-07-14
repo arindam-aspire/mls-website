@@ -189,6 +189,7 @@ mls_website/
 │       │   │   │   ├── AgentKPICardsSkeleton.md
 │       │   │   │   ├── AgentList.md
 │       │   │   │   ├── AgentListFilters.md
+│       │   │   │   ├── AgentOnboardingForm.md
 │       │   │   │   ├── OwnerList.md
 │       │   │   │   ├── OwnerListFilters.md
 │       │   │   │   ├── InviteAgentByEmailContent.md
@@ -207,6 +208,7 @@ mls_website/
 │       │   │   │   ├── index.md
 │       │   │   │   ├── useAgentsScreen.md
 │       │   │   │   ├── useOwnersScreen.md
+│       │   │   │   ├── useAgentOnboardingForm.md
 │       │   │   │   ├── useInviteAgentByEmailModal.md
 │       │   │   │   ├── useResendAgentInvitationConfirm.md
 │       │   │   │   ├── useDeleteAgentConfirm.md
@@ -226,12 +228,14 @@ mls_website/
 │       │   │   │   ├── AgentsScreen.md
 │       │   │   │   └── OwnersScreen.md
 │       │   │   ├── modals/
+│       │   │   │   ├── CopyInvitationLinkModal.md
 │       │   │   │   ├── InviteAgentByEmailModal.md
 │       │   │   │   └── ManualOnboardAgentModal.md
 │       │   │   ├── services/
 │       │   │   │   ├── README.md
 │       │   │   │   ├── index.md
 │       │   │   │   ├── agent.service.md
+│       │   │   │   ├── agentUpload.service.md
 │       │   │   │   └── user.service.md
 │       │   │   ├── store/
 │       │   │   │   ├── README.md
@@ -799,6 +803,8 @@ mls_website/
 │   │   │   │   ├── OwnerListFilters.tsx
 │   │   │   │   ├── InviteAgentByEmailContent.tsx
 │   │   │   │   ├── InviteAgentByEmailForm.tsx
+│   │   │   │   ├── InviteAgentContactForm.tsx
+│   │   │   │   ├── AgentOnboardingForm.tsx
 │   │   │   │   ├── InviteAgentGeneratingPanel.tsx
 │   │   │   │   ├── InviteAgentReadyPanel.tsx
 │   │   │   │   ├── ManualOnboardAgentContent.tsx
@@ -816,6 +822,8 @@ mls_website/
 │   │   │   │   ├── useAgentsScreen.ts
 │   │   │   │   ├── useOwnersScreen.ts
 │   │   │   │   ├── useInviteAgentByEmailModal.ts
+│   │   │   │   ├── useAgentOnboardingForm.ts
+│   │   │   │   ├── useAgentInviteScreen.ts
 │   │   │   │   ├── useResendAgentInvitationConfirm.ts
 │   │   │   │   ├── useDeleteAgentConfirm.ts
 │   │   │   │   └── useManualOnboardAgentModal.ts
@@ -832,13 +840,17 @@ mls_website/
 │   │   │   │   └── index.ts
 │   │   │   ├── screens/
 │   │   │   │   ├── AgentsScreen.tsx
+│   │   │   │   ├── AgentInviteScreen.tsx
+│   │   │   │   ├── AgentPasswordSetupScreen.tsx
 │   │   │   │   └── OwnersScreen.tsx
 │   │   │   ├── modals/
+│   │   │   │   ├── CopyInvitationLinkModal.tsx
 │   │   │   │   ├── InviteAgentByEmailModal.tsx
 │   │   │   │   └── ManualOnboardAgentModal.tsx
 │   │   │   ├── services/
 │   │   │   │   ├── index.ts
 │   │   │   │   ├── agent.service.ts
+│   │   │   │   ├── agentUpload.service.ts
 │   │   │   │   ├── owner.service.ts
 │   │   │   │   └── user.service.ts
 │   │   │   ├── store/
