@@ -2,17 +2,9 @@
 ; Windows:  %USERPROFILE%\.npmrc
 ; macOS/Linux: ~/.npmrc
 ;
-; 1. Azure DevOps → User settings → Personal access tokens → New Token
-;    Scopes: Packaging → Read (or Read & write if you publish)
-; 2. Base64-encode the PAT only (PowerShell example below).
-; 3. Paste the three lines per registry block (registry + npm paths).
+; 1. Coderlook Git (Gitea) → Settings → Applications → Generate New Token
+;    Scope: read:package (or package read permission for the owner org/user)
+; 2. Paste the line below and replace YOUR_TOKEN with that token.
+; 3. Do not commit tokens. Keep them only in your user npmrc.
 
-; PowerShell (replace YOUR_PAT):
-; [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("YOUR_PAT"))
-
-//coderlook.pkgs.visualstudio.com/4ebb65de-f12a-4477-8bb7-6c882034b4a4/_packaging/abdoun-library/npm/registry/:username=VssSessionToken
-//coderlook.pkgs.visualstudio.com/4ebb65de-f12a-4477-8bb7-6c882034b4a4/_packaging/abdoun-library/npm/registry/:_password=BASE64_ENCODED_PAT
-//coderlook.pkgs.visualstudio.com/4ebb65de-f12a-4477-8bb7-6c882034b4a4/_packaging/abdoun-library/npm/registry/:email=npm requires email to be set but doesn't use the value
-//coderlook.pkgs.visualstudio.com/4ebb65de-f12a-4477-8bb7-6c882034b4a4/_packaging/abdoun-library/npm/:username=VssSessionToken
-//coderlook.pkgs.visualstudio.com/4ebb65de-f12a-4477-8bb7-6c882034b4a4/_packaging/abdoun-library/npm/:_password=BASE64_ENCODED_PAT
-//coderlook.pkgs.visualstudio.com/4ebb65de-f12a-4477-8bb7-6c882034b4a4/_packaging/abdoun-library/npm/:email=npm requires email to be set but doesn't use the value
+//git.coderlook.com/api/packages/abetal/npm/:_authToken=YOUR_TOKEN
