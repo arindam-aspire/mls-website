@@ -10,6 +10,7 @@ import {
   addLeadNote,
   assignLeadAgent,
   closeLead,
+  createLead,
   requestCloseLead,
   updateLeadStatus,
 } from "../services/lead.service";
@@ -18,6 +19,7 @@ import type {
   AddLeadNoteRequest,
   AssignLeadRequest,
   CloseLeadRequest,
+  CreateLeadRequest,
   UpdateLeadStatusRequest,
 } from "../types/lead.types";
 
@@ -40,6 +42,22 @@ async function invalidateLeadQueries(
       queryKey: [LEADS_QUERY_KEY, "activity", leadId],
     });
   }
+}
+
+/**
+ * Creates a lead from a property email inquiry (`EMAIL_FORM`).
+ * Success/error toasts are handled by the contact modal when used from that flow;
+ * list queries are invalidated here so manager views stay fresh.
+ */
+export function useCreateLead() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (body: CreateLeadRequest) => createLead(body),
+    onSuccess: async () => {
+      await invalidateLeadQueries(queryClient);
+    },
+  });
 }
 
 export function useAssignLeadAgent() {

@@ -23,6 +23,8 @@
   "callCancelLabel": "Cancel",
   "defaultMessageTemplate": "I would like to inquire about your property {propertyTitle} - #{propertyReference}. Please contact me at your earliest convenience.",
   "emailSubject": "Inquiry about {propertyTitle} (#{propertyReference})",
+  "inquirySuccessTitle": "Inquiry submitted",
+  "inquirySuccessDescription": "Your inquiry has been submitted successfully.",
   "validation": {
     "nameRequired": "Name is required.",
     "emailRequired": "Email is required.",
@@ -32,6 +34,8 @@
   "errors": {
     "sendErrorTitle": "Cannot contact",
     "missingRecipientEmail": "No recipient email is available for this listing.",
-    "missingRecipientPhone": "No recipient phone number is available for this listing."
+    "missingRecipientPhone": "No recipient phone number is available for this listing.",
+    "inquiryErrorTitle": "Could not submit inquiry",
+    "inquiryErrorFallback": "Something went wrong while submitting your inquiry. Please try again."
   }
 }

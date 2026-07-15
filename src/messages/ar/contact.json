@@ -23,6 +23,8 @@
   "callCancelLabel": "إلغاء",
   "defaultMessageTemplate": "أود الاستفسار عن عقاركم {propertyTitle} - #{propertyReference}. يرجى التواصل معي في أقرب وقت ممكن.",
   "emailSubject": "استفسار عن {propertyTitle} (#{propertyReference})",
+  "inquirySuccessTitle": "تم إرسال الاستفسار",
+  "inquirySuccessDescription": "تم إرسال استفسارك بنجاح.",
   "validation": {
     "nameRequired": "الاسم مطلوب.",
     "emailRequired": "البريد الإلكتروني مطلوب.",
@@ -32,6 +34,8 @@
   "errors": {
     "sendErrorTitle": "تعذر التواصل",
     "missingRecipientEmail": "لا يتوفر بريد للمستلم لهذا الإعلان.",
-    "missingRecipientPhone": "لا يتوفر رقم هاتف للمستلم لهذا الإعلان."
+    "missingRecipientPhone": "لا يتوفر رقم هاتف للمستلم لهذا الإعلان.",
+    "inquiryErrorTitle": "تعذر إرسال الاستفسار",
+    "inquiryErrorFallback": "حدث خطأ أثناء إرسال استفسارك. يرجى المحاولة مرة أخرى."
   }
 }

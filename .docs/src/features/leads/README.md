@@ -25,6 +25,12 @@ Detail tabs: `overview` \| `conversation` \| `notes` \| `timeline` \| `close`.
 - Agent: reply, note, update status (`IN_PROGRESS`), request close.
 - Admin / super admin: assign / reassign (`AssignAgentModal`), override status, approve close (`POST …/close`), reject close (`PATCH …/status` → `IN_PROGRESS`).
 
+## Mutations
+
+Toast + invalidate `["leads", …]` query keys for assign / status / close / notes / messages.
+
+`useCreateLead` is used by the property **Email** contact modal: creates a lead with `source: "EMAIL_FORM"`, invalidates the list, and lets the modal show the inquiry success toast. Email delivery is mocked in `lead.service` until the email API is available.
+
 ## Real-time
 
 List and detail queries use `refetchInterval` (15s) until a websocket channel exists.

@@ -83,6 +83,15 @@ export async function getLeadDetail(leadId: string): Promise<Lead> {
   return response.data;
 }
 
+/**
+ * Temporary stand-in until the email API is available.
+ * Logs the inquiry payload that would be emailed to the agent and the user.
+ */
+export function mockSendInquiryEmails(payload: CreateLeadRequest): void {
+  console.log("Email would be sent to the property agent and the user.");
+  console.log("Payload:", payload);
+}
+
 export async function createLead(body: CreateLeadRequest): Promise<Lead> {
   const response = await apiClient.request<LeadDetailResponse>({
     endpoint: leadEndpoints.CREATE,
@@ -94,6 +103,9 @@ export async function createLead(body: CreateLeadRequest): Promise<Lead> {
   if (!response.success || !response.data) {
     throw new Error(response.message ?? "Failed to create lead");
   }
+
+  // Email service is unavailable — simulate send via console logs for now.
+  mockSendInquiryEmails(body);
 
   return response.data;
 }
