@@ -6,16 +6,28 @@ Logic hook for the leads list screen.
 
 ### Responsibilities
 
-Debounced search, filters, pagination, React Query list with refetch interval, row mapping, navigation to detail.
+- Debounced search and status filter, page state.
+- React Query list with refetch interval.
+- Map API leads → `LeadListRow[]`.
+- Build `AgentListView` columns, sort config, pagination (`maxPageButtons: 5`), empty copy, pinned columns.
+- Navigate to lead detail on row open.
 
 ### API Usage
 
-`getLeadList` → `GET /leads`.
+`getLeadList` → `GET /leads` (params: `page`, `pageSize`, optional `status`, `search`).
 
 ### Exports
 
-`useLeadsScreen`
+`useLeadsScreen` — returns `{ pageTitle, pageSubtitle, listFilters, leadList }`.
+
+### State Management
+
+Local search/status/sort/page state + React Query for `["leads", "list", params]`.
+
+### Navigation
+
+`router.push(/leads/{id})` via `onRowClick` / column View details.
 
 ### Notes
 
-Sends optional `search`, `assigned_agent_id`, `property_id`, `date_from`, `date_to` query params; backend may ignore until supported.
+Filter bar matches Agents: search + status only. Pagination object matches agents (`total`, `page`, `pageSize`, `totalPages`, `hasNext`/`hasPrevious`, `maxPageButtons`, `isLoading`, `onPageChange`).

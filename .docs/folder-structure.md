@@ -128,6 +128,9 @@ mls_website/
 │       │   │       └── landing.mutation.md
 │       │   ├── leads/
 │       │   │   ├── README.md
+│       │   │   ├── components/
+│       │   │   │   ├── LeadList.md
+│       │   │   │   └── LeadListFilters.md
 │       │   │   ├── hooks/
 │       │   │   │   ├── useLeadDetailsScreen.md
 │       │   │   │   └── useLeadsScreen.md
@@ -136,8 +139,12 @@ mls_website/
 │       │   │   ├── screens/
 │       │   │   │   ├── LeadDetailsScreen.md
 │       │   │   │   └── LeadsScreen.md
-│       │   │   └── services/
-│       │   │       └── lead.service.md
+│       │   │   ├── services/
+│       │   │   │   └── lead.service.md
+│       │   │   ├── types/
+│       │   │   │   └── leadList.types.md
+│       │   │   └── utils/
+│       │   │       └── buildLeadListTableColumns.md
 │       │   ├── loading/
 │       │   │   ├── README.md
 │       │   │   └── screens/
@@ -695,8 +702,8 @@ mls_website/
 │   │   │       └── contactMessage.utils.ts
 │   │   ├── leads/
 │   │   │   ├── components/
+│   │   │   │   ├── LeadList.tsx
 │   │   │   │   ├── LeadListFilters.tsx
-│   │   │   │   ├── LeadListTable.tsx
 │   │   │   │   ├── LeadScreenSkeletons.tsx
 │   │   │   │   └── LeadStatusBadge.tsx
 │   │   │   ├── constants/
@@ -713,8 +720,10 @@ mls_website/
 │   │   │   ├── services/
 │   │   │   │   └── lead.service.ts
 │   │   │   ├── types/
-│   │   │   │   └── lead.types.ts
+│   │   │   │   ├── lead.types.ts
+│   │   │   │   └── leadList.types.ts
 │   │   │   └── utils/
+│   │   │       ├── buildLeadListTableColumns.tsx
 │   │   │       └── leadDisplay.utils.ts
 │   │   ├── loading/
 │   │   │   └── screens/

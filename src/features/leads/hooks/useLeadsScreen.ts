@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import type { SortConfig } from "@abdoun/abdoun-library";
 import type { ApiError } from "@/src/apis/core/error.normalizer";
 import { useToast } from "@/src/hooks/useToast";
 import { useRouter } from "@/src/i18n/navigation";
@@ -13,7 +14,13 @@ import {
   LEAD_LIST_REFETCH_INTERVAL_MS,
 } from "../constants/leadList.constants";
 import { LEAD_STATUSES } from "../types/lead.types";
+import type { LeadListRow } from "../types/leadList.types";
 import { getLeadList } from "../services/lead.service";
+import {
+  buildLeadListTableColumns,
+  DEFAULT_LEAD_LIST_PINNED_COLUMNS,
+  LEAD_LIST_GRID_HIDDEN_COLUMN_IDS,
+} from "../utils/buildLeadListTableColumns";
 import {
   formatLeadDate,
   resolveAssignedAgentLabel,
@@ -32,11 +39,8 @@ export function useLeadsScreen() {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [status, setStatus] = useState("");
-  const [assignedAgentId, setAssignedAgentId] = useState("");
-  const [propertyId, setPropertyId] = useState("");
-  const [dateFrom, setDateFrom] = useState("");
-  const [dateTo, setDateTo] = useState("");
   const [page, setPage] = useState(DEFAULT_LEAD_LIST_PAGE);
+  const [sortConfig, setSortConfig] = useState<SortConfig>([]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -52,12 +56,8 @@ export function useLeadsScreen() {
       pageSize: DEFAULT_LEAD_LIST_PAGE_SIZE,
       status: status || undefined,
       search: debouncedSearch || undefined,
-      assignedAgentId: assignedAgentId.trim() || undefined,
-      propertyId: propertyId.trim() || undefined,
-      dateFrom: dateFrom || undefined,
-      dateTo: dateTo || undefined,
     }),
-    [page, status, debouncedSearch, assignedAgentId, propertyId, dateFrom, dateTo],
+    [page, status, debouncedSearch],
   );
 
   const {
@@ -79,6 +79,14 @@ export function useLeadsScreen() {
     });
   }, [isError, error, t, toast]);
 
+  const statusLabel = useCallback(
+    (statusValue: string) =>
+      LEAD_STATUSES.includes(statusValue as (typeof LEAD_STATUSES)[number])
+        ? tStatus(statusValue as (typeof LEAD_STATUSES)[number])
+        : statusValue,
+    [tStatus],
+  );
+
   const statusOptions = useMemo(
     () => [
       { value: "", label: t("list.filters.statusAll") },
@@ -90,7 +98,7 @@ export function useLeadsScreen() {
     [t, tStatus],
   );
 
-  const rows = useMemo(() => {
+  const rows = useMemo<LeadListRow[]>(() => {
     return (data?.items ?? []).map((lead) => ({
       id: lead.id,
       leadNumber: lead.lead_number,
@@ -99,19 +107,16 @@ export function useLeadsScreen() {
       status: lead.status,
       assignedAgent: resolveAssignedAgentLabel(lead),
       createdAtLabel: formatLeadDate(lead.created_at, locale),
+      createdAtSortValue: lead.created_at ?? "",
     }));
   }, [data?.items, locale]);
 
-  const pagination = data?.pagination;
+  const onSearchChange = useCallback((value: string) => {
+    setSearch(value);
+  }, []);
 
-  const onClearFilters = useCallback(() => {
-    setSearch("");
-    setDebouncedSearch("");
-    setStatus("");
-    setAssignedAgentId("");
-    setPropertyId("");
-    setDateFrom("");
-    setDateTo("");
+  const onStatusChange = useCallback((value: string) => {
+    setStatus(value);
     setPage(DEFAULT_LEAD_LIST_PAGE);
   }, []);
 
@@ -122,83 +127,118 @@ export function useLeadsScreen() {
     [router],
   );
 
-  return {
-    labels: {
-      pageTitle: t("pageTitle"),
-      pageSubtitle: t("pageSubtitle"),
-      tableTitle: t("list.tableTitle"),
-      searchPlaceholder: t("list.searchPlaceholder"),
-      clearSearch: tCommon("clearSearch"),
-      clearFilters: t("list.filters.clear"),
-      filterStatus: t("list.filters.status"),
-      filterAgent: t("list.filters.agent"),
-      filterAgentPlaceholder: t("list.filters.agentPlaceholder"),
-      filterDateFrom: t("list.filters.dateFrom"),
-      filterDateTo: t("list.filters.dateTo"),
-      filterProperty: t("list.filters.property"),
-      filterPropertyPlaceholder: t("list.filters.propertyPlaceholder"),
-      columns: {
-        leadNo: t("list.columns.leadNo"),
-        property: t("list.columns.property"),
-        customer: t("list.columns.customer"),
-        status: t("list.columns.status"),
-        assignedAgent: t("list.columns.assignedAgent"),
-        createdDate: t("list.columns.createdDate"),
-        actions: t("list.columns.actions"),
-      },
-      viewDetails: t("list.viewDetails"),
-      noDataTitle: t("list.noDataTitle"),
-      noDataDescription: t("list.noDataDescription"),
-      previous: t("list.pagination.previous"),
-      next: t("list.pagination.next"),
-      pageOf: pagination
-        ? t("list.pagination.pageOf", {
-            page: pagination.page,
-            totalPages: Math.max(pagination.totalPages, 1),
-          })
-        : "",
+  const onRowClick = useCallback(
+    (row: LeadListRow) => {
+      onOpenLead(row.id);
     },
-    statusOptions,
-    filters: {
+    [onOpenLead],
+  );
+
+  const onPageChange = useCallback((nextPage: number) => {
+    setPage(nextPage);
+  }, []);
+
+  const onSort = useCallback((next: SortConfig) => {
+    setSortConfig(next);
+  }, []);
+
+  const columnLabels = useMemo(
+    () => ({
+      leadNo: t("list.columns.leadNo"),
+      property: t("list.columns.property"),
+      customer: t("list.columns.customer"),
+      status: t("list.columns.status"),
+      assignedAgent: t("list.columns.assignedAgent"),
+      createdDate: t("list.columns.createdDate"),
+      actions: t("list.columns.actions"),
+    }),
+    [t],
+  );
+
+  const columns = useMemo(
+    () =>
+      buildLeadListTableColumns({
+        labels: columnLabels,
+        viewDetailsLabel: t("list.viewDetails"),
+        statusLabel,
+        onOpenLead,
+      }),
+    [columnLabels, onOpenLead, statusLabel, t],
+  );
+
+  const activeSortConfig = useMemo(
+    () =>
+      sortConfig.filter((rule) =>
+        columns.some((column) => column.id === rule.id && column.sortable),
+      ),
+    [columns, sortConfig],
+  );
+
+  const pagination = useMemo(() => {
+    const meta = data?.pagination;
+
+    if (!meta) {
+      return undefined;
+    }
+
+    return {
+      total: meta.total,
+      page: meta.page,
+      pageSize: meta.pageSize,
+      totalPages: meta.totalPages,
+      hasNext: meta.hasNext,
+      hasPrevious: meta.hasPrevious,
+      maxPageButtons: 5,
+      isLoading: isFetching,
+      onPageChange,
+    };
+  }, [data?.pagination, isFetching, onPageChange]);
+
+  const noDataFound = useMemo(
+    () => ({
+      title: t("list.noDataTitle"),
+      description: t("list.noDataDescription"),
+    }),
+    [t],
+  );
+
+  const pinnedColumns = useMemo(
+    () => ({
+      left: [...DEFAULT_LEAD_LIST_PINNED_COLUMNS.left],
+      right: [...DEFAULT_LEAD_LIST_PINNED_COLUMNS.right],
+    }),
+    [],
+  );
+
+  return {
+    pageTitle: t("pageTitle"),
+    pageSubtitle: t("pageSubtitle"),
+    listFilters: {
       search,
       status,
-      assignedAgentId,
-      propertyId,
-      dateFrom,
-      dateTo,
-      onSearchChange: setSearch,
-      onStatusChange: (value: string) => {
-        setStatus(value);
-        setPage(DEFAULT_LEAD_LIST_PAGE);
+      statusOptions,
+      labels: {
+        searchPlaceholder: t("list.searchPlaceholder"),
+        clearSearch: tCommon("clearSearch"),
+        filterStatus: t("list.filters.status"),
+        statusAll: t("list.filters.statusAll"),
       },
-      onAssignedAgentIdChange: (value: string) => {
-        setAssignedAgentId(value);
-        setPage(DEFAULT_LEAD_LIST_PAGE);
-      },
-      onPropertyIdChange: (value: string) => {
-        setPropertyId(value);
-        setPage(DEFAULT_LEAD_LIST_PAGE);
-      },
-      onDateFromChange: (value: string) => {
-        setDateFrom(value);
-        setPage(DEFAULT_LEAD_LIST_PAGE);
-      },
-      onDateToChange: (value: string) => {
-        setDateTo(value);
-        setPage(DEFAULT_LEAD_LIST_PAGE);
-      },
-      onClearFilters,
+      onSearchChange,
+      onStatusChange,
     },
-    rows,
-    statusLabel: (statusValue: string) =>
-      LEAD_STATUSES.includes(statusValue as (typeof LEAD_STATUSES)[number])
-        ? tStatus(statusValue as (typeof LEAD_STATUSES)[number])
-        : statusValue,
-    isLoading: isPending,
-    isFetching,
-    pagination,
-    page,
-    onPageChange: setPage,
-    onOpenLead,
+    leadList: {
+      data: rows,
+      columns,
+      sortConfig: activeSortConfig,
+      onSort,
+      pagination,
+      noDataFound,
+      pinnedColumns,
+      gridHiddenColumnIds: [...LEAD_LIST_GRID_HIDDEN_COLUMN_IDS],
+      listTitle: t("list.tableTitle"),
+      isLoading: isPending,
+      isFetching,
+      onRowClick,
+    },
   };
 }
