@@ -30,6 +30,7 @@ import { useInviteAgentByEmailModal } from "./useInviteAgentByEmailModal";
 import { useManualOnboardAgentModal } from "./useManualOnboardAgentModal";
 import { useDeleteAgentConfirm } from "./useDeleteAgentConfirm";
 import { useResendAgentInvitationConfirm } from "./useResendAgentInvitationConfirm";
+import { useUpdateAgentStatus } from "../mutations/agent.mutation";
 import {
   buildAgentListGridHiddenColumnIds,
   buildAgentListRequestParams,
@@ -50,6 +51,7 @@ export function useAgentsScreen() {
   const manualOnboardAgentModal = useManualOnboardAgentModal();
   const resendAgentConfirm = useResendAgentInvitationConfirm();
   const deleteAgentConfirm = useDeleteAgentConfirm();
+  const { mutate: updateStatus, isPending: isUpdatingStatus } = useUpdateAgentStatus();
 
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("");
@@ -102,6 +104,34 @@ export function useAgentsScreen() {
     });
   }, [t, toast]);
 
+  const onApproveAgent = useCallback(
+    (agent: Agent) => {
+      if (isUpdatingStatus) {
+        return;
+      }
+
+      updateStatus({
+        agentId: agent.id,
+        body: { status: "ACTIVE" },
+      });
+    },
+    [isUpdatingStatus, updateStatus],
+  );
+
+  const onDeclineAgent = useCallback(
+    (agent: Agent) => {
+      if (isUpdatingStatus) {
+        return;
+      }
+
+      updateStatus({
+        agentId: agent.id,
+        body: { status: "DECLINED" },
+      });
+    },
+    [isUpdatingStatus, updateStatus],
+  );
+
   const onResendInvitation = useCallback(
     (agent: Agent) => {
       resendAgentConfirm.openConfirm(agent);
@@ -128,9 +158,9 @@ export function useAgentsScreen() {
       canManageAgents
         ? {
             activate: onWorkflowActionPlaceholder,
-            approve: onWorkflowActionPlaceholder,
+            approve: onApproveAgent,
             deactivate: onWorkflowActionPlaceholder,
-            decline: onWorkflowActionPlaceholder,
+            decline: onDeclineAgent,
             grant_admin: onWorkflowActionPlaceholder,
             resend: onResendInvitation,
             revoke: onRevokeInvitation,
@@ -139,6 +169,8 @@ export function useAgentsScreen() {
         : {},
     [
       canManageAgents,
+      onApproveAgent,
+      onDeclineAgent,
       onRemoveAgent,
       onResendInvitation,
       onRevokeInvitation,

@@ -16,6 +16,8 @@ import {
   mapAgentInviteMutationFieldErrors,
   resolveAgentApiErrorMessage,
 } from "../utils/agentOnboardingErrors.utils";
+import { formatAgentStatusLabel } from "../utils/formatAgentStatusLabel";
+import { resolveInvitationFullName } from "../utils/resolveInvitationFullName";
 import { useAgentOnboardingForm } from "./useAgentOnboardingForm";
 
 type AgentInviteStep = "loading" | "error" | "form" | "passwordInstruction" | "active";
@@ -24,7 +26,7 @@ function buildInitialFormValues(
   invitation: AgentInvitationPreview,
 ): Partial<ReturnType<typeof useAgentOnboardingForm>["formState"]> {
   return {
-    fullName: invitation.fullName ?? "",
+    fullName: resolveInvitationFullName(invitation.fullName, invitation.email),
     email: invitation.email ?? "",
     position: invitation.position ?? "",
     serviceAreaValues:
@@ -193,12 +195,23 @@ export function useAgentInviteScreen() {
   }, [onboardingForm, t, tErrors, toast, token]);
 
   const onOpenPasswordSetup = useCallback(() => {
-    if (!resolvedPasswordSetupLink) {
+    const url = resolvedPasswordSetupLink?.trim();
+
+    if (!url) {
+      toast.error(t("missingSetupLinkTitle"), {
+        description: t("missingSetupLinkDescription"),
+      });
       return;
     }
 
-    router.push(resolvedPasswordSetupLink);
-  }, [resolvedPasswordSetupLink, router]);
+    const opened = window.open(url, "_blank", "noopener,noreferrer");
+
+    if (!opened) {
+      toast.error(t("openSetupLinkErrorTitle"), {
+        description: t("openSetupLinkErrorDescription"),
+      });
+    }
+  }, [resolvedPasswordSetupLink, t, toast]);
 
   const onCopyPasswordSetupLink = useCallback(async () => {
     if (!resolvedPasswordSetupLink) {
@@ -242,12 +255,15 @@ export function useAgentInviteScreen() {
       passwordInstructionHint: t("passwordInstructionHint"),
       setupLinkLabel: t("setupLinkLabel"),
       openPasswordSetup: t("openPasswordSetup"),
+      missingSetupLinkTitle: t("missingSetupLinkTitle"),
+      missingSetupLinkDescription: t("missingSetupLinkDescription"),
+      openSetupLinkErrorTitle: t("openSetupLinkErrorTitle"),
+      openSetupLinkErrorDescription: t("openSetupLinkErrorDescription"),
       copySetupLink: t("copySetupLink"),
       submitProfile: t("submitProfile"),
       submittingProfile: t("submittingProfile"),
       goToSignIn: t("goToSignIn"),
-      statusPendingPassword: t("statusPendingPassword"),
-      statusActive: t("statusActive"),
+      statusLabel: formatAgentStatusLabel(invitation?.status) || t("statusPendingPassword"),
     },
     handlers: {
       onSubmitProfile,

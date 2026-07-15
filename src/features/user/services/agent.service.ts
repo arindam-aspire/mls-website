@@ -30,8 +30,12 @@ import type {
   ManualOnboardAgentResponse,
   ManualOnboardAgentResult,
   NormalizedAgentListResponse,
+  AgentStatusUpdateRequest,
+  AgentStatusUpdateResponse,
+  AgentStatusUpdateResult,
 } from "../types/agent.types";
 import { parseAgentInviteLink, resolveAgentInviteLinkFromPayload } from "../utils/parseAgentInviteLink";
+import { resolveInvitationFullName } from "../utils/resolveInvitationFullName";
 
 export async function getAgentList(
   params: AgentListParams = {},
@@ -126,6 +130,7 @@ export async function validateAgentInvitation(
 
   return {
     ...response.data,
+    fullName: resolveInvitationFullName(response.data.fullName, response.data.email),
     passwordSetupLink: response.data.passwordSetupLink
       ? parseAgentInviteLink(response.data.passwordSetupLink)
       : response.data.passwordSetupLink,
@@ -186,6 +191,50 @@ export async function acceptAgentInvitation(
   return response.message ?? "Agent account activated successfully";
 }
 
+type ManualOnboardAgentApiData = ManualOnboardAgentData & {
+  temporary_password?: string | null;
+  passwordSetupLink?: string | null;
+  password_setup_link?: string | null;
+  invite_link?: string | null;
+};
+
+function resolveNonEmptyString(
+  ...candidates: Array<string | null | undefined>
+): string {
+  for (const candidate of candidates) {
+    if (typeof candidate === "string") {
+      const trimmed = candidate.trim();
+      if (trimmed) {
+        return trimmed;
+      }
+    }
+  }
+
+  return "";
+}
+
+function normalizeManualOnboardAgentData(
+  data: ManualOnboardAgentApiData,
+): ManualOnboardAgentData {
+  const temporaryPassword = resolveNonEmptyString(
+    data.temporaryPassword,
+    data.temporary_password,
+  );
+
+  const rawSetupLink = resolveNonEmptyString(
+    data.inviteLink,
+    data.passwordSetupLink,
+    data.password_setup_link,
+    data.invite_link,
+  );
+
+  return {
+    ...data,
+    temporaryPassword,
+    inviteLink: rawSetupLink ? parseAgentInviteLink(rawSetupLink) : null,
+  };
+}
+
 export async function manualOnboardAgent(
   body: ManualOnboardAgentRequest,
 ): Promise<ManualOnboardAgentResult> {
@@ -202,12 +251,9 @@ export async function manualOnboardAgent(
 
   return {
     message: response.message ?? "",
-    agent: {
-      ...response.data,
-      inviteLink: response.data.inviteLink
-        ? parseAgentInviteLink(response.data.inviteLink)
-        : response.data.inviteLink,
-    },
+    agent: normalizeManualOnboardAgentData(
+      response.data as ManualOnboardAgentApiData,
+    ),
   };
 }
 
@@ -230,6 +276,27 @@ export async function resendAgentInvitation(
       ...response.data,
       inviteLink: resolveAgentInviteLinkFromPayload(response.data),
     },
+  };
+}
+
+export async function updateAgentStatus(
+  agentId: string,
+  body: AgentStatusUpdateRequest,
+): Promise<AgentStatusUpdateResult> {
+  const response = await apiClient.request<AgentStatusUpdateResponse>({
+    endpoint: agentEndpoints.UPDATE_STATUS(agentId),
+    method: "PATCH",
+    auth: true,
+    body,
+  });
+
+  if (!response.success || !response.data) {
+    throw new Error(response.message ?? "Failed to update agent status");
+  }
+
+  return {
+    message: response.message ?? "",
+    agent: response.data,
   };
 }
 

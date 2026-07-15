@@ -8,6 +8,8 @@ export { mapAgentListStatusFilterToApiStatus } from "./mapAgentListStatusFilterT
 export { mapOwnerListStatusFilterToApiStatus } from "./mapOwnerListStatusFilterToApiStatus";
 export { mapAgentSummaryToKpiMetrics } from "./mapAgentSummaryToKpiMetrics";
 export { parseAgentInviteLink, resolveAgentInviteLinkFromPayload } from "./parseAgentInviteLink";
+export { resolveInvitationFullName } from "./resolveInvitationFullName";
+export { formatAgentStatusLabel } from "./formatAgentStatusLabel";
 export { formatManualOnboardServiceArea } from "./formatManualOnboardServiceArea";
 export {
   validateFullNameValue,

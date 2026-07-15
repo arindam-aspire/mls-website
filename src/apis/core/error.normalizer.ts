@@ -24,35 +24,45 @@ const NORMALIZED_MESSAGES: Record<
   SERVER_ERROR: "Something went wrong on the server. Please try again later.",
 };
 
-function extractResponseMessage(data: unknown): string | undefined {
-  if (!data || typeof data !== "object") {
-    return undefined;
-  }
-
-  const record = data as Record<string, unknown>;
-
-  if (typeof record.message === "string") {
+function extractMessageFromRecord(record: Record<string, unknown>): string | undefined {
+  if (typeof record.message === "string" && record.message.trim()) {
     return record.message;
   }
 
-  if (typeof record.detail === "string") {
+  if (typeof record.detail === "string" && record.detail.trim()) {
     return record.detail;
+  }
+
+  // FastAPI HTTPException: `{ detail: { code, message } }`
+  if (record.detail && typeof record.detail === "object") {
+    const detail = record.detail as Record<string, unknown>;
+    if (typeof detail.message === "string" && detail.message.trim()) {
+      return detail.message;
+    }
   }
 
   if (Array.isArray(record.errors) && record.errors.length > 0) {
     const first = record.errors[0];
-    if (typeof first === "string") {
+    if (typeof first === "string" && first.trim()) {
       return first;
     }
     if (first && typeof first === "object" && "message" in first) {
       const message = (first as { message?: unknown }).message;
-      if (typeof message === "string") {
+      if (typeof message === "string" && message.trim()) {
         return message;
       }
     }
   }
 
   return undefined;
+}
+
+function extractResponseMessage(data: unknown): string | undefined {
+  if (!data || typeof data !== "object") {
+    return undefined;
+  }
+
+  return extractMessageFromRecord(data as Record<string, unknown>);
 }
 
 function resolveNormalizedCode(status: number): "FORBIDDEN" | "SERVER_ERROR" | null {

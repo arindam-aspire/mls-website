@@ -111,7 +111,7 @@ export function AgentOnboardingForm({
       <Input
         type="text"
         name="fullName"
-        autoComplete="name"
+        autoComplete={isEmailReadOnly ? "off" : "name"}
         label={fullNameLabel}
         placeholder={fullNamePlaceholder}
         value={fullName}

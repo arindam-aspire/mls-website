@@ -110,6 +110,10 @@
       "passwordInstructionHint": "Open the setup link on this device or copy it to continue on another device.",
       "setupLinkLabel": "Password setup link",
       "openPasswordSetup": "Open password setup",
+      "missingSetupLinkTitle": "Password setup link unavailable",
+      "missingSetupLinkDescription": "The password setup URL was not returned. Please contact your agency admin for a new invitation.",
+      "openSetupLinkErrorTitle": "Could not open setup link",
+      "openSetupLinkErrorDescription": "Your browser blocked the new tab. Allow pop-ups for this site, or copy the link above.",
       "copySetupLink": "Copy link",
       "copySetupLinkSuccessTitle": "Setup link copied",
       "copySetupLinkSuccessDescription": "The password setup link is on your clipboard.",
@@ -128,10 +132,16 @@
       "description": "Set the password for your agent account to complete activation.",
       "missingTokenTitle": "Password setup link is invalid",
       "missingTokenDescription": "The activation token is missing. Please request a new link.",
-      "successTitle": "Account activated",
-      "successDescription": "Your password has been created. You can now sign in.",
+      "successTitle": "Password created",
+      "successDescription": "Your password has been created. Your account is pending admin approval before you can use agent features.",
       "errorTitle": "Could not activate account",
       "backToSignIn": "Back to sign in"
+    },
+    "statusUpdate": {
+      "successTitle": "Agent status updated",
+      "successDescription": "The agent list has been refreshed with the latest status.",
+      "errorTitle": "Could not update agent status",
+      "errorDescription": "Something went wrong while updating the agent status. Please try again."
     },
     "errors": {
       "duplicateEmail": "An agent with this email already exists.",

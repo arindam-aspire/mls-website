@@ -110,6 +110,10 @@
       "passwordInstructionHint": "Ouvrez le lien sur cet appareil ou copiez-le pour continuer sur un autre appareil.",
       "setupLinkLabel": "Lien de création du mot de passe",
       "openPasswordSetup": "Ouvrir la création du mot de passe",
+      "missingSetupLinkTitle": "Lien de création indisponible",
+      "missingSetupLinkDescription": "L’URL de création du mot de passe n’a pas été renvoyée. Contactez l’administrateur de votre agence pour une nouvelle invitation.",
+      "openSetupLinkErrorTitle": "Impossible d’ouvrir le lien",
+      "openSetupLinkErrorDescription": "Le navigateur a bloqué le nouvel onglet. Autorisez les pop-ups pour ce site, ou copiez le lien ci-dessus.",
       "copySetupLink": "Copier le lien",
       "copySetupLinkSuccessTitle": "Lien copié",
       "copySetupLinkSuccessDescription": "Le lien de création du mot de passe est dans le presse-papiers.",
@@ -128,10 +132,16 @@
       "description": "Définissez le mot de passe de votre compte agent pour terminer l'activation.",
       "missingTokenTitle": "Le lien de création du mot de passe est invalide",
       "missingTokenDescription": "Le jeton d'activation est manquant. Demandez un nouveau lien.",
-      "successTitle": "Compte activé",
-      "successDescription": "Votre mot de passe a été créé. Vous pouvez vous connecter.",
+      "successTitle": "Mot de passe créé",
+      "successDescription": "Votre mot de passe a été créé. Votre compte est en attente d'approbation par un administrateur avant d'utiliser les fonctions agent.",
       "errorTitle": "Impossible d'activer le compte",
       "backToSignIn": "Retour à la connexion"
+    },
+    "statusUpdate": {
+      "successTitle": "Statut de l'agent mis à jour",
+      "successDescription": "La liste des agents a été actualisée avec le dernier statut.",
+      "errorTitle": "Impossible de mettre à jour le statut",
+      "errorDescription": "Une erreur s'est produite lors de la mise à jour du statut de l'agent. Veuillez réessayer."
     },
     "errors": {
       "duplicateEmail": "Un agent avec cet e-mail existe déjà.",

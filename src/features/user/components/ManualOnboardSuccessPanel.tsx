@@ -48,12 +48,14 @@ export function ManualOnboardSuccessPanel({
       </div>
 
       <div className="space-y-3 p-4 sm:p-5">
-        <CopyLinkBar
-          label={passwordLabel}
-          value={temporaryPassword}
-          copyLabel={copyPasswordLabel}
-          onCopy={onCopyPassword}
-        />
+        {temporaryPassword.trim() ? (
+          <CopyLinkBar
+            label={passwordLabel}
+            value={temporaryPassword.trim()}
+            copyLabel={copyPasswordLabel}
+            onCopy={onCopyPassword}
+          />
+        ) : null}
         {setupLink ? (
           <CopyLinkBar
             label={setupLinkLabel ?? "Password setup link"}

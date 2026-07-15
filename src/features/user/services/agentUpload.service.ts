@@ -18,18 +18,29 @@ async function requestAgentIdentityDocumentPresignedUrl(
 ): Promise<UploadPresignedUrlResponse> {
   const isInvitationUpload = Boolean(invitationToken);
 
+  if (isInvitationUpload && invitationToken) {
+    return apiClient.request<UploadPresignedUrlResponse>({
+      endpoint: uploadEndpoints.INVITATION_DOCUMENT_UPLOAD,
+      method: "POST",
+      auth: false,
+      body: {
+        token: invitationToken,
+        file_name: file.name,
+        content_type: resolveIdentityDocumentContentType(file),
+        file_size: file.size,
+      },
+    });
+  }
+
   return apiClient.request<UploadPresignedUrlResponse>({
-    endpoint: isInvitationUpload
-      ? uploadEndpoints.INVITATION_PRESIGNED_URL
-      : uploadEndpoints.PRESIGNED_URL,
+    endpoint: uploadEndpoints.PRESIGNED_URL,
     method: "POST",
-    auth: !isInvitationUpload,
+    auth: true,
     body: {
       context: "agent_identity_document",
       file_name: file.name,
       content_type: resolveIdentityDocumentContentType(file),
       file_size: file.size,
-      ...(invitationToken ? { invitation_token: invitationToken } : {}),
     },
   });
 }
@@ -37,8 +48,8 @@ async function requestAgentIdentityDocumentPresignedUrl(
 /**
  * Uploads an agent identity document.
  *
- * - Invitation onboarding (unauthenticated): `POST /agents/invitations/presigned-url`
- *   with `invitation_token`.
+ * - Invitation onboarding (unauthenticated): `POST /agents/invitations/document-upload`
+ *   with `token`.
  * - Authenticated flows (e.g. manual onboard): `POST /uploads/presigned-url` with auth.
  */
 export async function uploadAgentIdentityDocument(

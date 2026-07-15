@@ -110,6 +110,10 @@
       "passwordInstructionHint": "Abra el enlace en este dispositivo o cópielo para continuar en otro.",
       "setupLinkLabel": "Enlace de configuración de contraseña",
       "openPasswordSetup": "Abrir configuración de contraseña",
+      "missingSetupLinkTitle": "Enlace de configuración no disponible",
+      "missingSetupLinkDescription": "No se devolvió la URL de configuración de contraseña. Contacte al administrador de su agencia para una nueva invitación.",
+      "openSetupLinkErrorTitle": "No se pudo abrir el enlace",
+      "openSetupLinkErrorDescription": "El navegador bloqueó la nueva pestaña. Permita ventanas emergentes para este sitio, o copie el enlace de arriba.",
       "copySetupLink": "Copiar enlace",
       "copySetupLinkSuccessTitle": "Enlace copiado",
       "copySetupLinkSuccessDescription": "El enlace de configuración de contraseña está en el portapapeles.",
@@ -128,10 +132,16 @@
       "description": "Establezca la contraseña de su cuenta de agente para completar la activación.",
       "missingTokenTitle": "El enlace de configuración de contraseña no es válido",
       "missingTokenDescription": "Falta el token de activación. Solicite un nuevo enlace.",
-      "successTitle": "Cuenta activada",
-      "successDescription": "Su contraseña se ha creado. Ya puede iniciar sesión.",
+      "successTitle": "Contraseña creada",
+      "successDescription": "Su contraseña se ha creado. Su cuenta está pendiente de aprobación del administrador antes de usar funciones de agente.",
       "errorTitle": "No se pudo activar la cuenta",
       "backToSignIn": "Volver a iniciar sesión"
+    },
+    "statusUpdate": {
+      "successTitle": "Estado del agente actualizado",
+      "successDescription": "La lista de agentes se actualizó con el estado más reciente.",
+      "errorTitle": "No se pudo actualizar el estado",
+      "errorDescription": "Algo salió mal al actualizar el estado del agente. Inténtelo de nuevo."
     },
     "errors": {
       "duplicateEmail": "Ya existe un agente con este correo electrónico.",

@@ -100,7 +100,7 @@ export function useManualOnboardAgentModal() {
   ]);
 
   const onCopyPassword = useCallback(async () => {
-    const temporaryPassword = onboardResult?.agent.temporaryPassword;
+    const temporaryPassword = onboardResult?.agent.temporaryPassword?.trim();
 
     if (!temporaryPassword) {
       return;
@@ -191,10 +191,11 @@ export function useManualOnboardAgentModal() {
             readyTitle: t("success.readyTitle"),
             successMessage,
             passwordLabel: t("success.temporaryPasswordLabel"),
-            temporaryPassword: onboardResult.agent.temporaryPassword,
+            temporaryPassword:
+              onboardResult.agent.temporaryPassword?.trim() ?? "",
             copyPasswordLabel: t("success.copyPassword"),
             setupLinkLabel: t("success.setupLinkLabel"),
-            setupLink: onboardResult.agent.inviteLink,
+            setupLink: onboardResult.agent.inviteLink?.trim() || null,
             copySetupLinkLabel: t("success.copySetupLink"),
             passwordHint: t("success.passwordHint"),
             onCopyPassword,

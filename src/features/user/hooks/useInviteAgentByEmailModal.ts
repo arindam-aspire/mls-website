@@ -9,10 +9,11 @@ import { useInviteAgentByEmail } from "../mutations/agent.mutation";
 import type { AgentInviteResult } from "../types/agent.types";
 import {
   mapAgentInviteMutationFieldErrors,
-  resolveAgentApiErrorMessage,
+  resolveBackendApiMessage,
 } from "../utils/agentOnboardingErrors.utils";
 import { validateInviteContactValue } from "../utils/validateOnboardAgentForms";
 import type { InviteAgentContactMethod } from "../components/InviteAgentContactForm";
+import type { ApiError } from "@/src/apis/core/error.normalizer";
 
 type InviteFormErrors = {
   email?: string;
@@ -39,6 +40,7 @@ export function useInviteAgentByEmailModal() {
   const [inviteResult, setInviteResult] = useState<AgentInviteResult | null>(null);
 
   const hasGeneratedInvite = inviteResult !== null;
+  const generateInFlightRef = useRef(false);
 
   const openModal = useCallback(() => {
     setIsOpen(true);
@@ -47,7 +49,7 @@ export function useInviteAgentByEmailModal() {
   const wasOpenRef = useRef(false);
 
   const closeModal = useCallback(() => {
-    if (isGenerating) {
+    if (isGenerating || generateInFlightRef.current) {
       return;
     }
 
@@ -118,7 +120,7 @@ export function useInviteAgentByEmailModal() {
   );
 
   const onGenerateInvite = useCallback(async () => {
-    if (isGenerating || hasGeneratedInvite) {
+    if (isGenerating || generateInFlightRef.current || hasGeneratedInvite) {
       return;
     }
 
@@ -151,6 +153,7 @@ export function useInviteAgentByEmailModal() {
     }
 
     setErrors(EMPTY_INVITE_FORM_ERRORS);
+    generateInFlightRef.current = true;
 
     try {
       const result = await inviteAgent(
@@ -159,32 +162,29 @@ export function useInviteAgentByEmailModal() {
           : { phone: e164Phone },
       );
       setInviteResult(result);
-    } catch (error) {
-      if (error && typeof error === "object" && "message" in error) {
-        const fieldErrors = mapAgentInviteMutationFieldErrors(
-          error as Parameters<typeof mapAgentInviteMutationFieldErrors>[0],
-          {
-            duplicateEmail: tErrors("duplicateEmail"),
-            duplicatePhone: tErrors("duplicatePhone"),
-          },
-        );
 
-        if (Object.keys(fieldErrors).length > 0) {
-          setErrors(fieldErrors);
-          return;
-        }
-
-        toast.error(t("errorTitle"), {
-          description: resolveAgentApiErrorMessage(error as Error, {
-            duplicateEmail: tErrors("duplicateEmail"),
-            duplicatePhone: tErrors("duplicatePhone"),
-            invalidInvitation: tErrors("invalidInvitation"),
-            expiredInvitation: tErrors("expiredInvitation"),
-            validationError: tErrors("validationError"),
-            generic: tErrors("generic"),
-          }),
-        });
+      const successMessage = result.message?.trim();
+      if (successMessage) {
+        toast.success(successMessage);
+      } else {
+        toast.success(t("generated.readyTitle"));
       }
+    } catch (error) {
+      const apiError = error as ApiError;
+      const fieldErrors = mapAgentInviteMutationFieldErrors(apiError, {
+        duplicateEmail: tErrors("duplicateEmail"),
+        duplicatePhone: tErrors("duplicatePhone"),
+      });
+
+      if (Object.keys(fieldErrors).length > 0) {
+        setErrors(fieldErrors);
+      }
+
+      toast.error(t("errorTitle"), {
+        description: resolveBackendApiMessage(error, tErrors("generic")),
+      });
+    } finally {
+      generateInFlightRef.current = false;
     }
   }, [
     contactMethod,
@@ -252,6 +252,7 @@ export function useInviteAgentByEmailModal() {
       setPhoneNationalNumber("");
       setErrors(EMPTY_INVITE_FORM_ERRORS);
       setInviteResult(null);
+      generateInFlightRef.current = false;
       resetInviteMutation();
     }
 

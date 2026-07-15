@@ -9,12 +9,15 @@ import {
   inviteAgentByEmail,
   manualOnboardAgent,
   resendAgentInvitation,
+  updateAgentStatus,
 } from "../services/agent.service";
-import type { AgentInviteRequest, ManualOnboardAgentRequest } from "../types/agent.types";
+import type {
+  AgentInviteRequest,
+  AgentStatusUpdateRequest,
+  ManualOnboardAgentRequest,
+} from "../types/agent.types";
 
 export function useInviteAgentByEmail() {
-  const t = useTranslations("user.agents.inviteByEmailModal");
-  const toast = useToast();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -24,11 +27,6 @@ export function useInviteAgentByEmail() {
         queryClient.invalidateQueries({ queryKey: ["agents", "summary"] }),
         queryClient.invalidateQueries({ queryKey: ["agents", "list"] }),
       ]);
-    },
-    onError: (error: ApiError) => {
-      toast.error(t("errorTitle"), {
-        description: error.message,
-      });
     },
   });
 }
@@ -74,6 +72,37 @@ export function useResendAgentInvitation() {
     onError: (error: ApiError) => {
       toast.error(t("errorTitle"), {
         description: error.message,
+      });
+    },
+  });
+}
+
+export function useUpdateAgentStatus() {
+  const t = useTranslations("user.agents.statusUpdate");
+  const toast = useToast();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      agentId,
+      body,
+    }: {
+      agentId: string;
+      body: AgentStatusUpdateRequest;
+    }) => updateAgentStatus(agentId, body),
+    onSuccess: async (result) => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["agents", "summary"] }),
+        queryClient.invalidateQueries({ queryKey: ["agents", "list"] }),
+      ]);
+
+      toast.success(t("successTitle"), {
+        description: result.message || t("successDescription"),
+      });
+    },
+    onError: (error: ApiError) => {
+      toast.error(t("errorTitle"), {
+        description: error.message || t("errorDescription"),
       });
     },
   });

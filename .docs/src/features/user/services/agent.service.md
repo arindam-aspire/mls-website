@@ -1,4 +1,4 @@
-# Agent service
+# `agent.service`
 
 **Source:** `src/features/user/services/agent.service.ts`
 
@@ -35,33 +35,15 @@ Returns `{ invite: AgentInviteData, message: string }`. Resolves the invitation 
 
 Returns `AgentInvitationPreview` including `status`, `formSubmittedAt`, and normalized `passwordSetupLink`.
 
-## `submitAgentInvitation`
-
-`POST /agents/invitations/submit` without auth. Body: profile payload (`token`, `fullName`, `email`, `phone`, optional `whatsappNumber`, `serviceArea`, optional `position`, optional `identityDocument`).
-
-Returns `{ status, passwordSetupLink }` with normalized setup link.
-
-## `setupAgentPassword`
-
-`POST /agents/password/setup` without auth. Body: `{ token, password }`.
-
-Returns success message string.
-
-## `acceptAgentInvitation`
-
-`POST /agents/invitations/accept` without auth. Body: `{ token, password }`. Legacy compatibility path retained.
-
-## `validateAgentInvitation`
-
-`GET /agents/invitations/validate?token=` without auth.
-
-Returns `AgentInvitationPreview` including `status`, `formSubmittedAt`, and normalized `passwordSetupLink`.
+`fullName` is passed through `resolveInvitationFullName` so an email-seeded backend name never populates the Full Name field.
 
 ## `submitAgentInvitation`
 
-`POST /agents/invitations/submit` without auth. Body: profile payload (`token`, `fullName`, `email`, `phone`, optional `whatsappNumber`, `serviceArea`, `position`, `identityDocument`).
+`POST /agents/onboarding` without auth (deployed path; local backends may also expose `/agents/invitations/submit` as an alias).
 
-Returns `{ status, passwordSetupLink }` with normalized setup link.
+Body: profile payload (`token`, `fullName`, `email`, `phone`, optional `whatsappNumber`, `serviceArea`, optional `position`, optional `identityDocument`).
+
+Returns `{ status, passwordSetupLink, … }` with normalized setup link. Backend ignores client `email` and binds identity to the invitation record.
 
 ## `setupAgentPassword`
 
@@ -77,13 +59,28 @@ Returns success message string.
 
 `POST /agents/manual-onboard` with auth. Body: `{ fullName, email, phone, whatsappNumber?, serviceArea, position?, identityDocument? }`.
 
-Returns `{ agent: ManualOnboardAgentData, message: string }` including `temporaryPassword` and optional `inviteLink`.
+Returns `{ agent: ManualOnboardAgentData, message: string }`.
+
+Normalizes success payload before returning:
+
+| Field | Sources (first non-empty wins) |
+| --- | --- |
+| `temporaryPassword` | `temporaryPassword`, `temporary_password` |
+| `inviteLink` | `inviteLink`, `passwordSetupLink`, `password_setup_link`, `invite_link` (then `parseAgentInviteLink`) |
+
+Empty temporary passwords are normalized to `""` so the success panel can hide the password `CopyLinkBar` instead of rendering a blank field.
 
 ## `resendAgentInvitation`
 
 `POST /agents/{agentId}/resend-invitation` with auth.
 
 Returns `{ invite: AgentInviteData, message: string }`. Resolves invitation URL via `resolveAgentInviteLinkFromPayload` (`invitation_url` preferred).
+
+## `updateAgentStatus`
+
+`PATCH /agents/{agentId}/status` with auth. Body: `{ status, reason? }` (e.g. `ACTIVE`, `DECLINED`).
+
+Returns `{ agent, message }`. Used by admin Approve / Decline; list + summary queries are invalidated by the mutation hook.
 
 ## `deleteAgent`
 
@@ -97,7 +94,7 @@ Returns `{ message: string }`.
 
 | Context | Endpoint | Auth |
 | --- | --- | --- |
-| Invitation onboarding (`invitationToken` set) | `POST /agents/invitations/presigned-url` | No — sends `invitation_token` |
+| Invitation onboarding (`invitationToken` set) | `POST /agents/invitations/document-upload` | No — sends `token` |
 | Authenticated (manual onboard) | `POST /uploads/presigned-url` | Yes |
 
 Response fields: `upload_url` (PUT/POST to S3), `object_key` (submit reference), `signed_read_url` (preview). Legacy `file_url` still accepted as fallback.
@@ -118,3 +115,4 @@ Response fields: `upload_url` (PUT/POST to S3), `object_key` (submit reference),
 - Endpoint: `src/apis/endpoints/agentEndpoints.ts`
 - Types: `src/features/user/types/agent.types.ts`
 - Identity document validation: `src/lib/validateIdentityDocumentFile.ts` (5 MB max)
+- Full name hygiene: `src/features/user/utils/resolveInvitationFullName.ts`

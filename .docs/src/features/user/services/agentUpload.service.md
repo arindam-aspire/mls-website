@@ -16,21 +16,29 @@ Presigned upload helper for agent identity documents. Splits invitation (unauthe
 
 ### Invitation onboarding (no auth)
 
-`POST /agents/invitations/presigned-url`
+`POST /agents/invitations/document-upload`
+
+```json
+{
+  "token": "<invitation token>",
+  "file_name": "id.pdf",
+  "content_type": "application/pdf",
+  "file_size": 102400
+}
+```
+
+### Authenticated (manual onboard)
+
+`POST /uploads/presigned-url` with Bearer auth:
 
 ```json
 {
   "context": "agent_identity_document",
   "file_name": "id.pdf",
   "content_type": "application/pdf",
-  "file_size": 102400,
-  "invitation_token": "<token>"
+  "file_size": 102400
 }
 ```
-
-### Authenticated (manual onboard)
-
-`POST /uploads/presigned-url` with Bearer auth (same body without `invitation_token`).
 
 ### Response `data`
 
@@ -48,6 +56,6 @@ Presigned upload helper for agent identity documents. Splits invitation (unauthe
 
 ## Dependencies
 
-- `uploadEndpoints.INVITATION_PRESIGNED_URL` / `PRESIGNED_URL`
+- `uploadEndpoints.INVITATION_DOCUMENT_UPLOAD` / `PRESIGNED_URL`
 - `resolveUploadedFileUrl`, `putFileToPresignedUrl`
 - Consumer: `useAgentOnboardingForm`

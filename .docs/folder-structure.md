@@ -209,6 +209,7 @@ mls_website/
 │       │   │   │   ├── useAgentsScreen.md
 │       │   │   │   ├── useOwnersScreen.md
 │       │   │   │   ├── useAgentOnboardingForm.md
+│       │   │   │   ├── useAgentInviteScreen.md
 │       │   │   │   ├── useInviteAgentByEmailModal.md
 │       │   │   │   ├── useResendAgentInvitationConfirm.md
 │       │   │   │   ├── useDeleteAgentConfirm.md
@@ -225,6 +226,7 @@ mls_website/
 │       │   │   │   ├── agent.mutation.md
 │       │   │   │   └── index.md
 │       │   │   ├── screens/
+│       │   │   │   ├── AgentInviteScreen.md
 │       │   │   │   ├── AgentsScreen.md
 │       │   │   │   └── OwnersScreen.md
 │       │   │   ├── modals/
@@ -256,6 +258,8 @@ mls_website/
 │       │   │       ├── mapAgentListStatusFilterToApiStatus.md
 │       │   │       ├── mapAgentSummaryToKpiMetrics.md
 │       │   │       ├── parseAgentInviteLink.md
+│       │   │       ├── resolveInvitationFullName.md
+│       │   │       ├── formatAgentStatusLabel.md
 │       │   │       └── index.md
 │       │   └── property/
 │       │       ├── components/
@@ -872,6 +876,8 @@ mls_website/
 │   │   │       ├── mapOwnerListStatusFilterToApiStatus.ts
 │   │   │       ├── mapAgentSummaryToKpiMetrics.ts
 │   │   │       ├── parseAgentInviteLink.ts
+│   │   │       ├── resolveInvitationFullName.ts
+│   │   │       ├── formatAgentStatusLabel.ts
 │   │   │       ├── validateOnboardAgentForms.ts
 │   │   │       └── index.ts
 │   │   └── property/

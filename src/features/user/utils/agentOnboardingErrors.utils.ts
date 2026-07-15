@@ -28,24 +28,53 @@ function extractDetailsMessage(details: unknown): string | undefined {
 
   const record = details as Record<string, unknown>;
 
-  if (typeof record.message === "string") {
+  if (typeof record.message === "string" && record.message.trim()) {
     return record.message;
   }
 
-  if (typeof record.detail === "string") {
+  if (typeof record.detail === "string" && record.detail.trim()) {
     return record.detail;
+  }
+
+  // FastAPI HTTPException payload nested under `detail`
+  if (record.detail && typeof record.detail === "object") {
+    const detail = record.detail as Record<string, unknown>;
+    if (typeof detail.message === "string" && detail.message.trim()) {
+      return detail.message;
+    }
   }
 
   if (Array.isArray(record.errors) && record.errors.length > 0) {
     const first = record.errors[0];
-    if (typeof first === "string") {
+    if (typeof first === "string" && first.trim()) {
       return first;
     }
     if (first && typeof first === "object" && "message" in first) {
       const message = (first as { message?: unknown }).message;
-      if (typeof message === "string") {
+      if (typeof message === "string" && message.trim()) {
         return message;
       }
+    }
+  }
+
+  return undefined;
+}
+
+function extractErrorCode(details: unknown): string | undefined {
+  if (!details || typeof details !== "object") {
+    return undefined;
+  }
+
+  const record = details as Record<string, unknown>;
+
+  if (typeof record.code === "string") {
+    return record.code;
+  }
+
+  if (record.detail && typeof record.detail === "object") {
+    const detail = record.detail as Record<string, unknown>;
+    if (typeof detail.code === "string") {
+      return detail.code;
     }
   }
 
@@ -60,13 +89,16 @@ export function resolveAgentApiErrorKey(message: string): AgentApiErrorKey {
   const normalized = normalizeMessage(message);
 
   if (
-    normalized.includes("duplicate") &&
+    (normalized.includes("duplicate") || normalized.includes("already exists")) &&
     (normalized.includes("email") || normalized.includes("e-mail"))
   ) {
     return "duplicateEmail";
   }
 
-  if (normalized.includes("duplicate") && normalized.includes("phone")) {
+  if (
+    (normalized.includes("duplicate") || normalized.includes("already exists")) &&
+    normalized.includes("phone")
+  ) {
     return "duplicatePhone";
   }
 
@@ -88,18 +120,41 @@ export function resolveAgentApiErrorKey(message: string): AgentApiErrorKey {
   return "generic";
 }
 
+/**
+ * Prefer the API `message` field; fall back only when it is missing/blank.
+ */
+export function resolveBackendApiMessage(
+  error: ApiError | Error | unknown,
+  fallback: string,
+): string {
+  if (error && typeof error === "object") {
+    const detailsMessage =
+      "details" in error ? extractDetailsMessage((error as ApiError).details) : undefined;
+    const directMessage =
+      "message" in error && typeof (error as { message?: unknown }).message === "string"
+        ? (error as { message: string }).message.trim()
+        : "";
+
+    const resolved = (detailsMessage ?? directMessage).trim();
+    if (resolved && !/^request failed with status code \d+$/i.test(resolved)) {
+      return resolved;
+    }
+  }
+
+  return fallback;
+}
+
 export function resolveAgentApiErrorMessage(
   error: ApiError | Error,
   labels: Record<AgentApiErrorKey, string>,
 ): string {
-  const message =
-    "message" in error && typeof error.message === "string"
-      ? error.message
-      : labels.generic;
-  const detailsMessage =
-    "details" in error ? extractDetailsMessage(error.details) : undefined;
-  const resolvedMessage = detailsMessage ?? message;
+  const resolvedMessage = resolveBackendApiMessage(error, labels.generic);
   const key = resolveAgentApiErrorKey(resolvedMessage);
+
+  // Prefer the backend text when we only have a generic classification.
+  if (key === "generic") {
+    return resolvedMessage || labels.generic;
+  }
 
   return labels[key] ?? resolvedMessage ?? labels.generic;
 }
@@ -111,6 +166,14 @@ export function mapAgentInviteMutationFieldErrors(
     duplicatePhone: string;
   },
 ): AgentOnboardingFieldErrors {
+  const code = extractErrorCode(error.details)?.toUpperCase();
+  if (code === "DUPLICATE_EMAIL") {
+    return { email: labels.duplicateEmail };
+  }
+  if (code === "DUPLICATE_PHONE") {
+    return { phone: labels.duplicatePhone };
+  }
+
   const message = extractDetailsMessage(error.details) ?? error.message;
   const key = resolveAgentApiErrorKey(message);
 

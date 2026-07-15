@@ -59,6 +59,17 @@ _N/A._
 
 # Flow Description
 
+`normalizeAxiosError` maps Axios failures to `ApiError`.
+
+Response message extraction (`extractResponseMessage`) reads, in order:
+
+1. Top-level `message` (string)
+2. Top-level `detail` (string)
+3. FastAPI `detail.message` when `detail` is an object (`{ code, message }`)
+4. First entry in `errors[]`
+
+For 4xx conflicts (e.g. 409), this yields the backend text such as `"An account with this email already exists"` instead of Axios’s `"Request failed with status code 409"`.
+
 See source in `src/apis/core/error.normalizer.ts` for step-by-step behavior aligned with [application.md](../../application.md) (path relative may vary).
 
 # Dependencies

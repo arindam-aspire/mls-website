@@ -8,7 +8,7 @@ TypeScript shapes for `GET /agents` and `GET /agents/summary` responses.
 
 | Type | Role |
 | --- | --- |
-| `AgentListItem` | Single agent row (`data.agents[]`) |
+| `AgentListItem` | Single agent row (`data.agents[]`); includes `invitedAt`, `formSubmittedAt`, `passwordSetAt?`, `reviewedAt` for Activity Date |
 | `AgentListPagination` | Page metadata |
 | `AgentListParams` | Optional query overrides (`page`, `pageSize`, `sortBy`, `sortOrder`, `search`, `status`) |
 | `AgentListResponse` | Raw API envelope |

@@ -18,6 +18,8 @@ export function filterAgentsByStatus(
         return normalizedStatus === "INACTIVE";
       case "invited":
         return Boolean(agent.invitedAt) && !agent.reviewedAt;
+      case "pendingPassword":
+        return normalizedStatus === "PENDING_PASSWORD";
       case "pending":
         return (
           normalizedStatus === "PENDING_REVIEW" ||

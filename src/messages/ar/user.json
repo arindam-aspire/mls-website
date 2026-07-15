@@ -110,6 +110,10 @@
       "passwordInstructionHint": "افتح رابط الإعداد على هذا الجهاز أو انسخه للمتابعة على جهاز آخر.",
       "setupLinkLabel": "رابط إنشاء كلمة المرور",
       "openPasswordSetup": "فتح إنشاء كلمة المرور",
+      "missingSetupLinkTitle": "رابط إنشاء كلمة المرور غير متوفر",
+      "missingSetupLinkDescription": "لم يتم إرجاع رابط إنشاء كلمة المرور. يرجى التواصل مع مسؤول الوكالة للحصول على دعوة جديدة.",
+      "openSetupLinkErrorTitle": "تعذر فتح رابط الإنشاء",
+      "openSetupLinkErrorDescription": "حظر المتصفح التبويب الجديد. اسمح بالنوافذ المنبثقة لهذا الموقع، أو انسخ الرابط أعلاه.",
       "copySetupLink": "نسخ الرابط",
       "copySetupLinkSuccessTitle": "تم نسخ الرابط",
       "copySetupLinkSuccessDescription": "رابط إنشاء كلمة المرور في الحافظة.",
@@ -128,10 +132,16 @@
       "description": "عيّن كلمة المرور لحساب الوكيل لإكمال التفعيل.",
       "missingTokenTitle": "رابط إنشاء كلمة المرور غير صالح",
       "missingTokenDescription": "رمز التفعيل مفقود. يرجى طلب رابط جديد.",
-      "successTitle": "تم تفعيل الحساب",
-      "successDescription": "تم إنشاء كلمة المرور. يمكنك تسجيل الدخول الآن.",
+      "successTitle": "تم إنشاء كلمة المرور",
+      "successDescription": "تم إنشاء كلمة المرور. حسابك بانتظار موافقة المسؤول قبل استخدام ميزات الوكيل.",
       "errorTitle": "تعذر تفعيل الحساب",
       "backToSignIn": "العودة لتسجيل الدخول"
+    },
+    "statusUpdate": {
+      "successTitle": "تم تحديث حالة الوكيل",
+      "successDescription": "تم تحديث قائمة الوكلاء بأحدث حالة.",
+      "errorTitle": "تعذر تحديث حالة الوكيل",
+      "errorDescription": "حدث خطأ أثناء تحديث حالة الوكيل. يرجى المحاولة مرة أخرى."
     },
     "errors": {
       "duplicateEmail": "يوجد وكيل بهذا البريد الإلكتروني بالفعل.",

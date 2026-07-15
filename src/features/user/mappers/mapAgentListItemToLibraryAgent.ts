@@ -1,40 +1,55 @@
 import {
   mapAgentApiListingToAgent,
-  mapAgentApiStatus,
   type Agent,
   type AgentStatus,
   type AgentStatusKey,
 } from "@abdoun/abdoun-library";
 import type { AgentListItem } from "../types/agent.types";
+import { formatAgentStatusLabel } from "../utils/formatAgentStatusLabel";
 
-const AGENT_STATUS_KEY_OVERRIDES: Record<string, AgentStatusKey> = {
+/**
+ * Library badge/workflow keys. Label always comes from the backend status string —
+ * never derive Active from password setup or onboarding completion.
+ *
+ * Upstream suggestion for `@abdoun/abdoun-library`: add `PENDING_PASSWORD` and
+ * `PENDING_REVIEW` to `AGENT_API_STATUS_KEY_MAP` (both → `pending`).
+ */
+const AGENT_STATUS_KEY_BY_API: Record<string, AgentStatusKey> = {
+  ACTIVE: "active",
+  INACTIVE: "inactive",
+  PENDING: "pending",
+  PENDING_APPROVAL: "pending",
   PENDING_REVIEW: "pending",
+  PENDING_PASSWORD: "pending",
+  SUSPENDED: "suspended",
+  DECLINED: "declined",
+  INVITED: "invited",
 };
 
+/**
+ * Prefer the most recent meaningful lifecycle timestamp for the Activity Date column.
+ * After onboarding submit the invite is marked used, so `invitedAt` alone used to disappear
+ * from list payloads that only looked up unused invites — fall back through review / password /
+ * form submit / invite times.
+ */
 export function resolveAgentActivityDate(agent: AgentListItem): string {
-  return agent.reviewedAt ?? agent.invitedAt ?? "";
+  return (
+    agent.reviewedAt?.trim() ||
+    agent.passwordSetAt?.trim() ||
+    agent.formSubmittedAt?.trim() ||
+    agent.invitedAt?.trim() ||
+    ""
+  );
 }
 
-function mapAgentListStatus(status: string): AgentStatus {
+export function mapAgentListStatus(status: string): AgentStatus {
   const normalized = status.trim().toUpperCase();
-  const mapped = mapAgentApiStatus(status);
-  const overrideKey = AGENT_STATUS_KEY_OVERRIDES[normalized];
+  const key = AGENT_STATUS_KEY_BY_API[normalized] ?? "inactive";
 
-  if (normalized === "PENDING_PASSWORD") {
-    return {
-      key: "pending",
-      label: mapped.label,
-    };
-  }
-
-  if (overrideKey) {
-    return {
-      key: overrideKey,
-      label: mapped.label,
-    };
-  }
-
-  return mapped;
+  return {
+    key,
+    label: formatAgentStatusLabel(normalized || status),
+  };
 }
 
 export function mapAgentListItemToLibraryAgent(agent: AgentListItem): Agent {
@@ -45,7 +60,7 @@ export function mapAgentListItemToLibraryAgent(agent: AgentListItem): Agent {
     phone: agent.phone,
     serviceArea: agent.serviceArea,
     status: agent.status,
-    reviewedAt: agent.reviewedAt ?? agent.invitedAt ?? "",
+    reviewedAt: resolveAgentActivityDate(agent),
   });
 
   return {

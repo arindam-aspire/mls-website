@@ -6,9 +6,9 @@ React Query mutations for agent admin APIs.
 
 ## `useInviteAgentByEmail`
 
-- **Mutation:** `inviteAgentByEmail` → `POST /agents/invite` with `{ email }`.
+- **Mutation:** `inviteAgentByEmail` → `POST /agents/invite` with `{ email }` or `{ phone }`.
 - **On success:** invalidates `["agents", "summary"]` and `["agents", "list"]`.
-- **On error:** error toast (`user.agents.inviteByEmailModal.errorTitle`).
+- **Toasts:** none — `useInviteAgentByEmailModal` owns a single success/error toast per click (avoids duplicate toasts from mutation + hook).
 
 ## `useManualOnboardAgent`
 
@@ -19,9 +19,14 @@ React Query mutations for agent admin APIs.
 ## `useResendAgentInvitation`
 
 - **Mutation:** `resendAgentInvitation` → `POST /agents/{agentId}/resend-invitation`.
-- **On success:** invalidates agent summary and list queries.
+- **On success:** invalidates agent summary and list queries; success toast (`user.agents.resendConfirm.successTitle`).
 - **On error:** error toast (`user.agents.resendConfirm.errorTitle`).
-- **On success:** success toast (`user.agents.resendConfirm.successTitle`).
+
+## `useUpdateAgentStatus`
+
+- **Mutation:** `updateAgentStatus` → `PATCH /agents/{agentId}/status` with `{ status, reason? }`.
+- **On success:** invalidates `["agents", "summary"]` and `["agents", "list"]` so the UI refreshes to the backend status (e.g. Active after admin approve).
+- **Toasts:** success/error under `user.agents.statusUpdate`.
 
 ## `useDeleteAgent`
 

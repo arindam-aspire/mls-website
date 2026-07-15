@@ -66,7 +66,9 @@ Optional filters (from `AgentListFilters`):
 | `resend` | Opens resend `ConfirmModal` | `POST /agents/{id}/resend-invitation` |
 | `revoke` | Opens delete confirm (revoke copy) | `DELETE /agents/{id}` |
 | `remove` | Opens delete confirm (remove copy) | `DELETE /agents/{id}` |
-| `activate`, `approve`, `deactivate`, `decline`, `grant_admin` | Coming-soon toast | — |
+| `activate`, `deactivate`, `grant_admin` | Coming-soon toast | — |
+| `approve` | `PATCH /agents/{id}/status` `{ status: "ACTIVE" }` via `useUpdateAgentStatus` (invalidates list + summary) |
+| `decline` | `PATCH /agents/{id}/status` `{ status: "DECLINED" }` via `useUpdateAgentStatus` |
 
 # Dependencies
 

@@ -11,6 +11,7 @@ export type AgentListItem = {
   invitedAt: string | null;
   invitedBy: string | null;
   formSubmittedAt: string | null;
+  passwordSetAt?: string | null;
   reviewedAt: string | null;
   declineReason: string | null;
 };
@@ -214,8 +215,11 @@ export type ManualOnboardAgentData = {
   serviceArea: string;
   position?: string | null;
   status: string;
+  /** One-time password from the API; empty string when the backend omits it. */
   temporaryPassword: string;
+  /** Password setup / invite URL (`inviteLink` or `passwordSetupLink` from the API). */
   inviteLink?: string | null;
+  passwordSetupLink?: string | null;
 };
 
 export type ManualOnboardAgentResult = {
@@ -243,6 +247,24 @@ export type DeleteAgentResponse = {
   success: boolean;
   message: string | null;
   data: unknown;
+  error: unknown;
+  meta: Record<string, unknown>;
+};
+
+export type AgentStatusUpdateRequest = {
+  status: string;
+  reason?: string;
+};
+
+export type AgentStatusUpdateResult = {
+  message: string;
+  agent: AgentListItem;
+};
+
+export type AgentStatusUpdateResponse = {
+  success: boolean;
+  message: string | null;
+  data: AgentListItem | null;
   error: unknown;
   meta: Record<string, unknown>;
 };

@@ -38,10 +38,12 @@ export const agentEndpoints = {
   INVITE: "/agents/invite",
   VALIDATE_INVITATION: (token: string) =>
     `/agents/invitations/validate?token=${encodeURIComponent(token)}`,
-  SUBMIT_INVITATION: "/agents/invitations/submit",
+  /** Public profile submit — deployed API path (`/invitations/submit` is an optional alias). */
+  SUBMIT_INVITATION: "/agents/onboarding",
   ACCEPT_INVITATION: "/agents/invitations/accept",
   PASSWORD_SETUP: "/agents/password/setup",
   MANUAL_ONBOARD: "/agents/manual-onboard",
   RESEND_INVITATION: (agentId: string) => `/agents/${agentId}/resend-invitation`,
+  UPDATE_STATUS: (agentId: string) => `/agents/${agentId}/status`,
   DELETE: (agentId: string) => `/agents/${agentId}`,
 } as const;

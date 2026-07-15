@@ -18,7 +18,7 @@ See `AgentOnboardingFormProps`. Notable flags:
 
 | Prop | Behavior |
 | --- | --- |
-| `isEmailReadOnly` | `readOnly` input; no `onChange`; muted text |
+| `isEmailReadOnly` | `readOnly` input; muted text; Full Name uses `autoComplete="off"` to avoid browser filling the invite email into the name field |
 | Position / identity | Not `isRequired` |
 
 ## UI Details

@@ -8,7 +8,6 @@ import { cn } from "@/src/lib/cn";
 
 export function AgentInviteScreen() {
   const {
-    invitation,
     step,
     validationError,
     submitError,
@@ -18,11 +17,6 @@ export function AgentInviteScreen() {
     labels,
     handlers,
   } = useAgentInviteScreen();
-
-  const statusLabel =
-    invitation?.status?.trim().toUpperCase() === "ACTIVE"
-      ? labels.statusActive
-      : labels.statusPendingPassword;
 
   return (
     <main className="min-h-[calc(100vh-5rem)] bg-page px-4 py-10 sm:px-6 lg:px-8">
@@ -63,32 +57,41 @@ export function AgentInviteScreen() {
         ) : step === "passwordInstruction" ? (
           <div className="flex flex-col gap-5">
             <div className="rounded-lg border border-secondary/15 bg-page/60 p-4">
-              <p className="text-sm font-medium text-text">{statusLabel}</p>
+              <p className="text-sm font-medium text-text">{labels.statusLabel}</p>
               <p className="mt-2 text-sm text-muted">{labels.passwordInstructionDescription}</p>
               <p className="mt-2 text-sm text-muted">{labels.passwordInstructionHint}</p>
             </div>
 
             {resolvedPasswordSetupLink ? (
-              <CopyLinkBar
-                label={labels.setupLinkLabel}
-                value={resolvedPasswordSetupLink}
-                copyLabel={labels.copySetupLink}
-                onCopy={handlers.onCopyPasswordSetupLink}
-              />
-            ) : null}
+              <>
+                <CopyLinkBar
+                  label={labels.setupLinkLabel}
+                  value={resolvedPasswordSetupLink}
+                  copyLabel={labels.copySetupLink}
+                  onCopy={handlers.onCopyPasswordSetupLink}
+                />
 
-            <Button
-              type="button"
-              color="primary"
-              size="lg"
-              fullWidth
-              className={cn("font-semibold")}
-              iconStart={<KeyRound className="size-5" aria-hidden />}
-              onClick={handlers.onOpenPasswordSetup}
-              disabled={!resolvedPasswordSetupLink}
-            >
-              {labels.openPasswordSetup}
-            </Button>
+                <Button
+                  type="button"
+                  color="primary"
+                  size="lg"
+                  fullWidth
+                  className={cn("font-semibold")}
+                  iconStart={<KeyRound className="size-5" aria-hidden />}
+                  onClick={handlers.onOpenPasswordSetup}
+                >
+                  {labels.openPasswordSetup}
+                </Button>
+              </>
+            ) : (
+              <div className="flex gap-3 rounded-lg border border-danger/20 bg-danger/5 p-4 text-danger">
+                <XCircle className="mt-0.5 size-5 shrink-0" aria-hidden />
+                <div>
+                  <p className="font-medium">{labels.missingSetupLinkTitle}</p>
+                  <p className="mt-1 text-sm">{labels.missingSetupLinkDescription}</p>
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <div className="flex flex-col gap-5">
