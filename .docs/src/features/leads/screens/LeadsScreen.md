@@ -6,14 +6,13 @@ Route-level list UI for lead management. Used by `app/[locale]/(main)/leads/page
 
 ### Responsibilities
 
-- Render page title, filters, and lead table / mobile cards.
-- Show skeleton while the first page loads.
-- Delegate all data and filter state to `useLeadsScreen`.
+- Render page title / subtitle and `LeadList` (same layout shell as Agents).
+- Delegate filters, table columns, sort, and pagination to `useLeadsScreen`.
 
 ### Imports
 
-- `useLeadsScreen`, `LeadListFilters`, `LeadListTable`, `LeadsScreenSkeleton`
-- UI: `Card`, typography helpers
+- `useLeadsScreen`, `LeadList`
+- Typography helpers (`headingPageClasses`, `bodyLargeTextClasses`)
 
 ### Exports
 
@@ -21,7 +20,7 @@ Route-level list UI for lead management. Used by `app/[locale]/(main)/leads/page
 
 ### State Management
 
-None locally — all in `useLeadsScreen` (React Query + local filter state).
+None locally — all in `useLeadsScreen` (React Query + local filter/sort/page state).
 
 ### API Usage
 
@@ -29,7 +28,7 @@ Indirect: `GET /leads` via `getLeadList`.
 
 ### Navigation
 
-Row action → `/leads/{id}`.
+Row click / View details → `/leads/{id}`.
 
 ### Props / Parameters
 
@@ -37,22 +36,23 @@ None.
 
 ### Actions / Inputs
 
-Search, status, agent id, date from/to, property id, clear filters, pagination, view details.
+Search, status filter, column sort, numbered pagination, view details / row click.
 
 ### UI Details
 
-Mobile-first cards under `md`, table from `md+`. Cards `rounded-xl`, controls `rounded-lg`. Semantic tokens.
+Page layout mirrors Agents (`flex … gap-2 md:gap-4 lg:gap-6`). List shell uses library `AgentListView` with agent-style surface card, numbered pagination (`maxPageButtons: 5`), and generic mobile cards.
 
 ### Flow Description
 
 1. Screen mounts → query list with refetch interval.
 2. User filters → page resets → query key changes.
-3. User opens row → router push detail.
+3. User changes page via library pagination → `onPageChange`.
+4. User opens row → router push detail.
 
 ### Dependencies
 
-`useLeadsScreen`, list components.
+`useLeadsScreen`, `LeadList`.
 
 ### Notes
 
-Feature-local table until library `LeadListView` ships (see Required abdoun-library Changes in PR notes).
+Table/pagination come from `@abdoun/abdoun-library` `AgentListView` (generic mode), same component Agents use.

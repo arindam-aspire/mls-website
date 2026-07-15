@@ -8,6 +8,7 @@ Lead management for agency admins, agents, and super admins under `/leads`.
 - **Screens** render layout and bind hook return values to presentational components / modals.
 - **Services** call `/api/v1/leads*` via `apiClient`.
 - **Mutations** toast + invalidate `["leads", …]` query keys.
+- **List UI** reuses library `AgentListView` (same table + numbered pagination as the Agents page) via `LeadList`.
 
 ## Routes
 

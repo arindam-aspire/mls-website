@@ -1,111 +1,71 @@
 "use client";
 
-import { Button, Input, SearchInput, Select } from "@/src/components/ui";
+import { SearchInput, SelectDropdown } from "@/src/components/ui";
+import { cn } from "@/src/lib/cn";
+
+const searchFieldClassName = "w-full sm:max-w-sm md:max-w-md";
+const statusFieldClassName =
+  "w-full min-w-0 flex-1 sm:w-auto sm:min-w-[11.5rem] md:min-w-[13rem] lg:min-w-[14.5rem]";
 
 export type LeadListFiltersProps = {
   search: string;
   status: string;
-  assignedAgentId: string;
-  propertyId: string;
-  dateFrom: string;
-  dateTo: string;
   statusOptions: { value: string; label: string }[];
   labels: {
     searchPlaceholder: string;
     clearSearch: string;
     filterStatus: string;
-    filterAgent: string;
-    filterAgentPlaceholder: string;
-    filterDateFrom: string;
-    filterDateTo: string;
-    filterProperty: string;
-    filterPropertyPlaceholder: string;
-    clearFilters: string;
+    statusAll: string;
   };
   onSearchChange: (value: string) => void;
   onStatusChange: (value: string) => void;
-  onAssignedAgentIdChange: (value: string) => void;
-  onPropertyIdChange: (value: string) => void;
-  onDateFromChange: (value: string) => void;
-  onDateToChange: (value: string) => void;
-  onClearFilters: () => void;
+  className?: string;
 };
 
 export function LeadListFilters({
   search,
   status,
-  assignedAgentId,
-  propertyId,
-  dateFrom,
-  dateTo,
   statusOptions,
   labels,
   onSearchChange,
   onStatusChange,
-  onAssignedAgentIdChange,
-  onPropertyIdChange,
-  onDateFromChange,
-  onDateToChange,
-  onClearFilters,
+  className,
 }: LeadListFiltersProps) {
   return (
-    <div className="mb-4 flex flex-col gap-3 sm:mb-6">
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-end">
-        <div className="min-w-0 flex-1">
-          <SearchInput
-            value={search}
-            onChange={(event) => onSearchChange(event.target.value)}
-            onClear={() => onSearchChange("")}
-            placeholder={labels.searchPlaceholder}
-            aria-label={labels.searchPlaceholder}
-            clearLabel={labels.clearSearch}
-            className="w-full"
-          />
-        </div>
-        <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 lg:w-auto lg:min-w-[16rem]">
-          <Select
-            aria-label={labels.filterStatus}
-            value={status}
-            options={statusOptions}
-            onChange={onStatusChange}
-            fullWidth
-          />
-          <Input
-            aria-label={labels.filterAgent}
-            value={assignedAgentId}
-            onChange={(event) => onAssignedAgentIdChange(event.target.value)}
-            placeholder={labels.filterAgentPlaceholder}
-          />
-        </div>
-      </div>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <Input
-          type="date"
-          aria-label={labels.filterDateFrom}
-          value={dateFrom}
-          onChange={(event) => onDateFromChange(event.target.value)}
-        />
-        <Input
-          type="date"
-          aria-label={labels.filterDateTo}
-          value={dateTo}
-          onChange={(event) => onDateToChange(event.target.value)}
-        />
-        <Input
-          aria-label={labels.filterProperty}
-          value={propertyId}
-          onChange={(event) => onPropertyIdChange(event.target.value)}
-          placeholder={labels.filterPropertyPlaceholder}
-        />
-        <Button
-          type="button"
+    <div
+      className={cn(
+        "mb-2 flex w-full min-w-0 flex-col gap-2 sm:mb-2! sm:flex-row sm:items-center sm:justify-between sm:gap-2 md:mb-4! md:gap-4 lg:mb-6! lg:gap-6",
+        className,
+      )}
+    >
+      <SearchInput
+        fullWidth={false}
+        className={cn(searchFieldClassName)}
+        placeholder={labels.searchPlaceholder}
+        aria-label={labels.searchPlaceholder}
+        clearLabel={labels.clearSearch}
+        size="md"
+        value={search}
+        onChange={(event) => {
+          onSearchChange(event.target.value);
+        }}
+        onClear={() => {
+          onSearchChange("");
+        }}
+      />
+
+      <div className="flex w-full min-w-0 items-center gap-2 sm:w-auto sm:shrink-0">
+        <SelectDropdown
+          fullWidth={false}
+          className={cn(statusFieldClassName)}
+          placeholder={labels.statusAll}
+          aria-label={labels.filterStatus}
+          value={status}
+          options={statusOptions}
+          onChange={onStatusChange}
           variant="outline"
-          color="secondary"
-          className="min-h-11 w-full"
-          onClick={onClearFilters}
-        >
-          {labels.clearFilters}
-        </Button>
+          size="md"
+        />
       </div>
     </div>
   );
