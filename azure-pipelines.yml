@@ -15,10 +15,12 @@ steps:
     versionSpec: '20.x'
   displayName: 'Install Node.js'
 
-- task: npmAuthenticate@0
-  inputs:
-    workingFile: .npmrc
-  displayName: 'Authenticate npm (Azure Artifacts)'
+# Gitea npm registry auth for @abdoun/* (secret: GITEA_NPM_TOKEN)
+- script: |
+    echo "//git.coderlook.com/api/packages/abetal/npm/:_authToken=${GITEA_NPM_TOKEN}" >> ~/.npmrc
+  displayName: 'Authenticate npm (Coderlook Git)'
+  env:
+    GITEA_NPM_TOKEN: $(GITEA_NPM_TOKEN)
 
 - script: |
     npm install

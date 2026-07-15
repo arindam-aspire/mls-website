@@ -71,14 +71,14 @@ See [packages.md](./packages.md) for the full dependency table.
 
 ## Getting started
 
-**Private package:** `@abdoun/abdoun-library` comes from Azure Artifacts (see root [`.npmrc`](../.npmrc)). Public packages still use `registry.npmjs.org`. CI uses `npmAuthenticate@0` in `azure-pipelines.yml`.
+**Private package:** `@abdoun/abdoun-library` comes from the Coderlook Git (Gitea) npm registry (see root [`.npmrc`](../.npmrc)). Public packages still use `registry.npmjs.org`. CI injects a Gitea package-read token (`GITEA_NPM_TOKEN`) in `azure-pipelines.yml`.
 
 **If `npm install` fails with `E401`:** credentials are missing or expired in your **user** npmrc, not in the repo.
 
-1. Remove any old Verdaccio lines from `%USERPROFILE%\.npmrc` (e.g. `registry=http://localhost:4873/` or `//localhost:4873/` tokens).
-2. Azure DevOps → **User settings** → **Personal access tokens** → **New Token** → scope **Packaging → Read**.
-3. Add auth to `%USERPROFILE%\.npmrc` using the template in [`.npmrc.user.example`](../.npmrc.user.example) (base64-encode the PAT only; username `VssSessionToken`).
-4. Or, from the repo root after installing the tool once: `npx vsts-npm-auth -config .npmrc -F` (refreshes tokens in your user npmrc).
+1. Remove any old Azure Artifacts / Verdaccio lines from `%USERPROFILE%\.npmrc` (e.g. `coderlook.pkgs.visualstudio.com`, `registry=http://localhost:4873/`, or related tokens).
+2. Coderlook Git (Gitea) → **Settings** → **Applications** → **Generate New Token** with **package read** scope.
+3. Add auth to `%USERPROFILE%\.npmrc` using the template in [`.npmrc.user.example`](../.npmrc.user.example):
+   `//git.coderlook.com/api/packages/abetal/npm/:_authToken=YOUR_TOKEN`
 
 Then run `npm install` again.
 
