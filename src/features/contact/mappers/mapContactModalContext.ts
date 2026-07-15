@@ -25,6 +25,7 @@ type LocalizedLike =
 export type ContactPropertyListingSource = {
   id: number;
   property_id?: string | null;
+  property_hash?: string | number | null;
   reference_number?: string | null;
   title?: LocalizedLike;
   brokerName?: string | null;
@@ -47,6 +48,17 @@ export type ContactPropertyListingSource = {
     phone?: string | null;
   }>;
 };
+
+/** Resolves numeric `property_hash` for lead creation (listing or details). */
+export function resolveContactPropertyHash(source: {
+  property_hash?: string | number | null;
+  id?: number | string | null;
+}): number | null {
+  const raw = source.property_hash ?? source.id;
+  if (raw == null || raw === "") return null;
+  const parsed = Number(raw);
+  return Number.isFinite(parsed) ? parsed : null;
+}
 
 function resolveLocalizedText(
   value: LocalizedLike,
@@ -131,6 +143,8 @@ export function mapListingToContactContext(params: {
     ...customer,
     propertyTitle,
     propertyReference,
+    propertyHash: resolveContactPropertyHash(listing),
+    createsLead: true,
     defaultMessage: buildDefaultInquiryMessage({
       propertyTitle,
       propertyReference,
@@ -161,6 +175,10 @@ export function mapPropertyDetailsAgentToContactContext(params: {
     String(propertyDetails.id ?? "");
 
   const customer = customerFromUser(user);
+  const detailsHashSource = propertyDetails as {
+    property_hash?: string | number | null;
+    id?: number | string | null;
+  };
 
   return {
     recipientName:
@@ -174,6 +192,8 @@ export function mapPropertyDetailsAgentToContactContext(params: {
     ...customer,
     propertyTitle,
     propertyReference,
+    propertyHash: resolveContactPropertyHash(detailsHashSource),
+    createsLead: true,
     defaultMessage: buildDefaultInquiryMessage({
       propertyTitle,
       propertyReference,
@@ -211,6 +231,10 @@ export function mapPropertyDetailsOwnerToContactContext(params: {
     String(propertyDetails.id ?? "");
 
   const customer = customerFromUser(user);
+  const detailsHashSource = propertyDetails as {
+    property_hash?: string | number | null;
+    id?: number | string | null;
+  };
 
   return {
     recipientName:
@@ -225,6 +249,8 @@ export function mapPropertyDetailsOwnerToContactContext(params: {
     ...customer,
     propertyTitle,
     propertyReference,
+    propertyHash: resolveContactPropertyHash(detailsHashSource),
+    createsLead: true,
     defaultMessage: buildDefaultInquiryMessage({
       propertyTitle,
       propertyReference,

@@ -23,6 +23,8 @@
   "callCancelLabel": "Cancelar",
   "defaultMessageTemplate": "Me gustaría consultar sobre su propiedad {propertyTitle} - #{propertyReference}. Por favor, contácteme a la mayor brevedad.",
   "emailSubject": "Consulta sobre {propertyTitle} (#{propertyReference})",
+  "inquirySuccessTitle": "Consulta enviada",
+  "inquirySuccessDescription": "Tu consulta se ha enviado correctamente.",
   "validation": {
     "nameRequired": "El nombre es obligatorio.",
     "emailRequired": "El correo es obligatorio.",
@@ -32,6 +34,8 @@
   "errors": {
     "sendErrorTitle": "No se puede contactar",
     "missingRecipientEmail": "No hay correo del destinatario para este anuncio.",
-    "missingRecipientPhone": "No hay teléfono del destinatario para este anuncio."
+    "missingRecipientPhone": "No hay teléfono del destinatario para este anuncio.",
+    "inquiryErrorTitle": "No se pudo enviar la consulta",
+    "inquiryErrorFallback": "Algo salió mal al enviar tu consulta. Inténtalo de nuevo."
   }
 }

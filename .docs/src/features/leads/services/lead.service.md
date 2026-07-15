@@ -2,25 +2,50 @@
 
 ### File Overview
 
-API client wrappers for Lead Management (`/leads`).
+API client wrappers for Lead Management (`/leads`). Used by the leads manager UI and by property email inquiry (`createLead`).
 
 ### Responsibilities
 
-List/detail CRUD-style helpers; normalize pagination; soft-fail list GETs for notes/messages/activity when endpoints are unavailable.
+- List/detail and lifecycle helpers (assign, status, close, notes, messages).
+- Normalize pagination for list responses.
+- Soft-fail list GETs for notes/messages/activity when endpoints are unavailable.
+- Create leads from property email inquiries; mock email send via console until the email API exists.
 
 ### API Usage
 
-| Function | Method | Path |
-| --- | --- | --- |
-| `getLeadList` | GET | `/leads` |
-| `getLeadDetail` | GET | `/leads/{id}` |
-| `assignLeadAgent` | PATCH | `/leads/{id}/assign` |
-| `updateLeadStatus` | PATCH | `/leads/{id}/status` |
-| `requestCloseLead` | POST | `/leads/{id}/request-close` |
-| `closeLead` | POST | `/leads/{id}/close` |
-| `addLeadNote` | POST | `/leads/{id}/notes` |
-| `addLeadMessage` | POST | `/leads/{id}/messages` |
+| Function | Method | Path | Auth |
+| --- | --- | --- | --- |
+| `getLeadList` | GET | `/leads` | yes |
+| `getLeadDetail` | GET | `/leads/{id}` | yes |
+| `createLead` | POST | `/leads` | yes |
+| `assignLeadAgent` | PATCH | `/leads/{id}/assign` | yes |
+| `updateLeadStatus` | PATCH | `/leads/{id}/status` | yes |
+| `requestCloseLead` | POST | `/leads/{id}/request-close` | yes |
+| `closeLead` | POST | `/leads/{id}/close` | yes |
+| `addLeadNote` | POST | `/leads/{id}/notes` | yes |
+| `addLeadMessage` | POST | `/leads/{id}/messages` | yes |
+| `getLeadNotes` | GET | `/leads/{id}/notes` | yes (soft-fail) |
+| `getLeadMessages` | GET | `/leads/{id}/messages` | yes (soft-fail) |
+| `getLeadActivity` | GET | `/leads/{id}/activity` | yes (soft-fail) |
 
 ### Exports
 
-Service functions listed above.
+| Export | Notes |
+| --- | --- |
+| Service functions listed above | — |
+| `mockSendInquiryEmails` | Temporary: logs payload that would be emailed to agent + user; called after successful `createLead` |
+
+### `createLead` body (`CreateLeadRequest`)
+
+| Field | Notes |
+| --- | --- |
+| `source` | Required (e.g. `EMAIL_FORM` from property contact modal) |
+| `property_hash` | Optional numeric hash of the listing |
+| `message` | Inquiry message |
+| `contact_name` / `contact_email` / `contact_phone` | Customer contact fields |
+| `communication_mode` | e.g. `EMAIL` |
+| `inquiry_type` | Optional |
+
+### Notes
+
+Replace `mockSendInquiryEmails` with the real `sendEmail` API when the email service is online (agent notification + user confirmation).

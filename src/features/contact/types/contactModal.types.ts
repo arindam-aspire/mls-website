@@ -17,6 +17,16 @@ export type ContactModalContext = {
   propertyReference: string;
   /** Optional override for the message body template result. */
   defaultMessage?: string;
+  /**
+   * Numeric property hash for `createLead`. Set for property card / details inquiry.
+   * Omitted when contacting a lead customer (mailto flow).
+   */
+  propertyHash?: number | null;
+  /**
+   * When true, email Send validates → `createLead` + mock email logs + toast
+   * instead of opening the system mail client.
+   */
+  createsLead?: boolean;
 };
 
 export type ContactModalFormValues = {

@@ -2,11 +2,15 @@
 
 import { useTranslations } from "next-intl";
 import { useCallback, useMemo, useState } from "react";
+import { tokenStore } from "@/src/apis/core/token.store";
+import type { ApiError } from "@/src/apis/core/error.normalizer";
 import {
   DEFAULT_PHONE_INPUT_COUNTRY_CODE,
   type PhoneInputCountry,
 } from "@/src/components/ui/phone-input";
+import { AUTH_VIEW } from "@/src/features/auth/authViews";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
+import { useCreateLead } from "@/src/features/leads/mutations/lead.mutation";
 import { useToast } from "@/src/hooks/useToast";
 import {
   launchEmailTo,
@@ -48,10 +52,17 @@ function formatContactPhone(
   return `${country.dialCode} ${digits}`;
 }
 
+function isContactSubmitAuthenticated(): boolean {
+  const { user, isLoadingUser } = useAuthStore.getState();
+  const hasAccessToken = Boolean(tokenStore.getAccessToken());
+  return Boolean(user) || (hasAccessToken && isLoadingUser);
+}
+
 export function useContactModal() {
   const t = useTranslations("contact");
   const toast = useToast();
   const user = useAuthStore((state) => state.user);
+  const createLeadMutation = useCreateLead();
 
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState<ContactModalMode>("email");
@@ -217,9 +228,59 @@ export function useContactModal() {
     return Object.keys(nextErrors).length === 0;
   }, [form, labels]);
 
+  const submitEmailInquiryLead = useCallback(async () => {
+    if (!context) return;
+
+    if (!isContactSubmitAuthenticated()) {
+      useAuthStore.getState().openAuth(AUTH_VIEW.chooseAccount);
+      return;
+    }
+
+    const to = context.recipientEmail.trim();
+    if (!to) {
+      toast.error(labels.sendErrorTitle, {
+        description: labels.missingRecipientEmail,
+      });
+      return;
+    }
+
+    // keepInformed is UI-only until a preferences API exists.
+    void form.keepInformed;
+
+    setIsSubmitting(true);
+    try {
+      await createLeadMutation.mutateAsync({
+        source: "EMAIL_FORM",
+        property_hash: context.propertyHash ?? null,
+        message: form.message.trim(),
+        contact_name: form.name.trim(),
+        contact_email: form.email.trim(),
+        contact_phone: form.phone.trim() || null,
+        communication_mode: "EMAIL",
+      });
+
+      toast.success(t("inquirySuccessTitle"), {
+        description: t("inquirySuccessDescription"),
+      });
+      close();
+    } catch (error) {
+      const apiError = error as ApiError;
+      toast.error(t("errors.inquiryErrorTitle"), {
+        description: apiError.message || t("errors.inquiryErrorFallback"),
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [close, context, createLeadMutation, form, labels, t, toast]);
+
   const submitEmailOrWhatsApp = useCallback(() => {
     if (!context) return;
     if (!validateForm()) return;
+
+    if (mode === "email" && context.createsLead) {
+      void submitEmailInquiryLead();
+      return;
+    }
 
     setIsSubmitting(true);
 
@@ -285,7 +346,17 @@ export function useContactModal() {
     } finally {
       setIsSubmitting(false);
     }
-  }, [close, context, form, labels, mode, t, toast, validateForm]);
+  }, [
+    close,
+    context,
+    form,
+    labels,
+    mode,
+    submitEmailInquiryLead,
+    t,
+    toast,
+    validateForm,
+  ]);
 
   const requestCall = useCallback(() => {
     if (!context?.recipientPhone.trim()) {
@@ -318,7 +389,7 @@ export function useContactModal() {
     context,
     form,
     errors,
-    isSubmitting,
+    isSubmitting: isSubmitting || createLeadMutation.isPending,
     callConfirmOpen,
     labels,
     buildDefaultMessage,
