@@ -26,6 +26,7 @@ import type {
   AgentSummaryResponse,
   DeleteAgentResponse,
   DeleteAgentResult,
+  ManualOnboardAgentData,
   ManualOnboardAgentRequest,
   ManualOnboardAgentResponse,
   ManualOnboardAgentResult,
