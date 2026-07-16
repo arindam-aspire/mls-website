@@ -9,27 +9,150 @@
       "noDataTitle": "No owners found",
       "noDataDescription": "Try adjusting your search or status filter.",
       "fetchErrorTitle": "Could not load owners",
+      "forbiddenErrorTitle": "You do not have permission to view owners",
       "searchPlaceholder": "Search owners by name or email…",
+      "emptyValue": "—",
       "statusFilter": {
         "all": "All",
         "ariaLabel": "Filter by status",
         "active": "Active",
-        "suspended": "Suspended"
+        "suspended": "Inactive"
       },
       "columnPickerTitle": "Columns",
       "columnPickerAriaLabel": "Choose visible columns",
       "columns": {
-        "owner": "Owner",
-        "contact": "Contact",
-        "properties": "Properties",
+        "owner": "Owner name",
+        "phone": "Phone number",
+        "email": "Email",
+        "properties": "Linked properties",
+        "leads": "Linked leads",
         "status": "Status",
-        "joinedAt": "Joined at",
         "actions": "Actions"
       },
       "workflow": {
-        "comingSoonTitle": "Action coming soon",
-        "comingSoonDescription": "Owner workflow actions will be available in a future update."
+        "view": "View",
+        "edit": "Edit",
+        "activate": "Activate",
+        "deactivate": "Deactivate",
+        "actionsAriaLabel": "Actions for"
       }
+    },
+    "statusConfirm": {
+      "activateTitle": "Activate owner?",
+      "activateDescription": "Activate {name}? They will regain access according to their permissions.",
+      "activateConfirm": "Activate",
+      "deactivateTitle": "Deactivate owner?",
+      "deactivateDescription": "Deactivate {name}? They will lose access until reactivated.",
+      "deactivateConfirm": "Deactivate",
+      "cancel": "Cancel",
+      "updating": "Updating…"
+    },
+    "statusUpdate": {
+      "successTitle": "Owner status updated",
+      "successDescription": "The owner list has been refreshed with the latest status.",
+      "errorTitle": "Could not update owner status",
+      "errorDescription": "Something went wrong while updating the owner status. Please try again."
+    },
+    "viewModal": {
+      "title": "Owner details",
+      "description": "Review this owner's profile information.",
+      "close": "Close",
+      "loading": "Loading owner details…",
+      "errorTitle": "Could not load owner details",
+      "errorDescription": "Something went wrong while loading this owner. Please try again.",
+      "emptyValue": "—",
+      "fields": {
+        "name": "Owner name",
+        "phone": "Phone number",
+        "email": "Email",
+        "status": "Status",
+        "properties": "Linked properties",
+        "leads": "Linked leads"
+      }
+    },
+    "editModal": {
+      "title": "Edit owner",
+      "description": "Update this owner's contact information.",
+      "fullNameLabel": "Owner name",
+      "emailLabel": "Email",
+      "phoneLabel": "Phone number",
+      "save": "Save changes",
+      "cancel": "Cancel",
+      "saving": "Saving…",
+      "successTitle": "Owner updated",
+      "successDescription": "The owner list has been refreshed with the latest details.",
+      "errorTitle": "Could not update owner",
+      "errorDescription": "Something went wrong while saving. Please try again.",
+      "validation": {
+        "nameRequired": "Owner name is required",
+        "emailRequired": "Email is required",
+        "emailInvalid": "Enter a valid email address"
+      }
+    },
+    "linkedPropertiesModal": {
+      "title": "Linked properties — {name}",
+      "description": "Properties linked to this owner.",
+      "close": "Close",
+      "loading": "Loading properties…",
+      "emptyTitle": "No linked properties",
+      "emptyDescription": "This owner has no linked properties yet.",
+      "errorTitle": "Could not load properties",
+      "errorDescription": "Something went wrong while loading linked properties.",
+      "emptyValue": "—",
+      "previous": "Previous",
+      "next": "Next",
+      "pageLabel": "Page {page} of {totalPages}",
+      "columns": {
+        "title": "Property",
+        "status": "Status",
+        "city": "City",
+        "listingType": "Listing type"
+      }
+    },
+    "linkedLeadsModal": {
+      "title": "Linked leads — {name}",
+      "description": "Leads linked to this owner.",
+      "close": "Close",
+      "loading": "Loading leads…",
+      "emptyTitle": "No linked leads",
+      "emptyDescription": "This owner has no linked leads yet.",
+      "errorTitle": "Could not load leads",
+      "errorDescription": "Something went wrong while loading linked leads.",
+      "emptyValue": "—",
+      "previous": "Previous",
+      "next": "Next",
+      "pageLabel": "Page {page} of {totalPages}",
+      "columns": {
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "status": "Status"
+      }
+    },
+    "assignment": {
+      "title": "Owner agency assignment",
+      "description": "Select an active verified agency, then assign owners from the platform list.",
+      "agencyLabel": "Target agency",
+      "agencyPlaceholder": "Select agency",
+      "agencyLoadingPlaceholder": "Loading agencies…",
+      "assign": "Assign",
+      "ownerColumn": "Owner",
+      "agenciesColumn": "Assigned agencies",
+      "actionColumn": "Action",
+      "refreshing": "Refreshing…",
+      "ownersOnPage": "{count} owners on this page",
+      "unassigned": "Unassigned",
+      "noPhone": "No phone",
+      "loading": "Loading owners…",
+      "empty": "No owners found.",
+      "previous": "Previous",
+      "next": "Next",
+      "pageLabel": "Page {page} of {totalPages}",
+      "assignSuccessTitle": "Owner assigned",
+      "assignSuccessDescription": "Owner-agency mapping was updated successfully.",
+      "assignErrorTitle": "Could not assign owner",
+      "selectAgencyErrorTitle": "Select an agency",
+      "selectAgencyErrorDescription": "Choose an active verified agency before assigning an owner."
     }
   },
   "agents": {

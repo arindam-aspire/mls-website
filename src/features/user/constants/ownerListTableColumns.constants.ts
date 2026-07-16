@@ -1,8 +1,9 @@
 export const OWNER_LIST_TABLE_COLUMN_IDS = [
   "owner",
-  "contact",
+  "phone",
+  "email",
   "properties",
-  "joinedAt",
+  "leads",
   "status",
   "actions",
 ] as const;
@@ -16,9 +17,10 @@ export type OwnerListAlwaysVisibleColumnId =
   (typeof OWNER_LIST_ALWAYS_VISIBLE_COLUMN_IDS)[number];
 
 export const OWNER_LIST_TOGGLEABLE_COLUMN_IDS = [
-  "contact",
+  "phone",
+  "email",
   "properties",
-  "joinedAt",
+  "leads",
   "status",
 ] as const;
 
@@ -31,9 +33,10 @@ export type OwnerListColumnVisibility = Record<
 >;
 
 export const DEFAULT_OWNER_LIST_COLUMN_VISIBILITY: OwnerListColumnVisibility = {
-  contact: true,
+  phone: true,
+  email: true,
   properties: true,
-  joinedAt: true,
+  leads: true,
   status: true,
 };
 
@@ -48,12 +51,19 @@ export function resolveOwnerListColumnVisibility(
 
 export const OWNER_LIST_COLUMN_I18N_KEY: Record<
   OwnerListTableColumnId,
-  "owner" | "contact" | "properties" | "joinedAt" | "status" | "actions"
+  | "owner"
+  | "phone"
+  | "email"
+  | "properties"
+  | "leads"
+  | "status"
+  | "actions"
 > = {
   owner: "owner",
-  contact: "contact",
+  phone: "phone",
+  email: "email",
   properties: "properties",
-  joinedAt: "joinedAt",
+  leads: "leads",
   status: "status",
   actions: "actions",
 };

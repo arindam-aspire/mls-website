@@ -2,11 +2,11 @@
 
 **Source:** `src/features/user/types/owner.types.ts`
 
-TypeScript shapes for the agency owners list API.
+TypeScript shapes for owner management APIs.
 
 ## `OwnerListItem`
 
-Single row from `GET /agency/{agencyId}/owners` (`data.items[]`):
+Single row from `GET /agency/{agencyId}/owners` or platform list (`data.items[]`):
 
 | Field | Type | Notes |
 | --- | --- | --- |
@@ -14,39 +14,17 @@ Single row from `GET /agency/{agencyId}/owners` (`data.items[]`):
 | `full_name` | `string` | Display name |
 | `email` | `string` | Contact email |
 | `phone` | `string` | Contact phone |
-| `nationality` | `string \| null` | Nationality |
-| `ssi` | `string \| null` | SSI |
-| `address` | `string \| null` | Address |
-| `documents` | `unknown[]` | Document payloads |
-| `created_at` | `string` | ISO join/created timestamp |
-| `updated_at` | `string` | ISO updated timestamp |
 | `status` | `string` | Optional API status enum |
 | `property_owned` | `number` | Optional property count |
+| `leads_count` / `linked_leads` | `number` | Optional leads count |
+| `assigned_agencies` | array | Super Admin assignment chips |
 
-## `OwnerListResponse`
+## Mutations / detail
 
-API envelope:
-
-```json
-{
-  "data": {
-    "items": [],
-    "total": 0,
-    "page": 1,
-    "pageSize": 10,
-    "totalPages": 0,
-    "hasNext": false,
-    "hasPrevious": false
-  },
-  "meta": { "pagination": { ... } }
-}
-```
-
-Pagination is read from `meta.pagination` first, then flat fields on `data`.
-
-## `NormalizedOwnerListResponse`
-
-Service return type: `{ owners: OwnerListItem[], pagination: OwnerListPagination }` (`owners` mirrors `data.items`).
+- `OwnerStatusUpdateRequest` / `OwnerStatusUpdateResult`
+- `UpdateOwnerRequest` / `UpdateOwnerResult`
+- `OwnerLinkedPropertyItem` / `OwnerLinkedLeadItem`
+- `NormalizedOwnerLinkedListResponse<T>`
 
 ## Related
 

@@ -28,4 +28,6 @@ export {
   buildOwnerListTableColumns,
   resolveOwnerListPinnedColumns,
   type OwnerListTableColumnLabels,
+  type OwnerListWorkflowActionLabels,
+  type OwnerListWorkflowHandlers,
 } from "./buildOwnerListTableColumns";

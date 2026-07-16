@@ -216,7 +216,7 @@ All paths below are **without** locale; prepend `/<locale>` (e.g. `/en/my-listin
 | `/property-create` | `(main)/(listings)/property-create/page.tsx` | `PropertyCreateScreen` — guarded by `useAuthorize("PROPERTY_CREATE")` (owner, agent) |
 | `/property-update` | `(main)/(listings)/property-update/page.tsx` | `PropertyUpdateScreen` — guarded by `useAuthorize("MY_LISTINGS")` |
 | `/recently-viewed` | `(main)/recently-viewed/page.tsx` | `RecentlyViewedScreen` — guarded by `useAuthorize("RECENTLY_VIEWED")` |
-| `/owners` | `(main)/owners/page.tsx` | `OwnersScreen` — guarded by `useAuthorize("OWNERS")` (admin only); list from `GET /agency/{agency_id}/owners` |
+| `/owners` | `(main)/owners/page.tsx` | `OwnersScreen` — guarded by `useAuthorize("OWNERS")` (Super Admin + Agency Admin); list, activate/deactivate, view/edit, linked properties/leads |
 | `/agents` | `(main)/agents/page.tsx` | `AgentsScreen` (placeholder) — guarded by `useAuthorize("AGENTS")` (admin only) |
 | `/property-list` | `(property)/property-list/page.tsx` | `PropertyListScreen` (`PropertyCardList`) |
 | `/propert-details/:id` | `(property)/propert-details/[id]/page.tsx` | `PropertyDetailsScreen` (`PropertyView`) |

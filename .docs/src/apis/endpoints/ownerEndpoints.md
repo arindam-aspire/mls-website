@@ -1,20 +1,28 @@
-# Owner endpoints
+# ownerEndpoints
 
 **Source:** `src/apis/endpoints/ownerEndpoints.ts`
 
-URL builders for agency-scoped owner APIs.
+Builds authenticated owner-management API paths under `/agency/...`.
 
-## `ownerEndpoints.LIST`
+## Endpoints
 
-`GET /agency/{agencyId}/owners?page=&pageSize=&search=&status=`
-
-| Query | Required | Description |
+| Key | Method (consumer) | Path |
 | --- | --- | --- |
-| `page` | yes | 1-based page index |
-| `pageSize` | yes | Page size |
-| `search` | no | Name/email filter |
-| `status` | no | Uppercase status (`ACTIVE`, `SUSPENDED`) |
+| `LIST` | GET | `/agency/{agencyId}/owners?page=&pageSize=&search=&status=` |
+| `PLATFORM_LIST` | GET | `/agency/owners?page=&pageSize=&search=&status=&agencyId=` |
+| `ASSIGN_AGENCY` | POST | `/agency/owners/{ownerId}/agency` |
+| `DETAIL` | GET | `/agency/owners/{ownerId}` |
+| `UPDATE` | PATCH | `/agency/owners/{ownerId}` |
+| `UPDATE_STATUS` | PATCH | `/agency/owners/{ownerId}/status` |
+| `LINKED_PROPERTIES` | GET | `/agency/owners/{ownerId}/properties?page=&pageSize=` |
+| `LINKED_LEADS` | GET | `/agency/owners/{ownerId}/leads?page=&pageSize=` |
 
-## Consumer
+## Query helpers
 
-- `getOwnerList` in `src/features/user/services/owner.service.ts`
+- `OwnerListQueryParams` — list pagination, search, status, optional `agencyId`
+- `OwnerLinkedListQueryParams` — linked properties/leads pagination
+
+## Related
+
+- [owner.service.md](../../features/user/services/owner.service.md)
+- [owner.types.md](../../features/user/types/owner.types.md)

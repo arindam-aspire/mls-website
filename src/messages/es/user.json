@@ -9,27 +9,150 @@
       "noDataTitle": "No se encontraron propietarios",
       "noDataDescription": "Prueba a ajustar la búsqueda o el filtro de estado.",
       "fetchErrorTitle": "No se pudieron cargar los propietarios",
+      "forbiddenErrorTitle": "No tiene permiso para ver propietarios",
       "searchPlaceholder": "Buscar propietarios por nombre o correo…",
+      "emptyValue": "—",
       "statusFilter": {
         "all": "Todos",
         "ariaLabel": "Filtrar por estado",
         "active": "Activo",
-        "suspended": "Suspendido"
+        "suspended": "Inactivo"
       },
       "columnPickerTitle": "Columnas",
       "columnPickerAriaLabel": "Elegir columnas visibles",
       "columns": {
-        "owner": "Propietario",
-        "contact": "Contacto",
-        "properties": "Propiedades",
+        "owner": "Nombre del propietario",
+        "phone": "Número de teléfono",
+        "email": "Correo electrónico",
+        "properties": "Propiedades vinculadas",
+        "leads": "Leads vinculados",
         "status": "Estado",
-        "joinedAt": "Fecha de alta",
         "actions": "Acciones"
       },
       "workflow": {
-        "comingSoonTitle": "Acción próximamente",
-        "comingSoonDescription": "Las acciones del flujo de propietarios estarán disponibles en una actualización futura."
+        "view": "Ver",
+        "edit": "Editar",
+        "activate": "Activar",
+        "deactivate": "Desactivar",
+        "actionsAriaLabel": "Acciones para"
       }
+    },
+    "statusConfirm": {
+      "activateTitle": "¿Activar propietario?",
+      "activateDescription": "¿Activar a {name}? Recuperará el acceso según sus permisos.",
+      "activateConfirm": "Activar",
+      "deactivateTitle": "¿Desactivar propietario?",
+      "deactivateDescription": "¿Desactivar a {name}? Perderá el acceso hasta que se reactive.",
+      "deactivateConfirm": "Desactivar",
+      "cancel": "Cancelar",
+      "updating": "Actualizando…"
+    },
+    "statusUpdate": {
+      "successTitle": "Estado del propietario actualizado",
+      "successDescription": "La lista de propietarios se ha actualizado con el estado más reciente.",
+      "errorTitle": "No se pudo actualizar el estado del propietario",
+      "errorDescription": "Algo salió mal al actualizar el estado. Inténtelo de nuevo."
+    },
+    "viewModal": {
+      "title": "Detalles del propietario",
+      "description": "Revise la información del perfil de este propietario.",
+      "close": "Cerrar",
+      "loading": "Cargando detalles del propietario…",
+      "errorTitle": "No se pudieron cargar los detalles",
+      "errorDescription": "Algo salió mal al cargar este propietario. Inténtelo de nuevo.",
+      "emptyValue": "—",
+      "fields": {
+        "name": "Nombre del propietario",
+        "phone": "Número de teléfono",
+        "email": "Correo electrónico",
+        "status": "Estado",
+        "properties": "Propiedades vinculadas",
+        "leads": "Leads vinculados"
+      }
+    },
+    "editModal": {
+      "title": "Editar propietario",
+      "description": "Actualice la información de contacto de este propietario.",
+      "fullNameLabel": "Nombre del propietario",
+      "emailLabel": "Correo electrónico",
+      "phoneLabel": "Número de teléfono",
+      "save": "Guardar cambios",
+      "cancel": "Cancelar",
+      "saving": "Guardando…",
+      "successTitle": "Propietario actualizado",
+      "successDescription": "La lista de propietarios se ha actualizado con los datos más recientes.",
+      "errorTitle": "No se pudo actualizar el propietario",
+      "errorDescription": "Algo salió mal al guardar. Inténtelo de nuevo.",
+      "validation": {
+        "nameRequired": "El nombre del propietario es obligatorio",
+        "emailRequired": "El correo electrónico es obligatorio",
+        "emailInvalid": "Introduzca un correo electrónico válido"
+      }
+    },
+    "linkedPropertiesModal": {
+      "title": "Propiedades vinculadas — {name}",
+      "description": "Propiedades vinculadas a este propietario.",
+      "close": "Cerrar",
+      "loading": "Cargando propiedades…",
+      "emptyTitle": "Sin propiedades vinculadas",
+      "emptyDescription": "Este propietario aún no tiene propiedades vinculadas.",
+      "errorTitle": "No se pudieron cargar las propiedades",
+      "errorDescription": "Algo salió mal al cargar las propiedades vinculadas.",
+      "emptyValue": "—",
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "pageLabel": "Página {page} de {totalPages}",
+      "columns": {
+        "title": "Propiedad",
+        "status": "Estado",
+        "city": "Ciudad",
+        "listingType": "Tipo de anuncio"
+      }
+    },
+    "linkedLeadsModal": {
+      "title": "Leads vinculados — {name}",
+      "description": "Leads vinculados a este propietario.",
+      "close": "Cerrar",
+      "loading": "Cargando leads…",
+      "emptyTitle": "Sin leads vinculados",
+      "emptyDescription": "Este propietario aún no tiene leads vinculados.",
+      "errorTitle": "No se pudieron cargar los leads",
+      "errorDescription": "Algo salió mal al cargar los leads vinculados.",
+      "emptyValue": "—",
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "pageLabel": "Página {page} de {totalPages}",
+      "columns": {
+        "name": "Nombre",
+        "email": "Correo",
+        "phone": "Teléfono",
+        "status": "Estado"
+      }
+    },
+    "assignment": {
+      "title": "Asignación de agencia al propietario",
+      "description": "Seleccione una agencia activa y verificada; luego asigne propietarios de la lista de la plataforma.",
+      "agencyLabel": "Agencia de destino",
+      "agencyPlaceholder": "Seleccionar agencia",
+      "agencyLoadingPlaceholder": "Cargando agencias…",
+      "assign": "Asignar",
+      "ownerColumn": "Propietario",
+      "agenciesColumn": "Agencias asignadas",
+      "actionColumn": "Acción",
+      "refreshing": "Actualizando…",
+      "ownersOnPage": "{count} propietarios en esta página",
+      "unassigned": "Sin asignar",
+      "noPhone": "Sin teléfono",
+      "loading": "Cargando propietarios…",
+      "empty": "No se encontraron propietarios.",
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "pageLabel": "Página {page} de {totalPages}",
+      "assignSuccessTitle": "Propietario asignado",
+      "assignSuccessDescription": "La relación propietario-agencia se actualizó correctamente.",
+      "assignErrorTitle": "No se pudo asignar el propietario",
+      "selectAgencyErrorTitle": "Seleccione una agencia",
+      "selectAgencyErrorDescription": "Elija una agencia activa y verificada antes de asignar un propietario."
     }
   },
   "agents": {

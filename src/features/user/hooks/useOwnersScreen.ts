@@ -22,6 +22,7 @@ import {
   type OwnerListToggleableColumnId,
 } from "../constants/ownerListTableColumns.constants";
 import { buildOwnerListColumnLabels } from "../i18n/buildOwnerListColumnLabels";
+import type { OwnerListRow } from "../mappers/mapOwnerListItemToLibraryOwner";
 import { mapOwnerListItemsToLibraryOwners } from "../mappers/mapOwnerListItemToLibraryOwner";
 import { assignOwnerAgency, getOwnerList, getPlatformOwnerList } from "../services/owner.service";
 import {
@@ -30,10 +31,16 @@ import {
   buildOwnerListTableColumns,
   resolveOwnerListPinnedColumns,
 } from "../utils";
+import { useOwnerEditModal } from "./useOwnerEditModal";
+import { useOwnerLinkedResourcesModal } from "./useOwnerLinkedResourcesModal";
+import { useOwnerStatusConfirm } from "./useOwnerStatusConfirm";
+import { useOwnerViewModal } from "./useOwnerViewModal";
 
 export function useOwnersScreen() {
   const t = useTranslations("user");
   const tColumns = useTranslations("user.owners.list.columns");
+  const tWorkflow = useTranslations("user.owners.list.workflow");
+  const tAssignment = useTranslations("user.owners.assignment");
   const toast = useToast();
   const queryClient = useQueryClient();
 
@@ -49,6 +56,20 @@ export function useOwnersScreen() {
   const [columnVisibility, setColumnVisibility] = useState<OwnerListColumnVisibility>(
     DEFAULT_OWNER_LIST_COLUMN_VISIBILITY,
   );
+
+  const ownerStatusConfirm = useOwnerStatusConfirm();
+  const { openConfirm: openOwnerStatusConfirm, confirmModal: ownerStatusConfirmModal } =
+    ownerStatusConfirm;
+  const ownerViewModal = useOwnerViewModal();
+  const { openModal: openOwnerViewModal, ...ownerViewModalProps } = ownerViewModal;
+  const ownerEditModal = useOwnerEditModal();
+  const { openModal: openOwnerEditModal, modal: ownerEditModalState } = ownerEditModal;
+  const ownerLinkedResourcesModal = useOwnerLinkedResourcesModal();
+  const {
+    openProperties: openOwnerLinkedProperties,
+    openLeads: openOwnerLinkedLeads,
+    ...ownerLinkedResourcesModalProps
+  } = ownerLinkedResourcesModal;
 
   const listRequestParams = useMemo(
     () =>
@@ -97,29 +118,94 @@ export function useOwnersScreen() {
     mutationFn: (ownerId: string) => assignOwnerAgency(ownerId, assignmentAgencyId),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ["owners", "list"] });
-      toast.success("Owner assigned", {
-        description: "Owner-agency mapping was updated successfully.",
+      toast.success(tAssignment("assignSuccessTitle"), {
+        description: tAssignment("assignSuccessDescription"),
       });
     },
     onError: (error: Error) => {
-      toast.error("Could not assign owner", { description: error.message });
+      toast.error(tAssignment("assignErrorTitle"), { description: error.message });
     },
   });
 
-  const onWorkflowActionPlaceholder = useCallback(() => {
-    toast.info(t("owners.list.workflow.comingSoonTitle"), {
-      description: t("owners.list.workflow.comingSoonDescription"),
-    });
-  }, [t, toast]);
+  const onViewOwner = useCallback(
+    (owner: OwnerListRow) => {
+      openOwnerViewModal(owner);
+    },
+    [openOwnerViewModal],
+  );
 
-  const workflowActions = useMemo<OwnerWorkflowActionsConfig>(
+  const onEditOwner = useCallback(
+    (owner: OwnerListRow) => {
+      openOwnerEditModal(owner);
+    },
+    [openOwnerEditModal],
+  );
+
+  const onActivateOwner = useCallback(
+    (owner: OwnerListRow) => {
+      openOwnerStatusConfirm(owner, "activate");
+    },
+    [openOwnerStatusConfirm],
+  );
+
+  const onDeactivateOwner = useCallback(
+    (owner: OwnerListRow) => {
+      openOwnerStatusConfirm(owner, "deactivate");
+    },
+    [openOwnerStatusConfirm],
+  );
+
+  const onLinkedPropertiesClick = useCallback(
+    (owner: OwnerListRow) => {
+      openOwnerLinkedProperties(owner);
+    },
+    [openOwnerLinkedProperties],
+  );
+
+  const onLinkedLeadsClick = useCallback(
+    (owner: OwnerListRow) => {
+      openOwnerLinkedLeads(owner);
+    },
+    [openOwnerLinkedLeads],
+  );
+
+  const workflowHandlers = useMemo(
     () => ({
-      view: onWorkflowActionPlaceholder,
-      activate: onWorkflowActionPlaceholder,
-      suspend: onWorkflowActionPlaceholder,
-      delete: onWorkflowActionPlaceholder,
+      onView: onViewOwner,
+      onEdit: onEditOwner,
+      onActivate: onActivateOwner,
+      onDeactivate: onDeactivateOwner,
+      onLinkedPropertiesClick,
+      onLinkedLeadsClick,
     }),
-    [onWorkflowActionPlaceholder],
+    [
+      onActivateOwner,
+      onDeactivateOwner,
+      onEditOwner,
+      onLinkedLeadsClick,
+      onLinkedPropertiesClick,
+      onViewOwner,
+    ],
+  );
+
+  const actionLabels = useMemo(
+    () => ({
+      view: tWorkflow("view"),
+      edit: tWorkflow("edit"),
+      activate: tWorkflow("activate"),
+      deactivate: tWorkflow("deactivate"),
+      actionsAriaLabel: tWorkflow("actionsAriaLabel"),
+    }),
+    [tWorkflow],
+  );
+
+  /** Library mobile menu only supports activate/suspend/delete ids. */
+  const libraryWorkflowActions = useMemo<OwnerWorkflowActionsConfig>(
+    () => ({
+      activate: (owner: Owner) => onActivateOwner(owner as OwnerListRow),
+      suspend: (owner: Owner) => onDeactivateOwner(owner as OwnerListRow),
+    }),
+    [onActivateOwner, onDeactivateOwner],
   );
 
   const onSearchChange = useCallback((value: string) => {
@@ -151,10 +237,10 @@ export function useOwnersScreen() {
 
       if (!visible) {
         const libraryColumnId =
-          columnId === "contact"
-            ? "contacts"
-            : columnId === "properties"
-              ? "propertyOwned"
+          columnId === "properties"
+            ? "propertyOwned"
+            : columnId === "leads"
+              ? "leadsLinked"
               : columnId;
 
         setSortConfig((previous) =>
@@ -186,10 +272,12 @@ export function useOwnersScreen() {
     () =>
       buildOwnerListTableColumns({
         labels: columnLabels,
+        actionLabels,
         columnVisibility,
-        workflowActions,
+        handlers: workflowHandlers,
+        emptyValue: t("owners.list.emptyValue"),
       }),
-    [columnLabels, columnVisibility, workflowActions],
+    [actionLabels, columnLabels, columnVisibility, t, workflowHandlers],
   );
 
   const pinnedColumns = useMemo(
@@ -241,14 +329,14 @@ export function useOwnersScreen() {
   const assignOwnerToSelectedAgency = useCallback(
     (ownerId: string) => {
       if (!assignmentAgencyId) {
-        toast.error("Select an agency", {
-          description: "Choose an active verified agency before assigning an owner.",
+        toast.error(tAssignment("selectAgencyErrorTitle"), {
+          description: tAssignment("selectAgencyErrorDescription"),
         });
         return;
       }
       assignOwnerMutation.mutate(ownerId);
     },
-    [assignOwnerMutation, assignmentAgencyId, toast],
+    [assignOwnerMutation, assignmentAgencyId, tAssignment, toast],
   );
 
   useEffect(() => {
@@ -257,23 +345,58 @@ export function useOwnersScreen() {
     }
 
     const apiError = ownerListError as unknown as ApiError;
-    toast.error(t("owners.list.fetchErrorTitle"), {
-      description: apiError.message,
-    });
+    const isForbidden = apiError.code === "FORBIDDEN";
+
+    toast.error(
+      isForbidden
+        ? t("owners.list.forbiddenErrorTitle")
+        : t("owners.list.fetchErrorTitle"),
+      {
+        description: apiError.message,
+      },
+    );
   }, [ownerListError, isOwnerListError, t, toast]);
 
   return {
     pageTitle: t("owners.pageTitle"),
     pageSubtitle: t("owners.pageSubtitle"),
     isSuperAdmin,
-    assignmentAgencyId,
-    onAssignmentAgencyChange: setAssignmentAgencyId,
-    agencyOptions,
-    isAgencyListFetching,
-    platformOwners: ownerListData?.owners ?? [],
-    assignOwnerToSelectedAgency,
-    assigningOwnerId: assignOwnerMutation.variables ?? null,
-    isAssigningOwner: assignOwnerMutation.isPending,
+    assignment: {
+      title: tAssignment("title"),
+      description: tAssignment("description"),
+      agencyLabel: tAssignment("agencyLabel"),
+      agencyPlaceholder: isAgencyListFetching
+        ? tAssignment("agencyLoadingPlaceholder")
+        : tAssignment("agencyPlaceholder"),
+      assignLabel: tAssignment("assign"),
+      ownerColumnLabel: tAssignment("ownerColumn"),
+      agenciesColumnLabel: tAssignment("agenciesColumn"),
+      actionColumnLabel: tAssignment("actionColumn"),
+      refreshingLabel: tAssignment("refreshing"),
+      ownersOnPageLabel: tAssignment("ownersOnPage", {
+        count: ownerListData?.owners.length ?? 0,
+      }),
+      unassignedLabel: tAssignment("unassigned"),
+      noPhoneLabel: tAssignment("noPhone"),
+      loadingLabel: tAssignment("loading"),
+      emptyLabel: tAssignment("empty"),
+      previousLabel: tAssignment("previous"),
+      nextLabel: tAssignment("next"),
+      pageLabel: ownerListData?.pagination
+        ? tAssignment("pageLabel", {
+            page: ownerListData.pagination.page,
+            totalPages: Math.max(ownerListData.pagination.totalPages, 1),
+          })
+        : "",
+      assignmentAgencyId,
+      onAssignmentAgencyChange: setAssignmentAgencyId,
+      agencyOptions,
+      isAgencyListFetching,
+      platformOwners: ownerListData?.owners ?? [],
+      assignOwnerToSelectedAgency,
+      assigningOwnerId: assignOwnerMutation.variables ?? null,
+      isAssigningOwner: assignOwnerMutation.isPending,
+    },
     listFilters: {
       search,
       status,
@@ -294,9 +417,14 @@ export function useOwnersScreen() {
       listTitle: t("owners.list.tableTitle"),
       isLoading: isOwnerListLoading,
       isFetching: isOwnerListFetching,
-      workflowActions,
+      workflowActions: libraryWorkflowActions,
+      onRowClick: onViewOwner,
       page,
       onPageChange,
     },
+    ownerStatusConfirmModal,
+    ownerViewModal: ownerViewModalProps,
+    ownerEditModal: ownerEditModalState,
+    ownerLinkedResourcesModal: ownerLinkedResourcesModalProps,
   };
 }

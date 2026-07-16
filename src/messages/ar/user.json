@@ -9,27 +9,150 @@
       "noDataTitle": "لم يتم العثور على ملاك",
       "noDataDescription": "جرّب تعديل البحث أو تصفية الحالة.",
       "fetchErrorTitle": "تعذر تحميل الملاك",
+      "forbiddenErrorTitle": "ليست لديك صلاحية لعرض الملاك",
       "searchPlaceholder": "ابحث عن الملاك بالاسم أو البريد الإلكتروني…",
+      "emptyValue": "—",
       "statusFilter": {
         "all": "الكل",
         "ariaLabel": "تصفية حسب الحالة",
         "active": "نشط",
-        "suspended": "موقوف"
+        "suspended": "غير نشط"
       },
       "columnPickerTitle": "الأعمدة",
       "columnPickerAriaLabel": "اختر الأعمدة المرئية",
       "columns": {
-        "owner": "المالك",
-        "contact": "جهة الاتصال",
-        "properties": "العقارات",
+        "owner": "اسم المالك",
+        "phone": "رقم الهاتف",
+        "email": "البريد الإلكتروني",
+        "properties": "العقارات المرتبطة",
+        "leads": "العملاء المحتملون المرتبطون",
         "status": "الحالة",
-        "joinedAt": "تاريخ الانضمام",
         "actions": "الإجراءات"
       },
       "workflow": {
-        "comingSoonTitle": "الإجراء قريباً",
-        "comingSoonDescription": "ستتوفر إجراءات سير عمل الملاك في تحديث لاحق."
+        "view": "عرض",
+        "edit": "تعديل",
+        "activate": "تفعيل",
+        "deactivate": "إلغاء التفعيل",
+        "actionsAriaLabel": "إجراءات لـ"
       }
+    },
+    "statusConfirm": {
+      "activateTitle": "تفعيل المالك؟",
+      "activateDescription": "تفعيل {name}؟ سيستعيد الوصول وفق صلاحياته.",
+      "activateConfirm": "تفعيل",
+      "deactivateTitle": "إلغاء تفعيل المالك؟",
+      "deactivateDescription": "إلغاء تفعيل {name}؟ سيفقد الوصول حتى يُعاد تفعيله.",
+      "deactivateConfirm": "إلغاء التفعيل",
+      "cancel": "إلغاء",
+      "updating": "جارٍ التحديث…"
+    },
+    "statusUpdate": {
+      "successTitle": "تم تحديث حالة المالك",
+      "successDescription": "تم تحديث قائمة الملاك بأحدث حالة.",
+      "errorTitle": "تعذر تحديث حالة المالك",
+      "errorDescription": "حدث خطأ أثناء تحديث حالة المالك. يرجى المحاولة مرة أخرى."
+    },
+    "viewModal": {
+      "title": "تفاصيل المالك",
+      "description": "راجع معلومات ملف هذا المالك.",
+      "close": "إغلاق",
+      "loading": "جارٍ تحميل تفاصيل المالك…",
+      "errorTitle": "تعذر تحميل تفاصيل المالك",
+      "errorDescription": "حدث خطأ أثناء تحميل هذا المالك. يرجى المحاولة مرة أخرى.",
+      "emptyValue": "—",
+      "fields": {
+        "name": "اسم المالك",
+        "phone": "رقم الهاتف",
+        "email": "البريد الإلكتروني",
+        "status": "الحالة",
+        "properties": "العقارات المرتبطة",
+        "leads": "العملاء المحتملون المرتبطون"
+      }
+    },
+    "editModal": {
+      "title": "تعديل المالك",
+      "description": "حدّث معلومات الاتصال لهذا المالك.",
+      "fullNameLabel": "اسم المالك",
+      "emailLabel": "البريد الإلكتروني",
+      "phoneLabel": "رقم الهاتف",
+      "save": "حفظ التغييرات",
+      "cancel": "إلغاء",
+      "saving": "جارٍ الحفظ…",
+      "successTitle": "تم تحديث المالك",
+      "successDescription": "تم تحديث قائمة الملاك بأحدث التفاصيل.",
+      "errorTitle": "تعذر تحديث المالك",
+      "errorDescription": "حدث خطأ أثناء الحفظ. يرجى المحاولة مرة أخرى.",
+      "validation": {
+        "nameRequired": "اسم المالك مطلوب",
+        "emailRequired": "البريد الإلكتروني مطلوب",
+        "emailInvalid": "أدخل بريداً إلكترونياً صالحاً"
+      }
+    },
+    "linkedPropertiesModal": {
+      "title": "العقارات المرتبطة — {name}",
+      "description": "العقارات المرتبطة بهذا المالك.",
+      "close": "إغلاق",
+      "loading": "جارٍ تحميل العقارات…",
+      "emptyTitle": "لا توجد عقارات مرتبطة",
+      "emptyDescription": "لا يملك هذا المالك عقارات مرتبطة بعد.",
+      "errorTitle": "تعذر تحميل العقارات",
+      "errorDescription": "حدث خطأ أثناء تحميل العقارات المرتبطة.",
+      "emptyValue": "—",
+      "previous": "السابق",
+      "next": "التالي",
+      "pageLabel": "صفحة {page} من {totalPages}",
+      "columns": {
+        "title": "العقار",
+        "status": "الحالة",
+        "city": "المدينة",
+        "listingType": "نوع الإعلان"
+      }
+    },
+    "linkedLeadsModal": {
+      "title": "العملاء المحتملون المرتبطون — {name}",
+      "description": "العملاء المحتملون المرتبطون بهذا المالك.",
+      "close": "إغلاق",
+      "loading": "جارٍ تحميل العملاء المحتملين…",
+      "emptyTitle": "لا يوجد عملاء محتملون مرتبطون",
+      "emptyDescription": "لا يملك هذا المالك عملاء محتملين مرتبطين بعد.",
+      "errorTitle": "تعذر تحميل العملاء المحتملين",
+      "errorDescription": "حدث خطأ أثناء تحميل العملاء المحتملين المرتبطين.",
+      "emptyValue": "—",
+      "previous": "السابق",
+      "next": "التالي",
+      "pageLabel": "صفحة {page} من {totalPages}",
+      "columns": {
+        "name": "الاسم",
+        "email": "البريد الإلكتروني",
+        "phone": "الهاتف",
+        "status": "الحالة"
+      }
+    },
+    "assignment": {
+      "title": "تعيين وكالة للمالك",
+      "description": "اختر وكالة نشطة ومتحقق منها، ثم عيّن الملاك من قائمة المنصة.",
+      "agencyLabel": "الوكالة المستهدفة",
+      "agencyPlaceholder": "اختر وكالة",
+      "agencyLoadingPlaceholder": "جارٍ تحميل الوكالات…",
+      "assign": "تعيين",
+      "ownerColumn": "المالك",
+      "agenciesColumn": "الوكالات المعيّنة",
+      "actionColumn": "الإجراء",
+      "refreshing": "جارٍ التحديث…",
+      "ownersOnPage": "{count} ملاك في هذه الصفحة",
+      "unassigned": "غير معيّن",
+      "noPhone": "لا يوجد هاتف",
+      "loading": "جارٍ تحميل الملاك…",
+      "empty": "لم يتم العثور على ملاك.",
+      "previous": "السابق",
+      "next": "التالي",
+      "pageLabel": "صفحة {page} من {totalPages}",
+      "assignSuccessTitle": "تم تعيين المالك",
+      "assignSuccessDescription": "تم تحديث ربط المالك بالوكالة بنجاح.",
+      "assignErrorTitle": "تعذر تعيين المالك",
+      "selectAgencyErrorTitle": "اختر وكالة",
+      "selectAgencyErrorDescription": "اختر وكالة نشطة ومتحقق منها قبل تعيين مالك."
     }
   },
   "agents": {

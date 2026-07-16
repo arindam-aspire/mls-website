@@ -1,15 +1,21 @@
-# File Overview
-
-Card shell for the admin **Owners** list: filters toolbar + `OwnerListView` from `@abdoun/abdoun-library`.
+# OwnerList
 
 **Source:** `src/features/user/components/OwnerList.tsx`
 
-# Responsibilities
+Thin wrapper: `OwnerListFilters` + library `OwnerListView`.
 
-- Wrap filter toolbar and library owner table/grid in a responsive shell matching `AgentList`.
-- Render `OwnerListFilters` and `OwnerListView` with paginated data from `GET /agency/{agency_id}/owners`.
+## Responsibilities
 
-# Dependencies
+- Render filters toolbar (search, status, column picker)
+- Pass paginated `OwnerListRow` data and custom columns into `OwnerListView`
+- Loading uses `isLoading || isFetching` so pagination refreshes show the table skeleton
+
+## Columns (built upstream)
+
+Owner name, phone, email, linked properties, linked leads, status, actions.
+
+## Related
 
 - [OwnerListFilters.md](./OwnerListFilters.md)
 - [useOwnersScreen.md](../hooks/useOwnersScreen.md)
+- [buildOwnerListTableColumns.md](../utils/buildOwnerListTableColumns.md)

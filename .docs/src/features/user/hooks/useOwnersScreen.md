@@ -1,30 +1,39 @@
-# `useOwnersScreen`
+# useOwnersScreen
 
 **Source:** `src/features/user/hooks/useOwnersScreen.ts`
 
-Screen logic for the admin **Owners** page: labels, filter state, React Query list fetch, table columns, and workflow placeholders.
+Screen hook for the Owners admin page (`/owners`). Owns list filters, sorting, pagination, workflow actions, Super Admin assignment, and modal orchestration.
 
-## Data fetching
+## Responsibilities
 
-- Reads `agencyId` from `useAuthStore` → `user.agency.agency_id`
-- `useQuery` key: `["owners", "list", agencyId, listRequestParams]`
-- `queryFn`: `getOwnerList(agencyId, listRequestParams)` — disabled when `agencyId` is empty
-- Maps API rows via `mapOwnerListItemsToLibraryOwners`
-- List fetch errors toast `user.owners.list.fetchErrorTitle`
+- Fetch agency-scoped list (`getOwnerList`) or platform list (`getPlatformOwnerList`) when Super Admin
+- Search, status filter, column visibility, client sort config, pagination (page size 10)
+- Build table columns via `buildOwnerListTableColumns` with View / Edit / Activate / Deactivate
+- Open confirm modal for activate (`ACTIVE`) / deactivate (`SUSPENDED`)
+- Open view, edit, linked-properties, and linked-leads modals
+- Super Admin: agency assignment select + assign mutation
+- Toast list fetch errors; special title for `FORBIDDEN` (403)
 
-## Return values
+## Query keys
 
-| Key | Description |
+- `["owners", "list", "platform" \| agencyId, listRequestParams]`
+- `["agency", "owner-assignment-list"]` (Super Admin only)
+
+## Return highlights
+
+| Key | Purpose |
 | --- | --- |
-| `pageTitle` / `pageSubtitle` | Header copy from `user.owners` |
-| `listFilters` | Props for `OwnerListFilters` |
-| `ownerList` | Props for `OwnerList` (`OwnerListView` data, pagination, loading) |
+| `listFilters` / `ownerList` | Props for `OwnerList` |
+| `assignment` | Localized Super Admin assignment panel state |
+| `ownerStatusConfirmModal` | ConfirmModal props or null |
+| `ownerViewModal` / `ownerEditModal` / `ownerLinkedResourcesModal` | Modal props |
 
-## Workflow actions
+## Permissions
 
-`view`, `activate`, `suspend`, and `delete` show coming-soon toasts until API mutations are wired.
+Consumers must guard with `useAuthorize("OWNERS")` (Super Admin + Agency Admin). Agent / Owner / Normal User are redirected to `/unauthorized`.
 
 ## Related
 
-- [owner.service.md](../services/owner.service.md)
 - [OwnersScreen.md](../screens/OwnersScreen.md)
+- [OwnerList.md](../components/OwnerList.md)
+- [buildOwnerListTableColumns.md](../utils/buildOwnerListTableColumns.md)

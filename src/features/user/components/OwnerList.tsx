@@ -2,7 +2,6 @@
 
 import {
   OwnerListView,
-  type Owner,
   type OwnerListPaginationProps,
   type OwnerWorkflowActionsConfig,
   type PinnedColumns,
@@ -10,11 +9,12 @@ import {
   type TableColumn,
   type TableNoDataFoundContent,
 } from "@abdoun/abdoun-library";
+import type { OwnerListRow } from "../mappers/mapOwnerListItemToLibraryOwner";
 import { OwnerListFilters, type OwnerListFiltersProps } from "./OwnerListFilters";
 
 export type OwnerListData = {
-  data: Owner[];
-  columns: TableColumn<Owner>[];
+  data: OwnerListRow[];
+  columns: TableColumn<OwnerListRow>[];
   sortConfig: SortConfig;
   onSort: (next: SortConfig) => void;
   pagination?: OwnerListPaginationProps;
@@ -24,7 +24,9 @@ export type OwnerListData = {
   listTitle: string;
   isLoading: boolean;
   isFetching: boolean;
+  /** Mobile card overflow menu (library activate/suspend ids). */
   workflowActions?: OwnerWorkflowActionsConfig;
+  onRowClick?: (owner: OwnerListRow) => void;
   page: number;
   onPageChange: (page: number) => void;
 };
@@ -48,6 +50,7 @@ export function OwnerList({ filters, list }: OwnerListProps) {
     isLoading,
     isFetching,
     workflowActions,
+    onRowClick,
   } = list;
 
   return (
@@ -70,6 +73,7 @@ export function OwnerList({ filters, list }: OwnerListProps) {
           pinnedColumns={pinnedColumns}
           gridHiddenColumnIds={gridHiddenColumnIds}
           workflowActions={workflowActions}
+          onRowClick={onRowClick}
           mobileCardVariant="auto"
         />
       </div>

@@ -2,19 +2,23 @@
 
 **Source:** `app/[locale]/(main)/owners/page.tsx`
 
-Admin-only route for the Owners management screen.
+Locale-prefixed Owner Management route.
 
 ## Navigation
 
 - Locale-prefixed URL: `/en/owners`, `/ar/owners`, etc.
-- Sidebar: **User Management → Owners** (`OWNERS` permission)
-- Protected mobile drawer: **User Management → Owners** (admin only; not in profile popover or My Activity)
+- Sidebar: User Management → Owners (`OWNERS` permission)
 
-## Auth
+## Guards
 
-- `useAuthorize("OWNERS")` — allowed role: `admin` (`UserRole.AGENCY`)
-- Middleware: `/owners` is in `PROTECTED_ROUTES` (requires `access_token` cookie)
+- Middleware: `/owners` in `PROTECTED_ROUTES` (requires `access_token` cookie)
+- Client: `useAuthorize("OWNERS")` — Super Admin (`super_admin`) and Agency Admin (`admin`) only; others → `/unauthorized`
 
 ## Screen
 
-Renders [OwnersScreen.md](../../../src/features/user/screens/OwnersScreen.md).
+Renders `OwnersScreen` after auth hydration.
+
+## Related
+
+- [OwnersScreen.md](../../../../src/features/user/screens/OwnersScreen.md)
+- [useOwnersScreen.md](../../../../src/features/user/hooks/useOwnersScreen.md)

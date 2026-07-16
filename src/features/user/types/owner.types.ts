@@ -13,6 +13,9 @@ export type OwnerListItem = {
   status?: string;
   /** Present when the API returns a property count. */
   property_owned?: number;
+  /** Present when the API returns a linked leads count. */
+  leads_count?: number;
+  linked_leads?: number;
   assigned_agencies?: {
     id: string;
     agency_name: string;
@@ -74,4 +77,91 @@ export type AssignOwnerAgencyResponse = {
   };
   error: unknown;
   meta: Record<string, unknown>;
+};
+
+export type OwnerStatusUpdateRequest = {
+  status: "ACTIVE" | "SUSPENDED" | "INACTIVE" | string;
+  reason?: string;
+};
+
+export type OwnerStatusUpdateResponse = {
+  success: boolean;
+  message: string | null;
+  data: OwnerListItem | null;
+  error: unknown;
+  meta?: Record<string, unknown>;
+};
+
+export type OwnerStatusUpdateResult = {
+  message: string;
+  owner: OwnerListItem;
+};
+
+export type UpdateOwnerRequest = {
+  full_name?: string;
+  email?: string;
+  phone?: string;
+};
+
+export type UpdateOwnerResponse = {
+  success: boolean;
+  message: string | null;
+  data: OwnerListItem | null;
+  error: unknown;
+  meta?: Record<string, unknown>;
+};
+
+export type UpdateOwnerResult = {
+  message: string;
+  owner: OwnerListItem;
+};
+
+export type OwnerDetailResponse = {
+  success: boolean;
+  message: string | null;
+  data: OwnerListItem | null;
+  error: unknown;
+  meta?: Record<string, unknown>;
+};
+
+export type OwnerLinkedPropertyItem = {
+  id: string;
+  title?: string | null;
+  reference?: string | null;
+  status?: string | null;
+  city?: string | null;
+  listing_type?: string | null;
+};
+
+export type OwnerLinkedLeadItem = {
+  id: string;
+  name?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  status?: string | null;
+  created_at?: string | null;
+};
+
+export type OwnerLinkedListParams = {
+  page?: number;
+  pageSize?: number;
+};
+
+export type OwnerLinkedListResponseData<T> = OwnerListPagination & {
+  items: T[];
+};
+
+export type OwnerLinkedListResponse<T> = {
+  success: boolean;
+  message: string | null;
+  data: OwnerLinkedListResponseData<T> | null;
+  error: unknown;
+  meta?: {
+    pagination?: OwnerListPagination;
+  };
+};
+
+export type NormalizedOwnerLinkedListResponse<T> = {
+  items: T[];
+  pagination: OwnerListPagination;
 };

@@ -6,11 +6,27 @@ import {
 } from "../constants/ownerList.constants";
 import type {
   AssignOwnerAgencyResponse,
+  NormalizedOwnerLinkedListResponse,
   NormalizedOwnerListResponse,
+  OwnerDetailResponse,
+  OwnerLinkedLeadItem,
+  OwnerLinkedListParams,
+  OwnerLinkedListResponse,
+  OwnerLinkedPropertyItem,
+  OwnerListItem,
   OwnerListPagination,
   OwnerListParams,
   OwnerListResponse,
+  OwnerStatusUpdateRequest,
+  OwnerStatusUpdateResponse,
+  OwnerStatusUpdateResult,
+  UpdateOwnerRequest,
+  UpdateOwnerResponse,
+  UpdateOwnerResult,
 } from "../types/owner.types";
+
+const DEFAULT_LINKED_LIST_PAGE = 1;
+const DEFAULT_LINKED_LIST_PAGE_SIZE = 10;
 
 function resolveOwnerListPagination(
   data: OwnerListResponse["data"],
@@ -41,6 +57,20 @@ function resolveOwnerListPagination(
     hasNext: false,
     hasPrevious: false,
   };
+}
+
+function resolveLinkedListPagination<T>(
+  data: OwnerLinkedListResponse<T>["data"],
+  metaPagination: OwnerListPagination | undefined,
+  fallbackPage: number,
+  fallbackPageSize: number,
+): OwnerListPagination {
+  return resolveOwnerListPagination(
+    data as OwnerListResponse["data"],
+    metaPagination,
+    fallbackPage,
+    fallbackPageSize,
+  );
 }
 
 export async function getOwnerList(
@@ -117,4 +147,114 @@ export async function assignOwnerAgency(
     body: { agency_id: agencyId },
     auth: true,
   });
+}
+
+export async function getOwnerDetail(ownerId: string): Promise<OwnerListItem> {
+  const response = await apiClient.request<OwnerDetailResponse>({
+    endpoint: ownerEndpoints.DETAIL(ownerId),
+    method: "GET",
+    auth: true,
+  });
+
+  if (!response.success || !response.data) {
+    throw new Error(response.message ?? "Failed to load owner details");
+  }
+
+  return response.data;
+}
+
+export async function updateOwner(
+  ownerId: string,
+  body: UpdateOwnerRequest,
+): Promise<UpdateOwnerResult> {
+  const response = await apiClient.request<UpdateOwnerResponse>({
+    endpoint: ownerEndpoints.UPDATE(ownerId),
+    method: "PATCH",
+    auth: true,
+    body,
+  });
+
+  if (!response.success || !response.data) {
+    throw new Error(response.message ?? "Failed to update owner");
+  }
+
+  return {
+    message: response.message ?? "",
+    owner: response.data,
+  };
+}
+
+export async function updateOwnerStatus(
+  ownerId: string,
+  body: OwnerStatusUpdateRequest,
+): Promise<OwnerStatusUpdateResult> {
+  const response = await apiClient.request<OwnerStatusUpdateResponse>({
+    endpoint: ownerEndpoints.UPDATE_STATUS(ownerId),
+    method: "PATCH",
+    auth: true,
+    body,
+  });
+
+  if (!response.success || !response.data) {
+    throw new Error(response.message ?? "Failed to update owner status");
+  }
+
+  return {
+    message: response.message ?? "",
+    owner: response.data,
+  };
+}
+
+export async function getOwnerLinkedProperties(
+  ownerId: string,
+  params: OwnerLinkedListParams = {},
+): Promise<NormalizedOwnerLinkedListResponse<OwnerLinkedPropertyItem>> {
+  const page = params.page ?? DEFAULT_LINKED_LIST_PAGE;
+  const pageSize = params.pageSize ?? DEFAULT_LINKED_LIST_PAGE_SIZE;
+
+  const response = await apiClient.request<OwnerLinkedListResponse<OwnerLinkedPropertyItem>>({
+    endpoint: ownerEndpoints.LINKED_PROPERTIES(ownerId, { page, pageSize }),
+    method: "GET",
+    auth: true,
+  });
+
+  const data = response.data;
+  const pagination = resolveLinkedListPagination(
+    data,
+    response.meta?.pagination,
+    page,
+    pageSize,
+  );
+
+  return {
+    items: data?.items ?? [],
+    pagination,
+  };
+}
+
+export async function getOwnerLinkedLeads(
+  ownerId: string,
+  params: OwnerLinkedListParams = {},
+): Promise<NormalizedOwnerLinkedListResponse<OwnerLinkedLeadItem>> {
+  const page = params.page ?? DEFAULT_LINKED_LIST_PAGE;
+  const pageSize = params.pageSize ?? DEFAULT_LINKED_LIST_PAGE_SIZE;
+
+  const response = await apiClient.request<OwnerLinkedListResponse<OwnerLinkedLeadItem>>({
+    endpoint: ownerEndpoints.LINKED_LEADS(ownerId, { page, pageSize }),
+    method: "GET",
+    auth: true,
+  });
+
+  const data = response.data;
+  const pagination = resolveLinkedListPagination(
+    data,
+    response.meta?.pagination,
+    page,
+    pageSize,
+  );
+
+  return {
+    items: data?.items ?? [],
+    pagination,
+  };
 }

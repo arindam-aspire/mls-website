@@ -208,6 +208,10 @@ mls_website/
 │       │   │   │   ├── index.md
 │       │   │   │   ├── useAgentsScreen.md
 │       │   │   │   ├── useOwnersScreen.md
+│       │   │   │   ├── useOwnerEditModal.md
+│       │   │   │   ├── useOwnerLinkedResourcesModal.md
+│       │   │   │   ├── useOwnerStatusConfirm.md
+│       │   │   │   ├── useOwnerViewModal.md
 │       │   │   │   ├── useAgentOnboardingForm.md
 │       │   │   │   ├── useAgentInviteScreen.md
 │       │   │   │   ├── useInviteAgentByEmailModal.md
@@ -220,10 +224,12 @@ mls_website/
 │       │   │   │   ├── buildOwnerListColumnLabels.md
 │       │   │   │   └── buildOwnerListStatusFilterLabels.md
 │       │   │   ├── mappers/
-│       │   │   │   └── mapAgentListItemToLibraryAgent.md
+│       │   │   │   ├── mapAgentListItemToLibraryAgent.md
+│       │   │   │   └── mapOwnerListItemToLibraryOwner.md
 │       │   │   ├── mutations/
 │       │   │   │   ├── README.md
 │       │   │   │   ├── agent.mutation.md
+│       │   │   │   ├── owner.mutation.md
 │       │   │   │   └── index.md
 │       │   │   ├── screens/
 │       │   │   │   ├── AgentInviteScreen.md
@@ -232,12 +238,16 @@ mls_website/
 │       │   │   ├── modals/
 │       │   │   │   ├── CopyInvitationLinkModal.md
 │       │   │   │   ├── InviteAgentByEmailModal.md
-│       │   │   │   └── ManualOnboardAgentModal.md
+│       │   │   │   ├── ManualOnboardAgentModal.md
+│       │   │   │   ├── OwnerEditModal.md
+│       │   │   │   ├── OwnerLinkedResourcesModal.md
+│       │   │   │   └── OwnerViewModal.md
 │       │   │   ├── services/
 │       │   │   │   ├── README.md
 │       │   │   │   ├── index.md
 │       │   │   │   ├── agent.service.md
 │       │   │   │   ├── agentUpload.service.md
+│       │   │   │   ├── owner.service.md
 │       │   │   │   └── user.service.md
 │       │   │   ├── store/
 │       │   │   │   ├── README.md
@@ -246,6 +256,7 @@ mls_website/
 │       │   │   │   ├── README.md
 │       │   │   │   ├── index.md
 │       │   │   │   ├── agent.types.md
+│       │   │   │   ├── owner.types.md
 │       │   │   │   └── user.types.md
 │       │   │   └── utils/
 │       │   │       ├── README.md
@@ -825,6 +836,10 @@ mls_website/
 │   │   │   │   ├── index.ts
 │   │   │   │   ├── useAgentsScreen.ts
 │   │   │   │   ├── useOwnersScreen.ts
+│   │   │   │   ├── useOwnerEditModal.ts
+│   │   │   │   ├── useOwnerLinkedResourcesModal.ts
+│   │   │   │   ├── useOwnerStatusConfirm.ts
+│   │   │   │   ├── useOwnerViewModal.ts
 │   │   │   │   ├── useInviteAgentByEmailModal.ts
 │   │   │   │   ├── useAgentOnboardingForm.ts
 │   │   │   │   ├── useAgentInviteScreen.ts
@@ -841,6 +856,7 @@ mls_website/
 │   │   │   │   └── mapOwnerListItemToLibraryOwner.ts
 │   │   │   ├── mutations/
 │   │   │   │   ├── agent.mutation.ts
+│   │   │   │   ├── owner.mutation.ts
 │   │   │   │   └── index.ts
 │   │   │   ├── screens/
 │   │   │   │   ├── AgentsScreen.tsx
@@ -850,7 +866,10 @@ mls_website/
 │   │   │   ├── modals/
 │   │   │   │   ├── CopyInvitationLinkModal.tsx
 │   │   │   │   ├── InviteAgentByEmailModal.tsx
-│   │   │   │   └── ManualOnboardAgentModal.tsx
+│   │   │   │   ├── ManualOnboardAgentModal.tsx
+│   │   │   │   ├── OwnerEditModal.tsx
+│   │   │   │   ├── OwnerLinkedResourcesModal.tsx
+│   │   │   │   └── OwnerViewModal.tsx
 │   │   │   ├── services/
 │   │   │   │   ├── index.ts
 │   │   │   │   ├── agent.service.ts
@@ -871,7 +890,7 @@ mls_website/
 │   │   │       ├── buildAgentListRequestParams.ts
 │   │   │       ├── buildOwnerListRequestParams.ts
 │   │   │       ├── buildAgentListTableColumns.ts
-│   │   │       ├── buildOwnerListTableColumns.ts
+│   │   │       ├── buildOwnerListTableColumns.tsx
 │   │   │       ├── mapAgentListStatusFilterToApiStatus.ts
 │   │   │       ├── mapOwnerListStatusFilterToApiStatus.ts
 │   │   │       ├── mapAgentSummaryToKpiMetrics.ts
