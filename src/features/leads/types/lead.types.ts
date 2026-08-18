@@ -1,7 +1,18 @@
 export const LEAD_STATUSES = [
   "NEW",
   "IN_PROGRESS",
+  "CONTACTED",
+  "QUALIFIED",
+  "FOLLOW_UP",
+  "MEETING_SCHEDULED",
+  "PROPOSAL_SENT",
+  "NEGOTIATION",
   "REQUEST_FOR_CLOSE",
+  "CLOSED_WON",
+  "CLOSED_LOST",
+  "ON_HOLD",
+  "CANCELLED",
+  /** Legacy terminal value retained for existing API records. */
   "CLOSED",
 ] as const;
 
@@ -52,6 +63,14 @@ export type Lead = {
   updated_at: string | null;
   /** Optional enriched fields if API adds them later. */
   assigned_agent_name?: string | null;
+  assigned_agent?: LeadAssignedAgentSnapshot | null;
+};
+
+export type LeadAssignedAgentSnapshot = {
+  id?: string | null;
+  fullName?: string | null;
+  full_name?: string | null;
+  name?: string | null;
 };
 
 export type LeadListPagination = {
@@ -153,7 +172,32 @@ export type LeadMessage = {
   created_at: string | null;
   created_by_id?: string | null;
   created_by_name?: string | null;
+  recipient_user_id?: string | null;
+  recipient_name?: string | null;
   direction?: "inbound" | "outbound" | string;
+};
+
+export type LeadConversationMessageVariant = "agent" | "customer";
+
+export type LeadConversationMessageDisplay = {
+  id: string;
+  message: string;
+  senderName: string;
+  recipientName: string | null;
+  sentAt: string | null;
+  sentAtLabel: string;
+  sentTimeLabel: string;
+  channelLabel: string;
+  variant: LeadConversationMessageVariant;
+};
+
+export type LeadNoteDisplay = {
+  id: string;
+  note: string;
+  authorName: string;
+  createdAt: string | null;
+  createdAtLabel: string;
+  createdTimeLabel: string;
 };
 
 export type LeadActivityItem = {
@@ -163,6 +207,18 @@ export type LeadActivityItem = {
   description?: string | null;
   created_at: string | null;
   actor_name?: string | null;
+};
+
+export type LeadActivityDisplay = {
+  id: string;
+  type: string;
+  typeLabel: string;
+  title: string;
+  description: string | null;
+  actorName: string | null;
+  createdAt: string | null;
+  createdAtLabel: string;
+  createdTimeLabel: string;
 };
 
 export type LeadNotesListResponse = LeadApiEnvelope<{ items: LeadNote[] } | LeadNote[]>;

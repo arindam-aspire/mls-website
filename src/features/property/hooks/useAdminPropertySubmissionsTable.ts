@@ -224,6 +224,7 @@ export function useAdminPropertySubmissionsTable({
     return mapAdminPropertySubmissionListItems(listings ?? [], {
       adminRowActionLabels,
       adminRowActionOptions,
+      canViewCloseStatus: true,
     }).map((row) => {
       const key = row.status.key;
 

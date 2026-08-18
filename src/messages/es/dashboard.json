@@ -1,0 +1,86 @@
+{
+  "title": "Panel",
+  "userFallback": "Usuario",
+  "unknown": "Desconocido",
+  "hero": {
+    "platformControl": "Control de la plataforma",
+    "workspace": "Espacio de trabajo",
+    "adminWelcome": "Hola, {name}. Supervisa el crecimiento, la actividad y la salud operativa de la plataforma.",
+    "agentWelcome": "Hola, {name}. Revisa los anuncios asignados y las notificaciones operativas desde un solo lugar.",
+    "workspaceWelcome": "Hola, {name}. Revisa la actividad, las aprobaciones pendientes, la cobertura de agencias y las notificaciones operativas."
+  },
+  "actions": {
+    "viewAssignedListings": "Ver anuncios asignados",
+    "reviewListings": "Revisar anuncios",
+    "addProperty": "Añadir propiedad",
+    "openManageListings": "Abrir gestión de anuncios",
+    "viewAll": "Ver todo"
+  },
+  "kpi": {
+    "ariaLabel": "Métricas del panel",
+    "totalRegisteredUsers": "Usuarios registrados totales",
+    "totalAgents": "Agentes totales",
+    "totalAdmins": "Administradores totales",
+    "pendingApprovals": "Aprobaciones pendientes",
+    "listingsThisMonth": "Anuncios este mes",
+    "leadsThisMonth": "Prospectos este mes",
+    "closedDeals": "Operaciones cerradas",
+    "trendIncrease": "Aumentó un {percentage} por ciento",
+    "trendDecrease": "Disminuyó un {percentage} por ciento"
+  },
+  "charts": {
+    "userGrowth": "Crecimiento de usuarios",
+    "listingGrowth": "Crecimiento de anuncios",
+    "leadGrowth": "Crecimiento de prospectos",
+    "leadSource": "Origen de prospectos"
+  },
+  "recentActivity": {
+    "title": "Actividad reciente"
+  },
+  "healthAlerts": {
+    "title": "Alertas de estado",
+    "severity": {
+      "warning": "Advertencia",
+      "info": "Información",
+      "error": "Error",
+      "success": "Correcto"
+    }
+  },
+  "empty": {
+    "chartTitle": "Aún no hay datos de crecimiento",
+    "chartDescription": "Los datos aparecerán cuando haya historial de informes.",
+    "leadSourceTitle": "Aún no hay orígenes de prospectos",
+    "leadSourceDescription": "La distribución aparecerá cuando se registren prospectos.",
+    "activityTitle": "No hay actividad reciente",
+    "activityDescription": "Los últimos eventos de la plataforma aparecerán aquí.",
+    "alertsTitle": "Todos los sistemas están saludables",
+    "alertsDescription": "No hay alertas de estado que requieran atención.",
+    "pendingReviews": "No hay revisiones de propiedades pendientes.",
+    "agencies": "No se encontraron agencias."
+  },
+  "error": {
+    "title": "No se pudo cargar el panel",
+    "description": "Los datos de resumen no están disponibles. Inténtalo de nuevo.",
+    "partialDescription": "No se pudieron cargar algunos datos. Las secciones disponibles siguen visibles."
+  },
+  "legacy": {
+    "assignedListings": "Anuncios asignados",
+    "assignedListingsHelper": "Anuncios asignados actualmente a tu cuenta.",
+    "assignedListingsDescription": "Continúa desde la cola de propiedades asignadas por tu agencia.",
+    "agencies": "Agencias",
+    "agenciesHelper": "Registros de agencias disponibles para este espacio.",
+    "pendingReviews": "Revisiones pendientes",
+    "pendingReviewsHelper": "Solicitudes de propiedades pendientes de revisión.",
+    "visibleListings": "Anuncios visibles",
+    "visibleListingsHelper": "Cantidad de anuncios públicos devueltos por la búsqueda.",
+    "unreadAlerts": "Alertas no leídas",
+    "unreadAlertsHelper": "Notificaciones operativas no leídas que requieren atención.",
+    "pendingPropertyReviews": "Revisiones de propiedades pendientes",
+    "pendingPropertyReviewsDescription": "Últimas solicitudes pendientes de aprobación.",
+    "submissionMeta": "Enviado por {name} · Paso {step}",
+    "pending": "Pendiente",
+    "agencySnapshot": "Resumen de agencias",
+    "agencySnapshotDescription": "Agencias disponibles recientemente.",
+    "noContact": "Sin contacto"
+  }
+}

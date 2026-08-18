@@ -2,6 +2,15 @@
   "pageTitle": "العملاء المحتملون",
   "pageSubtitle": "تتبع الاستفسارات والمحادثات وطلبات الإغلاق عبر وكالتك.",
   "detailsPageTitle": "تفاصيل العميل المحتمل",
+  "ownerPageTitle": "استفساراتي",
+  "ownerPageSubtitle": "تتبع الاستفسارات المقدمة بشأن عقاراتك.",
+  "ownerList": {
+    "tableTitle": "استفساراتي",
+    "noDataTitle": "لم يتم العثور على استفسارات",
+    "noDataDescription": "حاول تعديل البحث أو عامل تصفية الحالة.",
+    "comingSoonSubtitle": "قيد التطوير",
+    "comingSoonDescription": "تتبع وأدر جميع استفسارات عقاراتك في مكان واحد. هذه الميزة ستتوفر قريباً!"
+  },
   "list": {
     "tableTitle": "العملاء المحتملون",
     "searchPlaceholder": "ابحث برقم العميل أو الاسم أو العقار…",
@@ -39,7 +48,17 @@
   "status": {
     "NEW": "جديد",
     "IN_PROGRESS": "قيد المتابعة",
-    "REQUEST_FOR_CLOSE": "طلب إغلاق",
+    "CONTACTED": "تم التواصل",
+    "QUALIFIED": "مؤهل",
+    "FOLLOW_UP": "متابعة",
+    "MEETING_SCHEDULED": "تم تحديد اجتماع",
+    "PROPOSAL_SENT": "تم إرسال العرض",
+    "NEGOTIATION": "تفاوض",
+    "REQUEST_FOR_CLOSE": "طلب الإغلاق",
+    "CLOSED_WON": "مغلق بنجاح",
+    "CLOSED_LOST": "مغلق دون نجاح",
+    "ON_HOLD": "معلّق",
+    "CANCELLED": "ملغى",
     "CLOSED": "مغلق"
   },
   "source": {
@@ -67,6 +86,7 @@
     "phone": "الهاتف",
     "communicationMode": "طريقة التواصل",
     "propertyTitle": "العقار",
+    "propertyAddress": "عنوان العقار",
     "propertyId": "معرف العقار",
     "propertyHash": "هاش العقار",
     "inquiryType": "نوع الاستفسار",
@@ -90,43 +110,77 @@
     "assign": "تعيين وكيل",
     "reassign": "إعادة تعيين وكيل",
     "approveClose": "الموافقة على الإغلاق",
-    "rejectClose": "رفض الإغلاق",
-    "overrideStatus": "تجاوز الحالة",
-    "emailCustomer": "مراسلة العميل",
-    "callCustomer": "اتصال بالعميل",
-    "whatsappCustomer": "واتساب العميل"
+    "rejectClose": "رفض الإغلاق"
   },
   "conversation": {
     "title": "المحادثة",
+    "subtitle": "اعرض جميع الرسائل وتفاصيل التسليم لهذا العميل المحتمل.",
     "emptyTitle": "لا رسائل بعد",
     "emptyDescription": "أرسل رداً لبدء المحادثة مع هذا العميل.",
     "channel": "القناة",
     "channelInApp": "داخل التطبيق",
     "channelEmail": "بريد إلكتروني",
     "channelSms": "رسالة نصية",
+    "unknownSender": "مرسل غير معروف",
+    "messageCount": "{count, plural, one {رسالة واحدة} other {# رسائل}}",
+    "repliedTo": "إلى {name}",
+    "toRecipient": "إلى: {name}",
+    "channelWithValue": "القناة: {channel}",
+    "sentBadge": "تم الإرسال",
+    "groupToday": "اليوم {date}",
+    "groupYesterday": "أمس {date}",
+    "agentRole": "وكيل",
+    "customerRole": "عميل",
     "listUnavailable": "سيظهر سجل الرسائل هنا عند توفر واجهة القائمة. يمكنك إرسال الردود الآن."
   },
   "notes": {
     "title": "ملاحظات داخلية",
+    "subtitle": "اعرض جميع الملاحظات الداخلية للفريق لهذا العميل المحتمل.",
     "emptyTitle": "لا ملاحظات بعد",
     "emptyDescription": "أضف ملاحظة داخلية لفريقك.",
-    "listUnavailable": "سيظهر سجل الملاحظات هنا عند توفر واجهة القائمة. يمكنك إضافة ملاحظات الآن."
+    "listUnavailable": "سيظهر سجل الملاحظات هنا عند توفر واجهة القائمة. يمكنك إضافة ملاحظات الآن.",
+    "noteCount": "{count, plural, one {ملاحظة واحدة} other {# ملاحظات}}",
+    "unknownAuthor": "مؤلف غير معروف",
+    "internalBadge": "داخلي",
+    "savedBadge": "تم الحفظ",
+    "groupToday": "اليوم {date}",
+    "groupYesterday": "أمس {date}"
   },
   "timeline": {
     "title": "الجدول الزمني للنشاط",
+    "subtitle": "تتبع الأحداث والتحديثات الرئيسية لهذا العميل المحتمل.",
     "emptyTitle": "لا نشاط بعد",
     "emptyDescription": "سيظهر النشاط مع تقدّم العميل المحتمل.",
+    "activityCount": "{count, plural, one {حدث واحد} other {# أحداث}}",
+    "byActor": "بواسطة {name}",
+    "groupToday": "اليوم {date}",
+    "groupYesterday": "أمس {date}",
+    "types": {
+      "created": "إنشاء",
+      "assigned": "تعيين",
+      "requestClose": "طلب إغلاق",
+      "closed": "مغلق",
+      "activity": "تحديث",
+      "generic": "نشاط"
+    },
     "events": {
       "created": "تم إنشاء العميل المحتمل",
       "assigned": "تم تعيين وكيل",
       "requestClose": "تم طلب الإغلاق",
       "closed": "تم إغلاق العميل المحتمل",
-      "lastActivity": "آخر نشاط"
+      "lastActivity": "آخر نشاط",
+      "createdDescription": "تم إنشاء العميل {leadNumber} من {source}.",
+      "assignedDescription": "تم التعيين إلى {agentName}.",
+      "assignedDescriptionUnknown": "تم تعيين وكيل لهذا العميل المحتمل.",
+      "requestCloseDescription": "تم تقديم طلب إغلاق وهو بانتظار المراجعة.",
+      "closedDescription": "تم تعليم هذا العميل المحتمل كمُغلق.",
+      "lastActivityDescription": "أحدث نشاط مسجّل لهذا العميل المحتمل."
     }
   },
   "close": {
     "title": "طلب الإغلاق",
     "pendingDescription": "طلب وكيل إغلاق هذا العميل. راجع ووافق أو ارفض.",
+    "awaitingApprovalDescription": "طلب الإغلاق هذا بانتظار مراجعة الإدارة. سيبقى العميل مفتوحاً حتى يوافق مسؤول.",
     "notPendingDescription": "لا يوجد طلب إغلاق معلّق لهذا العميل.",
     "requestCloseAt": "تاريخ الطلب",
     "closedAt": "تاريخ الإغلاق",
@@ -155,7 +209,6 @@
     },
     "status": {
       "title": "تحديث الحالة",
-      "overrideTitle": "تجاوز الحالة",
       "description": "غيّر حالة سير العمل لهذا العميل.",
       "statusLabel": "الحالة",
       "reasonLabel": "السبب",

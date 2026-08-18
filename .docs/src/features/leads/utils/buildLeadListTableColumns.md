@@ -6,8 +6,8 @@ Builds `TableColumn<LeadListRow>[]` for the leads list rendered by library `Agen
 
 ### Responsibilities
 
-- Define columns: lead number, property, customer, status (badge), assigned agent, created date, actions.
-- Wire View details button → `onOpenLead`.
+- Define columns: lead number, property, customer, status (badge), assigned agent, and created date.
+- Add the Actions/View details column only when `onOpenLead` is provided; management passes it, owner enquiries do not.
 - Expose default pinned columns and mobile-grid hidden column ids.
 
 ### Exports

@@ -10,7 +10,11 @@ import { usePathname, useRouter } from "@/src/i18n/navigation";
 import type { AppLocale } from "@/src/i18n/routing";
 import { tokenStore } from "@/src/apis/core/token.store";
 import { useToast } from "@/src/hooks/useToast";
-import { canTrackRecentPropertyView } from "@/src/features/auth/utils/profileMenuRoleAccess";
+import {
+  canTrackRecentPropertyView,
+  isAgencyUser,
+  isSuperAdminUser,
+} from "@/src/features/auth/utils/profileMenuRoleAccess";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { hasPropertyDetailsRestrictedTabsAccess } from "@/src/lib/auth/propertyDetailsTabAccess";
 import { PROPERTY_CREATE_SUBMISSION_ID_PARAM } from "../constants/propertyCreate.constants";
@@ -42,6 +46,10 @@ import type {
   PropertyDetailsStatusActionCardAction,
 } from "../types/property.types";
 import { normalizePropertyListing } from "../utils/normalizePropertyListingStatus";
+import {
+  isPropertyCloseStatusKey,
+  resolvePropertyClosePermissions,
+} from "../utils/resolvePropertyClosePermissions";
 import { usePropertyFavouriteToggle } from "./usePropertyFavouriteToggle";
 import { usePropertyContactModalActions } from "@/src/features/contact/hooks/usePropertyContactModalActions";
 
@@ -163,6 +171,11 @@ export function usePropertyDetails(propertyId: string) {
 
   const canViewRestrictedTabs = useMemo(
     () => hasPropertyDetailsRestrictedTabsAccess(user),
+    [user],
+  );
+
+  const canViewCloseStatus = useMemo(
+    () => resolvePropertyClosePermissions(isAgencyUser(user) || isSuperAdminUser(user)).canViewCloseStatus,
     [user],
   );
 
@@ -858,6 +871,10 @@ export function usePropertyDetails(propertyId: string) {
       }
 
       if (action.id === "review_deal_closure") {
+        if (!canViewCloseStatus) {
+          return [];
+        }
+
         return [
           {
             id: "approve_deal_closure",
@@ -960,6 +977,7 @@ export function usePropertyDetails(propertyId: string) {
     isReviewingSubmission,
     isWorkflowActionPending,
     onStatusWorkflowActionClick,
+    canViewCloseStatus,
     propertyDetailsWithFavourites?.workflow_actions,
     runningWorkflowActionId,
     tManage,
@@ -977,13 +995,21 @@ export function usePropertyDetails(propertyId: string) {
       .filter((label): label is string => Boolean(label));
     const cardPendingActions = card?.pendingActions ?? card?.pending_actions ?? [];
 
+    const rawStatusLabel = card?.statusLabel ?? card?.status_label ?? undefined;
+    const listingCloseStatus = [
+      propertyDetailsWithFavourites?.workflow_status,
+      propertyDetailsWithFavourites?.workflow_stage,
+      rawStatusLabel,
+    ].some((value) => value && isPropertyCloseStatusKey(value));
+
     return {
-      statusLabel: card?.statusLabel ?? card?.status_label ?? undefined,
+      statusLabel:
+        canViewCloseStatus || !listingCloseStatus ? rawStatusLabel : undefined,
       pendingActions:
         cardPendingActions.length > 0 ? cardPendingActions : fallbackPendingActions,
       actions: workflowActionButtons,
     };
-  }, [propertyDetailsWithFavourites, workflowActionButtons]);
+  }, [canViewCloseStatus, propertyDetailsWithFavourites, workflowActionButtons]);
 
   // 8. Refs
   const lastRecordedRecentViewIdRef = useRef<string | null>(null);

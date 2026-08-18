@@ -14,7 +14,7 @@ _No notable imports._
 
 # Exports
 
-_See source exports._
+Re-exports agency, agent, auth, dashboard, lead, profile, property, public, saved-search, and user endpoint modules. `dashboardEndpoints` includes the authenticated summary path.
 
 # State Management
 

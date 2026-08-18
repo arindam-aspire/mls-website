@@ -1,0 +1,86 @@
+{
+  "title": "لوحة المعلومات",
+  "userFallback": "المستخدم",
+  "unknown": "غير معروف",
+  "hero": {
+    "platformControl": "إدارة المنصة",
+    "workspace": "مساحة العمل",
+    "adminWelcome": "مرحباً {name}. راقب نمو المنصة ونشاطها وصحتها التشغيلية.",
+    "agentWelcome": "مرحباً {name}. راجع العقارات المسندة والإشعارات التشغيلية من مكان واحد.",
+    "workspaceWelcome": "مرحباً {name}. راجع نشاط المنصة وموافقات العقارات المعلقة وتغطية الوكالات والإشعارات التشغيلية من مكان واحد."
+  },
+  "actions": {
+    "viewAssignedListings": "عرض العقارات المسندة",
+    "reviewListings": "مراجعة العقارات",
+    "addProperty": "إضافة عقار",
+    "openManageListings": "فتح إدارة العقارات",
+    "viewAll": "عرض الكل"
+  },
+  "kpi": {
+    "ariaLabel": "مؤشرات لوحة المعلومات",
+    "totalRegisteredUsers": "إجمالي المستخدمين المسجلين",
+    "totalAgents": "إجمالي الوكلاء",
+    "totalAdmins": "إجمالي المسؤولين",
+    "pendingApprovals": "الموافقات المعلقة",
+    "listingsThisMonth": "العقارات هذا الشهر",
+    "leadsThisMonth": "العملاء المحتملون هذا الشهر",
+    "closedDeals": "الصفقات المغلقة",
+    "trendIncrease": "زيادة بنسبة {percentage} بالمئة",
+    "trendDecrease": "انخفاض بنسبة {percentage} بالمئة"
+  },
+  "charts": {
+    "userGrowth": "نمو المستخدمين",
+    "listingGrowth": "نمو العقارات",
+    "leadGrowth": "نمو العملاء المحتملين",
+    "leadSource": "مصدر العملاء المحتملين"
+  },
+  "recentActivity": {
+    "title": "النشاط الأخير"
+  },
+  "healthAlerts": {
+    "title": "تنبيهات الصحة",
+    "severity": {
+      "warning": "تحذير",
+      "info": "معلومات",
+      "error": "خطأ",
+      "success": "نجاح"
+    }
+  },
+  "empty": {
+    "chartTitle": "لا توجد بيانات نمو بعد",
+    "chartDescription": "ستظهر بيانات النمو عند توفر سجل التقارير.",
+    "leadSourceTitle": "لا توجد مصادر للعملاء بعد",
+    "leadSourceDescription": "سيظهر توزيع المصادر عند تسجيل العملاء المحتملين.",
+    "activityTitle": "لا يوجد نشاط حديث",
+    "activityDescription": "ستظهر أحدث أحداث المنصة هنا.",
+    "alertsTitle": "جميع الأنظمة سليمة",
+    "alertsDescription": "لا توجد تنبيهات صحية تتطلب الاهتمام.",
+    "pendingReviews": "لا توجد مراجعات عقارات معلقة.",
+    "agencies": "لم يتم العثور على وكالات."
+  },
+  "error": {
+    "title": "تعذر تحميل لوحة المعلومات",
+    "description": "بيانات ملخص لوحة المعلومات غير متاحة حالياً. يرجى المحاولة مرة أخرى.",
+    "partialDescription": "تعذر تحميل بعض بيانات لوحة المعلومات. لا تزال الأقسام المتاحة معروضة."
+  },
+  "legacy": {
+    "assignedListings": "العقارات المسندة",
+    "assignedListingsHelper": "العقارات المسندة حالياً إلى حسابك.",
+    "assignedListingsDescription": "تابع من قائمة العقارات التي أسندتها إليك الوكالة.",
+    "agencies": "الوكالات",
+    "agenciesHelper": "سجلات الوكالات المتاحة لمساحة العمل.",
+    "pendingReviews": "المراجعات المعلقة",
+    "pendingReviewsHelper": "طلبات العقارات التي تنتظر مراجعة مسؤول الوكالة.",
+    "visibleListings": "العقارات الظاهرة",
+    "visibleListingsHelper": "عدد العقارات العامة المعروضة حالياً في بحث السوق.",
+    "unreadAlerts": "التنبيهات غير المقروءة",
+    "unreadAlertsHelper": "إشعارات تشغيلية غير مقروءة تتطلب الاهتمام.",
+    "pendingPropertyReviews": "مراجعات العقارات المعلقة",
+    "pendingPropertyReviewsDescription": "أحدث الطلبات التي تنتظر الموافقة.",
+    "submissionMeta": "مقدم من {name} · الخطوة {step}",
+    "pending": "معلق",
+    "agencySnapshot": "لمحة عن الوكالات",
+    "agencySnapshotDescription": "الوكالات المتاحة حديثاً.",
+    "noContact": "لا توجد معلومات اتصال"
+  }
+}

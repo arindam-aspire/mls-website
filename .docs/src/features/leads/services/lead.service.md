@@ -2,12 +2,14 @@
 
 ### File Overview
 
-API client wrappers for Lead Management (`/leads`). Used by the leads manager UI and by property email inquiry (`createLead`).
+API client wrappers for Lead Management and owner-scoped enquiries. Used by the leads manager UI, owner My Inquiries, and property email inquiry (`createLead`).
 
 ### Responsibilities
 
 - List/detail and lifecycle helpers (assign, status, close, notes, messages).
-- Normalize pagination for list responses.
+- Normalize owner-linked lead responses into the same list shape used by Lead Management.
+- Accept both full lead records and the owner endpoint’s compact aliases (`name`, `email`, `phone`, `lead_no`, nested `lead`) without changing management normalization.
+- Normalize list/detail lead records via `normalizeLeadFromApi` so embedded assignee names from API payloads are available to the UI.
 - Soft-fail list GETs for notes/messages/activity when endpoints are unavailable.
 - Create leads from property email inquiries; mock email send via console until the email API exists.
 
@@ -16,6 +18,7 @@ API client wrappers for Lead Management (`/leads`). Used by the leads manager UI
 | Function | Method | Path | Auth |
 | --- | --- | --- | --- |
 | `getLeadList` | GET | `/leads` | yes |
+| `getOwnerLeadList` | GET | `/agency/owners/{ownerId}/leads` | yes |
 | `getLeadDetail` | GET | `/leads/{id}` | yes |
 | `createLead` | POST | `/leads` | yes |
 | `assignLeadAgent` | PATCH | `/leads/{id}/assign` | yes |
@@ -32,7 +35,7 @@ API client wrappers for Lead Management (`/leads`). Used by the leads manager UI
 
 | Export | Notes |
 | --- | --- |
-| Service functions listed above | — |
+| Service functions listed above | `getOwnerLeadList` accepts the same `LeadListParams` as `getLeadList` |
 | `mockSendInquiryEmails` | Temporary: logs payload that would be emailed to agent + user; called after successful `createLead` |
 
 ### `createLead` body (`CreateLeadRequest`)

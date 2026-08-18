@@ -6,6 +6,7 @@ Lead management for agency admins, agents, and super admins under `/leads`.
 
 - **Hooks** own React Query, filters, role gating, and mutation orchestration.
 - **Screens** render layout and bind hook return values to presentational components / modals.
+- **Detail enrichment**: lead detail fetches property details when needed to show property address and assigned agent name when lead payload lacks those display fields.
 - **Services** call `/api/v1/leads*` via `apiClient`.
 - **Mutations** toast + invalidate `["leads", …]` query keys.
 - **List UI** reuses library `AgentListView` (same table + numbered pagination as the Agents page) via `LeadList`.
@@ -21,10 +22,15 @@ Detail tabs: `overview` \| `conversation` \| `notes` \| `timeline` \| `close`.
 
 ## Status flow
 
-`NEW` → `IN_PROGRESS` → `REQUEST_FOR_CLOSE` → `CLOSED`
+`NEW` → `IN_PROGRESS` → close request → admin approval → `CLOSED`
 
-- Agent: reply, note, update status (`IN_PROGRESS`), request close.
-- Admin / super admin: assign / reassign (`AssignAgentModal`), override status, approve close (`POST …/close`), reject close (`PATCH …/status` → `IN_PROGRESS`).
+- `REQUEST_FOR_CLOSE` is not available in the generic Update Status modal; an assigned agent must use the dedicated `POST …/request-close` action.
+- A pending request is identified by `request_close_at` without `closed_at`; the current status remains unchanged until approval.
+- Assigned agent: reply, note, update through the four primary lifecycle choices, and request close while the lead is `IN_PROGRESS`.
+- Admin / super admin: assign / reassign (`AssignAgentModal`), update ordinary status through the same Update Status action, approve a pending close (`POST …/close`, then refetch detail), or reject it (`PATCH …/status` → `IN_PROGRESS`).
+- The old Override Status action is removed. Update Status is limited to New, In Progress, Request to Close, and Closed.
+- Owners, registered users, unassigned agents, and non-admin roles cannot approve or reject closure.
+- UI handlers re-check permissions before submitting; the backend must enforce the same role, assignment, pending-request, and transition rules.
 
 ## Mutations
 

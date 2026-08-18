@@ -1,6 +1,6 @@
 # File Overview
 
-Next.js App Router page for route segment `[locale]/inquiries`. Thin wrapper that renders a feature screen.
+Next.js App Router page for locale-prefixed My Inquiries. Owners receive the owner-scoped Lead List; other authenticated roles retain the existing Coming Soon view.
 
 **Source:** `app/[locale]/(property)/inquiries/page.tsx`
 
@@ -23,11 +23,12 @@ _No significant state; presentational or config module._
 
 # API Usage
 
-_N/A unless extended._
+The child screen calls `GET /agency/owners/{loggedInUser.id}/leads`.
 
 # Navigation
 
-- Renders under `app/[locale]/…`; public URLs always include locale prefix.
+- URL examples: `/en/inquiries`, `/ar/inquiries`.
+- `proxy.ts` requires an access-token cookie; `InquiriesScreen` branches on the hydrated role.
 
 # Props / Parameters
 
@@ -61,9 +62,9 @@ _No explicit show/hide controls detected._
 # Flow Description
 
 1. Next.js resolves locale-prefixed URL.
-2. Layout chain provides i18n + `PublicLayout` where applicable.
-3. Page default export renders the feature screen.
-4. Next.js App Router page for route segment `[locale]/inquiries`. Thin wrapper that renders a feature screen.
+2. Middleware rejects unauthenticated access.
+3. The page renders `InquiriesScreen`.
+4. The screen loads only the logged-in owner’s enquiries for Owner; other authenticated roles do not call the owner API.
 
 # Dependencies
 

@@ -17,7 +17,7 @@ type BuildLeadListTableColumnsParams = {
   labels: LeadListTableColumnLabels;
   viewDetailsLabel: string;
   statusLabel: (status: string) => string;
-  onOpenLead: (leadId: string) => void;
+  onOpenLead?: (leadId: string) => void;
 };
 
 export function buildLeadListTableColumns({
@@ -26,7 +26,7 @@ export function buildLeadListTableColumns({
   statusLabel,
   onOpenLead,
 }: BuildLeadListTableColumnsParams): TableColumn<LeadListRow>[] {
-  return [
+  const columns: TableColumn<LeadListRow>[] = [
     {
       id: "leadNumber",
       header: labels.leadNo,
@@ -79,7 +79,10 @@ export function buildLeadListTableColumns({
       cellClassName: "whitespace-nowrap",
       render: (row) => row.createdAtLabel,
     },
-    {
+  ];
+
+  if (onOpenLead) {
+    columns.push({
       id: "actions",
       header: labels.actions,
       sortable: false,
@@ -98,8 +101,10 @@ export function buildLeadListTableColumns({
           {viewDetailsLabel}
         </Button>
       ),
-    },
-  ];
+    });
+  }
+
+  return columns;
 }
 
 export const DEFAULT_LEAD_LIST_PINNED_COLUMNS = {

@@ -191,7 +191,7 @@ Route groups `(landing)`, `(main)`, `(property)`, `(auth)`, `(public)` do **not*
 | --- | --- | --- |
 | `(landing)` | `LandingLayout` | Locale root landing page |
 | `(main)` | `ProtectedLayout` | Dashboard, manage-listings, my-profile, my-listings, saved-searches, notifications, favourites, recently-viewed |
-| `(property)` | `PublicLayout` | Public property browse (list, detail, inquiries) |
+| `(property)` | `PublicLayout` | Property browse (list/detail) plus authenticated owner inquiries |
 | `(auth)` | *(empty — reserved)* | Future auth routes |
 | `(public)` | *(empty — reserved)* | Future public routes |
 | `(system)` | `PublicLayout` on unauthorized | Unauthorized / system pages |
@@ -219,10 +219,10 @@ All paths below are **without** locale; prepend `/<locale>` (e.g. `/en/my-listin
 | `/owners` | `(main)/owners/page.tsx` | `OwnersScreen` — guarded by `useAuthorize("OWNERS")` (Super Admin + Agency Admin); list, activate/deactivate, view/edit, linked properties/leads |
 | `/agents` | `(main)/agents/page.tsx` | `AgentsScreen` (placeholder) — guarded by `useAuthorize("AGENTS")` (admin only) |
 | `/leads` | `(main)/leads/page.tsx` | `LeadsScreen` — guarded by `useAuthorize("LEADS")` (super_admin, agency admin, agent) |
-| `/leads/[leadId]` | `(main)/leads/[leadId]/page.tsx` | `LeadDetailsScreen` — conversation / notes / timeline / close tabs |
+| `/leads/[leadId]` | `(main)/leads/[leadId]/page.tsx` | `LeadDetailsScreen` — conversation / notes / timeline / close tabs; assigned agents request closure and agency/super administrators approve or reject before `CLOSED` |
 | `/property-list` | `(property)/property-list/page.tsx` | `PropertyListScreen` (`PropertyCardList`) |
 | `/propert-details/:id` | `(property)/propert-details/[id]/page.tsx` | `PropertyDetailsScreen` (`PropertyView`) |
-| `/inquiries` | `(property)/inquiries/page.tsx` | `InquiriesScreen` (Coming Soon) |
+| `/inquiries` | `(property)/inquiries/page.tsx` | Owner `InquiriesScreen` reuses Lead List with `GET /agency/owners/{loggedInUser.id}/leads`; other authenticated roles retain Coming Soon |
 | `/unauthorized` | `(system)/unauthorized/page.tsx` | `UnauthorizedScreen` |
 
 ### Header navigation (not yet implemented as routes)
@@ -403,7 +403,13 @@ Used by `(main)` route group.
 
 | File | Role |
 | --- | --- |
-| `screens/index.tsx` | `DashboardScreen` — Coming Soon |
+| `services/dashboard.service.ts` | Authenticated `GET /dashboard/summary` through the shared API client |
+| `types/dashboard.types.ts` | Typed KPI, chart, activity, health-alert, and response contracts |
+| `hooks/useDashboardScreen.ts` | Role-aware React Query orchestration and memoized KPI mapping |
+| `components/*` | KPI cards, dependency-free growth/donut charts, activity, alerts, and responsive skeleton |
+| `screens/index.tsx` | Super-admin summary dashboard plus preserved agency/agent operational branches |
+
+Super administrators load the consolidated summary with the `["dashboard", "summary"]` query key. The response drives seven KPIs, four month-over-month indicators, three growth charts, a lead-source donut, recent activity, and severity-coded health alerts. The shared interceptor attaches the stored Bearer token and performs existing 401 refresh handling. Missing data renders localized empty states; request failures use normalized errors, the existing toast system, and an inline error state. No route or navigation configuration changed.
 
 ---
 
@@ -747,7 +753,7 @@ Enforced via `.cursor/rules/`:
 Exports `proxy` (Next.js 16 middleware entry). Flow:
 
 1. Run **next-intl** middleware (`createMiddleware(routing)`).
-2. Strip locale prefix from pathname and check **protected routes**: `/dashboard`, `/manage-listings`, `/draft-listings`, `/my-profile`, `/agency-settings`, `/notification-settings`, `/my-listings`, `/property-create`, `/property-update`, `/saved-searches`, `/favourites`, `/recently-viewed`, `/owners`, `/agents`, `/leads`.
+2. Strip locale prefix from pathname and check **protected routes**: `/dashboard`, `/manage-listings`, `/draft-listings`, `/my-profile`, `/agency-settings`, `/notification-settings`, `/my-listings`, `/property-create`, `/property-update`, `/saved-searches`, `/favourites`, `/recently-viewed`, `/inquiries`, `/owners`, `/agents`, `/leads`.
 3. If protected and no `access_token` cookie → redirect to `/` (same origin).
 4. Otherwise return the i18n response.
 

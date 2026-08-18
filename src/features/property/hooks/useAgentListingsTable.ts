@@ -197,6 +197,7 @@ export function useAgentListingsTable({
   const tableListings = useMemo(() => {
     return mapAgentPropertyListItems(listings ?? [], {
       rejectedRowActionLabels,
+      canViewCloseStatus: false,
     }).map((row) => {
       const key = row.status.key;
       const withStatusLabel = isMyListingStatusFilterValue(key)

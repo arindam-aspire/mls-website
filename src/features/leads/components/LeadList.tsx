@@ -26,7 +26,7 @@ export type LeadListData = {
   listTitle: string;
   isLoading: boolean;
   isFetching: boolean;
-  onRowClick: (row: LeadListRow) => void;
+  onRowClick?: (row: LeadListRow) => void;
 };
 
 export type LeadListProps = {

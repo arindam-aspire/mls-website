@@ -26,7 +26,7 @@ Uses `useAuthorize("DASHBOARD")` — reads `user` / `isLoadingUser` from `useAut
 
 # API Usage
 
-_N/A unless extended._
+The page itself performs no request. `DashboardScreen` delegates authenticated summary and legacy role queries to `useDashboardScreen`.
 
 # Navigation
 
@@ -59,7 +59,9 @@ _No form validations._
 
 # UI Details
 
-- Renders `DashboardScreen` (Coming Soon card) inside `ProtectedLayout` when authorized.
+- Renders the responsive `DashboardScreen` inside `ProtectedLayout` when authorized.
+- Super administrators receive KPI, growth, lead-source, activity, and health-alert widgets from `GET /dashboard/summary`.
+- Loading uses a layout-matched skeleton; errors use existing API normalization/toasts and an inline localized state.
 - **Theme:** semantic tokens via child screen and layout.
 
 # Flow Description

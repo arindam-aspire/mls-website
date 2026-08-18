@@ -23,6 +23,7 @@ const PROTECTED_ROUTES = [
   "/saved-searches",
   "/favourites",
   "/recently-viewed",
+  "/inquiries",
   "/owners",
   "/agents",
   "/leads",

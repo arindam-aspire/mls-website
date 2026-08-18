@@ -11,6 +11,14 @@ export type OwnerListQueryParams = {
 export type OwnerLinkedListQueryParams = {
   page: number;
   pageSize: number;
+  search?: string;
+  status?: string;
+  assignedAgentId?: string;
+  propertyId?: string;
+  dateFrom?: string;
+  dateTo?: string;
+  sortBy?: string;
+  sortOrder?: OwnerListSortOrder;
 };
 
 function buildOwnerListSearch(params: OwnerListQueryParams): string {
@@ -35,10 +43,23 @@ function buildOwnerListSearch(params: OwnerListQueryParams): string {
 }
 
 function buildOwnerLinkedListSearch(params: OwnerLinkedListQueryParams): string {
-  return new URLSearchParams({
+  const search = new URLSearchParams({
     page: String(params.page),
     pageSize: String(params.pageSize),
-  }).toString();
+  });
+
+  if (params.search) search.set("search", params.search);
+  if (params.status) search.set("status", params.status);
+  if (params.assignedAgentId) {
+    search.set("assigned_agent_id", params.assignedAgentId);
+  }
+  if (params.propertyId) search.set("property_id", params.propertyId);
+  if (params.dateFrom) search.set("date_from", params.dateFrom);
+  if (params.dateTo) search.set("date_to", params.dateTo);
+  if (params.sortBy) search.set("sortBy", params.sortBy);
+  if (params.sortOrder) search.set("sortOrder", params.sortOrder);
+
+  return search.toString();
 }
 
 export const ownerEndpoints = {

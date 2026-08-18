@@ -12,6 +12,7 @@ Locale message namespace barrel.
 
 - `import auth from "./auth.json"`
 - `import common from "./common.json"`
+- `import dashboard from "./dashboard.json"`
 - `import home from "./home.json"`
 - `import notFound from "./notFound.json"`
 

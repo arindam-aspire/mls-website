@@ -1,5 +1,6 @@
 import auth from "./auth.json" with { type: "json" };
 import common from "./common.json" with { type: "json" };
+import dashboard from "./dashboard.json" with { type: "json" };
 import home from "./home.json" with { type: "json" };
 import contact from "./contact.json" with { type: "json" };
 import leads from "./leads.json" with { type: "json" };
@@ -15,6 +16,7 @@ import user from "./user.json" with { type: "json" };
 const messages = {
   auth,
   common,
+  dashboard,
   home,
   contact,
   leads,

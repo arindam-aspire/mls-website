@@ -2,6 +2,15 @@
   "pageTitle": "Prospects",
   "pageSubtitle": "Suivez les demandes, conversations et demandes de clôture de votre agence.",
   "detailsPageTitle": "Détail du prospect",
+  "ownerPageTitle": "Mes demandes",
+  "ownerPageSubtitle": "Suivez les demandes envoyées concernant vos biens.",
+  "ownerList": {
+    "tableTitle": "Mes demandes",
+    "noDataTitle": "Aucune demande trouvée",
+    "noDataDescription": "Essayez de modifier la recherche ou le filtre de statut.",
+    "comingSoonSubtitle": "En développement",
+    "comingSoonDescription": "Suivez et gérez toutes les demandes concernant vos biens au même endroit. Cette fonctionnalité arrive bientôt !"
+  },
   "list": {
     "tableTitle": "Prospects",
     "searchPlaceholder": "Rechercher par numéro, client ou bien…",
@@ -39,7 +48,17 @@
   "status": {
     "NEW": "Nouveau",
     "IN_PROGRESS": "En cours",
-    "REQUEST_FOR_CLOSE": "Clôture demandée",
+    "CONTACTED": "Contacté",
+    "QUALIFIED": "Qualifié",
+    "FOLLOW_UP": "Suivi",
+    "MEETING_SCHEDULED": "Réunion planifiée",
+    "PROPOSAL_SENT": "Proposition envoyée",
+    "NEGOTIATION": "Négociation",
+    "REQUEST_FOR_CLOSE": "Demander la clôture",
+    "CLOSED_WON": "Clos gagné",
+    "CLOSED_LOST": "Clos perdu",
+    "ON_HOLD": "En attente",
+    "CANCELLED": "Annulé",
     "CLOSED": "Clos"
   },
   "source": {
@@ -67,6 +86,7 @@
     "phone": "Téléphone",
     "communicationMode": "Mode de communication",
     "propertyTitle": "Bien",
+    "propertyAddress": "Adresse du bien",
     "propertyId": "Id du bien",
     "propertyHash": "Hash du bien",
     "inquiryType": "Type de demande",
@@ -90,43 +110,77 @@
     "assign": "Assigner un agent",
     "reassign": "Réassigner un agent",
     "approveClose": "Approuver la clôture",
-    "rejectClose": "Rejeter la clôture",
-    "overrideStatus": "Forcer le statut",
-    "emailCustomer": "E-mail au client",
-    "callCustomer": "Appeler le client",
-    "whatsappCustomer": "WhatsApp au client"
+    "rejectClose": "Rejeter la clôture"
   },
   "conversation": {
     "title": "Conversation",
+    "subtitle": "Consultez tous les messages et les détails de livraison pour ce lead.",
     "emptyTitle": "Aucun message pour l'instant",
     "emptyDescription": "Envoyez une réponse pour démarrer la conversation.",
     "channel": "Canal",
     "channelInApp": "In-app",
     "channelEmail": "E-mail",
     "channelSms": "SMS",
+    "unknownSender": "Expéditeur inconnu",
+    "messageCount": "{count, plural, one {# message} other {# messages}}",
+    "repliedTo": "À {name}",
+    "toRecipient": "À : {name}",
+    "channelWithValue": "Canal : {channel}",
+    "sentBadge": "Envoyé",
+    "groupToday": "Aujourd'hui {date}",
+    "groupYesterday": "Hier {date}",
+    "agentRole": "Agent",
+    "customerRole": "Client",
     "listUnavailable": "L'historique apparaîtra lorsque l'endpoint de liste sera disponible. Vous pouvez déjà envoyer des réponses."
   },
   "notes": {
     "title": "Notes internes",
+    "subtitle": "Consultez toutes les notes internes de l'équipe pour ce lead.",
     "emptyTitle": "Aucune note pour l'instant",
     "emptyDescription": "Ajoutez une note interne pour votre équipe.",
-    "listUnavailable": "L'historique apparaîtra lorsque l'endpoint de liste sera disponible. Vous pouvez déjà ajouter des notes."
+    "listUnavailable": "L'historique apparaîtra lorsque l'endpoint de liste sera disponible. Vous pouvez déjà ajouter des notes.",
+    "noteCount": "{count, plural, one {# note} other {# notes}}",
+    "unknownAuthor": "Auteur inconnu",
+    "internalBadge": "Interne",
+    "savedBadge": "Enregistrée",
+    "groupToday": "Aujourd'hui {date}",
+    "groupYesterday": "Hier {date}"
   },
   "timeline": {
     "title": "Chronologie d'activité",
+    "subtitle": "Suivez les événements et mises à jour clés de ce lead.",
     "emptyTitle": "Aucune activité pour l'instant",
     "emptyDescription": "L'activité apparaîtra au fil de l'avancement du prospect.",
+    "activityCount": "{count, plural, one {# événement} other {# événements}}",
+    "byActor": "Par {name}",
+    "groupToday": "Aujourd'hui {date}",
+    "groupYesterday": "Hier {date}",
+    "types": {
+      "created": "Créé",
+      "assigned": "Assigné",
+      "requestClose": "Demande de clôture",
+      "closed": "Clos",
+      "activity": "Mise à jour",
+      "generic": "Activité"
+    },
     "events": {
       "created": "Prospect créé",
       "assigned": "Agent assigné",
       "requestClose": "Clôture demandée",
       "closed": "Prospect clos",
-      "lastActivity": "Dernière activité"
+      "lastActivity": "Dernière activité",
+      "createdDescription": "Le lead {leadNumber} a été créé depuis {source}.",
+      "assignedDescription": "Assigné à {agentName}.",
+      "assignedDescriptionUnknown": "Un agent a été assigné à ce lead.",
+      "requestCloseDescription": "Une demande de clôture a été soumise et attend une revue.",
+      "closedDescription": "Ce lead a été marqué comme clos.",
+      "lastActivityDescription": "Activité la plus récente enregistrée pour ce lead."
     }
   },
   "close": {
     "title": "Demande de clôture",
     "pendingDescription": "Un agent a demandé la clôture. Examinez puis approuvez ou rejetez.",
+    "awaitingApprovalDescription": "Cette demande de clôture attend la validation d’un administrateur. Le prospect reste ouvert jusqu’à son approbation.",
     "notPendingDescription": "Aucune demande de clôture en attente.",
     "requestCloseAt": "Demandé le",
     "closedAt": "Clos le",
@@ -155,7 +209,6 @@
     },
     "status": {
       "title": "Mettre à jour le statut",
-      "overrideTitle": "Forcer le statut",
       "description": "Modifiez le statut du workflow pour ce prospect.",
       "statusLabel": "Statut",
       "reasonLabel": "Motif",

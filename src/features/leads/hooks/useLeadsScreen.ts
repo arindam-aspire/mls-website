@@ -1,10 +1,18 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueries, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { SortConfig } from "@abdoun/abdoun-library";
 import type { ApiError } from "@/src/apis/core/error.normalizer";
+import { useAuthStore } from "@/src/features/auth/store/auth.store";
+import {
+  isAgencyUser,
+  isOwnerUser,
+  isSuperAdminUser,
+} from "@/src/features/auth/utils/profileMenuRoleAccess";
+import { resolveAgentNameFromCache } from "@/src/features/user/utils/resolveAgentNameFromCache";
+import { getPropertyDetails } from "@/src/features/property/services/property.service";
 import { useToast } from "@/src/hooks/useToast";
 import { useRouter } from "@/src/i18n/navigation";
 import {
@@ -15,7 +23,8 @@ import {
 } from "../constants/leadList.constants";
 import { LEAD_STATUSES } from "../types/lead.types";
 import type { LeadListRow } from "../types/leadList.types";
-import { getLeadList } from "../services/lead.service";
+import type { PropertyDetails } from "@/src/features/property/types/property.types";
+import { getLeadList, getOwnerLeadList } from "../services/lead.service";
 import {
   buildLeadListTableColumns,
   DEFAULT_LEAD_LIST_PINNED_COLUMNS,
@@ -23,18 +32,37 @@ import {
 } from "../utils/buildLeadListTableColumns";
 import {
   formatLeadDate,
+  hasAssignedLeadAgent,
   resolveAssignedAgentLabel,
   resolveLeadCustomerName,
   resolveLeadPropertyTitle,
+  resolveLeadStatusForViewer,
+  resolvePropertyAgentComparableIds,
+  resolvePropertyAgentDisplayName,
 } from "../utils/leadDisplay.utils";
+import { LEAD_CLOSE_STATUS_VALUES } from "../constants/leadStatus.constants";
 
-export function useLeadsScreen() {
+type LeadListScope = "management" | "owner";
+
+type UseLeadsScreenOptions = {
+  scope?: LeadListScope;
+};
+
+export function useLeadsScreen({
+  scope = "management",
+}: UseLeadsScreenOptions = {}) {
   const t = useTranslations("leads");
   const tStatus = useTranslations("leads.status");
   const tCommon = useTranslations("common");
   const locale = useLocale();
   const toast = useToast();
+  const queryClient = useQueryClient();
   const router = useRouter();
+  const user = useAuthStore((state) => state.user);
+  const isOwnerScope = scope === "owner";
+  const ownerId = isOwnerScope && isOwnerUser(user) ? user?.id : undefined;
+  const canViewCloseStatus =
+    isAgencyUser(user) || isSuperAdminUser(user);
 
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -67,8 +95,14 @@ export function useLeadsScreen() {
     isError,
     error,
   } = useQuery({
-    queryKey: [LEADS_QUERY_KEY, "list", listParams],
-    queryFn: () => getLeadList(listParams),
+    queryKey: isOwnerScope
+      ? [LEADS_QUERY_KEY, "owner-list", ownerId, listParams]
+      : [LEADS_QUERY_KEY, "list", listParams],
+    queryFn: () =>
+      isOwnerScope
+        ? getOwnerLeadList(ownerId!, listParams)
+        : getLeadList(listParams),
+    enabled: !isOwnerScope || Boolean(ownerId),
     refetchInterval: LEAD_LIST_REFETCH_INTERVAL_MS,
   });
 
@@ -79,37 +113,101 @@ export function useLeadsScreen() {
     });
   }, [isError, error, t, toast]);
 
+  const propertyIds = useMemo(() => {
+    const ids = new Set<string>();
+    for (const lead of data?.items ?? []) {
+      const propertyId = lead.property_id?.trim();
+      if (propertyId) {
+        ids.add(propertyId);
+      }
+    }
+    return [...ids];
+  }, [data?.items]);
+
+  const propertyDetailsQueries = useQueries({
+    queries: propertyIds.map((propertyId) => ({
+      queryKey: ["property", "details", propertyId],
+      queryFn: () => getPropertyDetails(propertyId),
+      staleTime: 5 * 60 * 1000,
+    })),
+  });
+
+  const propertyDetailsById = useMemo(() => {
+    const map = new Map<string, PropertyDetails>();
+    propertyIds.forEach((propertyId, index) => {
+      const details = propertyDetailsQueries[index]?.data?.data ?? null;
+      if (details) {
+        map.set(propertyId, details);
+      }
+    });
+    return map;
+  }, [propertyDetailsQueries, propertyIds]);
+
   const statusLabel = useCallback(
-    (statusValue: string) =>
-      LEAD_STATUSES.includes(statusValue as (typeof LEAD_STATUSES)[number])
-        ? tStatus(statusValue as (typeof LEAD_STATUSES)[number])
-        : statusValue,
-    [tStatus],
+    (statusValue: string) => {
+      const viewerStatus = resolveLeadStatusForViewer(
+        statusValue,
+        canViewCloseStatus,
+      );
+      const normalized = viewerStatus ?? statusValue;
+
+      return LEAD_STATUSES.includes(normalized as (typeof LEAD_STATUSES)[number])
+        ? tStatus(normalized as (typeof LEAD_STATUSES)[number])
+        : normalized;
+    },
+    [canViewCloseStatus, tStatus],
   );
 
   const statusOptions = useMemo(
     () => [
       { value: "", label: t("list.filters.statusAll") },
-      ...LEAD_STATUSES.map((value) => ({
+      ...LEAD_STATUSES.filter(
+        (value) =>
+          canViewCloseStatus ||
+          !(LEAD_CLOSE_STATUS_VALUES as readonly string[]).includes(value),
+      ).map((value) => ({
         value,
         label: tStatus(value),
       })),
     ],
-    [t, tStatus],
+    [canViewCloseStatus, t, tStatus],
   );
 
   const rows = useMemo<LeadListRow[]>(() => {
-    return (data?.items ?? []).map((lead) => ({
-      id: lead.id,
-      leadNumber: lead.lead_number,
-      propertyTitle: resolveLeadPropertyTitle(lead),
-      customerName: resolveLeadCustomerName(lead),
-      status: lead.status,
-      assignedAgent: resolveAssignedAgentLabel(lead),
-      createdAtLabel: formatLeadDate(lead.created_at, locale),
-      createdAtSortValue: lead.created_at ?? "",
-    }));
-  }, [data?.items, locale]);
+    return (data?.items ?? []).map((lead) => {
+      const assignedAgentId = lead.assigned_agent_id?.trim();
+      const propertyDetails = lead.property_id
+        ? propertyDetailsById.get(lead.property_id) ?? null
+        : null;
+      const assignedAgentLabel = hasAssignedLeadAgent(lead)
+        ? resolveAssignedAgentLabel(lead, {
+            propertyAgentName: resolvePropertyAgentDisplayName(propertyDetails),
+            propertyAgentIds: resolvePropertyAgentComparableIds(propertyDetails),
+            cachedAgentName: resolveAgentNameFromCache(
+              queryClient,
+              assignedAgentId,
+            ),
+            currentUserName:
+              assignedAgentId && user?.id === assignedAgentId
+                ? user.full_name?.trim() || null
+                : null,
+          }) || t("details.emptyValue")
+        : t("details.emptyValue");
+
+      return {
+        id: lead.id,
+        leadNumber: lead.lead_number,
+        propertyTitle: resolveLeadPropertyTitle(lead),
+        customerName: resolveLeadCustomerName(lead),
+        status:
+          resolveLeadStatusForViewer(lead.status, canViewCloseStatus) ??
+          lead.status,
+        assignedAgent: assignedAgentLabel,
+        createdAtLabel: formatLeadDate(lead.created_at, locale),
+        createdAtSortValue: lead.created_at ?? "",
+      };
+    });
+  }, [canViewCloseStatus, data?.items, locale, propertyDetailsById, queryClient, t, user]);
 
   const onSearchChange = useCallback((value: string) => {
     setSearch(value);
@@ -161,9 +259,9 @@ export function useLeadsScreen() {
         labels: columnLabels,
         viewDetailsLabel: t("list.viewDetails"),
         statusLabel,
-        onOpenLead,
+        onOpenLead: isOwnerScope ? undefined : onOpenLead,
       }),
-    [columnLabels, onOpenLead, statusLabel, t],
+    [columnLabels, isOwnerScope, onOpenLead, statusLabel, t],
   );
 
   const activeSortConfig = useMemo(
@@ -196,23 +294,31 @@ export function useLeadsScreen() {
 
   const noDataFound = useMemo(
     () => ({
-      title: t("list.noDataTitle"),
-      description: t("list.noDataDescription"),
+      title: isOwnerScope
+        ? t("ownerList.noDataTitle")
+        : t("list.noDataTitle"),
+      description: isOwnerScope
+        ? t("ownerList.noDataDescription")
+        : t("list.noDataDescription"),
     }),
-    [t],
+    [isOwnerScope, t],
   );
 
   const pinnedColumns = useMemo(
     () => ({
       left: [...DEFAULT_LEAD_LIST_PINNED_COLUMNS.left],
-      right: [...DEFAULT_LEAD_LIST_PINNED_COLUMNS.right],
+      right: isOwnerScope
+        ? []
+        : [...DEFAULT_LEAD_LIST_PINNED_COLUMNS.right],
     }),
-    [],
+    [isOwnerScope],
   );
 
   return {
-    pageTitle: t("pageTitle"),
-    pageSubtitle: t("pageSubtitle"),
+    pageTitle: isOwnerScope ? t("ownerPageTitle") : t("pageTitle"),
+    pageSubtitle: isOwnerScope
+      ? t("ownerPageSubtitle")
+      : t("pageSubtitle"),
     listFilters: {
       search,
       status,
@@ -234,11 +340,15 @@ export function useLeadsScreen() {
       pagination,
       noDataFound,
       pinnedColumns,
-      gridHiddenColumnIds: [...LEAD_LIST_GRID_HIDDEN_COLUMN_IDS],
-      listTitle: t("list.tableTitle"),
+      gridHiddenColumnIds: isOwnerScope
+        ? LEAD_LIST_GRID_HIDDEN_COLUMN_IDS.filter((id) => id !== "actions")
+        : [...LEAD_LIST_GRID_HIDDEN_COLUMN_IDS],
+      listTitle: isOwnerScope
+        ? t("ownerList.tableTitle")
+        : t("list.tableTitle"),
       isLoading: isPending,
       isFetching,
-      onRowClick,
+      onRowClick: isOwnerScope ? undefined : onRowClick,
     },
   };
 }

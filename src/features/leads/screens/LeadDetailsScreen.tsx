@@ -22,9 +22,11 @@ import {
   ModalTitle,
 } from "@/src/components/ui/modal";
 import { AssignAgentModal } from "@/src/features/property/components/AssignAgentModal";
-import { ContactModal } from "@/src/features/contact/components/ContactModal";
 import { cn } from "@/src/lib/cn";
 import { bodyLargeTextClasses, headingPageClasses } from "@/src/lib/typography";
+import { LeadActivityPanel } from "../components/LeadActivityPanel";
+import { LeadConversationPanel } from "../components/LeadConversationPanel";
+import { LeadNotesPanel } from "../components/LeadNotesPanel";
 import { LeadDetailsScreenSkeleton } from "../components/LeadScreenSkeletons";
 import { LeadStatusBadge } from "../components/LeadStatusBadge";
 import { useLeadDetailsScreen } from "../hooks/useLeadDetailsScreen";
@@ -97,7 +99,9 @@ export function LeadDetailsScreen({
     { id: "conversation", label: labels.tabs.conversation },
     { id: "notes", label: labels.tabs.notes },
     { id: "timeline", label: labels.tabs.timeline },
-    { id: "close", label: labels.tabs.close },
+    ...(permissions.canViewCloseStatus
+      ? [{ id: "close" as const, label: labels.tabs.close }]
+      : []),
   ];
 
   return (
@@ -145,7 +149,7 @@ export function LeadDetailsScreen({
             variant="outline"
             color="secondary"
             className="min-h-11"
-            onClick={screen.statusModal.onOpenUpdate}
+            onClick={screen.statusModal.onOpen}
           >
             {labels.actions.updateStatus}
           </Button>
@@ -174,17 +178,6 @@ export function LeadDetailsScreen({
               : labels.actions.assign}
           </Button>
         ) : null}
-        {permissions.canOverrideStatus ? (
-          <Button
-            type="button"
-            variant="outline"
-            color="secondary"
-            className="min-h-11"
-            onClick={screen.statusModal.onOpenOverride}
-          >
-            {labels.actions.overrideStatus}
-          </Button>
-        ) : null}
         {permissions.canApproveOrRejectClose ? (
           <>
             <Button
@@ -206,33 +199,6 @@ export function LeadDetailsScreen({
             </Button>
           </>
         ) : null}
-        <Button
-          type="button"
-          variant="outline"
-          color="secondary"
-          className="min-h-11"
-          onClick={screen.customerContact.onEmail}
-        >
-          {labels.actions.emailCustomer}
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          color="secondary"
-          className="min-h-11"
-          onClick={screen.customerContact.onWhatsApp}
-        >
-          {labels.actions.whatsappCustomer}
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          color="secondary"
-          className="min-h-11"
-          onClick={screen.customerContact.onCall}
-        >
-          {labels.actions.callCustomer}
-        </Button>
       </div>
 
       <div
@@ -274,6 +240,7 @@ export function LeadDetailsScreen({
             title={labels.propertyInfo}
             rows={[
               { label: labels.propertyTitle, value: display.propertyTitle },
+              { label: labels.propertyAddress, value: display.propertyAddress },
               { label: labels.propertyId, value: display.propertyId },
               { label: labels.propertyHash, value: display.propertyHash },
             ]}
@@ -300,127 +267,58 @@ export function LeadDetailsScreen({
       ) : null}
 
       {screen.tab === "conversation" ? (
-        <Card className="rounded-xl border border-secondary/15 bg-surface">
-          <CardContent className="space-y-4 p-4 sm:p-6">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <h3 className="text-base font-semibold text-text">
-                {labels.conversation.title}
-              </h3>
-              {permissions.canReply ? (
-                <Button type="button" className="min-h-11" onClick={screen.reply.onOpen}>
-                  {labels.actions.reply}
-                </Button>
-              ) : null}
-            </div>
-            {screen.conversation.hasList ? (
-              <ul className="space-y-3">
-                {screen.conversation.items.map((item) => (
-                  <li
-                    key={item.id}
-                    className="rounded-xl border border-secondary/15 bg-page p-3 sm:p-4"
-                  >
-                    <p className="text-sm text-text">{item.message}</p>
-                    <p className="mt-2 text-xs text-muted">
-                      {labels.conversation.channel}: {item.channel} ·{" "}
-                      {screen.formatDate(item.created_at)}
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <div className="rounded-xl border border-dashed border-secondary/20 bg-page px-4 py-8 text-center">
-                <p className="text-sm font-semibold text-text">
-                  {labels.conversation.emptyTitle}
-                </p>
-                <p className="mt-2 text-sm text-muted">
-                  {labels.conversation.emptyDescription}
-                </p>
-                <p className="mt-3 text-xs text-muted">
-                  {labels.conversation.listUnavailable}
-                </p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        <LeadConversationPanel
+          title={labels.conversation.title}
+          subtitle={labels.conversation.subtitle}
+          messageCountLabel={labels.conversation.messageCount}
+          emptyTitle={labels.conversation.emptyTitle}
+          emptyDescription={labels.conversation.emptyDescription}
+          listUnavailable={labels.conversation.listUnavailable}
+          toRecipientLabel={labels.conversation.toRecipient}
+          channelWithValueLabel={labels.conversation.channelWithValue}
+          agentRoleLabel={labels.conversation.agentRole}
+          customerRoleLabel={labels.conversation.customerRole}
+          sentBadgeLabel={labels.conversation.sentBadge}
+          resolveDateGroupLabel={labels.conversation.resolveDateGroupLabel}
+          replyLabel={labels.actions.reply}
+          canReply={permissions.canReply}
+          isLoading={screen.conversation.isLoading}
+          items={screen.conversation.items}
+          onReply={screen.reply.onOpen}
+        />
       ) : null}
 
       {screen.tab === "notes" ? (
-        <Card className="rounded-xl border border-secondary/15 bg-surface">
-          <CardContent className="space-y-4 p-4 sm:p-6">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <h3 className="text-base font-semibold text-text">
-                {labels.notes.title}
-              </h3>
-              {permissions.canAddNote ? (
-                <Button type="button" className="min-h-11" onClick={screen.note.onOpen}>
-                  {labels.actions.addNote}
-                </Button>
-              ) : null}
-            </div>
-            {screen.notes.hasList ? (
-              <ul className="space-y-3">
-                {screen.notes.items.map((item) => (
-                  <li
-                    key={item.id}
-                    className="rounded-xl border border-secondary/15 bg-page p-3 sm:p-4"
-                  >
-                    <p className="text-sm text-text">{item.note}</p>
-                    <p className="mt-2 text-xs text-muted">
-                      {screen.formatDate(item.created_at)}
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <div className="rounded-xl border border-dashed border-secondary/20 bg-page px-4 py-8 text-center">
-                <p className="text-sm font-semibold text-text">
-                  {labels.notes.emptyTitle}
-                </p>
-                <p className="mt-2 text-sm text-muted">
-                  {labels.notes.emptyDescription}
-                </p>
-                <p className="mt-3 text-xs text-muted">
-                  {labels.notes.listUnavailable}
-                </p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        <LeadNotesPanel
+          title={labels.notes.title}
+          subtitle={labels.notes.subtitle}
+          noteCountLabel={labels.notes.noteCount}
+          emptyTitle={labels.notes.emptyTitle}
+          emptyDescription={labels.notes.emptyDescription}
+          listUnavailable={labels.notes.listUnavailable}
+          internalBadgeLabel={labels.notes.internalBadge}
+          savedBadgeLabel={labels.notes.savedBadge}
+          resolveDateGroupLabel={labels.notes.resolveDateGroupLabel}
+          addNoteLabel={labels.actions.addNote}
+          canAddNote={permissions.canAddNote}
+          isLoading={screen.notes.isLoading}
+          items={screen.notes.items}
+          onAddNote={screen.note.onOpen}
+        />
       ) : null}
 
       {screen.tab === "timeline" ? (
-        <Card className="rounded-xl border border-secondary/15 bg-surface">
-          <CardContent className="space-y-4 p-4 sm:p-6">
-            <h3 className="text-base font-semibold text-text">
-              {labels.timeline.title}
-            </h3>
-            {screen.timeline.items.length === 0 ? (
-              <div className="rounded-xl border border-dashed border-secondary/20 bg-page px-4 py-8 text-center">
-                <p className="text-sm font-semibold text-text">
-                  {labels.timeline.emptyTitle}
-                </p>
-                <p className="mt-2 text-sm text-muted">
-                  {labels.timeline.emptyDescription}
-                </p>
-              </div>
-            ) : (
-              <ol className="relative space-y-4 border-s border-secondary/20 ms-3 ps-6">
-                {screen.timeline.items.map((item) => (
-                  <li key={item.id} className="relative">
-                    <span className="absolute -start-[1.625rem] top-1 size-3 rounded-full bg-primary" />
-                    <p className="text-sm font-semibold text-text">{item.title}</p>
-                    {item.description ? (
-                      <p className="mt-1 text-sm text-muted">{item.description}</p>
-                    ) : null}
-                    <p className="mt-1 text-xs text-muted">
-                      {screen.formatDate(item.created_at)}
-                    </p>
-                  </li>
-                ))}
-              </ol>
-            )}
-          </CardContent>
-        </Card>
+        <LeadActivityPanel
+          title={labels.timeline.title}
+          subtitle={labels.timeline.subtitle}
+          activityCountLabel={labels.timeline.activityCount}
+          emptyTitle={labels.timeline.emptyTitle}
+          emptyDescription={labels.timeline.emptyDescription}
+          byActorLabel={labels.timeline.byActor}
+          resolveDateGroupLabel={labels.timeline.resolveDateGroupLabel}
+          isLoading={screen.timeline.isLoading}
+          items={screen.timeline.items}
+        />
       ) : null}
 
       {screen.tab === "close" ? (
@@ -432,6 +330,8 @@ export function LeadDetailsScreen({
             <p className="text-sm text-muted">
               {permissions.canApproveOrRejectClose
                 ? labels.close.pendingDescription
+                : permissions.hasPendingCloseRequest
+                  ? labels.close.awaitingApprovalDescription
                 : labels.close.notPendingDescription}
             </p>
             <dl className="space-y-2 text-sm">
@@ -485,11 +385,15 @@ export function LeadDetailsScreen({
         <ModalContainer>
           <ModalPanel size="md">
             <ModalHeader>
-              <ModalTitle>{labels.modals.reply.title}</ModalTitle>
+              <div className="min-w-0 flex-1 space-y-1 pe-10">
+                <ModalTitle>{labels.modals.reply.title}</ModalTitle>
+                <ModalDescription>
+                  {labels.modals.reply.description}
+                </ModalDescription>
+              </div>
               <ModalCloseButton />
             </ModalHeader>
-            <ModalDescription>{labels.modals.reply.description}</ModalDescription>
-            <ModalContent className="space-y-4">
+            <ModalContent className="space-y-4 px-4 sm:px-6">
               <Select
                 label={labels.modals.reply.channelLabel}
                 value={screen.reply.channel}
@@ -544,11 +448,15 @@ export function LeadDetailsScreen({
         <ModalContainer>
           <ModalPanel size="md">
             <ModalHeader>
-              <ModalTitle>{labels.modals.note.title}</ModalTitle>
+              <div className="min-w-0 flex-1 space-y-1 pe-10">
+                <ModalTitle>{labels.modals.note.title}</ModalTitle>
+                <ModalDescription>
+                  {labels.modals.note.description}
+                </ModalDescription>
+              </div>
               <ModalCloseButton />
             </ModalHeader>
-            <ModalDescription>{labels.modals.note.description}</ModalDescription>
-            <ModalContent>
+            <ModalContent className="px-4 sm:px-6">
               <Textarea
                 label={labels.modals.note.noteLabel}
                 placeholder={labels.modals.note.notePlaceholder}
@@ -586,13 +494,15 @@ export function LeadDetailsScreen({
         <ModalContainer>
           <ModalPanel size="md">
             <ModalHeader>
-              <ModalTitle>{labels.modals.status.title}</ModalTitle>
+              <div className="min-w-0 flex-1 space-y-1 pe-10">
+                <ModalTitle>{labels.modals.status.title}</ModalTitle>
+                <ModalDescription>
+                  {labels.modals.status.description}
+                </ModalDescription>
+              </div>
               <ModalCloseButton />
             </ModalHeader>
-            <ModalDescription>
-              {labels.modals.status.description}
-            </ModalDescription>
-            <ModalContent className="space-y-4">
+            <ModalContent className="space-y-4 px-4 sm:px-6">
               <Select
                 label={labels.modals.status.statusLabel}
                 value={screen.statusModal.value}
@@ -696,8 +606,6 @@ export function LeadDetailsScreen({
         onClose={screen.assign.onClose}
         onAssign={screen.assign.onAssign}
       />
-
-      <ContactModal contactModal={screen.contactModal} />
     </div>
   );
 }

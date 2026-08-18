@@ -8,6 +8,7 @@ Leads list shell that matches the Agents page layout: surface card from `md+`, l
 
 - Compose `LeadListFilters` + `AgentListView<LeadListRow>`.
 - Pass columns, sort, pagination, empty state, pinned columns, and mobile card config from the screen hook.
+- Accept an optional row-click handler so the same list can be read-only for owner enquiries.
 - Use `mobileCardVariant="generic"` so lead rows render with column-driven cards (not agent-specific cards).
 - Filters match Agents: search + status only.
 
@@ -32,7 +33,7 @@ None directly.
 
 ### Navigation
 
-Row click / View details → handled by `list.onRowClick` / column handlers from the hook (`/leads/{id}`).
+Management scope: row click / View details routes to `/leads/{id}`. Owner scope omits both handlers because management details are not owner-authorized.
 
 ### Props / Parameters
 

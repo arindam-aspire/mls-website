@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { ApiError } from "@/src/apis/core/error.normalizer";
@@ -10,8 +10,8 @@ import {
   isSuperAdminUser,
 } from "@/src/features/auth/utils/profileMenuRoleAccess";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
-import { useContactModal } from "@/src/features/contact/hooks/useContactModal";
-import { mapLeadToContactContext } from "@/src/features/contact/mappers/mapLeadToContactContext";
+import { getPropertyDetails } from "@/src/features/property/services/property.service";
+import { resolveAgentNameFromCache } from "@/src/features/user/utils/resolveAgentNameFromCache";
 import { useToast } from "@/src/hooks/useToast";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
 import {
@@ -19,10 +19,9 @@ import {
   LEAD_DETAIL_REFETCH_INTERVAL_MS,
 } from "../constants/leadList.constants";
 import {
-  LEAD_ADMIN_OVERRIDE_STATUSES,
-  LEAD_AGENT_UPDATABLE_STATUSES,
-  LEAD_STATUSES_ALLOWING_APPROVE_CLOSE,
-  LEAD_STATUSES_ALLOWING_REQUEST_CLOSE,
+  LEAD_ADMIN_APPROVAL_STATUSES,
+  LEAD_TERMINAL_STATUSES,
+  LEAD_UPDATABLE_STATUSES,
 } from "../constants/leadStatus.constants";
 import {
   useAddLeadMessage,
@@ -47,12 +46,24 @@ import type {
 } from "../types/lead.types";
 import {
   buildLeadTimelineFromLead,
+  filterLeadActivityItemsForViewer,
   formatLeadDate,
+  formatLeadShortDate,
+  hasAssignedLeadAgent,
+  mapLeadActivityToDisplay,
+  mapLeadMessagesToConversationDisplay,
+  mapLeadNotesToDisplay,
   resolveAssignedAgentLabel,
   resolveLeadCustomerName,
+  resolveLeadPropertyAddress,
   resolveLeadPropertyTitle,
+  resolvePropertyAgentComparableIds,
+  resolvePropertyAgentDisplayName,
+  isLeadAssignedToCurrentUser,
   resolveLeadStatus,
+  resolveLeadStatusForViewer,
 } from "../utils/leadDisplay.utils";
+import { resolveLeadClosePermissions } from "../utils/resolveLeadClosePermissions";
 
 const DETAIL_TABS: LeadDetailTab[] = [
   "overview",
@@ -84,21 +95,20 @@ export function useLeadDetailsScreen({
   const tTimeline = useTranslations("leads.timeline.events");
   const locale = useLocale();
   const toast = useToast();
+  const queryClient = useQueryClient();
   const router = useRouter();
   const pathname = usePathname();
   const user = useAuthStore((state) => state.user);
 
-  const canManageAsAdmin = isAgencyUser(user) || isSuperAdminUser(user);
-  const canActAsAgent = isAgentUser(user) || canManageAsAdmin;
-
-  const contactModal = useContactModal();
-  const { openContact, buildDefaultMessage } = contactModal;
+  const isAdmin = isAgencyUser(user) || isSuperAdminUser(user);
+  const isAgent = isAgentUser(user);
+  const canManageAsAdmin = isAdmin;
+  const canActAsAgent = isAgent || canManageAsAdmin;
 
   const [tab, setTab] = useState<LeadDetailTab>(parseTab(initialTab ?? null));
   const [replyOpen, setReplyOpen] = useState(false);
   const [noteOpen, setNoteOpen] = useState(false);
   const [statusOpen, setStatusOpen] = useState(false);
-  const [statusOverrideMode, setStatusOverrideMode] = useState(false);
   const [requestCloseOpen, setRequestCloseOpen] = useState(false);
   const [approveCloseOpen, setApproveCloseOpen] = useState(false);
   const [rejectCloseOpen, setRejectCloseOpen] = useState(false);
@@ -156,16 +166,144 @@ export function useLeadDetailsScreen({
     refetchInterval: LEAD_DETAIL_REFETCH_INTERVAL_MS,
   });
 
+  const propertyDetailsQuery = useQuery({
+    queryKey: ["property", "details", lead?.property_id],
+    queryFn: () => getPropertyDetails(lead!.property_id!),
+    enabled: Boolean(lead?.property_id),
+  });
+
+  const propertyDetails = propertyDetailsQuery.data?.data ?? null;
+
+  const assignedAgentDisplayName = useMemo(() => {
+    if (!lead || !hasAssignedLeadAgent(lead)) {
+      return null;
+    }
+
+    const assignedAgentId = lead.assigned_agent_id?.trim();
+    const cachedAgentName = resolveAgentNameFromCache(
+      queryClient,
+      assignedAgentId,
+    );
+    const currentUserName =
+      assignedAgentId && user?.id === assignedAgentId
+        ? user.full_name?.trim() || null
+        : null;
+
+    return (
+      resolveAssignedAgentLabel(lead, {
+        propertyAgentName: resolvePropertyAgentDisplayName(propertyDetails),
+        propertyAgentIds: resolvePropertyAgentComparableIds(propertyDetails),
+        cachedAgentName,
+        currentUserName,
+      }) || null
+    );
+  }, [lead, propertyDetails, queryClient, user]);
+
+  const conversationChannelLabel = useCallback(
+    (channel: string) => {
+      const normalized = channel.trim().toUpperCase();
+      if (normalized === "IN_APP") return t("conversation.channelInApp");
+      if (normalized === "EMAIL") return t("conversation.channelEmail");
+      if (normalized === "SMS") return t("conversation.channelSms");
+      return channel;
+    },
+    [t],
+  );
+
+  const resolveConversationDateGroupLabel = useCallback(
+    (date: Date, dayDiff: number) => {
+      const formattedDate = formatLeadShortDate(date, locale);
+
+      if (dayDiff === 0) {
+        return t("conversation.groupToday", { date: formattedDate });
+      }
+
+      if (dayDiff === 1) {
+        return t("conversation.groupYesterday", { date: formattedDate });
+      }
+
+      return formattedDate;
+    },
+    [locale, t],
+  );
+
+  const resolveNotesDateGroupLabel = useCallback(
+    (date: Date, dayDiff: number) => {
+      const formattedDate = formatLeadShortDate(date, locale);
+
+      if (dayDiff === 0) {
+        return t("notes.groupToday", { date: formattedDate });
+      }
+
+      if (dayDiff === 1) {
+        return t("notes.groupYesterday", { date: formattedDate });
+      }
+
+      return formattedDate;
+    },
+    [locale, t],
+  );
+
+  const resolveActivityDateGroupLabel = useCallback(
+    (date: Date, dayDiff: number) => {
+      const formattedDate = formatLeadShortDate(date, locale);
+
+      if (dayDiff === 0) {
+        return t("timeline.groupToday", { date: formattedDate });
+      }
+
+      if (dayDiff === 1) {
+        return t("timeline.groupYesterday", { date: formattedDate });
+      }
+
+      return formattedDate;
+    },
+    [locale, t],
+  );
+
+  const conversationItems = useMemo(() => {
+    if (!lead) {
+      return [];
+    }
+
+    return mapLeadMessagesToConversationDisplay({
+      messages: messagesQuery.data ?? [],
+      lead,
+      locale,
+      assignedAgentName: assignedAgentDisplayName,
+      currentUserId: user?.id,
+      currentUserName: user?.full_name,
+      unknownSenderLabel: t("conversation.unknownSender"),
+      channelLabelFor: conversationChannelLabel,
+    });
+  }, [
+    assignedAgentDisplayName,
+    conversationChannelLabel,
+    lead,
+    locale,
+    messagesQuery.data,
+    t,
+    user,
+  ]);
+
+  const noteItems = useMemo(
+    () =>
+      mapLeadNotesToDisplay({
+        notes: notesQuery.data ?? [],
+        locale,
+        currentUserId: user?.id,
+        currentUserName: user?.full_name,
+        unknownAuthorLabel: t("notes.unknownAuthor"),
+      }),
+    [locale, notesQuery.data, t, user],
+  );
+
   useEffect(() => {
     if (!isError || !error) return;
     toast.error(t("details.fetchErrorTitle"), {
       description: (error as unknown as ApiError).message,
     });
   }, [isError, error, t, toast]);
-
-  useEffect(() => {
-    setTab(parseTab(initialTab ?? null));
-  }, [initialTab]);
 
   const onTabChange = useCallback(
     (next: LeadDetailTab) => {
@@ -177,56 +315,130 @@ export function useLeadDetailsScreen({
       const query = params.toString();
       router.replace(query ? `${pathname}?${query}` : pathname);
     },
-    [pathname, router],
+    [pathname, router, setTab],
   );
 
   const resolvedStatus = resolveLeadStatus(lead?.status);
+  const hasPendingCloseRequest = Boolean(
+    lead?.request_close_at && !lead.closed_at,
+  );
+  const isAssignedAgent = isLeadAssignedToCurrentUser(
+    lead,
+    user?.id,
+    propertyDetails,
+  );
+  const { canRequestClose, canApproveOrRejectClose, canViewCloseStatus } =
+    resolveLeadClosePermissions({
+      isAdmin,
+      isAgent,
+      isAssignedAgent,
+      status: resolvedStatus,
+      hasPendingCloseRequest,
+    });
 
-  const canRequestClose =
-    canActAsAgent &&
-    resolvedStatus !== null &&
-    LEAD_STATUSES_ALLOWING_REQUEST_CLOSE.includes(resolvedStatus);
-
-  const canApproveOrRejectClose =
-    canManageAsAdmin &&
-    resolvedStatus !== null &&
-    LEAD_STATUSES_ALLOWING_APPROVE_CLOSE.includes(resolvedStatus);
-
-  const canUpdateStatus = canActAsAgent && resolvedStatus !== "CLOSED";
-  const canOverrideStatus = canManageAsAdmin && resolvedStatus !== "CLOSED";
-  const canAssign = canManageAsAdmin && resolvedStatus !== "CLOSED";
-  const canReply = canActAsAgent && resolvedStatus !== "CLOSED";
-  const canAddNote = canActAsAgent && resolvedStatus !== "CLOSED";
+  const isTerminalStatus =
+    resolvedStatus !== null && LEAD_TERMINAL_STATUSES.includes(resolvedStatus);
+  const canUpdateStatus = canActAsAgent && !isTerminalStatus;
+  const canAssign = canManageAsAdmin && !isTerminalStatus;
+  const canReply = canActAsAgent && !isTerminalStatus;
+  const canAddNote = canActAsAgent && !isTerminalStatus;
 
   const statusOptionsForModal = useMemo(() => {
-    const values = statusOverrideMode
-      ? LEAD_ADMIN_OVERRIDE_STATUSES
-      : LEAD_AGENT_UPDATABLE_STATUSES;
-    return values.map((value) => ({
+    const statuses = LEAD_UPDATABLE_STATUSES.filter(
+      (value) => canViewCloseStatus || value !== "CLOSED",
+    );
+
+    return statuses.map((value) => ({
       value,
       label: tStatus(value),
+      disabled:
+        LEAD_ADMIN_APPROVAL_STATUSES.includes(value) ||
+        (value === "REQUEST_FOR_CLOSE" && !canRequestClose),
     }));
-  }, [statusOverrideMode, tStatus]);
+  }, [canRequestClose, canViewCloseStatus, tStatus]);
+
+  const effectiveTab = useMemo(
+    () => (!canViewCloseStatus && tab === "close" ? "overview" : tab),
+    [canViewCloseStatus, tab],
+  );
 
   const timelineItems = useMemo(() => {
     const fromApi = activityQuery.data ?? [];
-    if (fromApi.length > 0) return fromApi;
-    if (!lead) return [];
-    return buildLeadTimelineFromLead(lead).map((item) => ({
-      ...item,
-      title: tTimeline(item.title as "created" | "assigned" | "requestClose" | "closed" | "lastActivity"),
-    }));
-  }, [activityQuery.data, lead, tTimeline]);
+    const rawItems =
+      fromApi.length > 0
+        ? fromApi
+        : lead
+          ? buildLeadTimelineFromLead(lead, {
+              assignedAgentName: assignedAgentDisplayName,
+            })
+          : [];
 
-  const openStatusModal = useCallback(
-    (override: boolean) => {
-      setStatusOverrideMode(override);
-      setStatusValue(override ? "IN_PROGRESS" : "IN_PROGRESS");
-      setStatusReason("");
-      setStatusOpen(true);
-    },
-    [],
-  );
+    const visibleItems = filterLeadActivityItemsForViewer(
+      rawItems,
+      canViewCloseStatus,
+    );
+
+    if (!lead || visibleItems.length === 0) {
+      return [];
+    }
+
+    const resolvedSourceLabel = (() => {
+      if (!lead.source) return t("details.emptyValue");
+      if ((LEAD_SOURCES as readonly string[]).includes(lead.source)) {
+        return tSource(lead.source as (typeof LEAD_SOURCES)[number]);
+      }
+      return lead.source;
+    })();
+
+    return mapLeadActivityToDisplay({
+      items: visibleItems,
+      locale,
+      leadNumber: lead.lead_number || t("details.emptyValue"),
+      sourceLabel: resolvedSourceLabel,
+      labels: {
+        createdDescription: ({ leadNumber, source }) =>
+          t("timeline.events.createdDescription", { leadNumber, source }),
+        assignedDescription: ({ agentName }) =>
+          t("timeline.events.assignedDescription", { agentName }),
+        assignedDescriptionUnknown: t(
+          "timeline.events.assignedDescriptionUnknown",
+        ),
+        requestCloseDescription: t("timeline.events.requestCloseDescription"),
+        closedDescription: t("timeline.events.closedDescription"),
+        lastActivityDescription: t("timeline.events.lastActivityDescription"),
+        typeCreated: t("timeline.types.created"),
+        typeAssigned: t("timeline.types.assigned"),
+        typeRequestClose: t("timeline.types.requestClose"),
+        typeClosed: t("timeline.types.closed"),
+        typeActivity: t("timeline.types.activity"),
+        typeGeneric: t("timeline.types.generic"),
+        resolveTitle: (key) => tTimeline(key),
+      },
+    });
+  }, [
+    activityQuery.data,
+    assignedAgentDisplayName,
+    canViewCloseStatus,
+    lead,
+    locale,
+    t,
+    tSource,
+    tTimeline,
+  ]);
+
+  const openStatusModal = useCallback(() => {
+    const viewerStatus = resolveLeadStatusForViewer(
+      lead?.status,
+      canViewCloseStatus,
+    );
+    const defaultStatus =
+      viewerStatus && LEAD_UPDATABLE_STATUSES.includes(viewerStatus)
+        ? viewerStatus
+        : "IN_PROGRESS";
+    setStatusValue(defaultStatus);
+    setStatusReason("");
+    setStatusOpen(true);
+  }, [canViewCloseStatus, lead?.status, setStatusOpen, setStatusReason, setStatusValue]);
 
   const submitReply = useCallback(() => {
     const trimmed = replyMessage.trim();
@@ -251,7 +463,17 @@ export function useLeadDetailsScreen({
         },
       },
     );
-  }, [replyMessage, replyChannel, leadId, lead?.user_id, messageMutation, t]);
+  }, [
+    replyMessage,
+    replyChannel,
+    leadId,
+    lead?.user_id,
+    messageMutation,
+    t,
+    setReplyError,
+    setReplyMessage,
+    setReplyOpen,
+  ]);
 
   const submitNote = useCallback(() => {
     const trimmed = noteText.trim();
@@ -269,9 +491,31 @@ export function useLeadDetailsScreen({
         },
       },
     );
-  }, [noteText, leadId, noteMutation, t]);
+  }, [
+    noteText,
+    leadId,
+    noteMutation,
+    t,
+    setNoteError,
+    setNoteOpen,
+    setNoteText,
+  ]);
 
   const submitStatus = useCallback(() => {
+    if (LEAD_ADMIN_APPROVAL_STATUSES.includes(statusValue)) return;
+
+    if (statusValue === "REQUEST_FOR_CLOSE") {
+      if (!canRequestClose) return;
+
+      requestCloseMutation.mutate(leadId, {
+        onSuccess: () => {
+          setStatusReason("");
+          setStatusOpen(false);
+        },
+      });
+      return;
+    }
+
     statusMutation.mutate(
       {
         leadId,
@@ -286,30 +530,57 @@ export function useLeadDetailsScreen({
         },
       },
     );
-  }, [leadId, statusValue, statusReason, statusMutation]);
+  }, [
+    leadId,
+    requestCloseMutation,
+    statusMutation,
+    statusReason,
+    statusValue,
+    canRequestClose,
+    setStatusOpen,
+    setStatusReason,
+  ]);
 
   const confirmRequestClose = useCallback(() => {
+    if (!canRequestClose) return;
+
     requestCloseMutation.mutate(leadId, {
       onSuccess: () => setRequestCloseOpen(false),
     });
-  }, [leadId, requestCloseMutation]);
+  }, [canRequestClose, leadId, requestCloseMutation, setRequestCloseOpen]);
 
   const confirmApproveClose = useCallback(() => {
+    if (!canApproveOrRejectClose) return;
+
     closeMutation.mutate(
       {
         leadId,
         body: { reason: closeReason.trim() || null },
       },
       {
-        onSuccess: () => {
+        onSuccess: async () => {
+          await queryClient.refetchQueries({
+            queryKey: [LEADS_QUERY_KEY, "detail", leadId],
+            type: "active",
+          });
           setApproveCloseOpen(false);
           setCloseReason("");
         },
       },
     );
-  }, [leadId, closeReason, closeMutation]);
+  }, [
+    canApproveOrRejectClose,
+    closeMutation,
+    closeReason,
+    leadId,
+    queryClient,
+    setApproveCloseOpen,
+    setCloseReason,
+  ]);
 
   const confirmRejectClose = useCallback(() => {
+    if (!canApproveOrRejectClose) return;
+
     rejectCloseMutation.mutate(
       {
         leadId,
@@ -322,33 +593,37 @@ export function useLeadDetailsScreen({
         },
       },
     );
-  }, [leadId, rejectReason, rejectCloseMutation]);
+  }, [
+    canApproveOrRejectClose,
+    leadId,
+    rejectReason,
+    rejectCloseMutation,
+    setRejectCloseOpen,
+    setRejectReason,
+  ]);
 
   const onAssign = useCallback(
     (agentId: string) => {
+      const cachedAgentName = resolveAgentNameFromCache(queryClient, agentId);
       assignMutation.mutate(
         { leadId, body: { agent_id: agentId } },
         {
-          onSuccess: () => setAssignOpen(false),
+          onSuccess: (updatedLead) => {
+            if (!updatedLead.assigned_agent_name?.trim() && cachedAgentName) {
+              queryClient.setQueryData(
+                [LEADS_QUERY_KEY, "detail", leadId],
+                {
+                  ...updatedLead,
+                  assigned_agent_name: cachedAgentName,
+                },
+              );
+            }
+            setAssignOpen(false);
+          },
         },
       );
     },
-    [assignMutation, leadId],
-  );
-
-  const openCustomerContact = useCallback(
-    (mode: "email" | "whatsapp" | "call") => {
-      if (!lead) return;
-      openContact({
-        mode,
-        context: mapLeadToContactContext({
-          lead,
-          user,
-          buildMessage: buildDefaultMessage,
-        }),
-      });
-    },
-    [buildDefaultMessage, lead, openContact, user],
+    [assignMutation, leadId, queryClient, setAssignOpen],
   );
 
   const sourceLabel = useMemo(() => {
@@ -371,6 +646,7 @@ export function useLeadDetailsScreen({
       phone: t("details.phone"),
       communicationMode: t("details.communicationMode"),
       propertyTitle: t("details.propertyTitle"),
+      propertyAddress: t("details.propertyAddress"),
       propertyId: t("details.propertyId"),
       propertyHash: t("details.propertyHash"),
       inquiryType: t("details.inquiryType"),
@@ -400,32 +676,53 @@ export function useLeadDetailsScreen({
         reassign: t("actions.reassign"),
         approveClose: t("actions.approveClose"),
         rejectClose: t("actions.rejectClose"),
-        overrideStatus: t("actions.overrideStatus"),
-        emailCustomer: t("actions.emailCustomer"),
-        callCustomer: t("actions.callCustomer"),
-        whatsappCustomer: t("actions.whatsappCustomer"),
       },
       conversation: {
         title: t("conversation.title"),
+        subtitle: t("conversation.subtitle"),
+        messageCount: t("conversation.messageCount", {
+          count: conversationItems.length,
+        }),
         emptyTitle: t("conversation.emptyTitle"),
         emptyDescription: t("conversation.emptyDescription"),
         listUnavailable: t("conversation.listUnavailable"),
         channel: t("conversation.channel"),
+        agentRole: t("conversation.agentRole"),
+        customerRole: t("conversation.customerRole"),
+        toRecipient: (name: string) => t("conversation.toRecipient", { name }),
+        channelWithValue: (channel: string) =>
+          t("conversation.channelWithValue", { channel }),
+        sentBadge: t("conversation.sentBadge"),
+        resolveDateGroupLabel: resolveConversationDateGroupLabel,
       },
       notes: {
         title: t("notes.title"),
+        subtitle: t("notes.subtitle"),
+        noteCount: t("notes.noteCount", {
+          count: noteItems.length,
+        }),
         emptyTitle: t("notes.emptyTitle"),
         emptyDescription: t("notes.emptyDescription"),
         listUnavailable: t("notes.listUnavailable"),
+        internalBadge: t("notes.internalBadge"),
+        savedBadge: t("notes.savedBadge"),
+        resolveDateGroupLabel: resolveNotesDateGroupLabel,
       },
       timeline: {
         title: t("timeline.title"),
+        subtitle: t("timeline.subtitle"),
+        activityCount: t("timeline.activityCount", {
+          count: timelineItems.length,
+        }),
         emptyTitle: t("timeline.emptyTitle"),
         emptyDescription: t("timeline.emptyDescription"),
+        byActor: (name: string) => t("timeline.byActor", { name }),
+        resolveDateGroupLabel: resolveActivityDateGroupLabel,
       },
       close: {
         title: t("close.title"),
         pendingDescription: t("close.pendingDescription"),
+        awaitingApprovalDescription: t("close.awaitingApprovalDescription"),
         notPendingDescription: t("close.notPendingDescription"),
         requestCloseAt: t("close.requestCloseAt"),
         closedAt: t("close.closedAt"),
@@ -454,9 +751,7 @@ export function useLeadDetailsScreen({
           cancel: t("modals.note.cancel"),
         },
         status: {
-          title: statusOverrideMode
-            ? t("modals.status.overrideTitle")
-            : t("modals.status.title"),
+          title: t("modals.status.title"),
           description: t("modals.status.description"),
           statusLabel: t("modals.status.statusLabel"),
           reasonLabel: t("modals.status.reasonLabel"),
@@ -492,22 +787,31 @@ export function useLeadDetailsScreen({
     isLoading: isPending,
     isFetching,
     isError,
-    tab,
+    tab: effectiveTab,
     onTabChange,
     onBack: () => router.push("/leads"),
     display: lead
-      ? {
-          leadNumber: lead.lead_number,
-          status: lead.status,
-          statusLabel: resolvedStatus
-            ? tStatus(resolvedStatus)
-            : lead.status,
+      ? (() => {
+          const viewerStatus = resolveLeadStatusForViewer(
+            lead.status,
+            canViewCloseStatus,
+          );
+
+          return {
+            leadNumber: lead.lead_number,
+            status: viewerStatus ?? lead.status,
+            statusLabel: viewerStatus
+              ? tStatus(viewerStatus)
+              : lead.status,
           customerName: resolveLeadCustomerName(lead),
           customerEmail: lead.contact_email?.trim() || t("details.emptyValue"),
           customerPhone: lead.contact_phone?.trim() || t("details.emptyValue"),
           communicationMode:
             lead.communication_mode?.trim() || t("details.emptyValue"),
           propertyTitle: resolveLeadPropertyTitle(lead),
+          propertyAddress:
+            resolveLeadPropertyAddress(lead, locale, propertyDetails) ||
+            t("details.emptyValue"),
           propertyId: lead.property_id || t("details.emptyValue"),
           propertyHash:
             lead.property_hash != null
@@ -516,34 +820,40 @@ export function useLeadDetailsScreen({
           inquiryType: lead.inquiry_type?.trim() || t("details.emptyValue"),
           sourceLabel,
           message: lead.message?.trim() || t("details.emptyValue"),
-          assignedAgent: lead.assigned_agent_id
-            ? resolveAssignedAgentLabel(lead)
+          assignedAgent: hasAssignedLeadAgent(lead)
+            ? assignedAgentDisplayName || t("details.emptyValue")
             : t("details.unassigned"),
           createdAt: formatLeadDate(lead.created_at, locale),
           lastActivity: formatLeadDate(lead.last_activity_at, locale),
-          requestCloseAt: formatLeadDate(lead.request_close_at, locale),
-          closedAt: formatLeadDate(lead.closed_at, locale),
-        }
+          requestCloseAt: canViewCloseStatus
+            ? formatLeadDate(lead.request_close_at, locale)
+            : t("details.emptyValue"),
+          closedAt: canViewCloseStatus
+            ? formatLeadDate(lead.closed_at, locale)
+            : t("details.emptyValue"),
+          };
+        })()
       : null,
     permissions: {
       canReply,
       canAddNote,
       canUpdateStatus,
-      canOverrideStatus,
       canRequestClose,
       canApproveOrRejectClose,
+      canViewCloseStatus,
+      hasPendingCloseRequest,
       canAssign,
       assignMode: lead?.assigned_agent_id ? ("reassign" as const) : ("assign" as const),
     },
     conversation: {
-      items: messagesQuery.data ?? [],
+      items: conversationItems,
       isLoading: messagesQuery.isPending,
-      hasList: (messagesQuery.data?.length ?? 0) > 0,
+      hasList: conversationItems.length > 0,
     },
     notes: {
-      items: notesQuery.data ?? [],
+      items: noteItems,
       isLoading: notesQuery.isPending,
-      hasList: (notesQuery.data?.length ?? 0) > 0,
+      hasList: noteItems.length > 0,
     },
     timeline: {
       items: timelineItems,
@@ -582,9 +892,9 @@ export function useLeadDetailsScreen({
       value: statusValue,
       reason: statusReason,
       options: statusOptionsForModal,
-      isSubmitting: statusMutation.isPending,
-      onOpenUpdate: () => openStatusModal(false),
-      onOpenOverride: () => openStatusModal(true),
+      isSubmitting:
+        statusMutation.isPending || requestCloseMutation.isPending,
+      onOpen: openStatusModal,
       onClose: () => setStatusOpen(false),
       onValueChange: setStatusValue,
       onReasonChange: setStatusReason,
@@ -593,7 +903,9 @@ export function useLeadDetailsScreen({
     requestClose: {
       open: requestCloseOpen,
       isSubmitting: requestCloseMutation.isPending,
-      onOpen: () => setRequestCloseOpen(true),
+      onOpen: () => {
+        if (canRequestClose) setRequestCloseOpen(true);
+      },
       onClose: () => setRequestCloseOpen(false),
       onConfirm: confirmRequestClose,
     },
@@ -601,7 +913,9 @@ export function useLeadDetailsScreen({
       open: approveCloseOpen,
       reason: closeReason,
       isSubmitting: closeMutation.isPending,
-      onOpen: () => setApproveCloseOpen(true),
+      onOpen: () => {
+        if (canApproveOrRejectClose) setApproveCloseOpen(true);
+      },
       onClose: () => setApproveCloseOpen(false),
       onReasonChange: setCloseReason,
       onConfirm: confirmApproveClose,
@@ -610,7 +924,9 @@ export function useLeadDetailsScreen({
       open: rejectCloseOpen,
       reason: rejectReason,
       isSubmitting: rejectCloseMutation.isPending,
-      onOpen: () => setRejectCloseOpen(true),
+      onOpen: () => {
+        if (canApproveOrRejectClose) setRejectCloseOpen(true);
+      },
       onClose: () => setRejectCloseOpen(false),
       onReasonChange: setRejectReason,
       onConfirm: confirmRejectClose,
@@ -621,12 +937,6 @@ export function useLeadDetailsScreen({
       onOpen: () => setAssignOpen(true),
       onClose: () => setAssignOpen(false),
       onAssign,
-    },
-    contactModal,
-    customerContact: {
-      onEmail: () => openCustomerContact("email"),
-      onCall: () => openCustomerContact("call"),
-      onWhatsApp: () => openCustomerContact("whatsapp"),
     },
     formatDate: (value: string | null | undefined) =>
       formatLeadDate(value, locale),

@@ -2,6 +2,15 @@
   "pageTitle": "Leads",
   "pageSubtitle": "Track inquiries, conversations, and close requests across your agency.",
   "detailsPageTitle": "Lead details",
+  "ownerPageTitle": "My Inquiries",
+  "ownerPageSubtitle": "Track enquiries submitted for your properties.",
+  "ownerList": {
+    "tableTitle": "My Inquiries",
+    "noDataTitle": "No inquiries found",
+    "noDataDescription": "Try adjusting your search or status filter.",
+    "comingSoonSubtitle": "Under Development",
+    "comingSoonDescription": "Track and manage all your property inquiries in one place. This feature is coming soon!"
+  },
   "list": {
     "tableTitle": "Leads",
     "searchPlaceholder": "Search by lead number, customer, or property…",
@@ -39,7 +48,17 @@
   "status": {
     "NEW": "New",
     "IN_PROGRESS": "In progress",
-    "REQUEST_FOR_CLOSE": "Close requested",
+    "CONTACTED": "Contacted",
+    "QUALIFIED": "Qualified",
+    "FOLLOW_UP": "Follow up",
+    "MEETING_SCHEDULED": "Meeting scheduled",
+    "PROPOSAL_SENT": "Proposal sent",
+    "NEGOTIATION": "Negotiation",
+    "REQUEST_FOR_CLOSE": "Request to close",
+    "CLOSED_WON": "Closed won",
+    "CLOSED_LOST": "Closed lost",
+    "ON_HOLD": "On hold",
+    "CANCELLED": "Cancelled",
     "CLOSED": "Closed"
   },
   "source": {
@@ -67,6 +86,7 @@
     "phone": "Phone",
     "communicationMode": "Communication mode",
     "propertyTitle": "Property",
+    "propertyAddress": "Property address",
     "propertyId": "Property id",
     "propertyHash": "Property hash",
     "inquiryType": "Inquiry type",
@@ -90,43 +110,77 @@
     "assign": "Assign agent",
     "reassign": "Reassign agent",
     "approveClose": "Approve close",
-    "rejectClose": "Reject close",
-    "overrideStatus": "Override status",
-    "emailCustomer": "Email customer",
-    "callCustomer": "Call customer",
-    "whatsappCustomer": "WhatsApp customer"
+    "rejectClose": "Reject close"
   },
   "conversation": {
     "title": "Conversation",
+    "subtitle": "View all messages and delivery details for this lead.",
     "emptyTitle": "No messages yet",
     "emptyDescription": "Send a reply to start the conversation with this lead.",
     "channel": "Channel",
     "channelInApp": "In-app",
     "channelEmail": "Email",
     "channelSms": "SMS",
+    "unknownSender": "Unknown sender",
+    "messageCount": "{count, plural, one {# message} other {# messages}}",
+    "repliedTo": "To {name}",
+    "toRecipient": "To: {name}",
+    "channelWithValue": "Channel: {channel}",
+    "sentBadge": "Sent",
+    "groupToday": "Today {date}",
+    "groupYesterday": "Yesterday {date}",
+    "agentRole": "Agent",
+    "customerRole": "Customer",
     "listUnavailable": "Message history will appear here when the API list endpoint is available. You can still send replies."
   },
   "notes": {
     "title": "Internal notes",
+    "subtitle": "View all internal team notes for this lead.",
     "emptyTitle": "No notes yet",
     "emptyDescription": "Add an internal note for your team.",
-    "listUnavailable": "Notes history will appear here when the API list endpoint is available. You can still add notes."
+    "listUnavailable": "Notes history will appear here when the API list endpoint is available. You can still add notes.",
+    "noteCount": "{count, plural, one {# note} other {# notes}}",
+    "unknownAuthor": "Unknown author",
+    "internalBadge": "Internal",
+    "savedBadge": "Saved",
+    "groupToday": "Today {date}",
+    "groupYesterday": "Yesterday {date}"
   },
   "timeline": {
     "title": "Activity timeline",
+    "subtitle": "Track key events and updates for this lead.",
     "emptyTitle": "No activity yet",
     "emptyDescription": "Activity will appear as the lead progresses.",
+    "activityCount": "{count, plural, one {# event} other {# events}}",
+    "byActor": "By {name}",
+    "groupToday": "Today {date}",
+    "groupYesterday": "Yesterday {date}",
+    "types": {
+      "created": "Created",
+      "assigned": "Assigned",
+      "requestClose": "Close request",
+      "closed": "Closed",
+      "activity": "Update",
+      "generic": "Activity"
+    },
     "events": {
       "created": "Lead created",
       "assigned": "Agent assigned",
       "requestClose": "Close requested",
       "closed": "Lead closed",
-      "lastActivity": "Last activity"
+      "lastActivity": "Last activity",
+      "createdDescription": "Lead {leadNumber} was created from {source}.",
+      "assignedDescription": "Assigned to {agentName}.",
+      "assignedDescriptionUnknown": "An agent was assigned to this lead.",
+      "requestCloseDescription": "A close request was submitted and is waiting for review.",
+      "closedDescription": "This lead was marked as closed.",
+      "lastActivityDescription": "Most recent activity recorded for this lead."
     }
   },
   "close": {
     "title": "Close request",
     "pendingDescription": "An agent requested to close this lead. Review and approve or reject.",
+    "awaitingApprovalDescription": "This close request is waiting for admin review. The lead remains open until an admin approves it.",
     "notPendingDescription": "No close request is pending for this lead.",
     "requestCloseAt": "Requested at",
     "closedAt": "Closed at",
@@ -155,7 +209,6 @@
     },
     "status": {
       "title": "Update status",
-      "overrideTitle": "Override status",
       "description": "Change the workflow status for this lead.",
       "statusLabel": "Status",
       "reasonLabel": "Reason",
