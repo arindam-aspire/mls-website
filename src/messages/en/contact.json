@@ -1,0 +1,41 @@
+{
+  "emailTitle": "Email",
+  "whatsappTitle": "WhatsApp",
+  "callTitle": "Call",
+  "toLabel": "To",
+  "sentToLabel": "Sent to",
+  "nameLabel": "Name",
+  "emailLabel": "Email",
+  "phoneLabel": "Phone",
+  "phonePlaceholder": "7X XXX XXXX",
+  "phoneSearchPlaceholder": "Search country…",
+  "phoneEmptySearchLabel": "No matches",
+  "messageLabel": "Message",
+  "keepInformedLabel": "Keep me informed about similar properties.",
+  "agencyNameLabel": "Agency / Agent",
+  "phoneNumberLabel": "Phone number",
+  "propertyLabel": "Property",
+  "sendLabel": "Send",
+  "cancelLabel": "Cancel",
+  "callConfirmTitle": "Start call?",
+  "callConfirmDescription": "This will open your phone dialer to call the recipient.",
+  "callConfirmLabel": "Call",
+  "callCancelLabel": "Cancel",
+  "defaultMessageTemplate": "I would like to inquire about your property {propertyTitle} - #{propertyReference}. Please contact me at your earliest convenience.",
+  "emailSubject": "Inquiry about {propertyTitle} (#{propertyReference})",
+  "inquirySuccessTitle": "Inquiry submitted",
+  "inquirySuccessDescription": "Your inquiry has been submitted successfully.",
+  "validation": {
+    "nameRequired": "Name is required.",
+    "emailRequired": "Email is required.",
+    "emailInvalid": "Enter a valid email address.",
+    "messageRequired": "Message is required."
+  },
+  "errors": {
+    "sendErrorTitle": "Cannot contact",
+    "missingRecipientEmail": "No recipient email is available for this listing.",
+    "missingRecipientPhone": "No recipient phone number is available for this listing.",
+    "inquiryErrorTitle": "Could not submit inquiry",
+    "inquiryErrorFallback": "Something went wrong while submitting your inquiry. Please try again."
+  }
+}

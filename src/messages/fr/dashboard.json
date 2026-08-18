@@ -1,0 +1,86 @@
+{
+  "title": "Tableau de bord",
+  "userFallback": "Utilisateur",
+  "unknown": "Inconnu",
+  "hero": {
+    "platformControl": "Contrôle de la plateforme",
+    "workspace": "Espace de travail",
+    "adminWelcome": "Bonjour {name}. Suivez la croissance, l’activité et la santé opérationnelle de la plateforme.",
+    "agentWelcome": "Bonjour {name}. Consultez les annonces attribuées et les notifications opérationnelles au même endroit.",
+    "workspaceWelcome": "Bonjour {name}. Consultez l’activité, les approbations en attente, les agences et les notifications opérationnelles."
+  },
+  "actions": {
+    "viewAssignedListings": "Voir les annonces attribuées",
+    "reviewListings": "Examiner les annonces",
+    "addProperty": "Ajouter un bien",
+    "openManageListings": "Ouvrir la gestion des annonces",
+    "viewAll": "Tout voir"
+  },
+  "kpi": {
+    "ariaLabel": "Indicateurs du tableau de bord",
+    "totalRegisteredUsers": "Total des utilisateurs inscrits",
+    "totalAgents": "Total des agents",
+    "totalAdmins": "Total des administrateurs",
+    "pendingApprovals": "Approbations en attente",
+    "listingsThisMonth": "Annonces ce mois-ci",
+    "leadsThisMonth": "Prospects ce mois-ci",
+    "closedDeals": "Transactions conclues",
+    "trendIncrease": "Hausse de {percentage} pour cent",
+    "trendDecrease": "Baisse de {percentage} pour cent"
+  },
+  "charts": {
+    "userGrowth": "Croissance des utilisateurs",
+    "listingGrowth": "Croissance des annonces",
+    "leadGrowth": "Croissance des prospects",
+    "leadSource": "Source des prospects"
+  },
+  "recentActivity": {
+    "title": "Activité récente"
+  },
+  "healthAlerts": {
+    "title": "Alertes de santé",
+    "severity": {
+      "warning": "Avertissement",
+      "info": "Information",
+      "error": "Erreur",
+      "success": "Succès"
+    }
+  },
+  "empty": {
+    "chartTitle": "Aucune donnée de croissance",
+    "chartDescription": "Les données apparaîtront lorsqu’un historique sera disponible.",
+    "leadSourceTitle": "Aucune source de prospect",
+    "leadSourceDescription": "La répartition apparaîtra lorsque des prospects seront enregistrés.",
+    "activityTitle": "Aucune activité récente",
+    "activityDescription": "Les derniers événements de la plateforme apparaîtront ici.",
+    "alertsTitle": "Tous les systèmes sont sains",
+    "alertsDescription": "Aucune alerte de santé ne nécessite votre attention.",
+    "pendingReviews": "Aucun bien en attente d’examen.",
+    "agencies": "Aucune agence trouvée."
+  },
+  "error": {
+    "title": "Impossible de charger le tableau de bord",
+    "description": "Les données récapitulatives sont indisponibles. Veuillez réessayer.",
+    "partialDescription": "Certaines données n’ont pas pu être chargées. Les sections disponibles restent affichées."
+  },
+  "legacy": {
+    "assignedListings": "Annonces attribuées",
+    "assignedListingsHelper": "Annonces actuellement attribuées à votre compte.",
+    "assignedListingsDescription": "Reprenez la file des biens attribués par votre agence.",
+    "agencies": "Agences",
+    "agenciesHelper": "Agences disponibles dans cet espace de travail.",
+    "pendingReviews": "Examens en attente",
+    "pendingReviewsHelper": "Biens en attente de l’examen d’un administrateur.",
+    "visibleListings": "Annonces visibles",
+    "visibleListingsHelper": "Nombre d’annonces publiques renvoyées par la recherche.",
+    "unreadAlerts": "Alertes non lues",
+    "unreadAlertsHelper": "Notifications opérationnelles non lues nécessitant votre attention.",
+    "pendingPropertyReviews": "Biens en attente d’examen",
+    "pendingPropertyReviewsDescription": "Dernières soumissions en attente d’approbation.",
+    "submissionMeta": "Soumis par {name} · Étape {step}",
+    "pending": "En attente",
+    "agencySnapshot": "Aperçu des agences",
+    "agencySnapshotDescription": "Agences récemment disponibles.",
+    "noContact": "Aucun contact"
+  }
+}

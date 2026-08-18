@@ -58,9 +58,9 @@ _N/A — stateless service._
 
 | Function | Method | Path | Auth |
 | --- | --- | --- | --- |
-| `getPropertyList` | GET | `/properties?…` | no (`auth: false`) |
-| `getPropertyDetails` | GET | `/properties/:id` | no (`auth: false`) |
-| `getSimilarProperties` | GET | `/properties/:id/similar` | no (`auth: false`) |
+| `getPropertyList` | GET | `/properties?…` | optional (`auth: tokenStore.hasAuthCredentials()`) |
+| `getPropertyDetails` | GET | `/properties/:id` | optional (`auth: tokenStore.hasAuthCredentials()`) |
+| `getSimilarProperties` | GET | `/properties/:id/similar` | optional (`auth: tokenStore.hasAuthCredentials()`) |
 | `getPropertyFeatureCatalog` | GET | `/features?is_active=true` | no (`auth: false`) |
 | `getAgentProperties` | GET | `/agent-properties?page=&pageSize=` | yes |
 | `getAdminPropertySubmissions` | GET | `/admin/property-submissions?status=&page=&pageSize=` | yes |
@@ -99,7 +99,7 @@ _N/A._
 # Flow Description
 
 1. Caller (future React Query hook or screen) passes `PropertyListParams`.
-2. Service requests `propertyEndpoints.PROPERTY_LIST(params)`.
+2. Service requests `propertyEndpoints.PROPERTY_LIST(params)` with optional Bearer auth when `tokenStore.hasAuthCredentials()` is true (same pattern as details/similar).
 3. Returns typed `PropertyListResponse`.
 
 # Dependencies

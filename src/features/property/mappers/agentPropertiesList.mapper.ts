@@ -10,9 +10,13 @@ import {
   type MyListingRejectedRowActionLabels,
 } from "../constants/myListingRowActions.constants";
 import type { AgentPropertyListItem } from "../types/property.types";
+import {
+  maskPropertyListingStatusKeyForViewer,
+} from "../utils/resolvePropertyClosePermissions";
 
 export type MapAgentPropertyListItemsOptions = {
   rejectedRowActionLabels?: MyListingRejectedRowActionLabels;
+  canViewCloseStatus?: boolean;
 };
 
 type LibraryPropertyListing = ComponentProps<typeof ListTableView>["data"][number];
@@ -135,7 +139,11 @@ export function mapAgentPropertyListItem(
   options?: MapAgentPropertyListItemsOptions,
 ): MyListingTableRow {
   const listing = mapSubmissionApiListingToPropertyListing(toSubmissionApiListing(item));
-  const statusKey = resolveAgentListingDisplayStatusKey(item);
+  const rawStatusKey = resolveAgentListingDisplayStatusKey(item);
+  const statusKey = maskPropertyListingStatusKeyForViewer(
+    rawStatusKey,
+    options?.canViewCloseStatus ?? true,
+  );
 
   return {
     ...listing,

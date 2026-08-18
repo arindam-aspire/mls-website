@@ -1,16 +1,21 @@
 # File Overview
 
-Route-level screen component composing feature UI.
+Owner-only My Inquiries screen that reuses the shared Lead List UI.
 
 **Source:** `src/features/property/screens/InquiriesScreen.tsx`
 
 # Responsibilities
 
-- Route-level screen component composing feature UI.
+- Read the hydrated authenticated user and branch by role.
+- Render loading while auth hydration completes.
+- Call `useLeadsScreen({ scope: "owner" })`.
+- Render existing lead search/status filters, sorting, pagination, loading and empty states.
+- Keep the list read-only; agency/agent lead detail actions remain exclusive to `/leads`.
+- Preserve the existing localized Coming Soon card for authenticated non-owner roles.
 
 # Imports
 
-- `import { ComingSoonCard } from "@/src/components/common/ComingSoonCard"`
+- `useAuthStore`, `isOwnerUser`, `useLeadsScreen`, `LeadList`, `ComingSoonCard`
 
 # Exports
 
@@ -23,7 +28,7 @@ _No significant state; presentational or config module._
 
 # API Usage
 
-_N/A unless extended._
+`GET /agency/owners/{loggedInUser.id}/leads` through `getOwnerLeadList`, with page, page size, search, status and supported list sort/filter query parameters.
 
 # Navigation
 
@@ -37,11 +42,15 @@ _No direct navigation._
 
 ## Inputs
 
-_No explicit inputs detected._
+- Search text (debounced)
+- Status filter
+- Sort controls
+- Pagination
 
 ## Actions
 
-_No explicit actions detected._
+- Search/filter/sort the owner’s enquiries.
+- Change pages.
 
 ## Validations
 
@@ -60,7 +69,11 @@ _No explicit show/hide controls detected._
 
 # Flow Description
 
-See source in `src/features/property/screens/InquiriesScreen.tsx` for step-by-step behavior aligned with [application.md](../../application.md) (path relative may vary).
+1. Wait for auth hydration.
+2. For Owner, pass the logged-in user id to the owner-scoped lead-list service.
+3. Map the response into the shared `LeadListRow` model.
+4. Render `LeadList` without management detail actions.
+5. For Agent/Admin and other authenticated non-owner roles, retain the previous Coming Soon behavior and make no owner API request.
 
 # Dependencies
 

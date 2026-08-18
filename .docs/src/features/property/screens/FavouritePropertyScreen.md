@@ -28,7 +28,7 @@ Delegated to [useFavouritePropertyList.md](../hooks/useFavouritePropertyList.md)
 
 1. Hook fetches favorites for current page/page size.
 2. Mapper converts nested `property` items to `PropertyListing`.
-3. `PropertyCardList` renders **grid-only** cards with pagination (no toolbar).
+3. `PropertyCardList` renders **grid-only** cards with pagination (no toolbar); `canViewAgents={false}` (same as property list / recently viewed).
 4. Empty state copy via `propertyList.favourites` (`noDataTitle`, `noDataDescription`, `noDataAction`). **Browse properties** navigates to `/property-list`.
 
 # Dependencies

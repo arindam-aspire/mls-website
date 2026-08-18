@@ -71,14 +71,14 @@ See [packages.md](./packages.md) for the full dependency table.
 
 ## Getting started
 
-**Private package:** `@abdoun/abdoun-library` comes from Azure Artifacts (see root [`.npmrc`](../.npmrc)). Public packages still use `registry.npmjs.org`. CI uses `npmAuthenticate@0` in `azure-pipelines.yml`.
+**Private package:** `@abdoun/abdoun-library` comes from the Coderlook Git (Gitea) npm registry (see root [`.npmrc`](../.npmrc)). Public packages still use `registry.npmjs.org`. CI injects a Gitea package-read token (`GITEA_NPM_TOKEN`) in `azure-pipelines.yml`.
 
 **If `npm install` fails with `E401`:** credentials are missing or expired in your **user** npmrc, not in the repo.
 
-1. Remove any old Verdaccio lines from `%USERPROFILE%\.npmrc` (e.g. `registry=http://localhost:4873/` or `//localhost:4873/` tokens).
-2. Azure DevOps → **User settings** → **Personal access tokens** → **New Token** → scope **Packaging → Read**.
-3. Add auth to `%USERPROFILE%\.npmrc` using the template in [`.npmrc.user.example`](../.npmrc.user.example) (base64-encode the PAT only; username `VssSessionToken`).
-4. Or, from the repo root after installing the tool once: `npx vsts-npm-auth -config .npmrc -F` (refreshes tokens in your user npmrc).
+1. Remove any old Azure Artifacts / Verdaccio lines from `%USERPROFILE%\.npmrc` (e.g. `coderlook.pkgs.visualstudio.com`, `registry=http://localhost:4873/`, or related tokens).
+2. Coderlook Git (Gitea) → **Settings** → **Applications** → **Generate New Token** with **package read** scope.
+3. Add auth to `%USERPROFILE%\.npmrc` using the template in [`.npmrc.user.example`](../.npmrc.user.example):
+   `//git.coderlook.com/api/packages/abetal/npm/:_authToken=YOUR_TOKEN`
 
 Then run `npm install` again.
 
@@ -191,7 +191,7 @@ Route groups `(landing)`, `(main)`, `(property)`, `(auth)`, `(public)` do **not*
 | --- | --- | --- |
 | `(landing)` | `LandingLayout` | Locale root landing page |
 | `(main)` | `ProtectedLayout` | Dashboard, manage-listings, my-profile, my-listings, saved-searches, notifications, favourites, recently-viewed |
-| `(property)` | `PublicLayout` | Public property browse (list, detail, inquiries) |
+| `(property)` | `PublicLayout` | Property browse (list/detail) plus authenticated owner inquiries |
 | `(auth)` | *(empty — reserved)* | Future auth routes |
 | `(public)` | *(empty — reserved)* | Future public routes |
 | `(system)` | `PublicLayout` on unauthorized | Unauthorized / system pages |
@@ -218,9 +218,11 @@ All paths below are **without** locale; prepend `/<locale>` (e.g. `/en/my-listin
 | `/recently-viewed` | `(main)/recently-viewed/page.tsx` | `RecentlyViewedScreen` — guarded by `useAuthorize("RECENTLY_VIEWED")` |
 | `/owners` | `(main)/owners/page.tsx` | `OwnersScreen` — guarded by `useAuthorize("OWNERS")` (Super Admin + Agency Admin); list, activate/deactivate, view/edit, linked properties/leads |
 | `/agents` | `(main)/agents/page.tsx` | `AgentsScreen` (placeholder) — guarded by `useAuthorize("AGENTS")` (admin only) |
+| `/leads` | `(main)/leads/page.tsx` | `LeadsScreen` — guarded by `useAuthorize("LEADS")` (super_admin, agency admin, agent) |
+| `/leads/[leadId]` | `(main)/leads/[leadId]/page.tsx` | `LeadDetailsScreen` — conversation / notes / timeline / close tabs; assigned agents request closure and agency/super administrators approve or reject before `CLOSED` |
 | `/property-list` | `(property)/property-list/page.tsx` | `PropertyListScreen` (`PropertyCardList`) |
 | `/propert-details/:id` | `(property)/propert-details/[id]/page.tsx` | `PropertyDetailsScreen` (`PropertyView`) |
-| `/inquiries` | `(property)/inquiries/page.tsx` | `InquiriesScreen` (Coming Soon) |
+| `/inquiries` | `(property)/inquiries/page.tsx` | Owner `InquiriesScreen` reuses Lead List with `GET /agency/owners/{loggedInUser.id}/leads`; other authenticated roles retain Coming Soon |
 | `/unauthorized` | `(system)/unauthorized/page.tsx` | `UnauthorizedScreen` |
 
 ### Header navigation (not yet implemented as routes)
@@ -401,7 +403,13 @@ Used by `(main)` route group.
 
 | File | Role |
 | --- | --- |
-| `screens/index.tsx` | `DashboardScreen` — Coming Soon |
+| `services/dashboard.service.ts` | Authenticated `GET /dashboard/summary` through the shared API client |
+| `types/dashboard.types.ts` | Typed KPI, chart, activity, health-alert, and response contracts |
+| `hooks/useDashboardScreen.ts` | Role-aware React Query orchestration and memoized KPI mapping |
+| `components/*` | KPI cards, dependency-free growth/donut charts, activity, alerts, and responsive skeleton |
+| `screens/index.tsx` | Super-admin summary dashboard plus preserved agency/agent operational branches |
+
+Super administrators load the consolidated summary with the `["dashboard", "summary"]` query key. The response drives seven KPIs, four month-over-month indicators, three growth charts, a lead-source donut, recent activity, and severity-coded health alerts. The shared interceptor attaches the stored Bearer token and performs existing 401 refresh handling. Missing data renders localized empty states; request failures use normalized errors, the existing toast system, and an inline error state. No route or navigation configuration changed.
 
 ---
 
@@ -494,6 +502,7 @@ Session persistence helpers: `src/features/auth/store/authModalStorage.ts`.
 | --- | --- |
 | `PROFILE` | agency, agent, owner, user |
 | `DASHBOARD` | agency, agent, owner |
+| `LEADS` | super_admin, agency, agent |
 
 **`useAuthorize` behavior:**
 
@@ -744,7 +753,7 @@ Enforced via `.cursor/rules/`:
 Exports `proxy` (Next.js 16 middleware entry). Flow:
 
 1. Run **next-intl** middleware (`createMiddleware(routing)`).
-2. Strip locale prefix from pathname and check **protected routes**: `/dashboard`, `/manage-listings`, `/draft-listings`, `/my-profile`, `/agency-settings`, `/notification-settings`, `/my-listings`, `/property-create`, `/property-update`, `/saved-searches`, `/favourites`, `/recently-viewed`, `/owners`, `/agents`.
+2. Strip locale prefix from pathname and check **protected routes**: `/dashboard`, `/manage-listings`, `/draft-listings`, `/my-profile`, `/agency-settings`, `/notification-settings`, `/my-listings`, `/property-create`, `/property-update`, `/saved-searches`, `/favourites`, `/recently-viewed`, `/inquiries`, `/owners`, `/agents`, `/leads`.
 3. If protected and no `access_token` cookie → redirect to `/` (same origin).
 4. Otherwise return the i18n response.
 

@@ -10,7 +10,11 @@ import { usePathname, useRouter } from "@/src/i18n/navigation";
 import type { AppLocale } from "@/src/i18n/routing";
 import { tokenStore } from "@/src/apis/core/token.store";
 import { useToast } from "@/src/hooks/useToast";
-import { canTrackRecentPropertyView } from "@/src/features/auth/utils/profileMenuRoleAccess";
+import {
+  canTrackRecentPropertyView,
+  isAgencyUser,
+  isSuperAdminUser,
+} from "@/src/features/auth/utils/profileMenuRoleAccess";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { hasPropertyDetailsRestrictedTabsAccess } from "@/src/lib/auth/propertyDetailsTabAccess";
 import { PROPERTY_CREATE_SUBMISSION_ID_PARAM } from "../constants/propertyCreate.constants";
@@ -43,14 +47,11 @@ import type {
 } from "../types/property.types";
 import { normalizePropertyListing } from "../utils/normalizePropertyListingStatus";
 import {
-  openPropertyAgentEmail,
-  openPropertyAgentPhone,
-  openPropertyAgentWhatsApp,
-  openPropertyOwnerEmail,
-  openPropertyOwnerPhone,
-  openPropertyOwnerWhatsApp,
-} from "../utils/propertyContactActions.utils";
+  isPropertyCloseStatusKey,
+  resolvePropertyClosePermissions,
+} from "../utils/resolvePropertyClosePermissions";
 import { usePropertyFavouriteToggle } from "./usePropertyFavouriteToggle";
+import { usePropertyContactModalActions } from "@/src/features/contact/hooks/usePropertyContactModalActions";
 
 type PropertyViewProps = ComponentProps<typeof PropertyView>;
 type PropertyViewLocale = NonNullable<PropertyViewProps["locale"]>;
@@ -173,6 +174,11 @@ export function usePropertyDetails(propertyId: string) {
     [user],
   );
 
+  const canViewCloseStatus = useMemo(
+    () => resolvePropertyClosePermissions(isAgencyUser(user) || isSuperAdminUser(user)).canViewCloseStatus,
+    [user],
+  );
+
   const showOwnerDetails = Boolean(user);
 
   const tabOptions = useMemo(() => {
@@ -208,6 +214,19 @@ export function usePropertyDetails(propertyId: string) {
     isDetailsFavouriteLoading,
   } = usePropertyFavouriteToggle();
 
+  const {
+    contactModal,
+    openAgentEmail: openAgentEmailContact,
+    openAgentPhone: openAgentPhoneContact,
+    openAgentWhatsApp: openAgentWhatsAppContact,
+    openOwnerEmail: openOwnerEmailContact,
+    openOwnerPhone: openOwnerPhoneContact,
+    openOwnerWhatsApp: openOwnerWhatsAppContact,
+    onClickEmail: onSimilarClickEmail,
+    onClickCall: onSimilarClickCall,
+    onClickWhatsApp: onSimilarClickWhatsApp,
+  } = usePropertyContactModalActions();
+
   // 4. Local state
   const [propertyDetails, setPropertyDetails] = useState<PropertyDetails | null>(
     null,
@@ -215,8 +234,6 @@ export function usePropertyDetails(propertyId: string) {
   const [featureCatalog, setFeatureCatalog] = useState<
     PropertyFeatureDefinition[]
   >([]);
-  const [isUpcomingFeatureModalOpen, setIsUpcomingFeatureModalOpen] =
-    useState(false);
   const [isDetailsSettled, setIsDetailsSettled] = useState(false);
   const [isFeaturesSettled, setIsFeaturesSettled] = useState(false);
   const [similarListings, setSimilarListings] = useState<PropertyListing[]>([]);
@@ -382,14 +399,6 @@ export function usePropertyDetails(propertyId: string) {
   );
 
   // 7. Callbacks
-  const openUpcomingFeature = useCallback(() => {
-    setIsUpcomingFeatureModalOpen(true);
-  }, []);
-
-  const closeUpcomingFeature = useCallback(() => {
-    setIsUpcomingFeatureModalOpen(false);
-  }, []);
-
   const toggleFavourite = useCallback(
     (target: PropertyListing | number) => {
       if (typeof target === "number") {
@@ -425,44 +434,44 @@ export function usePropertyDetails(propertyId: string) {
 
   const openAgentEmail = useCallback(
     (_id: number) => {
-      openPropertyAgentEmail(propertyDetailsWithFavourites);
+      openAgentEmailContact(propertyDetailsWithFavourites);
     },
-    [propertyDetailsWithFavourites],
+    [openAgentEmailContact, propertyDetailsWithFavourites],
   );
 
   const openAgentPhone = useCallback(
     (_id: number) => {
-      openPropertyAgentPhone(propertyDetailsWithFavourites);
+      openAgentPhoneContact(propertyDetailsWithFavourites);
     },
-    [propertyDetailsWithFavourites],
+    [openAgentPhoneContact, propertyDetailsWithFavourites],
   );
 
   const openAgentWhatsApp = useCallback(
     (_id: number) => {
-      openPropertyAgentWhatsApp(propertyDetailsWithFavourites);
+      openAgentWhatsAppContact(propertyDetailsWithFavourites);
     },
-    [propertyDetailsWithFavourites],
+    [openAgentWhatsAppContact, propertyDetailsWithFavourites],
   );
 
   const openOwnerEmail = useCallback(
     (_propertyId: number, ownerId?: number) => {
-      openPropertyOwnerEmail(propertyDetailsWithFavourites, ownerId);
+      openOwnerEmailContact(propertyDetailsWithFavourites, ownerId);
     },
-    [propertyDetailsWithFavourites],
+    [openOwnerEmailContact, propertyDetailsWithFavourites],
   );
 
   const openOwnerPhone = useCallback(
     (_propertyId: number, ownerId?: number) => {
-      openPropertyOwnerPhone(propertyDetailsWithFavourites, ownerId);
+      openOwnerPhoneContact(propertyDetailsWithFavourites, ownerId);
     },
-    [propertyDetailsWithFavourites],
+    [openOwnerPhoneContact, propertyDetailsWithFavourites],
   );
 
   const openOwnerWhatsApp = useCallback(
     (_propertyId: number, ownerId?: number) => {
-      openPropertyOwnerWhatsApp(propertyDetailsWithFavourites, ownerId);
+      openOwnerWhatsAppContact(propertyDetailsWithFavourites, ownerId);
     },
-    [propertyDetailsWithFavourites],
+    [openOwnerWhatsAppContact, propertyDetailsWithFavourites],
   );
 
   const showMissingWorkflowContext = useCallback(
@@ -862,6 +871,10 @@ export function usePropertyDetails(propertyId: string) {
       }
 
       if (action.id === "review_deal_closure") {
+        if (!canViewCloseStatus) {
+          return [];
+        }
+
         return [
           {
             id: "approve_deal_closure",
@@ -964,6 +977,7 @@ export function usePropertyDetails(propertyId: string) {
     isReviewingSubmission,
     isWorkflowActionPending,
     onStatusWorkflowActionClick,
+    canViewCloseStatus,
     propertyDetailsWithFavourites?.workflow_actions,
     runningWorkflowActionId,
     tManage,
@@ -981,13 +995,21 @@ export function usePropertyDetails(propertyId: string) {
       .filter((label): label is string => Boolean(label));
     const cardPendingActions = card?.pendingActions ?? card?.pending_actions ?? [];
 
+    const rawStatusLabel = card?.statusLabel ?? card?.status_label ?? undefined;
+    const listingCloseStatus = [
+      propertyDetailsWithFavourites?.workflow_status,
+      propertyDetailsWithFavourites?.workflow_stage,
+      rawStatusLabel,
+    ].some((value) => value && isPropertyCloseStatusKey(value));
+
     return {
-      statusLabel: card?.statusLabel ?? card?.status_label ?? undefined,
+      statusLabel:
+        canViewCloseStatus || !listingCloseStatus ? rawStatusLabel : undefined,
       pendingActions:
         cardPendingActions.length > 0 ? cardPendingActions : fallbackPendingActions,
       actions: workflowActionButtons,
     };
-  }, [propertyDetailsWithFavourites, workflowActionButtons]);
+  }, [canViewCloseStatus, propertyDetailsWithFavourites, workflowActionButtons]);
 
   // 8. Refs
   const lastRecordedRecentViewIdRef = useRef<string | null>(null);
@@ -1226,13 +1248,13 @@ export function usePropertyDetails(propertyId: string) {
     openOwnerWhatsApp,
     similarListings: similarListingsWithFavourites,
     isSimilarLoading,
+    onSimilarClickEmail,
+    onSimilarClickCall,
+    onSimilarClickWhatsApp,
     statusActionCard,
     workflowConfirmModal,
     rejectWorkflowModal,
     assignAgentModal,
-    upcomingFeatureModal: {
-      open: isUpcomingFeatureModalOpen,
-      onClose: closeUpcomingFeature,
-    },
+    contactModal,
   };
 }

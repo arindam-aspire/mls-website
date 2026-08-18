@@ -63,7 +63,7 @@ _No props._
 1. Screen calls `usePropertyList()`.
 2. Renders `PropertyListFilters` with `{...filters}` from the hook.
 3. Renders `UpcomingFeatureModal` when Save Search, Email, Call, WhatsApp, or Favourite is clicked (Advance Search toggles the inline advanced filter panel).
-4. Renders `PropertyCardList` with listings and callbacks.
+4. Renders `PropertyCardList` with listings and callbacks (`canViewAgents={false}` — agent block hidden on browse cards; Email/Call/WhatsApp still use listing agent/agency via host callbacks).
 
 # Dependencies
 
@@ -74,3 +74,4 @@ _No props._
 # Notes
 
 - Sort is synced to the API via `sort` query param; changing sort resets page to 1.
+- Agent contact strip on cards is off (`canViewAgents={false}`); owners/badges remain enabled.

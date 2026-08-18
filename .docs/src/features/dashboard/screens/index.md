@@ -1,16 +1,22 @@
 # File Overview
 
-Route-level screen component composing feature UI.
+Role-aware dashboard screen composing summary analytics and existing operational views.
 
 **Source:** `src/features/dashboard/screens/index.tsx`
 
 # Responsibilities
 
-- Route-level screen component composing feature UI.
+- Render the super-admin dashboard summary widgets.
+- Preserve agency/agent operational dashboard content.
+- Compose responsive KPI, chart, activity, alert, loading, empty, and error states.
+- Use the `dashboard` next-intl namespace for all visible copy.
 
 # Imports
 
-- `import { ComingSoonCard } from "@/src/components/common/ComingSoonCard"`
+- Dashboard components under `../components/`
+- `useDashboardScreen`
+- Auth store and role constants
+- Shared `Card` and `Button` UI primitives
 
 # Exports
 
@@ -19,15 +25,16 @@ Route-level screen component composing feature UI.
 
 # State Management
 
-_No significant state; presentational or config module._
+The screen receives server/query state from `useDashboardScreen`. It reads the current user only for the localized welcome name and legacy role presentation.
 
 # API Usage
 
-_N/A unless extended._
+- Super admin: `GET /dashboard/summary` through the hook/service.
+- Other roles: existing agency, property submission, agent property, and unread-notification queries.
 
 # Navigation
 
-_No direct navigation._
+Existing buttons continue navigating to locale-prefixed `/en/manage-listings` and `/en/property-create`; dashboard routing is unchanged.
 
 # Props / Parameters
 
@@ -35,21 +42,20 @@ _No direct navigation._
 
 # Actions / Inputs
 
-## Inputs
+No form fields. Props flow from the dashboard hook into presentational child components.
 
-_No explicit inputs detected._
-
-## Actions
-
-_No explicit actions detected._
+- Review/view assigned listings.
+- Add a property for eligible non-agent workspaces.
+- View all pending reviews.
 
 ## Validations
 
 _No explicit validations detected._
 
-## Show/Hide Controls
-
-_No explicit show/hide controls detected._
+- Super administrators see summary analytics.
+- Agency and agent roles retain their operational dashboard branches.
+- Loading returns `DashboardScreenSkeleton`.
+- Error and empty content are shown without crashing available sections.
 
 # UI Details
 
@@ -57,16 +63,24 @@ _No explicit show/hide controls detected._
 - **Light/dark:** via `ThemeProvider` / `html.light` | `html.dark`.
 - **Radius:** `rounded-lg` controls; `rounded-xl` cards/modals/popovers; `rounded-full` avatars/pills.
 - **Responsive:** mobile-first (`sm:`, `md:`, `lg:`).
+- **Charts:** responsive SVG/CSS visuals with text alternatives; no added dependency.
+- **Skeleton:** mirrors KPI and chart grids.
 
 # Flow Description
 
-See source in `src/features/dashboard/screens/index.tsx` for step-by-step behavior aligned with [application.md](../../application.md) (path relative may vary).
+1. Resolve localized labels and role-aware hook data.
+2. Render the layout-matched skeleton while the enabled query is pending.
+3. Super admins render seven KPI cards, three line charts, lead-source donut, activities, and health alerts.
+4. Missing arrays render localized empty panels.
+5. Summary failures show a localized alert while global API handling/toasts report the normalized error.
+6. Non-super-admin roles render the existing dashboard workflow.
 
 # Dependencies
 
-- Parent feature or route that imports this file.
-- See **Imports** for direct module dependencies.
+- `app/[locale]/(main)/dashboard/page.tsx`
+- `src/features/dashboard/hooks/useDashboardScreen.ts`
+- Dashboard component files documented in the feature README
 
 # Notes
 
-- Keep in sync when `src/features/dashboard/screens/index.tsx` changes.
+- The route remains `/[locale]/dashboard`.

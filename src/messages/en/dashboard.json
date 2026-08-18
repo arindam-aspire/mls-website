@@ -1,0 +1,86 @@
+{
+  "title": "Dashboard",
+  "userFallback": "User",
+  "unknown": "Unknown",
+  "hero": {
+    "platformControl": "Platform Control",
+    "workspace": "Workspace",
+    "adminWelcome": "Welcome, {name}. Monitor platform growth, activity, and operational health.",
+    "agentWelcome": "Welcome, {name}. Review assigned listings and operational notifications from one place.",
+    "workspaceWelcome": "Welcome, {name}. Review platform activity, pending property approvals, agency coverage, and operational notifications from one place."
+  },
+  "actions": {
+    "viewAssignedListings": "View Assigned Listings",
+    "reviewListings": "Review Listings",
+    "addProperty": "Add Property",
+    "openManageListings": "Open Manage Listings",
+    "viewAll": "View All"
+  },
+  "kpi": {
+    "ariaLabel": "Dashboard metrics",
+    "totalRegisteredUsers": "Total Registered Users",
+    "totalAgents": "Total Agents",
+    "totalAdmins": "Total Admins",
+    "pendingApprovals": "Pending Approvals",
+    "listingsThisMonth": "Listings This Month",
+    "leadsThisMonth": "Leads This Month",
+    "closedDeals": "Closed Deals",
+    "trendIncrease": "Increased by {percentage} percent",
+    "trendDecrease": "Decreased by {percentage} percent"
+  },
+  "charts": {
+    "userGrowth": "User Growth",
+    "listingGrowth": "Listing Growth",
+    "leadGrowth": "Lead Growth",
+    "leadSource": "Lead Source"
+  },
+  "recentActivity": {
+    "title": "Recent Activity"
+  },
+  "healthAlerts": {
+    "title": "Health Alerts",
+    "severity": {
+      "warning": "Warning",
+      "info": "Info",
+      "error": "Error",
+      "success": "Success"
+    }
+  },
+  "empty": {
+    "chartTitle": "No growth data yet",
+    "chartDescription": "Growth data will appear when reporting history is available.",
+    "leadSourceTitle": "No lead sources yet",
+    "leadSourceDescription": "Lead source distribution will appear when leads are recorded.",
+    "activityTitle": "No recent activity",
+    "activityDescription": "The latest platform events will appear here.",
+    "alertsTitle": "All systems healthy",
+    "alertsDescription": "There are no health alerts requiring attention.",
+    "pendingReviews": "No pending property reviews.",
+    "agencies": "No agencies found."
+  },
+  "error": {
+    "title": "Dashboard could not be loaded",
+    "description": "Dashboard summary data is currently unavailable. Please try again.",
+    "partialDescription": "Some dashboard data could not be loaded. Available sections are still shown."
+  },
+  "legacy": {
+    "assignedListings": "Assigned Listings",
+    "assignedListingsHelper": "Listings currently assigned to your account.",
+    "assignedListingsDescription": "Continue from your agency-assigned property queue.",
+    "agencies": "Agencies",
+    "agenciesHelper": "Agency records available to this workspace.",
+    "pendingReviews": "Pending Reviews",
+    "pendingReviewsHelper": "Property submissions waiting for agency admin review.",
+    "visibleListings": "Visible Listings",
+    "visibleListingsHelper": "Public listing count currently returned by marketplace search.",
+    "unreadAlerts": "Unread Alerts",
+    "unreadAlertsHelper": "Unread operational notifications requiring attention.",
+    "pendingPropertyReviews": "Pending Property Reviews",
+    "pendingPropertyReviewsDescription": "Latest submissions awaiting approval.",
+    "submissionMeta": "Submitted by {name} · Step {step}",
+    "pending": "Pending",
+    "agencySnapshot": "Agency Snapshot",
+    "agencySnapshotDescription": "Recently available agencies.",
+    "noContact": "No contact"
+  }
+}

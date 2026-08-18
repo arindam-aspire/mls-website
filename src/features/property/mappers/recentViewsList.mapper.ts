@@ -8,11 +8,14 @@ import { normalizePropertyListing } from "../utils/normalizePropertyListingStatu
 import { resolveRecentViewHashIdFromApiItem } from "../utils/resolveRecentViewPropertyId";
 
 export function mapRecentViewsListItem(item: RecentViewsListItem): PropertyListing {
-  const { agency: _agency, ...property } = item.property;
+  const property = item.property;
   const propertyHashId = resolveRecentViewHashIdFromApiItem(item);
 
   return normalizePropertyListing({
     ...property,
+    agency: property.agency ?? undefined,
+    agent: property.agent ?? undefined,
+    owners: property.owners ?? [],
     is_favourite: false,
     ...(propertyHashId ? { property_hash_id: propertyHashId } : {}),
     user_id: item.user_id,

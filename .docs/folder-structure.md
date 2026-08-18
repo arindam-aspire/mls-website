@@ -53,6 +53,10 @@ mls_website/
 │   │       │   │   └── page.md
 │   │       │   ├── agents/
 │   │       │   │   └── page.md
+│   │       │   ├── leads/
+│   │       │   │   ├── page.md
+│   │       │   │   └── [leadId]/
+│   │       │   │       └── page.md
 │   │       │   ├── (profile)/
 │   │       │   │   ├── my-profile/
 │   │       │   │   │   └── page.md
@@ -118,10 +122,59 @@ mls_website/
 │       │   │       ├── signUp.types.md
 │       │   │       └── user.types.md
 │       │   ├── dashboard/
+│       │   │   ├── README.md
+│       │   │   ├── components/
+│       │   │   │   ├── README.md
+│       │   │   │   ├── DashboardHealthAlerts.md
+│       │   │   │   ├── DashboardKpiCards.md
+│       │   │   │   ├── DashboardLeadSourceChart.md
+│       │   │   │   ├── DashboardRecentActivity.md
+│       │   │   │   ├── DashboardScreenSkeleton.md
+│       │   │   │   └── DashboardTrendChart.md
+│       │   │   ├── hooks/
+│       │   │   │   ├── README.md
+│       │   │   │   └── useDashboardScreen.md
+│       │   │   ├── screens/
+│       │   │   │   └── index.md
+│       │   │   ├── services/
+│       │   │   │   ├── README.md
+│       │   │   │   └── dashboard.service.md
+│       │   │   └── types/
+│       │   │       ├── README.md
+│       │   │       └── dashboard.types.md
 │       │   ├── landing/
 │       │   │   └── mutations/
 │       │   │       ├── README.md
 │       │   │       └── landing.mutation.md
+│       │   ├── leads/
+│       │   │   ├── README.md
+│       │   │   ├── components/
+│       │   │   │   ├── LeadActivityPanel.md
+│       │   │   │   ├── LeadConversationPanel.md
+│       │   │   │   ├── LeadList.md
+│       │   │   │   ├── LeadListFilters.md
+│       │   │   │   └── LeadNotesPanel.md
+│       │   │   ├── constants/
+│       │   │   │   └── leadStatus.constants.md
+│       │   │   ├── hooks/
+│       │   │   │   ├── useLeadDetailsScreen.md
+│       │   │   │   └── useLeadsScreen.md
+│       │   │   ├── mutations/
+│       │   │   │   └── lead.mutation.md
+│       │   │   ├── screens/
+│       │   │   │   ├── LeadDetailsScreen.md
+│       │   │   │   └── LeadsScreen.md
+│       │   │   ├── services/
+│       │   │   │   └── lead.service.md
+│       │   │   ├── types/
+│       │   │   │   ├── lead.types.md
+│       │   │   │   └── leadList.types.md
+│       │   │   └── utils/
+│       │   │       ├── buildLeadListTableColumns.md
+│       │   │       ├── groupByCalendarDate.md
+│       │   │       ├── groupLeadConversationByDate.md
+│       │   │       ├── leadDisplay.utils.md
+│       │   │       └── resolveLeadClosePermissions.md
 │       │   ├── loading/
 │       │   │   ├── README.md
 │       │   │   └── screens/
@@ -415,6 +468,10 @@ mls_website/
 │   │   │   │   └── page.tsx
 │   │   │   ├── agents/
 │   │   │   │   └── page.tsx
+│   │   │   ├── leads/
+│   │   │   │   ├── page.tsx
+│   │   │   │   └── [leadId]/
+│   │   │   │       └── page.tsx
 │   │   │   ├── (profile)/
 │   │   │   │   ├── my-profile/
 │   │   │   │   │   └── page.tsx
@@ -467,7 +524,9 @@ mls_website/
 │   │       ├── agencyEndpoints.ts
 │   │       ├── agentEndpoints.ts
 │   │       ├── authEndpoints.ts
+│   │       ├── dashboardEndpoints.ts
 │   │       ├── index.ts
+│   │       ├── leadEndpoints.ts
 │   │       ├── ownerEndpoints.ts
 │   │       ├── profileEndpoints.ts
 │   │       ├── propertyEndpoints.ts
@@ -669,7 +728,64 @@ mls_website/
 │   │   │       ├── agencySignUp.types.ts
 │   │   │       └── user.types.ts
 │   │   ├── dashboard/
-│   │   │   └── screens/
+│   │   │   ├── components/
+│   │   │   │   ├── DashboardHealthAlerts.tsx
+│   │   │   │   ├── DashboardKpiCards.tsx
+│   │   │   │   ├── DashboardLeadSourceChart.tsx
+│   │   │   │   ├── DashboardRecentActivity.tsx
+│   │   │   │   ├── DashboardScreenSkeleton.tsx
+│   │   │   │   └── DashboardTrendChart.tsx
+│   │   │   ├── hooks/
+│   │   │   │   └── useDashboardScreen.ts
+│   │   │   ├── screens/
+│   │   │   │   └── index.tsx
+│   │   │   ├── services/
+│   │   │   │   └── dashboard.service.ts
+│   │   │   └── types/
+│   │   │       └── dashboard.types.ts
+│   │   ├── contact/
+│   │   │   ├── components/
+│   │   │   │   └── ContactModal.tsx
+│   │   │   ├── hooks/
+│   │   │   │   ├── useContactModal.ts
+│   │   │   │   └── usePropertyContactModalActions.ts
+│   │   │   ├── mappers/
+│   │   │   │   └── mapContactModalContext.ts
+│   │   │   ├── types/
+│   │   │   │   └── contactModal.types.ts
+│   │   │   └── utils/
+│   │   │       └── contactMessage.utils.ts
+│   │   ├── leads/
+│   │   │   ├── components/
+│   │   │   │   ├── LeadActivityPanel.tsx
+│   │   │   │   ├── LeadConversationPanel.tsx
+│   │   │   │   ├── LeadList.tsx
+│   │   │   │   ├── LeadListFilters.tsx
+│   │   │   │   ├── LeadNotesPanel.tsx
+│   │   │   │   ├── LeadScreenSkeletons.tsx
+│   │   │   │   └── LeadStatusBadge.tsx
+│   │   │   ├── constants/
+│   │   │   │   ├── leadList.constants.ts
+│   │   │   │   └── leadStatus.constants.ts
+│   │   │   ├── hooks/
+│   │   │   │   ├── useLeadDetailsScreen.ts
+│   │   │   │   └── useLeadsScreen.ts
+│   │   │   ├── mutations/
+│   │   │   │   └── lead.mutation.ts
+│   │   │   ├── screens/
+│   │   │   │   ├── LeadDetailsScreen.tsx
+│   │   │   │   └── LeadsScreen.tsx
+│   │   │   ├── services/
+│   │   │   │   └── lead.service.ts
+│   │   │   ├── types/
+│   │   │   │   ├── lead.types.ts
+│   │   │   │   └── leadList.types.ts
+│   │   │   └── utils/
+│   │   │       ├── buildLeadListTableColumns.tsx
+│   │   │       ├── groupByCalendarDate.ts
+│   │   │       ├── groupLeadConversationByDate.ts
+│   │   │       ├── leadDisplay.utils.ts
+│   │   │       └── resolveLeadClosePermissions.ts
 │   │   ├── loading/
 │   │   │   └── screens/
 │   │   │       └── index.tsx
@@ -1119,6 +1235,7 @@ mls_website/
 │   │   ├── ar/
 │   │   │   ├── auth.json
 │   │   │   ├── common.json
+│   │   │   ├── dashboard.json
 │   │   │   ├── home.json
 │   │   │   ├── metadata.json
 │   │   │   ├── notFound.json
@@ -1129,6 +1246,7 @@ mls_website/
 │   │   ├── en/
 │   │   │   ├── auth.json
 │   │   │   ├── common.json
+│   │   │   ├── dashboard.json
 │   │   │   ├── home.json
 │   │   │   ├── metadata.json
 │   │   │   ├── notFound.json
@@ -1139,6 +1257,7 @@ mls_website/
 │   │   ├── es/
 │   │   │   ├── auth.json
 │   │   │   ├── common.json
+│   │   │   ├── dashboard.json
 │   │   │   ├── home.json
 │   │   │   ├── metadata.json
 │   │   │   ├── notFound.json
@@ -1149,6 +1268,7 @@ mls_website/
 │   │   └── fr/
 │   │       ├── auth.json
 │   │       ├── common.json
+│   │       ├── dashboard.json
 │   │       ├── home.json
 │   │       ├── metadata.json
 │   │       ├── notFound.json

@@ -12,13 +12,14 @@ English locale message namespace barrel for next-intl.
 
 - `auth.json` → `auth`
 - `common.json` → `common`
+- `dashboard.json` → `dashboard`
 - `home.json` → `home`
 - `notFound.json` → `notFound`
 - `unauthorized.json` → `unauthorized`
 
 # Exports
 
-- `default` — `{ auth, common, home, notFound, unauthorized }`
+- `default` — locale namespace object including `dashboard`
 
 # Dependencies
 

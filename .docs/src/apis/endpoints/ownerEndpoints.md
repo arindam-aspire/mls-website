@@ -15,12 +15,12 @@ Builds authenticated owner-management API paths under `/agency/...`.
 | `UPDATE` | PATCH | `/agency/owners/{ownerId}` |
 | `UPDATE_STATUS` | PATCH | `/agency/owners/{ownerId}/status` |
 | `LINKED_PROPERTIES` | GET | `/agency/owners/{ownerId}/properties?page=&pageSize=` |
-| `LINKED_LEADS` | GET | `/agency/owners/{ownerId}/leads?page=&pageSize=` |
+| `LINKED_LEADS` | GET | `/agency/owners/{ownerId}/leads?page=&pageSize=&search=&status=&assigned_agent_id=&property_id=&date_from=&date_to=&sortBy=&sortOrder=` |
 
 ## Query helpers
 
 - `OwnerListQueryParams` — list pagination, search, status, optional `agencyId`
-- `OwnerLinkedListQueryParams` — linked properties/leads pagination
+- `OwnerLinkedListQueryParams` — linked pagination plus optional lead search/status/property/agent/date/sort parameters. Property consumers continue passing pagination only.
 
 ## Related
 

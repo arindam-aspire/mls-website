@@ -1,6 +1,6 @@
 "use client";
 
-import { UpcomingFeatureModal } from "@/src/components/common/UpcomingFeatureModal";
+import { ContactModal } from "@/src/features/contact/components/ContactModal";
 import { SaveSearchModal } from "@/src/features/saved-searches/modals/SaveSearchModal";
 import { PropertyCardList } from "@abdoun/abdoun-library";
 import { PropertyListFilters } from "../components/PropertyListFilters";
@@ -21,7 +21,7 @@ export default function PropertyListScreen() {
     onClickEmail,
     onClickCall,
     onClickWhatsApp,
-    upcomingFeatureModal,
+    contactModal,
     saveSearchModal,
   } = usePropertyList();
 
@@ -33,10 +33,7 @@ export default function PropertyListScreen() {
         </div>
       </div>
 
-      <UpcomingFeatureModal
-        open={upcomingFeatureModal.open}
-        onClose={upcomingFeatureModal.onClose}
-      />
+      <ContactModal contactModal={contactModal} />
 
       <SaveSearchModal
         open={saveSearchModal.open}
@@ -56,10 +53,9 @@ export default function PropertyListScreen() {
           toolbar={toolbar}
           pagination={pagination}
           noDataFound={noDataFound}
-          canViewAgents
+          canViewAgents={false}
           canViewOwners
           canViewBadges
-          
           onClick={onClickProperty}
           onClickFavourite={toggleFavourite}
           onClickEmail={onClickEmail}

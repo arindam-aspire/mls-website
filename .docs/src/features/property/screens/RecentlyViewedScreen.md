@@ -58,7 +58,7 @@ Recently viewed properties screen: page header with clear action + paginated `Pr
 
 - Header row: stack on mobile; title left, clear button right from `sm:`.
 
-- List: `layoutVariant="grid"`, pagination `10` / `15` / `20`, loading via `PropertyCardList`.
+- List: `layoutVariant="grid"`, pagination `10` / `15` / `20`, loading via `PropertyCardList`; `canViewAgents={false}`.
 
 - Delete confirm: `ConfirmModal` (`variant="danger"`, `Trash2` icon, loading state while delete mutation runs).
 

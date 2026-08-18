@@ -7,10 +7,13 @@ import type {
 import { normalizePropertyListing } from "../utils/normalizePropertyListingStatus";
 
 export function mapFavoriteListItem(item: FavoriteListItem): PropertyListing {
-  const { agency: _agency, ...property } = item.property;
+  const property = item.property;
 
   return normalizePropertyListing({
     ...property,
+    agency: property.agency ?? undefined,
+    agent: property.agent ?? undefined,
+    owners: property.owners ?? [],
     is_favourite: true,
     favourite_id: item.id,
     property_hash: String(item.property_hash),

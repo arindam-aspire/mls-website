@@ -9,6 +9,7 @@ Opens agent and owner contact channels from property details data (`mailto:`, `t
 - Resolve agent contact fields from `propertyDetails.agent` (`contact_actions` / `actions` with `enabled` + `href` when API provides them).
 - Resolve owner contact fields from mapped owners (`resolvePropertyViewOwners`) with optional `ownerId` for multi-owner listings.
 - For **guests**, when an agent contact action exists with `enabled: false`, open the auth modal (`AUTH_VIEW.chooseAccount`) instead of contact links.
+- When **no agent** is present on a listing/details payload, open the auth modal (agent contact is auth/token-scoped).
 - Open native email, phone, or WhatsApp URLs when the action is enabled or falls back to raw contact fields; no-op when missing.
 
 # Imports
@@ -22,6 +23,9 @@ Opens agent and owner contact channels from property details data (`mailto:`, `t
 
 | Export | Purpose |
 | --- | --- |
+| `listingHasContactAgent` | Whether listing `agent` has identity/contact fields |
+| `ensureListingAgentContactAllowed` | Card Email/Call/WhatsApp — open login when agent missing |
+| `ensurePropertyAgentContactAllowed` | Details agent actions — open login when no agent or guest + gated action |
 | `resolvePropertyDetailsAgent` | Agent `{ email, phone, whatsapp }` |
 | `resolvePropertyDetailsOwner` | Owner contact by optional `ownerId` |
 | `openPropertyAgentEmail` | `mailto:` for agent |
@@ -62,8 +66,9 @@ _N/A_
 1. User clicks Email, Call, or WhatsApp in library `ContactActions` (agent or owner block).
 2. `PropertyView` invokes MLS callback with property id (and owner id when applicable).
 3. `usePropertyDetails` delegates to these helpers.
-4. Guest + agent action `enabled: false` → auth choose-account modal.
-5. Otherwise uses API `href` when enabled, or raw email/phone/WhatsApp fallback.
+4. Missing agent on payload → auth choose-account modal (same for list card Email / Call / WhatsApp via `ensureListingAgentContactAllowed`).
+5. Guest + agent action `enabled: false` → auth choose-account modal.
+6. Otherwise uses API `href` when enabled, or raw email/phone/WhatsApp fallback.
 
 # Dependencies
 

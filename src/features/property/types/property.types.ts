@@ -136,6 +136,8 @@ export interface PropertyListing {
   description: LocalizedNullableText;
 
   price: string;
+  /** ISO-like currency code for library cards (`string | null` only — never a raw API object). */
+  currency?: string | null;
   status: PropertyListingStatus;
   category: string;
 
@@ -167,6 +169,25 @@ export interface PropertyListing {
   brokerLogo: string | null;
 
   owners: PropertyOwner[];
+  /** Fallback when agent contact fields are missing on card actions. Omit when absent (`undefined`, not `null` — library card types). */
+  agency?: {
+    agency_id: number | string;
+    agency_name: string;
+    agency_trade_name?: string | null;
+    email?: string | null;
+    phone?: string | null;
+    website?: string | null;
+  };
+  /** Primary recipient for card Email / Call / WhatsApp (`To` / `Sent to`). */
+  agent?: {
+    id: number;
+    name: string;
+    phone: string | null;
+    whatsapp: string | null;
+    email: string | null;
+    photo: string | null;
+    license_number: string | null;
+  };
 
   is_exclusive: boolean;
   is_favourite: boolean;
@@ -405,7 +426,6 @@ export type FavoritePropertyPayload = Omit<
   "is_favourite" | "favourite_id" | "property_hash" | "user_id" | "status"
 > & {
   status: string | PropertyListingStatus;
-  agency?: unknown | null;
 };
 
 export type FavoriteListItem = {
@@ -468,7 +488,6 @@ export type RecentViewsPropertyPayload = Omit<
   | "status"
 > & {
   status: string | PropertyListingStatus;
-  agency?: unknown | null;
 };
 
 export type RecentViewsListItem = {

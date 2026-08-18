@@ -12,6 +12,7 @@ import { mapFavoriteListResponse } from "../mappers/favoriteList.mapper";
 import { useGetFavoriteList, useRemoveFavorite } from "../mutations/property.mutation";
 import type { PaginationMeta, PropertyListing } from "../types/property.types";
 import { resolveFavoriteResourceId } from "../utils/resolveFavoriteResourceId";
+import { usePropertyContactModalActions } from "@/src/features/contact/hooks/usePropertyContactModalActions";
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_PAGE_SIZE = 10;
@@ -36,7 +37,9 @@ export function useFavouritePropertyList() {
   const [listings, setListings] = useState<PropertyListing[] | null>(null);
   const [paginationMeta, setPaginationMeta] = useState<PaginationMeta | undefined>();
   const [removingFavoriteId, setRemovingFavoriteId] = useState<string | null>(null);
-  const [isUpcomingFeatureModalOpen, setIsUpcomingFeatureModalOpen] = useState(false);
+
+  const { contactModal, onClickEmail, onClickCall, onClickWhatsApp } =
+    usePropertyContactModalActions();
 
   // 5. Data fetching / queries
   const { mutate: getFavoriteList, isPending: isLoadingFavoriteList } =
@@ -125,14 +128,6 @@ export function useFavouritePropertyList() {
     router.push("/property-list?status=buy&category=residential&page=1");
   }, [router]);
 
-  const openUpcomingFeature = useCallback(() => {
-    setIsUpcomingFeatureModalOpen(true);
-  }, []);
-
-  const closeUpcomingFeature = useCallback(() => {
-    setIsUpcomingFeatureModalOpen(false);
-  }, []);
-
   const onClickProperty = useCallback(
     (item: PropertyListing) => {
       const url = getPathname({
@@ -178,18 +173,6 @@ export function useFavouritePropertyList() {
     ],
   );
 
-  const onClickEmail = useCallback(() => {
-    openUpcomingFeature();
-  }, [openUpcomingFeature]);
-
-  const onClickCall = useCallback(() => {
-    openUpcomingFeature();
-  }, [openUpcomingFeature]);
-
-  const onClickWhatsApp = useCallback(() => {
-    openUpcomingFeature();
-  }, [openUpcomingFeature]);
-
   // 9. Effects
   useEffect(() => {
     fetchFavorites(page, pageSize);
@@ -210,9 +193,6 @@ export function useFavouritePropertyList() {
     onClickEmail,
     onClickCall,
     onClickWhatsApp,
-    upcomingFeatureModal: {
-      open: isUpcomingFeatureModalOpen,
-      onClose: closeUpcomingFeature,
-    },
+    contactModal,
   };
 }
