@@ -1,37 +1,28 @@
 # Node.js
- 
+# Build a general Node.js project with npm.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
 trigger:
 - main
- 
+
 pool:
   vmImage: ubuntu-latest
- 
+
 steps:
 - task: NodeTool@0
   inputs:
     versionSpec: '20.x'
   displayName: 'Install Node.js'
- 
-# Authenticate npm with AWS CodeArtifact
+
+# Gitea npm registry auth for @abdoun/* (secret: GITEA_NPM_TOKEN)
 - script: |
-    echo "Authenticating with AWS CodeArtifact..."
- 
-    aws codeartifact login \
-      --tool npm \
-      --repository abdoun-library \
-      --domain abdoun \
-      --domain-owner $(AWS_ACCOUNT_ID) \
-      --region us-west-2
- 
-    npm config set @abdoun:registry https://abdoun-$(AWS_ACCOUNT_ID).d.codeartifact.us-west-2.amazonaws.com/npm/abdoun-library/
-    npm config set registry https://registry.npmjs.org/
- 
-  displayName: 'Authenticate npm with AWS CodeArtifact'
- 
+    echo "//git.coderlook.com/api/packages/abetal/npm/:_authToken=${GITEA_NPM_TOKEN}" >> ~/.npmrc
+  displayName: 'Authenticate npm (Coderlook Git)'
+  env:
+    GITEA_NPM_TOKEN: $(GITEA_NPM_TOKEN)
+
 - script: |
-    echo "Installing dependencies..."
-    npm ci --cache .npm --prefer-offline
- 
-    echo "Building application..."
+    npm install
     npm run build
   displayName: 'npm install and build'
