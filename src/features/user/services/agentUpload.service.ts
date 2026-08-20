@@ -73,6 +73,8 @@ export async function uploadAgentIdentityDocument(
       uploadUrl,
       file,
       resolveIdentityDocumentContentType(file),
+      undefined,
+      response.data?.upload_http_method === "POST" ? "POST" : "PUT",
     );
   }
 

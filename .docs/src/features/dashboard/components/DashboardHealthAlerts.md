@@ -8,7 +8,7 @@ Renders dashboard health alerts as severity-coded cards.
 
 - Support `warning`, `info`, `error`, and `success` severities.
 - Display icon, title, message, and localized severity badge.
-- Use exhaustive typed severity mappings.
+- Use exhaustive typed severity mappings, with an `info` fallback when severity is missing or unknown.
 - Show a localized healthy-system empty state.
 
 # UI Details

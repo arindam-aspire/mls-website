@@ -8,7 +8,7 @@ Displays the latest activity items returned by the dashboard summary.
 
 - Render each activity icon, text, relative time, and tone.
 - Resolve known API icon names to Lucide icons with a safe activity fallback.
-- Map activity tones to semantic theme colors.
+- Map activity tones to semantic theme colors, falling back to `default` when the API tone is unknown.
 - Render localized empty-state copy when no activities exist.
 
 # Props / Parameters

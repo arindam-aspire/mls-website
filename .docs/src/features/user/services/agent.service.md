@@ -97,7 +97,7 @@ Returns `{ message: string }`.
 | Invitation onboarding (`invitationToken` set) | `POST /agents/invitations/document-upload` | No — sends `token` |
 | Authenticated (manual onboard) | `POST /uploads/presigned-url` | Yes |
 
-Response fields: `upload_url` (PUT/POST to S3), `object_key` (submit reference), `signed_read_url` (preview). Legacy `file_url` still accepted as fallback.
+Response fields: `upload_url` (PUT to S3; `upload_http_method: "PUT"`), `object_key` (submit reference), `signed_read_url` (preview). Legacy `file_url` still accepted as fallback. Canonical `file_url` is the persistable storage URL.
 
 ## Consumers
 

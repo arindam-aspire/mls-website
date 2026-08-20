@@ -251,17 +251,26 @@ export function AgenciesScreen() {
   });
 
   const passwordLinkMutation = useMutation({
-    mutationFn: (agencyId: string) => sendAgencyPasswordLink(agencyId),
-    onSuccess: (response) => {
+    mutationFn: ({ agencyId }: { agencyId: string; pendingTab: Window | null }) =>
+      sendAgencyPasswordLink(agencyId),
+    onSuccess: (response, { pendingTab }) => {
       const link = response.data.password_setup_link;
       if (link) {
         setLatestLink({ label: "Password creation link", value: link });
+        if (pendingTab && !pendingTab.closed) {
+          pendingTab.location.assign(link);
+        } else {
+          window.open(link, "_blank", "noopener,noreferrer");
+        }
+      } else {
+        pendingTab?.close();
       }
       toast.success("Password link generated", {
         description: response.message ?? "Password creation link was logged in dev mode.",
       });
     },
-    onError: (error: Error) => {
+    onError: (error: Error, { pendingTab }) => {
+      pendingTab?.close();
       toast.error("Could not generate password link", { description: error.message });
     },
   });
@@ -553,7 +562,19 @@ export function AgenciesScreen() {
                           </>
                         ) : null}
                         {agency.status === "APPROVED" || agency.status === "ACTIVE" ? (
-                          <Button type="button" size="sm" variant="outline" color="inherit" iconStart={<Copy className="size-4" />} onClick={() => passwordLinkMutation.mutate(agency.id)}>
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            color="inherit"
+                            iconStart={<Copy className="size-4" />}
+                            onClick={() =>
+                              passwordLinkMutation.mutate({
+                                agencyId: agency.id,
+                                pendingTab: window.open("about:blank", "_blank"),
+                              })
+                            }
+                          >
                             Password Link
                           </Button>
                         ) : null}

@@ -48,6 +48,8 @@ export type UploadPresignedUrlRequest =
 
 export type UploadPresignedUrlData = {
   upload_url: string;
+  /** HTTP method signed on `upload_url`. MLS S3 presigns PUT. */
+  upload_http_method?: "PUT" | "POST";
   /** S3 object key / stable file reference for persistence. */
   object_key?: string;
   /** Time-limited signed URL for preview/download (preferred over public URLs). */

@@ -9,7 +9,7 @@ Presigned upload helper for agent identity documents. Splits invitation (unauthe
 ## Responsibilities
 
 - Request a presigned upload URL
-- `POST` file bytes to S3 via `putFileToPresignedUrl`
+- `PUT` file bytes to S3 via `putFileToPresignedUrl`
 - Return `{ objectKey, signedReadUrl }` for form state / submit
 
 ## API Usage
@@ -44,10 +44,10 @@ Presigned upload helper for agent identity documents. Splits invitation (unauthe
 
 | Field | Use |
 | --- | --- |
-| `upload_url` | Direct S3 upload target |
+| `upload_url` | Direct S3 upload target — **PUT** raw bytes (`upload_http_method: "PUT"`) |
 | `object_key` | Stored / submitted as `identityDocument` |
 | `signed_read_url` | Preview/download in UI |
-| `file_url` | Legacy fallback only |
+| `file_url` | Canonical persistable URL; also legacy fallback |
 
 ## Exports
 

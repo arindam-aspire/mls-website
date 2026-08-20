@@ -69,8 +69,11 @@ function DashboardHealthAlertsComponent({
         {alerts.length > 0 ? (
           <ul className="space-y-3">
             {alerts.map((alert, index) => {
-              const visual = severityVisuals[alert.severity];
+              const visual =
+                severityVisuals[alert.severity] ?? severityVisuals.info;
               const Icon = visual.icon;
+              const severityLabel =
+                severityLabels[alert.severity] ?? severityLabels.info;
 
               return (
                 <li
@@ -88,7 +91,7 @@ function DashboardHealthAlertsComponent({
                             visual.badgeClassName,
                           )}
                         >
-                          {severityLabels[alert.severity]}
+                          {severityLabel}
                         </span>
                       </div>
                       <p className="mt-2 text-sm leading-6 text-muted">{alert.message}</p>

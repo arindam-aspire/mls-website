@@ -38,7 +38,13 @@ async function uploadWithPresignedUrl(
   }
 
   if (!uploadUrl.startsWith("dev://")) {
-    await putFileToPresignedUrl(uploadUrl, file, contentType);
+    await putFileToPresignedUrl(
+      uploadUrl,
+      file,
+      contentType,
+      undefined,
+      presignResponse.data?.upload_http_method === "POST" ? "POST" : "PUT",
+    );
   }
 
   return resolveUploadedFileUrl(uploadUrl, {

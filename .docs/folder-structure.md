@@ -139,9 +139,12 @@ mls_website/
 │       │   │   ├── services/
 │       │   │   │   ├── README.md
 │       │   │   │   └── dashboard.service.md
-│       │   │   └── types/
+│       │   │   ├── types/
+│       │   │   │   ├── README.md
+│       │   │   │   └── dashboard.types.md
+│       │   │   └── utils/
 │       │   │       ├── README.md
-│       │   │       └── dashboard.types.md
+│       │   │       └── normalizeDashboardAlertSeverity.md
 │       │   ├── landing/
 │       │   │   └── mutations/
 │       │   │       ├── README.md
@@ -741,8 +744,10 @@ mls_website/
 │   │   │   │   └── index.tsx
 │   │   │   ├── services/
 │   │   │   │   └── dashboard.service.ts
-│   │   │   └── types/
-│   │   │       └── dashboard.types.ts
+│   │   │   ├── types/
+│   │   │   │   └── dashboard.types.ts
+│   │   │   └── utils/
+│   │   │       └── normalizeDashboardAlertSeverity.ts
 │   │   ├── contact/
 │   │   │   ├── components/
 │   │   │   │   └── ContactModal.tsx

@@ -7,6 +7,7 @@ Authenticated, role-aware dashboard feature.
 | Path | Role |
 | --- | --- |
 | `services/dashboard.service.ts` | Typed authenticated `GET /dashboard/summary` service |
+| `utils/normalizeDashboardAlertSeverity.ts` | Maps API health-alert severities onto the UI union |
 | `types/dashboard.types.ts` | Summary, activity, alert, and trend contracts |
 | `hooks/useDashboardScreen.ts` | React Query orchestration, role gates, errors, KPI mapping |
 | `components/DashboardKpiCards.tsx` | Seven KPI cards and month-over-month trends |
