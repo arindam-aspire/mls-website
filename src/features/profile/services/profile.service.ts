@@ -8,7 +8,7 @@ import {
   assignUserAgency,
   assignUserAgencyAndRefreshUser,
 } from "@/src/features/user/services/user.service";
-import { resolveUploadedFileUrl } from "@/src/lib/resolveUploadedFileUrl";
+import { resolvePersistedUploadReference } from "@/src/lib/resolveUploadedFileUrl";
 import { putFileToPresignedUrl } from "@/src/lib/upload";
 import { resolveLicenseDocumentContentType } from "@/src/lib/validateLicenseDocumentFile";
 import {
@@ -133,13 +133,26 @@ export async function uploadOfflineAgencyLegalDocument(file: File): Promise<stri
   }
 
   if (!uploadUrl.startsWith("dev://")) {
-    await putFileToPresignedUrl(uploadUrl, file, contentType);
+    await putFileToPresignedUrl(
+      uploadUrl,
+      file,
+      contentType,
+      undefined,
+      response.data?.upload_http_method === "POST" ? "POST" : "PUT",
+    );
   }
 
-  return resolveUploadedFileUrl(uploadUrl, {
-    signedReadUrl: response.data?.signed_read_url,
-    fileUrl: response.data?.file_url,
+  const persistedUrl = resolvePersistedUploadReference({
+    file_url: response.data?.file_url,
+    object_key: response.data?.object_key,
+    upload_url: uploadUrl,
   });
+
+  if (!persistedUrl) {
+    throw new Error(response.message ?? "Legal document upload failed");
+  }
+
+  return persistedUrl;
 }
 
 export async function createAgencyInvitation(

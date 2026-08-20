@@ -36,3 +36,25 @@ export function resolveUploadedFileUrl(
     return uploadUrl.split("?")[0] ?? uploadUrl;
   }
 }
+
+/**
+ * Stable storage reference for APIs that persist a file (not a preview URL).
+ * Prefer canonical `file_url`, then `object_key`, then a query-stripped upload URL.
+ * Do not persist `signed_read_url` — it expires.
+ */
+export function resolvePersistedUploadReference(data: {
+  file_url?: string | null;
+  object_key?: string | null;
+  upload_url?: string | null;
+}): string {
+  const fileUrl = data.file_url?.trim();
+  if (fileUrl) return fileUrl;
+
+  const objectKey = data.object_key?.trim();
+  if (objectKey) return objectKey;
+
+  const uploadUrl = data.upload_url?.trim();
+  if (!uploadUrl) return "";
+
+  return resolveUploadedFileUrl(uploadUrl);
+}

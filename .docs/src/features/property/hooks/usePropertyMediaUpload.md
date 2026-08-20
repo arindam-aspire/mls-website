@@ -11,7 +11,7 @@ Hook for property media step uploads on the property create form. Uses the activ
   - images: `JPEG`, `PNG`, `WebP`, `GIF` up to `10 MB`
   - videos: `MP4`, `MOV`, `WEBM` up to `50 MB`
 - Validate documents separately (`PDF`, `DOC`, `DOCX`; max `10 MB`).
-- Delegate uploads to `uploadPropertyMediaImage` / `uploadPropertyDocument` (presign + POST).
+- Delegate uploads to `uploadPropertyMediaImage` / `uploadPropertyDocument` (presign + PUT).
 - Toast localized errors on validation or upload failure.
 
 # API Usage
@@ -21,7 +21,7 @@ Hook for property media step uploads on the property create form. Uses the activ
 | `onUploadPropertyMedia` | `property_media_image` | `media_files` | `submission_id` or generated `draft_client_id` |
 | `onUploadPropertyDocument` | `property_document` | `documents` | `submission_id` |
 
-Per file: **POST** `/uploads/presigned-url` → **POST** presigned URL.
+Per file: **POST** `/uploads/presigned-url` → **PUT** presigned URL.
 
 # Props / Parameters
 

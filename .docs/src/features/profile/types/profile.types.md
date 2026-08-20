@@ -27,6 +27,9 @@ Includes `logo_url` (agency branding for the profile card and `POST/DELETE /agen
 | --- | --- | --- |
 | `GET /agency/:id` | `Agency` or `AgencyApiPayload` | `NormalizedGetAgencyResponse` (`data` = `Agency`) via `normalizeGetAgencyResponse` |
 | `PUT /agency/:id` | `AgencyApiPayload` (`agency`, optional `legal_document_upload`) | `unwrapAgencyFromResponseData` in `updateAgency` |
+| `POST /agency/offline-registration` | `{ agency, password_setup_token, password_setup_link }` | `AgencyWorkflowResponse` |
+
+`AgencyOfflineRegistrationRequest.legal_document_s3_link` must be a persistable `file_url` or `object_key` from the presign response (not `signed_read_url`). The browser **PUT**s the file to `upload_url` before this POST.
 
 **Source:** `src/features/profile/utils/agencyApi.utils.ts`
 

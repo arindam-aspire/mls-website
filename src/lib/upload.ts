@@ -1,20 +1,26 @@
 const UPLOAD_CORS_MSG =
   "Upload failed. Check file type, presigned URL expiry, or storage CORS.";
 
+export type PresignedUploadHttpMethod = "PUT" | "POST";
+
 /**
- * Uploads file bytes to a presigned URL (S3-compatible) using raw fetch (POST).
+ * Uploads file bytes to an S3-compatible presigned URL using raw fetch.
  * Authorization headers must not be sent to the upload URL.
+ *
+ * MLS `POST /uploads/presigned-url` signs **PUT** (`upload_http_method: "PUT"`).
+ * Using POST against a PUT signature returns 403 after a successful presign.
  */
 export async function putFileToPresignedUrl(
   uploadUrl: string,
   file: Blob,
   contentType: string,
   onProgress?: (percent: number) => void,
+  httpMethod: PresignedUploadHttpMethod = "PUT",
 ): Promise<void> {
   if (typeof onProgress === "function") {
     await new Promise<void>((resolve, reject) => {
       const xhr = new XMLHttpRequest();
-      xhr.open("POST", uploadUrl);
+      xhr.open(httpMethod, uploadUrl);
       xhr.setRequestHeader("Content-Type", contentType);
       xhr.upload.onprogress = (event) => {
         if (!event.lengthComputable) return;
@@ -40,7 +46,7 @@ export async function putFileToPresignedUrl(
   }
   try {
     const res = await fetch(uploadUrl, {
-      method: "POST",
+      method: httpMethod,
       headers: { "Content-Type": contentType },
       body: file,
     });

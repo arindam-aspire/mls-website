@@ -67,7 +67,7 @@ function DashboardRecentActivityComponent({
                   <span
                     className={cn(
                       "flex size-10 shrink-0 items-center justify-center rounded-lg",
-                      toneClasses[activity.tone],
+                      toneClasses[activity.tone] ?? toneClasses.default,
                     )}
                     aria-hidden
                   >
