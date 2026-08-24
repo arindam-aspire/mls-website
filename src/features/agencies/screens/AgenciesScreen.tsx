@@ -27,17 +27,41 @@ import { validateLicenseDocumentFile } from "@/src/lib/validateLicenseDocumentFi
 
 function normalizeInvitationLink(link: string): string {
   try {
-    const url = new URL(link, window.location.origin);
-    // Ensure the invitation link routes to the agency sign-up registration flow.
-    // If the backend returns a bare token path or an incorrect route, rewrite it
-    // to the correct frontend route: /{locale}/?auth=agency-sign-up&invitation={token}
-    if (url.pathname.includes("/agency/invitation") || url.pathname.includes("/api/")) {
-      const token =
-        url.searchParams.get("token") ?? url.pathname.split("/").pop() ?? "";
-      return `${window.location.origin}/en/agency-password-setup?token=${encodeURIComponent(token)}`;
-    }
-    // If the link already looks like a valid frontend URL, keep it
-    return url.href;
+    const trimmed = link.trim();
+    if (!trimmed) return trimmed;
+
+    const segments = trimmed.includes(",")
+      ? trimmed
+          .split(",")
+          .map((segment) => segment.trim())
+          .filter(Boolean)
+      : [trimmed];
+
+    const locale =
+      window.location.pathname.match(/^\/(en|ar|es|fr)(?:\/|$)/)?.[1] ?? "en";
+
+    const candidate =
+      segments.find(
+        (segment) =>
+          segment.includes("agency-password-setup") ||
+          segment.includes("token=") ||
+          segment.toLowerCase().includes("invitation"),
+      ) ?? segments[segments.length - 1]!;
+
+    const url = new URL(candidate, window.location.origin);
+
+    const token =
+      url.searchParams.get("token") ??
+      url.searchParams.get("invitation_token") ??
+      url.searchParams.get("invitation") ??
+      url.pathname.split("/").filter(Boolean).pop() ??
+      "";
+
+    if (!token) return url.href;
+
+    return `${window.location.origin}/${locale}/agency-password-setup?token=${encodeURIComponent(
+      token,
+    )}`;
   } catch {
     return link;
   }
@@ -408,7 +432,7 @@ export function AgenciesScreen() {
                   : "";
                 setOfflineForm((prev) => ({ ...prev, phone }));
               }}
-              placeholder="Enter phone number"
+              placeholder=""
               showPhoneIcon={false}
             />
             <LicenseDocumentUpload
@@ -470,7 +494,7 @@ export function AgenciesScreen() {
                   : "";
                 setInvitationForm((prev) => ({ ...prev, phone }));
               }}
-              placeholder="Enter phone number"
+              placeholder=""
               showPhoneIcon={false}
             />
           </div>
@@ -620,7 +644,7 @@ export function AgenciesScreen() {
                             </Button>
                           </>
                         ) : null}
-                        {agency.status === "APPROVED" && !agency.is_active ? (
+                        {agency.status === "APPROVED" ? (
                           <Button
                             type="button"
                             size="sm"
