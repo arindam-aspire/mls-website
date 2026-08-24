@@ -7,9 +7,9 @@ Maps `@abdoun/abdoun-library` `PropertyFormValues` ↔ draft submission API payl
 # Responsibilities
 
 - `buildPropertyDraftSubmissionPayload` — shared mapped `payload` from form values.
-- `buildPropertyDraftSubmissionRequestBody` — `POST` body `{ payload, current_step, last_completed_step }`.
-- `buildPropertyDraftSubmissionUpdateRequestBody` — `PATCH` body `{ action: "save_draft", current_step, last_completed_step, payload }`.
-- `buildPropertySubmissionDirectSubmitRequestBody` — `POST /property-submissions/submit` body `{ payload, confirm_submit: true }` (no draft id).
+- `buildPropertyDraftSubmissionRequestBody` — `POST` body `{ agency_id?, payload, current_step, last_completed_step }`.
+- `buildPropertyDraftSubmissionUpdateRequestBody` — `PATCH` body `{ action: "save_draft", agency_id?, current_step, last_completed_step, payload }`.
+- `buildPropertySubmissionDirectSubmitRequestBody` — `POST /property-submissions/submit` body `{ agency_id?, payload, confirm_submit: true }` (no draft id).
 - `mapPropertyDraftSubmissionToPropertyFormValues` — reverse map `GET /property-submissions/{id}` `data` into `PropertyFormValues` (incl. `active_step` / `max_reached_step`).
 - `current_step` matches `activeStep` (1-based, same as `@abdoun/abdoun-library`).
 - Map form sections to API payload keys (`basic_information`, `location`, `owner_information`, etc.).

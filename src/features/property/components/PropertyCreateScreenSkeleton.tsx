@@ -7,7 +7,13 @@ const headerRowClassName =
 const formShellClassName =
   "w-full min-w-0 rounded-xl border border-secondary/15 bg-surface";
 
-export function PropertyCreateScreenSkeleton() {
+type PropertyCreateScreenSkeletonProps = {
+  showAgencyField?: boolean;
+};
+
+export function PropertyCreateScreenSkeleton({
+  showAgencyField = false,
+}: PropertyCreateScreenSkeletonProps) {
   return (
     <div
       className="flex w-full min-w-0 flex-col gap-2 md:gap-4 lg:gap-6"
@@ -26,6 +32,15 @@ export function PropertyCreateScreenSkeleton() {
           <Skeleton variant="text" className="h-4 w-16" />
         </div>
       </div>
+
+      {showAgencyField ? (
+        <div className={cn(formShellClassName, "p-4 sm:p-6")}>
+          <div className="md:max-w-md">
+            <Skeleton variant="text" className="mb-2 h-4 w-20" />
+            <Skeleton variant="block" className="h-11 w-full rounded-lg" />
+          </div>
+        </div>
+      ) : null}
 
       <div className={cn(formShellClassName, "flex flex-col lg:flex-row")}>
         <aside className="hidden w-full max-w-xs shrink-0 border-b border-secondary/15 p-4 lg:block lg:border-b-0 lg:border-e">

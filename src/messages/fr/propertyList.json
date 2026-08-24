@@ -356,6 +356,15 @@
     "submitSuccess": "Bien soumis",
     "submitError": "Impossible de soumettre le bien",
     "submitSaveError": "Impossible d'enregistrer le brouillon avant la soumission",
+    "agency": {
+      "label": "Agence",
+      "placeholder": "Sélectionnez une agence",
+      "required": "Sélectionnez une agence avant de soumettre ce bien.",
+      "loading": "Chargement des agences…",
+      "empty": "Aucune agence disponible.",
+      "loadError": "Impossible de charger les agences.",
+      "retry": "Réessayer"
+    },
     "unsavedChanges": {
       "title": "Modifications non enregistrées",
       "description": "Vous avez des modifications non enregistrées sur ce bien. Enregistrez un brouillon pour conserver votre travail, abandonnez pour quitter sans enregistrer ou annulez pour continuer la modification.",

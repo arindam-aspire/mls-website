@@ -8,12 +8,12 @@ Create-property screen at `/en/property-create`. Loads taxonomy/feature catalog 
 
 - Render localized page title and subtitle.
 - Show role-aware breadcrumb on `md+` (hidden on `sm`) in the header row right section.
-- Show `PropertyCreateScreenSkeleton` while catalog APIs load.
-- Render `PropertyForm` with mapped catalog data, `ownerInfoConfig`, and step navigation from `usePropertyCreateScreen`.
+- Show `PropertyCreateScreenSkeleton` while catalog APIs load (includes Agency field skeleton for Super Admin / Owner).
+- Render `PropertyCreateAgencyField` when `agencyField` is set, then `PropertyForm` with mapped catalog data, `ownerInfoConfig`, and step navigation from `usePropertyCreateScreen`.
 
 # Imports
 
-- `usePropertyCreateScreen`, `PropertyCreateScreenSkeleton`, `Breadcrumb`, `PropertyForm` from `@abdoun/abdoun-library`, typography helpers
+- `usePropertyCreateScreen`, `PropertyCreateAgencyField`, `PropertyCreateScreenSkeleton`, `Breadcrumb`, `PropertyForm` from `@abdoun/abdoun-library`, typography helpers
 
 # Navigation
 
@@ -31,7 +31,8 @@ Screen receives all form props from `usePropertyCreateScreen()` — see hook doc
 # UI Details
 
 - Header row matches `ListingPropertyScreen` / `ManageListingsScreen` layout.
-- Loading skeleton mirrors header + multi-step form shell (vertical step list on `lg`, horizontal step pills on smaller viewports, field grid, footer actions).
+- Super Admin and Owner see [PropertyCreateAgencyField.md](../components/PropertyCreateAgencyField.md) above `PropertyForm`; Agent / Agency Admin do not.
+- Loading skeleton mirrors header + optional Agency card + multi-step form shell (vertical step list on `lg`, horizontal step pills on smaller viewports, field grid, footer actions).
 - Breadcrumb: `hidden md:flex` on the right; Home icon, List icon + listings label, Create (current).
 - `PropertyForm` owns step content and validation; host controls `activeStep`, `maxReachedStep`, persisted `propertyDetails`, and navigation callbacks.
 - Light/dark semantic tokens; i18n in all four locales for page chrome (form labels live in the library).
@@ -46,12 +47,13 @@ Screen receives all form props from `usePropertyCreateScreen()` — see hook doc
 1. Page guard passes user with `PROPERTY_CREATE`.
 2. Hook fetches property taxonomy, location taxonomy, and active features in parallel.
 3. Screen shows skeleton until catalog load completes.
-4. Screen renders header + `PropertyForm` with mapped `categoryTaxonomy`, `locationTaxonomy`, and `featuresAndAmenities`.
-5. User moves through steps via library validation + host `onNext` / `onPrevious` / `onStepClick`; `onDraft` saves, `onSubmit` saves then submits when terms are accepted.
+4. Screen renders header, optional Agency dropdown (Super Admin / Owner), then `PropertyForm` with mapped `categoryTaxonomy`, `locationTaxonomy`, and `featuresAndAmenities`.
+5. User moves through steps via library validation + host `onNext` / `onPrevious` / `onStepClick`; `onDraft` saves (includes `agency_id` when selected), `onSubmit` saves then submits when terms are accepted (Agency required for Super Admin / Owner).
 
 # Dependencies
 
 - [usePropertyCreateScreen.md](../hooks/usePropertyCreateScreen.md)
+- [PropertyCreateAgencyField.md](../components/PropertyCreateAgencyField.md)
 - [PropertyCreateScreenSkeleton.md](../components/PropertyCreateScreenSkeleton.md)
 - [propertyForm.mapper.md](../mappers/propertyForm.mapper.md)
 - [breadcrumb/index.md](../../../components/ui/breadcrumb/index.md)

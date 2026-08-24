@@ -1,10 +1,12 @@
 "use client";
 
 import type { BreadcrumbItem } from "@/src/components/ui/breadcrumb";
+import type { SelectOption } from "@/src/components/ui/select/types";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import {
   isAgentUser,
   isOwnerUser,
+  isSuperAdminUser,
   resolveListingsMenuPath,
 } from "@/src/features/auth/utils/profileMenuRoleAccess";
 import type { LoggedInUser } from "@/src/features/auth/types/auth.types";
@@ -34,7 +36,10 @@ import {
   type AgencyCurrency,
   type AgencyMeasurementUnit,
 } from "@/src/features/profile/constants/agencyPreferences";
-import { getAgencyById } from "@/src/features/profile/services/profile.service";
+import {
+  getAgencyById,
+  getAgencyList,
+} from "@/src/features/profile/services/profile.service";
 import {
   normalizeAgencyCurrency,
   normalizeAgencyMeasurementUnit,
@@ -84,6 +89,23 @@ import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+
+function normalizePropertyCreateAgencyId(
+  value: string | number | null | undefined,
+): string | null {
+  if (value == null) {
+    return null;
+  }
+
+  const trimmed = String(value).trim();
+  return trimmed.length > 0 ? trimmed : null;
+}
+
+function shouldShowPropertyCreateAgencyField(
+  user: LoggedInUser | null | undefined,
+): boolean {
+  return isSuperAdminUser(user) || isOwnerUser(user);
+}
 
 function getLocationTaxonomyTotal(
   taxonomy: LocationTaxonomyResponse | null,
@@ -142,6 +164,7 @@ export function usePropertyCreateScreen() {
 
   // 3. Global state
   const user = useAuthStore((state) => state.user);
+  const showAgencyField = shouldShowPropertyCreateAgencyField(user);
 
   // 4. Local state
   const [propertyTaxonomy, setPropertyTaxonomy] =
@@ -164,8 +187,9 @@ export function usePropertyCreateScreen() {
     searchParams.get(PROPERTY_CREATE_SUBMISSION_ID_PARAM),
   );
   const [selectedAgencyId, setSelectedAgencyId] = useState<string | null>(() =>
-    searchParams.get(PROPERTY_CREATE_AGENCY_ID_PARAM),
+    normalizePropertyCreateAgencyId(searchParams.get(PROPERTY_CREATE_AGENCY_ID_PARAM)),
   );
+  const [agencyFieldError, setAgencyFieldError] = useState<string | null>(null);
   // Set only after a successful fetch or first draft save — not from URL on mount,
   // otherwise resume-from-draft-list skips hydration.
   const draftHydratedForRef = useRef<string | null>(null);
@@ -194,6 +218,16 @@ export function usePropertyCreateScreen() {
   const { onUploadOwnerDocument } = useOwnerDocumentUpload();
   const { onUploadPropertyMedia, onUploadPropertyDocument } =
     usePropertyMediaUpload(submissionId);
+  const {
+    data: agencyListData,
+    isPending: isAgencyListPending,
+    isError: isAgencyListError,
+    refetch: refetchAgencyList,
+  } = useQuery({
+    queryKey: ["agency", "property-create-list"],
+    queryFn: () => getAgencyList({ skip: 0, limit: 100 }),
+    enabled: showAgencyField,
+  });
 
   // 6. Derived / memoized values
   const breadcrumbItems = useMemo((): BreadcrumbItem[] => {
@@ -285,6 +319,58 @@ export function usePropertyCreateScreen() {
     [agencyResponse?.data?.measurement_unit],
   );
 
+  const isAgencyListLoading = showAgencyField && isAgencyListPending;
+
+  const agencyOptions = useMemo((): SelectOption[] => {
+    const options = (agencyListData?.items ?? []).map((agency) => ({
+      value: agency.id,
+      label: agency.agency_name || agency.email,
+    }));
+
+    const selectedId = normalizePropertyCreateAgencyId(selectedAgencyId);
+    if (selectedId && !options.some((option) => option.value === selectedId)) {
+      const fallbackLabel =
+        agencyResponse?.data?.agency_name?.trim() || selectedId;
+      options.unshift({ value: selectedId, label: fallbackLabel });
+    }
+
+    return options;
+  }, [
+    agencyListData?.items,
+    agencyResponse?.data?.agency_name,
+    selectedAgencyId,
+  ]);
+
+  const agencyFieldHint = useMemo(() => {
+    if (!showAgencyField || agencyFieldError) {
+      return undefined;
+    }
+
+    if (isAgencyListLoading) {
+      return t("agency.loading");
+    }
+
+    if (isAgencyListError) {
+      return undefined;
+    }
+
+    if (agencyOptions.length === 0) {
+      return t("agency.empty");
+    }
+
+    return undefined;
+  }, [
+    agencyFieldError,
+    agencyOptions.length,
+    isAgencyListError,
+    isAgencyListLoading,
+    showAgencyField,
+    t,
+  ]);
+
+  const agencyFieldDisplayError = agencyFieldError
+    ?? (showAgencyField && isAgencyListError ? t("agency.loadError") : null);
+
   const ownerInfoValidationMessages = useMemo(
     () => buildPropertyCreateOwnerInfoValidationMessages(tOwnerInfo),
     [tOwnerInfo],
@@ -347,7 +433,9 @@ export function usePropertyCreateScreen() {
         );
         setSubmissionId(draftResponse.data.submission_id);
         if (draftResponse.data.agency_id) {
-          setSelectedAgencyId(draftResponse.data.agency_id);
+          setSelectedAgencyId(
+            normalizePropertyCreateAgencyId(draftResponse.data.agency_id),
+          );
         }
         draftHydratedForRef.current = draftResponse.data.submission_id;
 
@@ -412,6 +500,15 @@ export function usePropertyCreateScreen() {
     setActiveStep((previous) => Math.max(previous - 1, minStepIndex));
   }, [minStepIndex]);
 
+  const onAgencyChange = useCallback((value: string) => {
+    setSelectedAgencyId(normalizePropertyCreateAgencyId(value));
+    setAgencyFieldError(null);
+  }, []);
+
+  const onRetryAgencyList = useCallback(() => {
+    void refetchAgencyList();
+  }, [refetchAgencyList]);
+
   const onStepClick = useCallback(
     (step: number, _step: PropertyFormStep, nextPropertyDetails: PropertyFormValues) => {
       setPropertyDetails(nextPropertyDetails);
@@ -437,11 +534,15 @@ export function usePropertyCreateScreen() {
       forSubmit: true as const,
       currency: toPropertyDraftSubmissionCurrency(pricingCurrency),
     };
-    const agencyId = selectedAgencyId ?? searchParams.get(PROPERTY_CREATE_AGENCY_ID_PARAM);
+    const agencyId = normalizePropertyCreateAgencyId(
+      selectedAgencyId ?? searchParams.get(PROPERTY_CREATE_AGENCY_ID_PARAM),
+    );
     const listingsPath = resolveListingsMenuPath(user) ?? "/my-listings";
 
-    if (isOwnerUser(user) && !agencyId) {
-      toast.error("Select an agency before submitting this property.");
+    if (showAgencyField && !agencyId) {
+      const requiredMessage = t("agency.required");
+      setAgencyFieldError(requiredMessage);
+      toast.error(requiredMessage);
       return;
     }
 
@@ -522,6 +623,7 @@ export function usePropertyCreateScreen() {
     router,
     searchParams,
     selectedAgencyId,
+    showAgencyField,
     submissionId,
     submitDraftSubmission,
     submitPropertySubmissionDirect,
@@ -540,7 +642,9 @@ export function usePropertyCreateScreen() {
         nextPropertyDetails.max_reached_step ?? maxReachedStep ?? currentStep;
 
       try {
-        const agencyId = selectedAgencyId ?? searchParams.get(PROPERTY_CREATE_AGENCY_ID_PARAM);
+        const agencyId = normalizePropertyCreateAgencyId(
+          selectedAgencyId ?? searchParams.get(PROPERTY_CREATE_AGENCY_ID_PARAM),
+        );
         const response = submissionId
           ? await updateDraftSubmission({
               submissionId,
@@ -699,6 +803,25 @@ export function usePropertyCreateScreen() {
     pricingCurrency,
     measurementUnit,
     unsavedChangesModal,
+    agencyField: showAgencyField
+      ? {
+          label: t("agency.label"),
+          placeholder: t("agency.placeholder"),
+          options: agencyOptions,
+          value: selectedAgencyId ?? "",
+          onChange: onAgencyChange,
+          error: agencyFieldDisplayError ?? undefined,
+          hint: agencyFieldHint,
+          disabled:
+            !canEditSubmission ||
+            isSubmitting ||
+            isAgencyListLoading ||
+            agencyOptions.length === 0,
+          isRequired: true,
+          retryLabel: isAgencyListError ? t("agency.retry") : undefined,
+          onRetry: isAgencyListError ? onRetryAgencyList : undefined,
+        }
+      : null,
     onNext,
     onPrevious,
     onStepClick,

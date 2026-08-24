@@ -4,7 +4,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CheckCircle2, Copy, Mail, Plus, Power, PowerOff, RefreshCcw, XCircle } from "lucide-react";
 import { useMemo, useState } from "react";
 import { LicenseDocumentUpload } from "@/src/components/common/LicenseDocumentUpload";
-import { Button, CopyLinkBar, Input } from "@/src/components/ui";
+import { Button, CopyLinkBar, Input, PhoneInput } from "@/src/components/ui";
+import type { PhoneInputCountry } from "@/src/components/ui/phone-input";
 import {
   createAgencyInvitation,
   createOfflineAgency,
@@ -23,6 +24,24 @@ import { useToast } from "@/src/hooks/useToast";
 import { cn } from "@/src/lib/cn";
 import { bodyLargeTextClasses, headingPageClasses } from "@/src/lib/typography";
 import { validateLicenseDocumentFile } from "@/src/lib/validateLicenseDocumentFile";
+
+function normalizeInvitationLink(link: string): string {
+  try {
+    const url = new URL(link, window.location.origin);
+    // Ensure the invitation link routes to the agency sign-up registration flow.
+    // If the backend returns a bare token path or an incorrect route, rewrite it
+    // to the correct frontend route: /{locale}/?auth=agency-sign-up&invitation={token}
+    if (url.pathname.includes("/agency/invitation") || url.pathname.includes("/api/")) {
+      const token =
+        url.searchParams.get("token") ?? url.pathname.split("/").pop() ?? "";
+      return `${window.location.origin}/en/agency-password-setup?token=${encodeURIComponent(token)}`;
+    }
+    // If the link already looks like a valid frontend URL, keep it
+    return url.href;
+  } catch {
+    return link;
+  }
+}
 
 const AGENCY_LIST_QUERY_KEY = ["agency", "super-admin-list"] as const;
 const AGENCY_LIST_PAGE_SIZE = 10;
@@ -132,6 +151,10 @@ export function AgenciesScreen() {
   const [offlineLegalDocumentError, setOfflineLegalDocumentError] = useState<string>();
   const [invitationForm, setInvitationForm] = useState<InvitationForm>(emptyInvitationForm);
   const [latestLink, setLatestLink] = useState<{ label: string; value: string } | null>(null);
+  const [offlinePhoneCountry, setOfflinePhoneCountry] = useState("JO");
+  const [offlinePhoneNational, setOfflinePhoneNational] = useState("");
+  const [invitePhoneCountry, setInvitePhoneCountry] = useState("JO");
+  const [invitePhoneNational, setInvitePhoneNational] = useState("");
   const [agencyPage, setAgencyPage] = useState(1);
   const [agencyPageSize, setAgencyPageSize] =
     useState<(typeof AGENCY_PAGE_SIZE_OPTIONS)[number]>(AGENCY_LIST_PAGE_SIZE);
@@ -165,7 +188,7 @@ export function AgenciesScreen() {
 
   const agencies = data?.items ?? [];
   const agencyTotal = data?.total ?? agencies.length;
-  const agencyTotalPages = Math.max(1, Math.ceil(agencyTotal / AGENCY_LIST_PAGE_SIZE));
+  const agencyTotalPages = Math.max(1, Math.ceil(agencyTotal / agencyPageSize));
   const hasPreviousAgencyPage = agencyPage > 1;
   const hasNextAgencyPage = agencyPage < agencyTotalPages;
   const activeCount = useMemo(
@@ -203,6 +226,8 @@ export function AgenciesScreen() {
       setOfflineForm(emptyOfflineForm);
       setOfflineLegalDocument(null);
       setOfflineLegalDocumentError(undefined);
+      setOfflinePhoneCountry("JO");
+      setOfflinePhoneNational("");
       const link = response.data.password_setup_link;
       if (link) {
         setLatestLink({ label: "Password creation link", value: link });
@@ -220,8 +245,13 @@ export function AgenciesScreen() {
     mutationFn: (body: AgencyInvitationCreateRequest) => createAgencyInvitation(body),
     onSuccess: (response) => {
       setInvitationForm(emptyInvitationForm);
-      if (response.data.invitation_link) {
-        setLatestLink({ label: "Invitation link", value: response.data.invitation_link });
+      setInvitePhoneCountry("JO");
+      setInvitePhoneNational("");
+      invalidateAgencies();
+      const rawLink = response.data.invitation_link;
+      if (rawLink) {
+        const invitationLink = normalizeInvitationLink(rawLink);
+        setLatestLink({ label: "Invitation link", value: invitationLink });
       }
       toast.success("Invitation created", {
         description: response.message ?? "Agency invitation was logged in dev mode.",
@@ -361,11 +391,26 @@ export function AgenciesScreen() {
             <Plus className="size-5 text-primary" aria-hidden />
             <h2 className="text-lg font-bold text-text">Offline Registration</h2>
           </div>
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2">
             <Input label="Agency name" isRequired value={offlineForm.agency_name} onChange={(event) => setOfflineForm((prev) => ({ ...prev, agency_name: event.target.value }))} />
             <Input label="Trade name" isRequired value={offlineForm.agency_trade_name} onChange={(event) => setOfflineForm((prev) => ({ ...prev, agency_trade_name: event.target.value }))} />
             <Input label="Email" isRequired type="email" value={offlineForm.email} onChange={(event) => setOfflineForm((prev) => ({ ...prev, email: event.target.value }))} />
-            <Input label="Phone" isRequired value={offlineForm.phone} onChange={(event) => setOfflineForm((prev) => ({ ...prev, phone: event.target.value }))} />
+            <PhoneInput
+              label="Phone"
+              isRequired
+              countryCode={offlinePhoneCountry}
+              nationalNumber={offlinePhoneNational}
+              onChange={(payload: { country: PhoneInputCountry; nationalNumber: string }) => {
+                setOfflinePhoneCountry(payload.country.iso2);
+                setOfflinePhoneNational(payload.nationalNumber);
+                const phone = payload.nationalNumber
+                  ? `${payload.country.dialCode}${payload.nationalNumber}`
+                  : "";
+                setOfflineForm((prev) => ({ ...prev, phone }));
+              }}
+              placeholder="Enter phone number"
+              showPhoneIcon={false}
+            />
             <LicenseDocumentUpload
               className="sm:col-span-2"
               label="Legal document"
@@ -409,11 +454,25 @@ export function AgenciesScreen() {
             <Mail className="size-5 text-primary" aria-hidden />
             <h2 className="text-lg font-bold text-text">Invitation Registration</h2>
           </div>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <Input label="Email" isRequired type="email" value={invitationForm.email} onChange={(event) => setInvitationForm((prev) => ({ ...prev, email: event.target.value }))} />
+          <div className="grid gap-4 sm:grid-cols-2">
             <Input label="Agency name" value={invitationForm.agency_name ?? ""} onChange={(event) => setInvitationForm((prev) => ({ ...prev, agency_name: event.target.value }))} />
             <Input label="Trade name" value={invitationForm.agency_trade_name ?? ""} onChange={(event) => setInvitationForm((prev) => ({ ...prev, agency_trade_name: event.target.value }))} />
-            <Input label="Phone" value={invitationForm.phone ?? ""} onChange={(event) => setInvitationForm((prev) => ({ ...prev, phone: event.target.value }))} />
+            <Input label="Email" isRequired type="email" value={invitationForm.email} onChange={(event) => setInvitationForm((prev) => ({ ...prev, email: event.target.value }))} />
+            <PhoneInput
+              label="Phone"
+              countryCode={invitePhoneCountry}
+              nationalNumber={invitePhoneNational}
+              onChange={(payload: { country: PhoneInputCountry; nationalNumber: string }) => {
+                setInvitePhoneCountry(payload.country.iso2);
+                setInvitePhoneNational(payload.nationalNumber);
+                const phone = payload.nationalNumber
+                  ? `${payload.country.dialCode}${payload.nationalNumber}`
+                  : "";
+                setInvitationForm((prev) => ({ ...prev, phone }));
+              }}
+              placeholder="Enter phone number"
+              showPhoneIcon={false}
+            />
           </div>
           <div className="mt-4 flex justify-end">
             <Button type="submit" iconStart={<Mail className="size-4" />} isLoading={invitationMutation.isPending}>
@@ -561,7 +620,7 @@ export function AgenciesScreen() {
                             </Button>
                           </>
                         ) : null}
-                        {agency.status === "APPROVED" || agency.status === "ACTIVE" ? (
+                        {agency.status === "APPROVED" && !agency.is_active ? (
                           <Button
                             type="button"
                             size="sm"
