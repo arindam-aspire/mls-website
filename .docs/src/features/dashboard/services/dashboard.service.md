@@ -11,6 +11,8 @@ Provides the single dashboard summary API service used by the dashboard query ho
 - Return typed `DashboardSummaryData`.
 - Return `EMPTY_DASHBOARD_SUMMARY` when the response has nullable data.
 - Normalize `healthAlerts[].severity` through `normalizeDashboardAlertSeverity` so unknown API values do not crash the alerts UI.
+- Map API response fields (supports both `camelCase` and `snake_case` keys) into `DashboardSummaryData`.
+- Normalize MoM delta values: when the API returns a ratio (e.g. `0.15`), convert it into a percentage for KPI trend rendering.
 
 # Exports
 

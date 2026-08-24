@@ -1,6 +1,7 @@
 "use client";
 
 import { Breadcrumb } from "@/src/components/ui/breadcrumb";
+import { PropertyCreateAgencyField } from "@/src/features/property/components/PropertyCreateAgencyField";
 import { PropertyCreateUnsavedChangesModal } from "@/src/features/property/components/PropertyCreateUnsavedChangesModal";
 import { PropertyCreateScreenSkeleton } from "@/src/features/property/components/PropertyCreateScreenSkeleton";
 import { usePropertyCreateScreen } from "@/src/features/property/hooks/usePropertyCreateScreen";
@@ -38,10 +39,11 @@ export default function PropertyCreateScreen() {
     pricingCurrency,
     measurementUnit,
     unsavedChangesModal,
+    agencyField,
   } = usePropertyCreateScreen();
 
   if (isCatalogLoading) {
-    return <PropertyCreateScreenSkeleton />;
+    return <PropertyCreateScreenSkeleton showAgencyField={agencyField != null} />;
   }
 
   return (
@@ -58,6 +60,8 @@ export default function PropertyCreateScreen() {
           className="hidden shrink-0 md:flex"
         />
       </div>
+
+      {agencyField ? <PropertyCreateAgencyField {...agencyField} /> : null}
 
       <PropertyForm
         activeStep={activeStep}

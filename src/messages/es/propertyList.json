@@ -356,6 +356,15 @@
     "submitSuccess": "Propiedad enviada",
     "submitError": "No se pudo enviar la propiedad",
     "submitSaveError": "No se pudo guardar el borrador antes del envío",
+    "agency": {
+      "label": "Agencia",
+      "placeholder": "Selecciona una agencia",
+      "required": "Selecciona una agencia antes de enviar esta propiedad.",
+      "loading": "Cargando agencias…",
+      "empty": "No hay agencias disponibles.",
+      "loadError": "No se pudieron cargar las agencias.",
+      "retry": "Reintentar"
+    },
     "unsavedChanges": {
       "title": "Cambios sin guardar",
       "description": "Tiene cambios sin guardar en esta propiedad. Guarde un borrador para conservar su trabajo, descarte para salir sin guardar o cancele para seguir editando.",

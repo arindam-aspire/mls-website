@@ -22,7 +22,8 @@ Screen hook for `PropertyCreateScreen`: page copy, breadcrumb, create-form catal
 - Owner document upload via `useOwnerDocumentUpload` (`context: owner_document`).
 - **Owner step (`ownerInfoConfig`):** requires at least one uploaded document per owner (Next disabled until valid); localized validation via `propertyList.propertyCreate.ownerInfo`; owner-role users get auto-filled first owner on new create and read-only name/phone/email on rows matching their account email (draft resume included). See [propertyCreateOwnerInfo.utils.md](../utils/propertyCreateOwnerInfo.utils.md).
 - Media step uploads via `usePropertyMediaUpload(submissionId)` — `property_media_image` → `media_files`, `property_document` → `documents`; presign uses `submission_id` (save draft first if missing).
-- `onSubmit` → when **no** `submission_id`: `POST /property-submissions/submit` with `{ payload, confirm_submit: true }` (full form mapped via `buildPropertySubmissionDirectSubmitRequestBody`). When `submission_id` exists: `PATCH` draft with `forSubmit` flags, then `POST /property-submissions/{id}/submit` with `{ confirm_submit: true }`. Library gates Submit until all terms are accepted. Success toast + redirect to role listings path.
+- `onSubmit` → when **no** `submission_id`: `POST /property-submissions/submit` with `{ agency_id?, payload, confirm_submit: true }` (full form mapped via `buildPropertySubmissionDirectSubmitRequestBody`). When `submission_id` exists: `PATCH` draft with `forSubmit` flags and `agency_id` when selected, then `POST /property-submissions/{id}/submit` with `{ confirm_submit: true }`. Library gates Submit until all terms are accepted. Success toast + redirect to role listings path.
+- **Agency field:** visible only for Super Admin (`super_admin`) and Property Owner (`owner`). Fetches `getAgencyList({ skip: 0, limit: 100 })`. Selection is required on submit for those roles. Not shown for Agent, Agency Admin, or other roles (their payload `agency_id` is unchanged: URL/draft hydration only). Draft/edit resume hydrates `selectedAgencyId` from `data.agency_id` (and from `?agency_id=`). Selected id is sent as `agency_id` on create/update/direct-submit bodies.
 
 # API Usage
 
@@ -36,19 +37,19 @@ Screen hook for `PropertyCreateScreen`: page copy, breadcrumb, create-form catal
 | PATCH | `/property-submissions/{submissionId}` | `updatePropertyDraftSubmission` / `useUpdatePropertyDraftSubmission` (`action: save_draft`) |
 | POST | `/property-submissions/submit` | `submitPropertySubmission` / `useSubmitPropertySubmission` (`payload` + `confirm_submit: true`, no draft id) |
 | POST | `/property-submissions/{submissionId}/submit` | `submitPropertyDraftSubmission` / `useSubmitPropertyDraftSubmission` (`confirm_submit: true`, existing draft) |
-| POST | `/uploads/presigned-url` | `requestUploadPresignedUrl` / `uploadOwnerDocument` (owner documents) |
+| GET | `/agency/list?skip=0&limit=100` | `getAgencyList` (Super Admin / Owner agency dropdown only) |
 
 # State Management
 
 - Reads `user` from `useAuthStore` for breadcrumb path.
-- Local state: `propertyTaxonomy`, `locationTaxonomy`, `featureCatalogItems`, `activeStep`, `maxReachedStep`, `propertyDetails`, `submissionId`, `isCatalogLoading`, `isSubmitting`.
+- Local state: `propertyTaxonomy`, `locationTaxonomy`, `featureCatalogItems`, `activeStep`, `maxReachedStep`, `propertyDetails`, `submissionId`, `selectedAgencyId`, `agencyFieldError`, `isCatalogLoading`, `isSubmitting`.
 - Reads `submission_id` from `useSearchParams` on load; `router.replace` updates query after first successful draft save.
 - `useGetPropertyTaxonomy` / `useGetLocationTaxonomy` also update `property.store` on success.
 - Host owns `propertyDetails` and `maxReachedStep`; library returns merged values on `onNext` and forward `onStepClick` for persistence.
 
 # Exports
 
-- `usePropertyCreateScreen()` — page copy, breadcrumb, `PropertyForm` props, `unsavedChangesModal`, `hasUnsavedChanges`, `dirtyStepIds`, `isCatalogLoading`, `reloadCreateCatalog`
+- `usePropertyCreateScreen()` — page copy, breadcrumb, `PropertyForm` props, `agencyField` (or `null`), `unsavedChangesModal`, `hasUnsavedChanges`, `dirtyStepIds`, `isCatalogLoading`, `reloadCreateCatalog`
 
 # Actions / Inputs
 
@@ -57,7 +58,8 @@ Screen hook for `PropertyCreateScreen`: page copy, breadcrumb, create-form catal
 | `onNext(propertyDetails)` | Persist merged step values from library, advance `activeStep`, bump `maxReachedStep` |
 | `onPrevious` | Decrement `activeStep` (min 0) |
 | `onStepClick(index, step, propertyDetails)` | Persist values when moving forward; set `activeStep` and update `maxReachedStep` |
-| `onSubmit` | No `submission_id`: direct `POST /property-submissions/submit`. With id: PATCH draft + POST submit; sets `isSubmitting` on `PropertyForm` |
+| `onSubmit` | No `submission_id`: direct `POST /property-submissions/submit` (includes `agency_id` when selected). With id: PATCH draft + POST submit; sets `isSubmitting` on `PropertyForm`. Super Admin / Owner must select an agency (`propertyList.propertyCreate.agency.required`) |
+| `onAgencyChange` | Sets `selectedAgencyId` for Super Admin / Owner dropdown |
 | `onDraft(propertyDetails)` | POST or PATCH draft save; returns `true` when API succeeds |
 | `onUploadOwnerDocument` | From `useOwnerDocumentUpload` — presign + PUT; returns remote `uri` or `null` on failure |
 | `onUploadPropertyMedia` | From `usePropertyMediaUpload` — presign + PUT (`property_media_image`) |

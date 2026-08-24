@@ -356,6 +356,15 @@
     "submitSuccess": "Property submitted",
     "submitError": "Could not submit property",
     "submitSaveError": "Could not save draft before submit",
+    "agency": {
+      "label": "Agency",
+      "placeholder": "Select an agency",
+      "required": "Select an agency before submitting this property.",
+      "loading": "Loading agencies…",
+      "empty": "No agencies available.",
+      "loadError": "Could not load agencies.",
+      "retry": "Retry"
+    },
     "unsavedChanges": {
       "title": "Unsaved changes",
       "description": "You have unsaved changes on this property. Save a draft to keep your work, discard to leave without saving, or cancel to continue editing.",
