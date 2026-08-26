@@ -8,7 +8,12 @@ import {
   assignUserAgency,
   assignUserAgencyAndRefreshUser,
 } from "@/src/features/user/services/user.service";
-import { resolvePersistedUploadReference } from "@/src/lib/resolveUploadedFileUrl";
+import { resolvePersistedUploadReference, resolveUploadedFileUrl } from "@/src/lib/resolveUploadedFileUrl";
+import {
+  cacheProfilePictureFile,
+  clearCachedProfilePicture,
+} from "@/src/lib/profilePictureCache";
+import { isUsableNextImageSrc, resolveDisplayableImageSrc } from "@/src/lib/shouldUnoptimizeImageSrc";
 import { putFileToPresignedUrl } from "@/src/lib/upload";
 import { resolveLicenseDocumentContentType } from "@/src/lib/validateLicenseDocumentFile";
 import {
@@ -47,6 +52,7 @@ import {
 } from "../constants/selectAgency.constants";
 import type {
   DeleteProfilePictureResponse,
+  ProfilePictureUploadData,
   ProfilePictureUploadRequest,
   ProfilePictureUploadResponse,
   ProfileUpdateRequestBody,
@@ -263,6 +269,49 @@ export async function requestProfilePictureUpload(
   });
 }
 
+async function putFileUnlessDevPlaceholder(
+  uploadUrl: string | undefined,
+  file: File,
+  contentType: string,
+  httpMethod?: "PUT" | "POST",
+): Promise<void> {
+  if (!uploadUrl) {
+    throw new Error("Upload URL missing");
+  }
+  // Local MLS returns `dev://profile-pictures/...` when S3 is not configured.
+  // The browser cannot PUT to that scheme; other upload helpers skip it.
+  if (uploadUrl.startsWith("dev://")) {
+    return;
+  }
+  await putFileToPresignedUrl(
+    uploadUrl,
+    file,
+    contentType,
+    undefined,
+    httpMethod === "POST" ? "POST" : "PUT",
+  );
+}
+
+function resolveDisplayUrlAfterUpload(
+  storedUrl: string | null | undefined,
+  uploadData: ProfilePictureUploadData | undefined,
+): string | null {
+  if (isUsableNextImageSrc(storedUrl)) {
+    return storedUrl?.trim() ?? null;
+  }
+  if (!uploadData?.upload_url) {
+    return storedUrl?.trim() ?? null;
+  }
+  const fromUpload = resolveUploadedFileUrl(uploadData.upload_url, {
+    signedReadUrl: uploadData.signed_read_url,
+    fileUrl: uploadData.file_url,
+  });
+  if (isUsableNextImageSrc(fromUpload)) {
+    return fromUpload;
+  }
+  return storedUrl?.trim() ?? null;
+}
+
 export async function uploadProfilePicture(file: File): Promise<LoggedInUser> {
   const contentType = resolveProfileImageContentType(file);
   const response = await requestProfilePictureUpload({
@@ -271,10 +320,29 @@ export async function uploadProfilePicture(file: File): Promise<LoggedInUser> {
     file_size: file.size,
   });
 
-  await putFileToPresignedUrl(response.data.upload_url, file, contentType);
+  await putFileUnlessDevPlaceholder(
+    response.data?.upload_url,
+    file,
+    contentType,
+    response.data?.upload_http_method,
+  );
 
   const me = await getLoggedInUser();
-  return me.data;
+  const cachedSrc = await cacheProfilePictureFile(me.data.id, file);
+  const fromUpload = resolveDisplayUrlAfterUpload(
+    me.data.profile_picture_url?.startsWith("blob:")
+      ? null
+      : me.data.profile_picture_url,
+    response.data,
+  );
+
+  return {
+    ...me.data,
+    profile_picture_url:
+      resolveDisplayableImageSrc(fromUpload, cachedSrc) ??
+      cachedSrc ??
+      me.data.profile_picture_url,
+  };
 }
 
 export async function deleteProfilePicture(): Promise<LoggedInUser> {
@@ -285,7 +353,15 @@ export async function deleteProfilePicture(): Promise<LoggedInUser> {
   });
 
   const me = await getLoggedInUser();
-  return me.data;
+  await clearCachedProfilePicture(me.data.id);
+
+  return {
+    ...me.data,
+    profile_picture_url: isUsableNextImageSrc(me.data.profile_picture_url) &&
+      !me.data.profile_picture_url?.startsWith("blob:")
+      ? me.data.profile_picture_url
+      : null,
+  };
 }
 
 export async function requestAgencyLogoUpload(
@@ -308,10 +384,18 @@ export async function uploadAgencyLogo(agencyId: string, file: File): Promise<Ag
     file_size: file.size,
   });
 
-  await putFileToPresignedUrl(response.data.upload_url, file, contentType);
+  await putFileUnlessDevPlaceholder(
+    response.data?.upload_url,
+    file,
+    contentType,
+    response.data?.upload_http_method,
+  );
 
   const refreshed = await getAgencyById(agencyId);
-  return refreshed.data;
+  return {
+    ...refreshed.data,
+    logo_url: resolveDisplayUrlAfterUpload(refreshed.data.logo_url, response.data),
+  };
 }
 
 export async function deleteAgencyLogo(agencyId: string): Promise<Agency> {
@@ -348,9 +432,7 @@ export async function uploadAgencyLegalDocument(
     file_size: file.size,
   });
 
-  if (!response.data.upload_url.startsWith("dev://")) {
-    await putFileToPresignedUrl(response.data.upload_url, file, contentType);
-  }
+  await putFileUnlessDevPlaceholder(response.data?.upload_url, file, contentType);
 
   const refreshed = await getAgencyById(agencyId);
   return refreshed.data;

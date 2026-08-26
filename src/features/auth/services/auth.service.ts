@@ -1,5 +1,6 @@
 import { authClient } from "@/src/apis/clients/api.client";
 import { authEndpoints } from "@/src/apis/endpoints/authEndpoints";
+import { withDisplayableProfilePicture } from "../utils/normalizeLoggedInUser";
 import type { AgencySignUpRequest, AgencySignUpResponse, ChangePasswordRequest, ChangePasswordResponse, ConfirmSignUpRequest, ConfirmSignUpResponse, ForgotPasswordRequest, ForgotPasswordResponse, LoggedInUserResponse, LogoutResponse, ResetPasswordRequest, ResetPasswordResponse, SignInRequest, SignInResponse, SignInWithOtpRequest, SignInWithOtpResponse, SignInWithOtpVerifyRequest, SignInWithOtpVerifyResponse, SignUpRequest, SignUpResponse } from "../types/auth.types";
 
 export async function signInWithPassword(data: SignInRequest): Promise<SignInResponse> {
@@ -11,11 +12,16 @@ export async function signInWithPassword(data: SignInRequest): Promise<SignInRes
 }
 
 export async function getLoggedInUser(): Promise<LoggedInUserResponse> {
-  return authClient.request<LoggedInUserResponse>({
+  const response = await authClient.request<LoggedInUserResponse>({
     endpoint: authEndpoints.LOGGED_IN_USER,
     method: "GET",
-    auth: true
+    auth: true,
   });
+
+  return {
+    ...response,
+    data: await withDisplayableProfilePicture(response.data),
+  };
 }
 
 export async function logout(): Promise<LogoutResponse> {

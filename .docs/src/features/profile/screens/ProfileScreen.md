@@ -21,8 +21,8 @@ Route-level profile screen: toolbar, profile card, change-password modal, separa
 3. **Change Password** → `ChangePasswordModal`.
 4. Card email row **Edit** → `EditEmailModal` (request OTP → confirm).
 5. Card phone row **Edit** → `EditPhoneModal` (request OTP → confirm).
-6. Personal avatar camera → `POST /auth/me/profile-picture` presigned upload; remove → `DELETE /auth/me/profile-picture`.
-7. Agency logo (agency users) → `POST /agency/{agencyId}/logo` presigned upload; remove → `DELETE /agency/{agencyId}/logo`.
+6. Personal avatar camera → local `blob:` preview on the auth-store user, then `POST /auth/me/profile-picture`; PUT to `upload_url` unless it is `dev://`; keep the blob preview when MLS stores `dev://`; remove → `DELETE /auth/me/profile-picture`.
+7. Agency logo (agency users) → `POST /agency/{agencyId}/logo`; PUT unless `dev://`; remove → `DELETE /agency/{agencyId}/logo`.
 8. **Edit agency** → [EditAgencyModal.md](./EditAgencyModal.md): `PUT /agency/{agencyId}`; optional license file → `POST /agency/{agencyId}/legal-document`.
 
 # Dependencies

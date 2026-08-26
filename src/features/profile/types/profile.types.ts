@@ -235,6 +235,10 @@ export type ProfilePictureUploadRequest = {
 
 export type ProfilePictureUploadData = {
   upload_url: string;
+  upload_http_method?: "PUT" | "POST";
+  object_key?: string;
+  signed_read_url?: string;
+  file_url?: string;
 };
 
 export type ProfilePictureUploadResponse = {

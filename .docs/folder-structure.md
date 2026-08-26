@@ -214,6 +214,7 @@ mls_website/
 │       │   │   │   ├── useAgencyLogoUpload.md
 │       │   │   │   ├── useAgencyMeasurementUnitPreference.md
 │       │   │   │   ├── useChangePasswordModal.md
+│       │   │   │   ├── useProfileAvatarUpload.md
 │       │   │   │   ├── useProfileScreen.md
 │       │   │   │   └── useSelectAgencyModal.md
 │       │   │   ├── modals/
@@ -430,13 +431,15 @@ mls_website/
 │       │       ├── PublicNotificationsButton.md
 │       │       └── README.md
 │       ├── lib/
-│       │   └── auth/
-│       │       ├── README.md
-│       │       ├── authorize.md
-│       │       ├── hasPermission.md
-│       │       ├── permissions.md
-│       │       ├── roles.md
-│       │       └── sidebarAccess.md
+│       │   ├── auth/
+│       │   │   ├── README.md
+│       │   │   ├── authorize.md
+│       │   │   ├── hasPermission.md
+│       │   │   ├── permissions.md
+│       │   │   ├── roles.md
+│       │   │   └── sidebarAccess.md
+│       │   ├── profilePictureCache.md
+│       │   └── shouldUnoptimizeImageSrc.md
 │       ├── messages/
 │       ├── providers/
 │       └── utils/
@@ -656,6 +659,7 @@ mls_website/
 │   │   │   ├── roles.ts
 │   │   │   └── sidebarAccess.ts
 │   │   ├── cn.ts
+│   │   ├── profilePictureCache.ts
 │   │   └── typography.ts
 │   ├── features/
 │   │   ├── auth/
@@ -718,6 +722,7 @@ mls_website/
 │   │   │   │   └── authModalStorage.ts
 │   │   │   ├── utils/
 │   │   │   │   ├── getAccessTokenRoleName.ts
+│   │   │   │   ├── normalizeLoggedInUser.ts
 │   │   │   │   ├── postSignInRedirect.ts
 │   │   │   │   ├── resolveProfileRoleLabel.ts
 │   │   │   │   └── profileMenuRoleAccess.ts

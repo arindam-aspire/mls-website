@@ -1,8 +1,12 @@
 "use client";
 
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { cn } from "@/src/lib/cn";
-import { shouldUnoptimizeImageSrc } from "@/src/lib/shouldUnoptimizeImageSrc";
+import {
+  isUsableNextImageSrc,
+  shouldUnoptimizeImageSrc,
+} from "@/src/lib/shouldUnoptimizeImageSrc";
 import { avatarSizeTextClasses } from "@/src/lib/typography";
 import type { AvatarProps, AvatarSize } from "./types";
 
@@ -36,6 +40,8 @@ export function Avatar({
   className,
   onClick,
 }: AvatarProps) {
+  const [imageFailed, setImageFailed] = useState(false);
+
   const base = cn(
     "relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary/10 text-primary font-semibold select-none",
     sizeClasses[size],
@@ -44,16 +50,26 @@ export function Avatar({
   );
 
   const imgSize = imageSizeMap[size];
+  const trimmedSrc = src?.trim() ?? "";
+  const imageSrc = isUsableNextImageSrc(trimmedSrc) ? trimmedSrc : null;
+  const unoptimized = imageSrc
+    ? shouldUnoptimizeImageSrc(imageSrc) || !imageSrc.startsWith("/")
+    : false;
 
-  if (src) {
+  useEffect(() => {
+    setImageFailed(false);
+  }, [imageSrc]);
+
+  if (imageSrc && !imageFailed) {
     return (
       <span className={base} onClick={onClick} role={onClick ? "button" : undefined} tabIndex={onClick ? 0 : undefined}>
         <Image
-          src={src}
+          src={imageSrc}
           alt={alt || name || "Avatar"}
           width={imgSize}
           height={imgSize}
-          unoptimized={shouldUnoptimizeImageSrc(src)}
+          unoptimized={unoptimized}
+          onError={() => setImageFailed(true)}
           className="size-full object-cover"
         />
       </span>
