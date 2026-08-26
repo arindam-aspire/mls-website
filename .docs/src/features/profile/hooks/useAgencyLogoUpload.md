@@ -11,7 +11,7 @@ Client hook for agency logo upload and removal on the profile screen. Mirrors `u
 
 # API Usage
 
-- `uploadAgencyLogo` / `deleteAgencyLogo` in `profile.service.ts`
+- `uploadAgencyLogo` / `deleteAgencyLogo` in `profile.service.ts` (PUT to `upload_url` is skipped for `dev://` placeholders)
 - Mutations: `useUploadAgencyLogo`, `useDeleteAgencyLogo` in `profile.mutation.ts`
 
 # Return values

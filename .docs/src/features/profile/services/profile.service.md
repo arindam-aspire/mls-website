@@ -15,7 +15,10 @@ Profile and agency HTTP helpers. Super-admin offline agency creation lives here:
 - `apiClient` / `authClient`
 - `agencyEndpoints`, `profileEndpoints`
 - `requestUploadPresignedUrl`
-- `putFileToPresignedUrl`, `resolvePersistedUploadReference`
+- `putFileToPresignedUrl`, `resolvePersistedUploadReference`, `resolveUploadedFileUrl`
+- `isUsableNextImageSrc`
+- Local helper `putFileUnlessDevPlaceholder` — skips the storage PUT when `upload_url` is a `dev://` placeholder; honors `upload_http_method`
+- `resolveDisplayUrlAfterUpload` — prefers a usable stored URL, then `signed_read_url` / `file_url` from the upload payload
 
 # Exports
 
@@ -66,6 +69,20 @@ Errors: `401`, `403`, `409` (duplicate email), `422`.
 
 Super admins often have no `agency_id`. The backend then keys the object as `agency_legal_document/{user_id}/{uuid}-{filename}`. That is expected for offline create.
 
+## Profile picture
+
+Auth: Bearer. Used from `useProfileAvatarUpload` on `/en/my-profile`.
+
+1. **POST** `/auth/me/profile-picture` with `{ file_name, content_type, file_size }`.
+2. Success `data` includes `upload_url` (S3 presigned or `dev://…`). Optional `upload_http_method`, `signed_read_url`, `file_url`, `object_key`.
+3. Browser **PUT**s (or **POST**s when `upload_http_method` is `POST`) raw file bytes to `upload_url` **only** when it is HTTP(S). `dev://` URLs are skipped — `fetch`/`XHR` cannot open that scheme and would surface as `Upload failed. Check file type, presigned URL expiry, or storage CORS.`
+4. **GET** `/auth/me` refreshes `profile_picture_url`. If that value is not a loadable HTTP(S) URL, the service prefers `signed_read_url` / `file_url` from the upload payload.
+5. The upload hook also sets a same-session `blob:` preview and stores the file in IndexedDB so `GET /auth/me` after login can restore it when MLS only stored `dev://`.
+
+Agency logo (`POST /agency/{id}/logo`) uses the same PUT skip and `signed_read_url` / `file_url` overlay on `logo_url`. Existing-agency legal document (`POST /agency/{id}/legal-document`) uses the same skip.
+
+Local/dev: after a successful POST the stored URL is often still `dev://…`. `Avatar` cannot load that scheme. The app caches the file in IndexedDB and restores a `blob:` URL on login. A visible photo on another device needs a real HTTP(S) storage URL (S3 configured on the API).
+
 # Navigation
 
 No navigation. `AgenciesScreen` is at locale-prefixed `/en/agencies` (super admin).
@@ -100,6 +117,6 @@ Not a UI module.
 
 # Notes
 
-- `dev://` upload URLs skip the S3 PUT (local/dev mode).
+- `dev://` upload URLs skip the storage PUT (local/dev mode). Profile picture, agency logo, and agency legal-document uploads share `putFileUnlessDevPlaceholder`.
 - Existing-agency `uploadAgencyLegalDocument` uses `POST /agency/{id}/legal-document` then the same PUT helper.
 - `sendAgencyPasswordLink` (`POST /agency/{id}/password-link`) returns `password_setup_link`. On **Password Link** in `AgenciesScreen`, a blank tab is opened on click, then navigated to that URL so the generated link opens in a new tab. The link is also stored on the screen’s copy bar.

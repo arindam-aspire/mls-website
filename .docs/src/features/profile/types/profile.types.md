@@ -17,6 +17,8 @@ Profile UI props and profile API request/response types.
 
 Profile update/verify and picture upload types (`UpdateProfileRequest`, `ProfileUpdateRequestResponse`, etc.) plus agency detail types (`Agency`, `GetAgencyResponse` for `GET /agency/:id`).
 
+`ProfilePictureUploadData` may include `upload_url`, optional `upload_http_method` (`PUT` \| `POST`), `object_key`, `signed_read_url`, and `file_url`. Display prefers a usable `GET /auth/me` `profile_picture_url`, then `signed_read_url` / `file_url`.
+
 ### `Agency`
 
 Includes `logo_url` (agency branding for the profile card and `POST/DELETE /agency/:id/logo`) and `profile_picture_url` when returned by the API (separate from the agency logo). Display preferences: `currency` (`JOD` \| `USD`), `measurement_unit` (`SQFT` \| `SQM`).

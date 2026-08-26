@@ -12,6 +12,7 @@ API service functions calling HTTP clients.
 
 - `import { authClient } from "@/src/apis/clients/api.client"`
 - `import { authEndpoints } from "@/src/apis/endpoints/authEndpoints"`
+- `import { withDisplayableProfilePicture } from "../utils/normalizeLoggedInUser"`
 - `import type { ConfirmSignUpRequest, ConfirmSignUpResponse, ForgotPasswordRequest, ForgotPasswordResponse, LoggedInUserResponse, LogoutResponse, SignInRequest, SignInResponse, SignInWithOtpRequest, SignInWithOtpResponse, SignInWithOtpVerifyRequest, SignInWithOtpVerifyResponse, SignUpRequest, SignUpResponse } from "../types/auth.types"`
 
 # Exports
@@ -71,12 +72,14 @@ _N/A._
 
 # Flow Description
 
-See source in `src/features/auth/services/auth.service.ts` for step-by-step behavior aligned with [application.md](../../application.md) (path relative may vary).
+`getLoggedInUser` calls `GET /auth/me`, then `withDisplayableProfilePicture` so `profile_picture_url` is a loadable HTTP(S) or same-browser `blob:` URL. Sign-in and `AuthProvider` use this before `setUser`.
 
 # Dependencies
 
 - Parent feature or route that imports this file.
 - See **Imports** for direct module dependencies.
+- [normalizeLoggedInUser.md](../utils/normalizeLoggedInUser.md)
+- [profilePictureCache.md](../../../lib/profilePictureCache.md)
 
 # Notes
 

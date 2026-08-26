@@ -10,7 +10,10 @@ Feature or shared UI component.
 
 # Imports
 
+- `import { useEffect, useState } from "react"`
+- `import Image from "next/image"`
 - `import { cn } from "@/src/lib/cn"`
+- `import { isUsableNextImageSrc, shouldUnoptimizeImageSrc } from "@/src/lib/shouldUnoptimizeImageSrc"`
 - `import type { AvatarProps, AvatarSize } from "./types"`
 
 # Exports
@@ -19,48 +22,21 @@ Feature or shared UI component.
 
 # State Management
 
-_No significant state; presentational or config module._
-
-# API Usage
-
-_N/A unless extended._
-
-# Navigation
-
-_No direct navigation._
-
-# Props / Parameters
-
-- See component/handler props in source (TypeScript interfaces).
-
-# Actions / Inputs
-
-## Inputs
-
-_No explicit inputs detected._
-
-## Actions
-
-_No explicit actions detected._
-
-## Validations
-
-_No explicit validations detected._
-
-## Show/Hide Controls
-
-_No explicit show/hide controls detected._
+| State | Purpose |
+| --- | --- |
+| `imageFailed` | After `next/image` `onError`, fall back to initials until `src` changes. |
 
 # UI Details
 
-- **Theme:** semantic tokens (`bg-page`, `bg-surface`, `text-text`, `text-muted`, `bg-primary`, `border-secondary/15`).
-- **Light/dark:** via `ThemeProvider` / `html.light` | `html.dark`.
-- **Radius:** `rounded-lg` controls; `rounded-xl` cards/modals/popovers; `rounded-full` avatars/pills.
-- **Responsive:** mobile-first (`sm:`, `md:`, `lg:`).
+- Circular `rounded-full` shell; image uses `object-cover`.
+- Initials fallback uses `bg-primary/10 text-primary`.
 
 # Flow Description
 
-See source in `src/components/ui/avatar/index.tsx` for step-by-step behavior aligned with [application.md](../../application.md) (path relative may vary).
+1. If `src` is a usable image URL (`http(s)`, site-relative `/...`, `blob:`, or `data:`), render `next/image`.
+2. Backend placeholders such as `dev://profile-pictures/...` are treated as missing `src`.
+3. Remote, blob, and data URLs set `unoptimized` so the optimizer is not required (user avatars come from S3 or a local object URL).
+4. If the image fails to load, render initials from `name` (or `?`).
 
 # Dependencies
 
@@ -70,3 +46,4 @@ See source in `src/components/ui/avatar/index.tsx` for step-by-step behavior ali
 # Notes
 
 - Keep in sync when `src/components/ui/avatar/index.tsx` changes.
+- See [shouldUnoptimizeImageSrc.md](../../lib/shouldUnoptimizeImageSrc.md) for URL gating.

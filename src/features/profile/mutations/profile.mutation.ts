@@ -4,7 +4,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import type { ApiError } from "@/src/apis/core/error.normalizer";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
+import type { LoggedInUser } from "@/src/features/auth/types/auth.types";
 import { useToast } from "@/src/hooks/useToast";
+import { resolveDisplayableImageSrc } from "@/src/lib/shouldUnoptimizeImageSrc";
 import {
   deleteAgencyLogo,
   deleteProfilePicture,
@@ -105,6 +107,17 @@ export function useVerifyProfileUpdate(field: "email" | "phone") {
   });
 }
 
+function retainDisplayableProfilePicture(incoming: LoggedInUser): LoggedInUser {
+  const nextUrl = resolveDisplayableImageSrc(
+    incoming.profile_picture_url,
+    useAuthStore.getState().user?.profile_picture_url,
+  );
+  if (nextUrl === (incoming.profile_picture_url?.trim() || null)) {
+    return incoming;
+  }
+  return { ...incoming, profile_picture_url: nextUrl };
+}
+
 export function useUploadProfilePicture() {
   const t = useTranslations("profile");
   const toast = useToast();
@@ -113,7 +126,7 @@ export function useUploadProfilePicture() {
   return useMutation({
     mutationFn: uploadProfilePicture,
     onSuccess: (user) => {
-      setUser(user);
+      setUser(retainDisplayableProfilePicture(user));
       toast.success(t("uploadProfilePhotoSuccessTitle"), {
         description: t("uploadProfilePhotoSuccessDescription"),
       });

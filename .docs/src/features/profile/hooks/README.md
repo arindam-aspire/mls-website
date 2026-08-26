@@ -10,7 +10,7 @@ Logic layer for the profile feature.
 ## Current status
 
 - `useProfileScreen` — profile page user data and change-password modal state.
-- `useProfileAvatarUpload` — personal profile photo presigned upload/remove.
+- `useProfileAvatarUpload` — personal profile photo presigned upload/remove, with a same-session `blob:` preview when MLS returns `dev://`.
 - `useAgencyLogoUpload` — agency logo presigned upload/remove (`/agency/{id}/logo`).
 - `useEditAgencyModal` — edit agency form; optional license upload on save (`POST /agency/{id}/legal-document`).
 - `useChangePasswordModal` — change-password form submit flow.
@@ -29,6 +29,7 @@ Logic layer for the profile feature.
 | [useProfileScreen.md](./useProfileScreen.md) | Profile screen logic — auth store user, labels, modal state |
 | [useSelectAgencyModal.md](./useSelectAgencyModal.md) | Select agency modal — i18n and close handler |
 | [useAgencyLogoUpload.md](./useAgencyLogoUpload.md) | Agency logo upload/remove on profile page |
+| [useProfileAvatarUpload.md](./useProfileAvatarUpload.md) | Personal profile photo upload/remove + blob preview |
 | [useEditAgencyModal.md](./useEditAgencyModal.md) | Edit agency modal — form state, PUT, optional license upload |
 | [useChangePasswordModal.md](./useChangePasswordModal.md) | Logic hook for change-password modal API/submit/close flow |
 | [useAgencyCurrencyPreference.md](./useAgencyCurrencyPreference.md) | Agency display preference — currency |

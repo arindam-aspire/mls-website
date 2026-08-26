@@ -31,6 +31,7 @@ Logged-in user profile, roles, permissions, and `/auth/me` response types.
 | `full_name` | `string` | Display name |
 | `phone_number` | `string` | E.164 or stored phone |
 | `roles` | `Role[]` | Assigned roles with permissions |
+| `profile_picture_url` | `string \| null` | Display URL after `withDisplayableProfilePicture` (HTTP(S) or same-session `blob:` cache) |
 
 # API Usage
 
@@ -46,3 +47,4 @@ Logged-in user profile, roles, permissions, and `/auth/me` response types.
 
 - `has_agency` indicates agency membership from the API; use with nested `agency` for profile and listing flows.
 - `LoggedInUser` includes `roles` and nested `permissions` for future RBAC UI.
+- Raw MLS picture fields may be `dev://…` or unsigned S3. `getLoggedInUser` maps them to a displayable `src` before `setUser`.

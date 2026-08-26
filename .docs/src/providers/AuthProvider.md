@@ -66,7 +66,7 @@ _No explicit show/hide controls detected._
 1. On mount (`useLayoutEffect`, before child effects), read `access_token` cookie.
 2. No token → `setLoggedInUserRole(null)`, `setIsLoadingUser(false)`.
 3. Token present → decode JWT payload (`role.role_name`) via `getAccessTokenRoleName` → `setLoggedInUserRole` (enables role-based UI such as protected sidebar before `/auth/me`).
-4. If no `user` yet, set `isLoadingUser` true and `GET /auth/me` hydrates profile into Zustand (`setUser` also syncs `loggedInUserRole`).
+4. If no `user` yet, set `isLoadingUser` true and `GET /auth/me` hydrates profile into Zustand (`getLoggedInUser` maps `profile_picture_url` to a loadable src; `setUser` also syncs `loggedInUserRole`).
 5. On failure, `clearNotificationQueryCache(queryClient)` then `clearAuth()`.
 6. Guards like `useAuthorize` must not redirect while step 3–4 is in progress or while `hasAuthCredentials()` is true without a user.
 
