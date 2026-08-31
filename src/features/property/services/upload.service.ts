@@ -6,8 +6,11 @@ import type {
   UploadPresignedUrlSubmissionContext,
 } from "@/src/features/property/types/upload.types";
 import { resolveOwnerDocumentContentType } from "@/src/lib/resolveOwnerDocumentContentType";
-import { resolveProfileImageContentType } from "@/src/features/profile/utils/validateProfileImageFile";
-import { resolveUploadedFileUrl } from "@/src/lib/resolveUploadedFileUrl";
+import { resolvePropertyMediaContentType } from "@/src/lib/validatePropertyMediaImageFile";
+import {
+  resolvePersistedUploadReference,
+  resolveUploadedFileUrl,
+} from "@/src/lib/resolveUploadedFileUrl";
 import { putFileToPresignedUrl } from "@/src/lib/upload";
 
 type UploadContentTypeResolver = (file: File) => string;
@@ -27,6 +30,7 @@ export async function requestUploadPresignedUrl(
 async function uploadWithPresignedUrl(
   file: File,
   presignBody: UploadPresignedUrlRequest,
+  persistReference = false,
 ): Promise<string> {
   const contentType = presignBody.content_type;
   const presignResponse = await requestUploadPresignedUrl(presignBody);
@@ -47,6 +51,14 @@ async function uploadWithPresignedUrl(
     );
   }
 
+  if (persistReference) {
+    return resolvePersistedUploadReference({
+      file_url: presignResponse.data?.file_url,
+      object_key: presignResponse.data?.object_key,
+      upload_url: uploadUrl,
+    });
+  }
+
   return resolveUploadedFileUrl(uploadUrl, {
     signedReadUrl: presignResponse.data?.signed_read_url,
     fileUrl: presignResponse.data?.file_url,
@@ -62,13 +74,17 @@ async function uploadSubmissionFile(
   const contentType = resolveContentType(file);
   const uploadTarget = typeof target === "string" ? { submission_id: target } : target;
 
-  return uploadWithPresignedUrl(file, {
-    ...uploadTarget,
-    context,
-    file_name: file.name,
-    content_type: contentType,
-    file_size: file.size,
-  });
+  return uploadWithPresignedUrl(
+    file,
+    {
+      ...uploadTarget,
+      context,
+      file_name: file.name,
+      content_type: contentType,
+      file_size: file.size,
+    },
+    true,
+  );
 }
 
 export async function uploadOwnerDocument(
@@ -94,7 +110,7 @@ export async function uploadPropertyMediaImage(
     file,
     target,
     "property_media_image",
-    resolveProfileImageContentType,
+    resolvePropertyMediaContentType,
   );
 }
 

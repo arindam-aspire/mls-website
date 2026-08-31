@@ -12,7 +12,7 @@ property/
   services/    property.service.ts — GET /properties, GET /properties/:id, GET /properties/:id/similar
   store/       property.store.ts — list params/response state
   mappers/     propertyList.mapper.ts, propertyFeatures.mapper.ts — API → view models
-  components/  PropertyListFilters.tsx — list filter bar (status, category, type)
+  components/  PropertyListFilters.tsx, PropertyListingCardList.tsx — list filter bar and MLS card wrapper
   types/       property.types.ts — list API shapes
 ```
 

@@ -7,8 +7,10 @@ UI building blocks for property feature screens.
 | File | Role |
 | --- | --- |
 | [PropertyListFilters.md](./PropertyListFilters.md) | Buy/Rent, category, type filter bar |
+| [PropertyListingCardList.md](./PropertyListingCardList.md) | MLS wrapper for library Grid/List property cards (hide owners, show agency/agent) |
 | [PropertyListingStatusBadge.md](./PropertyListingStatusBadge.md) | Listing table status pill with MLS color mapping |
-| [PropertyCreateAgencyField.md](./PropertyCreateAgencyField.md) | Agency dropdown on property create (Super Admin / Owner) |
+| [PropertyCreateAgencyField.md](./PropertyCreateAgencyField.md) | Step 8 Agency Routing checkbox and conditional agency dropdown (Super Admin / Owner) |
+| [PropertyLocationVisibilityField.md](./PropertyLocationVisibilityField.md) | Localized Show Location switch integrated into the create-property Location step |
 | [PropertyCreateUnsavedChangesModal.md](./PropertyCreateUnsavedChangesModal.md) | Unsaved create-property guard modal (Save / Discard / Cancel) |
 | [PropertyDraftList.md](./PropertyDraftList.md) | Draft list with per-row Resume/Delete from API flags |
 | [MyListingFilters.md](./MyListingFilters.md) | My Listings screen filter placeholder |

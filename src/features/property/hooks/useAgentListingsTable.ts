@@ -104,8 +104,7 @@ export function useAgentListingsTable({
 
   // 4. Local state
   const [search, setSearch] = useState("");
-  const initialStatus = isManageListings ? "" : MY_LISTING_STATUS_FILTER_VALUES[0];
-  const [status, setStatus] = useState(initialStatus);
+  const [status, setStatus] = useState("");
   const [page, setPage] = useState(DEFAULT_PAGE);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [sortConfig, setSortConfig] = useState<SortConfig>([]);

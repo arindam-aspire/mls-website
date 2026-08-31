@@ -49,7 +49,7 @@ Protected-header profile control: vertical divider, name + role, avatar trigger,
 - **Divider:** `w-px` `bg-secondary/15`, visible from `lg` only (with name/role block).
 - **Trigger (`lg+`):** `full_name` and role `text-end`; hidden on `md` (avatar-only).
 - **Avatar (trigger):** `size="md"`, circular, `!bg-page` / `text-text`; always visible from `md` up in the desktop header bar.
-- **Popover panel:** Header repeats avatar (`!bg-page`, `text-text`) + name; role or email fallback. Menu links are role-specific: full activity list for owner/user; **My Profile** only for agent; **My Account** nested hover flyout (chevron + Headless UI anchored submenu to the left in LTR) for agency. Wrapped in `PopoverGroup`. Sign out is always separate.
+- **Popover panel:** Header repeats avatar (`!bg-page`, `text-text`) + name; role or email fallback. Menu links are role-specific: full activity list for owner/user; **My Profile** only for agent; **My Account** nested hover flyout (chevron + Headless UI anchored submenu to the left in LTR) for agency with **My Profile** and **My Saved Searches** only (no Agency Settings). Wrapped in `PopoverGroup`. Sign out is always separate.
 - Semantic tokens; light/dark via theme.
 
 # Flow Description

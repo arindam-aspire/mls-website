@@ -2,7 +2,7 @@
 
 import { ContactModal } from "@/src/features/contact/components/ContactModal";
 import { Button } from "@/src/components/ui/button";
-import { PropertyCardList } from "@abdoun/abdoun-library";
+import { PropertyListingCardList } from "../components/PropertyListingCardList";
 import { cn } from "@/src/lib/cn";
 import { bodyLargeTextClasses, headingPageClasses } from "@/src/lib/typography";
 import { Search } from "lucide-react";
@@ -56,15 +56,13 @@ export default function FavouritePropertyScreen() {
           <p className={cn("text-muted", bodyLargeTextClasses)}>{pageSubtitle}</p>
         </div>
 
-        <PropertyCardList
+        <PropertyListingCardList
           data={listings}
           isLoading={isLoading}
           layoutVariant="grid"
           buttonSize={cardButtonSize}
           pagination={pagination}
           noDataFound={emptyState}
-          canViewAgents={false}
-          canViewOwners
           canViewBadges
           onClick={onClickProperty}
           onClickFavourite={toggleFavourite}

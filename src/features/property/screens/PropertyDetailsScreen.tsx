@@ -230,6 +230,7 @@ export default function PropertyDetailsScreen({
       ) : null}
 
       <PropertyView
+        className="property-details-view"
         isLoading={isLoading}
         applicationKey={applicationKey}
         propertyDetails={propertyDetails}

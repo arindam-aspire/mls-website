@@ -119,4 +119,4 @@ Not a UI module.
 
 - `dev://` upload URLs skip the storage PUT (local/dev mode). Profile picture, agency logo, and agency legal-document uploads share `putFileUnlessDevPlaceholder`.
 - Existing-agency `uploadAgencyLegalDocument` uses `POST /agency/{id}/legal-document` then the same PUT helper.
-- `sendAgencyPasswordLink` (`POST /agency/{id}/password-link`) returns `password_setup_link`. On **Password Link** in `AgenciesScreen`, a blank tab is opened on click, then navigated to that URL so the generated link opens in a new tab. The link is also stored on the screen’s copy bar.
+- `sendAgencyPasswordLink` (`POST /agency/{id}/password-link`) returns `password_setup_link` (often with a backend-configured host). On **Password Link** in `AgenciesScreen`, that URL is rewritten onto `window.location.origin` while keeping `/[locale]/agency-password-setup?token=…`. A blank tab is then navigated to the rewritten URL. The same URL is stored on the screen’s copy bar.

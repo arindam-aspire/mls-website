@@ -22,7 +22,6 @@ import { cn } from "@/src/lib/cn";
 import { profileEmailClasses, profileNameClasses } from "@/src/lib/typography";
 import { useLocale } from "next-intl";
 import {
-  Building2,
   ChevronDown,
   ChevronRight,
   Eye,
@@ -38,8 +37,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 const MENU_ICONS = {
   profile: User,
-  accountProfile: User,
-  agencySettings: Building2,
   myListings: List,
   manageListings: List,
   draftListings: FilePenLine,

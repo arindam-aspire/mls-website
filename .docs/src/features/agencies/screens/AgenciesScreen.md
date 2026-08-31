@@ -55,10 +55,10 @@ Super-admin agency management screen (create, invite, review, activate).
 | Action | Service function | HTTP method | Notes |
 | --- | --- | --- | --- |
 | Offline agency registration | `createOfflineAgency` | `POST /agency/offline-registration` | Uploads legal document via `uploadOfflineAgencyLegalDocument` first. |
-| Generate invitation link | `createAgencyInvitation` | `POST /agency/invitations` | Stores API-returned invitation URL in the copy bar. |
-| Review agency | `reviewAgency` | `POST /agency/{id}/review` | Used for approve/reject. |
+| Generate invitation link | `createAgencyInvitation` | `POST /agency/invitations` | Stores the invitation URL in the copy bar after rewriting it onto `window.location.origin`. |
+| Review agency | `reviewAgency` | `POST /agency/{id}/review` | Used for approve/reject. Returned `password_setup_link` is origin-rewritten before display. |
 | Activate/deactivate | `updateAgencyActivation` | `POST /agency/{id}/activation` | Toggles `is_active`. |
-| Generate password setup link | `sendAgencyPasswordLink` | `POST /agency/{id}/password-link` | Stores `password_setup_link` in the copy bar and optionally opens a new tab. |
+| Generate password setup link | `sendAgencyPasswordLink` | `POST /agency/{id}/password-link` | Rewrites `password_setup_link` onto `window.location.origin`, stores it in the copy bar, and opens it in a new tab. |
 
 # Navigation
 
@@ -118,7 +118,7 @@ Super-admin agency management screen (create, invite, review, activate).
 2. **Offline Registration**:
    - User selects a legal document.
    - Submit triggers license file validation, uploads the document, then calls `createOfflineAgency`.
-   - On success: resets form state, updates latest generated password link (if returned), and invalidates the list.
+   - On success: resets form state, origin-rewrites the latest generated password link (if returned), and invalidates the list.
 3. **Invitation Registration**:
    - Submit calls `createAgencyInvitation`.
    - On success:
@@ -127,12 +127,13 @@ Super-admin agency management screen (create, invite, review, activate).
      - shows the link in the copy bar.
 4. **Agency Review**:
    - Pending agencies can be approved or rejected via `reviewAgency`.
-   - On success: list is refreshed and any returned password link is displayed.
+   - On success: list is refreshed and any returned password link is origin-rewritten, then displayed.
 5. **Activation**:
    - Approved/verified agencies can be toggled active/inactive.
    - On success: list is refreshed.
-6. **Password Setup Link Visibility**:
+6. **Password Setup Link**:
    - The “Password Link” action is shown only for agencies with status `APPROVED` (hidden once the status becomes `ACTIVE`).
+   - On success: `password_setup_link` is passed through `normalizeInvitationLink`, which keeps the existing `/[locale]/agency-password-setup?token=…` route and query token but replaces the host with `window.location.origin`. That rewritten URL is copied into the copy bar and assigned to the pending tab.
 
 # Dependencies
 
@@ -143,6 +144,6 @@ Super-admin agency management screen (create, invite, review, activate).
 
 # Notes
 
-- Invitation URL normalization is handled locally in this file to ensure the user lands on the correct existing password setup route with the current locale prefix.
+- Invitation and password-setup URL normalization is handled locally in `normalizeInvitationLink`. The API may return a hardcoded origin such as `http://localhost:3000`; the helper always rebuilds the existing `/[locale]/agency-password-setup?token=…` route from `window.location.origin` so local and deployed frontends use their own host.
 - This screen intentionally reuses existing service functions and UI primitives; no new backend endpoints were introduced.
 

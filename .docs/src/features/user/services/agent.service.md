@@ -27,13 +27,13 @@ Falls back to zeroed summary when `data` is null.
 
 `POST /agents/invite` with auth. Body: `{ email?: string; phone?: string }` (one contact required).
 
-Returns `{ invite: AgentInviteData, message: string }`. Resolves the invitation URL via `resolveAgentInviteLinkFromPayload` (`invitation_url`, `inviteLink`, snake_case aliases) then `parseAgentInviteLink`.
+Returns `{ invite: AgentInviteData, message: string }`. Resolves the invitation URL via `resolveAgentInviteLinkFromPayload` (`invitation_url`, `inviteLink`, snake_case aliases) then `parseAgentInviteLink` (rewrites the host onto `window.location.origin`).
 
 ## `validateAgentInvitation`
 
 `GET /agents/invitations/validate?token=` without auth.
 
-Returns `AgentInvitationPreview` including `status`, `formSubmittedAt`, and normalized `passwordSetupLink`.
+Returns `AgentInvitationPreview` including `status`, `formSubmittedAt`, and `passwordSetupLink` rewritten onto `window.location.origin`.
 
 `fullName` is passed through `resolveInvitationFullName` so an email-seeded backend name never populates the Full Name field.
 
@@ -43,7 +43,7 @@ Returns `AgentInvitationPreview` including `status`, `formSubmittedAt`, and norm
 
 Body: profile payload (`token`, `fullName`, `email`, `phone`, optional `whatsappNumber`, `serviceArea`, optional `position`, optional `identityDocument`).
 
-Returns `{ status, passwordSetupLink, … }` with normalized setup link. Backend ignores client `email` and binds identity to the invitation record.
+Returns `{ status, passwordSetupLink, … }` with the setup link rewritten onto `window.location.origin`. Backend ignores client `email` and binds identity to the invitation record.
 
 ## `setupAgentPassword`
 
@@ -66,7 +66,7 @@ Normalizes success payload before returning:
 | Field | Sources (first non-empty wins) |
 | --- | --- |
 | `temporaryPassword` | `temporaryPassword`, `temporary_password` |
-| `inviteLink` | `inviteLink`, `passwordSetupLink`, `password_setup_link`, `invite_link` (then `parseAgentInviteLink`) |
+| `inviteLink` | `inviteLink`, `passwordSetupLink`, `password_setup_link`, `invite_link` (then `parseAgentInviteLink`, origin rewritten to `window.location.origin`) |
 
 Empty temporary passwords are normalized to `""` so the success panel can hide the password `CopyLinkBar` instead of rendering a blank field.
 
@@ -74,7 +74,7 @@ Empty temporary passwords are normalized to `""` so the success panel can hide t
 
 `POST /agents/{agentId}/resend-invitation` with auth.
 
-Returns `{ invite: AgentInviteData, message: string }`. Resolves invitation URL via `resolveAgentInviteLinkFromPayload` (`invitation_url` preferred).
+Returns `{ invite: AgentInviteData, message: string }`. Resolves invitation URL via `resolveAgentInviteLinkFromPayload` (`invitation_url` preferred), then `parseAgentInviteLink`.
 
 ## `updateAgentStatus`
 
@@ -116,3 +116,4 @@ Response fields: `upload_url` (PUT to S3; `upload_http_method: "PUT"`), `object_
 - Types: `src/features/user/types/agent.types.ts`
 - Identity document validation: `src/lib/validateIdentityDocumentFile.ts` (5 MB max)
 - Full name hygiene: `src/features/user/utils/resolveInvitationFullName.ts`
+- Invite / password-setup URL origin rewrite: `src/features/user/utils/parseAgentInviteLink.ts`

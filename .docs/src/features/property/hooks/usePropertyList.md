@@ -11,7 +11,7 @@ Custom hook for the property list flow. Owns URL param sync, fetch mutation, too
 - Keep `savedSearchId` in the URL when filters change; omit it from `GET /properties` only when active filters no longer match the saved search record.
 - Fetch `GET /properties` and store results in Zustand.
 - When the user is authenticated, fetch `GET /favorites` (no query params) and mark matching list items as favourites.
-- Expose `PropertyCardList` props: listings, toolbar, pagination, empty state, handlers.
+- Expose `PropertyListingCardList` props: listings, toolbar, pagination, empty state, handlers.
 - Wire `usePropertySearchFilters` with `updateSearchParams`, `onResetSearch`, and `onSaveSearch`.
 - Navigate to property details on card click.
 
@@ -71,7 +71,7 @@ _No hook arguments._
 | `pagination` | Total, page, pageSize, handlers |
 | `noDataFound` | Empty state copy |
 | `onClickProperty` | Open property details in new tab |
-| `onClickEmail` / `onClickCall` / `onClickWhatsApp` | Open upcoming modal |
+| `onClickEmail` / `onClickCall` / `onClickWhatsApp` | Agent contact (`mailto:` / `ContactModal` / `wa.me`) via `usePropertyContactModalActions` |
 | `toggleFavourite` | Guest → auth modal; signed-in → `POST /favorites` or `DELETE /favorites/:propertyHash` |
 | `upcomingFeatureModal` | `{ open, onClose }` for `UpcomingFeatureModal` |
 | `saveSearchModal` | Save search form modal state |

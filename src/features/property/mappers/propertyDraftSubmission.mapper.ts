@@ -13,6 +13,37 @@ import type { PropertyFormProps, PropertyFormValues } from "@abdoun/abdoun-libra
 
 type FeaturesAndAmenities = PropertyFormProps["featuresAndAmenities"];
 type FeaturesAndAmenityItem = FeaturesAndAmenities[number];
+type PropertyFormLocationWithVisibility = NonNullable<
+  PropertyFormValues["location_insert"]
+> & {
+  show_location?: boolean;
+};
+
+export function getPropertyFormShowLocation(
+  propertyDetails: PropertyFormValues,
+): boolean {
+  const location = propertyDetails.location_insert as
+    | PropertyFormLocationWithVisibility
+    | undefined;
+
+  return location?.show_location ?? false;
+}
+
+export function withPropertyFormShowLocation(
+  propertyDetails: PropertyFormValues,
+  showLocation: boolean,
+): PropertyFormValues {
+  return {
+    ...propertyDetails,
+    location_insert: {
+      city_id: null,
+      area_ids: [],
+      address: "",
+      ...propertyDetails.location_insert,
+      show_location: showLocation,
+    },
+  } as PropertyFormValues;
+}
 
 function matchesFeaturesAndAmenitiesTaxonomy(
   item: FeaturesAndAmenityItem,
@@ -66,23 +97,45 @@ function parsePrice(value: string | undefined): number {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
-function isVideoMediaFile(file: { name?: string; mimeType?: string | null }): boolean {
-  if (file.mimeType?.startsWith("video/")) {
-    return true;
-  }
+const PROPERTY_MEDIA_IMAGE_MIME_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+];
+const PROPERTY_MEDIA_IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp", ".gif"];
+const PROPERTY_MEDIA_VIDEO_MIME_TYPES = ["video/mp4", "video/quicktime"];
+const PROPERTY_MEDIA_VIDEO_EXTENSIONS = [".mp4", ".mov"];
+const PROPERTY_DOCUMENT_MIME_TYPES = [
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+];
+const PROPERTY_DOCUMENT_EXTENSIONS = [".pdf", ".doc", ".docx"];
 
-  const lowerName = file.name?.toLowerCase() ?? "";
-  return [".mp4", ".mov", ".webm"].some((extension) => lowerName.endsWith(extension));
+function hasAcceptedFileExtension(name: string | undefined, extensions: string[]): boolean {
+  const lowerName = name?.toLowerCase() ?? "";
+  return extensions.some((extension) => lowerName.endsWith(extension));
+}
+
+function isVideoMediaFile(file: { name?: string; mimeType?: string | null }): boolean {
+  return (
+    PROPERTY_MEDIA_VIDEO_MIME_TYPES.includes(file.mimeType ?? "") ||
+    hasAcceptedFileExtension(file.name, PROPERTY_MEDIA_VIDEO_EXTENSIONS)
+  );
 }
 
 function isImageMediaFile(file: { name?: string; mimeType?: string | null }): boolean {
-  if (file.mimeType?.startsWith("image/")) {
-    return true;
-  }
+  return (
+    PROPERTY_MEDIA_IMAGE_MIME_TYPES.includes(file.mimeType ?? "") ||
+    hasAcceptedFileExtension(file.name, PROPERTY_MEDIA_IMAGE_EXTENSIONS)
+  );
+}
 
-  const lowerName = file.name?.toLowerCase() ?? "";
-  return [".jpg", ".jpeg", ".png", ".webp", ".gif"].some((extension) =>
-    lowerName.endsWith(extension),
+function isPropertyDocumentFile(file: { name?: string; mimeType?: string | null }): boolean {
+  return (
+    PROPERTY_DOCUMENT_MIME_TYPES.includes(file.mimeType ?? "") ||
+    hasAcceptedFileExtension(file.name, PROPERTY_DOCUMENT_EXTENSIONS)
   );
 }
 
@@ -190,6 +243,8 @@ export function toPropertyDraftSubmissionCurrency(
 export type BuildPropertyDraftSubmissionPayloadOptions = {
   /** When true, all review flags are sent as accepted (submit path after library validation). */
   forSubmit?: boolean;
+  /** Whether an owner/super-admin submission should be routed through an agency. */
+  routeThroughAgency?: boolean;
   /** Selected agency for owner-created listings; backend falls back to auth context for agency users. */
   agencyId?: string | null;
   /** Agency display currency; defaults to JOD when omitted. */
@@ -259,6 +314,7 @@ export function buildPropertyDraftSubmissionPayload(
       city_id: location.city_id,
       area_id: location.area_ids[0] ?? null,
       address: location.address || undefined,
+      show_location: getPropertyFormShowLocation(propertyDetails),
     };
   }
 
@@ -270,7 +326,6 @@ export function buildPropertyDraftSubmissionPayload(
         phone: buildOwnerPhone(owner.country_code, owner.phone_number),
         nationality: toOptionalTrimmedString(owner.nationality),
         ssi: toOptionalTrimmedString(owner.social_security_id),
-        address: toOptionalTrimmedString(owner.owner_address),
         documents: mapOwnerDocuments(owner.owner_documents),
       })),
     };
@@ -287,9 +342,13 @@ export function buildPropertyDraftSubmissionPayload(
       completion_status: details.completion_status,
       occupancy: details.occupancy,
       ownership_type: details.ownership_type,
-      reference_number: details.reference_number || undefined,
       permit_number: details.permit_dld_number || undefined,
       orientation: details.orientation,
+      guard_name: toOptionalTrimmedString(details.guard_name),
+      guard_phone_number: buildOwnerPhone(
+        details.guard_country_code,
+        details.guard_phone_number,
+      ),
     };
   }
 
@@ -330,11 +389,13 @@ export function buildPropertyDraftSubmissionPayload(
       display_order: index,
     }));
 
-    const documents = media.documents.map((file, index) => ({
-      file_name: file.name,
-      url: file.uri,
-      display_order: index,
-    }));
+    const documents = media.documents
+      .filter((file) => isPropertyDocumentFile(file))
+      .map((file, index) => ({
+        file_name: file.name,
+        url: file.uri,
+        display_order: index,
+      }));
 
     payload.media_documents = {
       images: images.length > 0 ? images : undefined,
@@ -360,7 +421,8 @@ export function buildPropertyDraftSubmissionRequestBody(
   options?: BuildPropertyDraftSubmissionPayloadOptions,
 ): PropertyDraftSubmissionRequestBody {
   return {
-    agency_id: options?.agencyId ?? undefined,
+    route_through_agency: options?.routeThroughAgency ?? false,
+    agency_id: options?.agencyId,
     payload: buildPropertyDraftSubmissionPayload(
       propertyDetails,
       featuresAndAmenities,
@@ -377,7 +439,8 @@ export function buildPropertySubmissionDirectSubmitRequestBody(
   options?: BuildPropertyDraftSubmissionPayloadOptions,
 ): PropertySubmissionDirectSubmitRequestBody {
   return {
-    agency_id: options?.agencyId ?? undefined,
+    route_through_agency: options?.routeThroughAgency ?? false,
+    agency_id: options?.agencyId,
     payload: buildPropertyDraftSubmissionPayload(
       propertyDetails,
       featuresAndAmenities,
@@ -396,7 +459,8 @@ export function buildPropertyDraftSubmissionUpdateRequestBody(
 ): PropertyDraftSubmissionUpdateRequestBody {
   return {
     action: PROPERTY_DRAFT_SUBMISSION_SAVE_ACTION,
-    agency_id: options?.agencyId ?? undefined,
+    route_through_agency: options?.routeThroughAgency ?? false,
+    agency_id: options?.agencyId,
     current_step: currentStep,
     last_completed_step: lastCompletedStep,
     payload: buildPropertyDraftSubmissionPayload(
@@ -521,7 +585,8 @@ export function mapPropertyDraftSubmissionToPropertyFormValues(
       city_id: location.city_id ?? null,
       area_ids: location.area_id != null ? [location.area_id] : [],
       address: location.address ?? "",
-    };
+      show_location: location.show_location ?? false,
+    } as PropertyFormValues["location_insert"];
   }
 
   if (owners.length > 0) {
@@ -536,7 +601,6 @@ export function mapPropertyDraftSubmissionToPropertyFormValues(
           phone_number,
           social_security_id: owner.ssi ?? "",
           nationality: owner.nationality ?? "",
-          owner_address: owner.address ?? "",
           owner_documents: (owner.documents ?? []).map((document) => ({
             name: document.file_name ?? "",
             uri: document.url ?? "",
@@ -547,6 +611,11 @@ export function mapPropertyDraftSubmissionToPropertyFormValues(
   }
 
   if (details != null) {
+    const { country_code: guardCountryCode, phone_number: guardPhoneNumber } =
+      parseOwnerPhoneForForm(
+        details.guard_phone_number ?? details.guard_phone,
+      );
+
     propertyDetails.property_details = {
       bedrooms: details.bedrooms ?? null,
       bathrooms: details.bathrooms ?? null,
@@ -560,6 +629,9 @@ export function mapPropertyDraftSubmissionToPropertyFormValues(
       reference_number: details.reference_number ?? "",
       permit_dld_number: details.permit_number ?? "",
       orientation: details.orientation ?? null,
+      guard_name: details.guard_name ?? "",
+      guard_country_code: guardCountryCode,
+      guard_phone_number: guardPhoneNumber,
     };
   }
 
@@ -601,20 +673,20 @@ export function mapPropertyDraftSubmissionToPropertyFormValues(
         uri: video.url ?? "",
         mimeType: video.file_name?.toLowerCase().endsWith(".mov")
           ? "video/quicktime"
-          : video.file_name?.toLowerCase().endsWith(".webm")
-            ? "video/webm"
-            : "video/mp4",
+          : "video/mp4",
       })),
-    ];
+    ].filter((file) => isImageMediaFile(file) || isVideoMediaFile(file));
 
     propertyDetails.media_upload = {
       media_files: mediaFiles,
       youtube_url: media.youtube_url ?? "",
       virtual_tour_url: media.virtual_tour_url ?? "",
-      documents: (media.documents ?? []).map((document) => ({
-        name: document.file_name ?? "",
-        uri: document.url ?? "",
-      })),
+      documents: (media.documents ?? [])
+        .map((document) => ({
+          name: document.file_name ?? "",
+          uri: document.url ?? "",
+        }))
+        .filter((file) => isPropertyDocumentFile(file)),
     };
   }
 

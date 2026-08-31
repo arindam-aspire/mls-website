@@ -7,7 +7,7 @@ Admin/agency route for agency management settings.
 ## Navigation
 
 - Locale-prefixed URL: `/en/agency-settings`
-- Drawer account link: **Agency Settings** (`DRAWER_AGENCY_SETTINGS_PATH`)
+- Not linked from the profile popover or mobile drawer account menus (agency admin sees **My Profile** and **My Saved Searches** only)
 
 ## Auth
 

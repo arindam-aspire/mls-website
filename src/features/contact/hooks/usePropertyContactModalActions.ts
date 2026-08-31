@@ -8,6 +8,8 @@ import type { PropertyDetails } from "@/src/features/property/types/property.typ
 import {
   ensureListingAgentContactAllowed,
   ensurePropertyAgentContactAllowed,
+  launchEmailTo,
+  launchWhatsAppChat,
 } from "@/src/features/property/utils/propertyContactActions.utils";
 import { useContactModal } from "./useContactModal";
 import {
@@ -31,15 +33,18 @@ export function usePropertyContactModalActions() {
       if (!ensureListingAgentContactAllowed(listing)) {
         return;
       }
-      openContact({
-        mode: "email",
-        context: mapListingToContactContext({
-          listing: listing as unknown as ContactPropertyListingSource,
-          user,
-          locale,
-          buildMessage: buildDefaultMessage,
-        }),
+      const context = mapListingToContactContext({
+        listing: listing as unknown as ContactPropertyListingSource,
+        user,
+        locale,
+        buildMessage: buildDefaultMessage,
       });
+      const email = context.recipientEmail.trim();
+      if (!email) {
+        openContact({ mode: "email", context });
+        return;
+      }
+      launchEmailTo(email);
     },
     [buildDefaultMessage, locale, openContact, user],
   );
@@ -67,15 +72,19 @@ export function usePropertyContactModalActions() {
       if (!ensureListingAgentContactAllowed(listing)) {
         return;
       }
-      openContact({
-        mode: "whatsapp",
-        context: mapListingToContactContext({
-          listing: listing as unknown as ContactPropertyListingSource,
-          user,
-          locale,
-          buildMessage: buildDefaultMessage,
-        }),
+      const context = mapListingToContactContext({
+        listing: listing as unknown as ContactPropertyListingSource,
+        user,
+        locale,
+        buildMessage: buildDefaultMessage,
       });
+      const phone =
+        context.recipientWhatsApp?.trim() || context.recipientPhone.trim();
+      if (!phone) {
+        openContact({ mode: "whatsapp", context });
+        return;
+      }
+      launchWhatsAppChat(phone);
     },
     [buildDefaultMessage, locale, openContact, user],
   );

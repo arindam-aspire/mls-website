@@ -2,7 +2,7 @@
 
 import { ContactModal } from "@/src/features/contact/components/ContactModal";
 import { SaveSearchModal } from "@/src/features/saved-searches/modals/SaveSearchModal";
-import { PropertyCardList } from "@abdoun/abdoun-library";
+import { PropertyListingCardList } from "../components/PropertyListingCardList";
 import { PropertyListFilters } from "../components/PropertyListFilters";
 import { usePropertyList } from "../hooks/usePropertyList";
 
@@ -45,7 +45,7 @@ export default function PropertyListScreen() {
       />
 
       <div className="container mx-auto mt-4 w-full min-w-0 sm:mt-6">
-        <PropertyCardList
+        <PropertyListingCardList
           data={listings}
           isLoading={isLoading}
           layoutVariant={layoutVariant}
@@ -53,8 +53,6 @@ export default function PropertyListScreen() {
           toolbar={toolbar}
           pagination={pagination}
           noDataFound={noDataFound}
-          canViewAgents={false}
-          canViewOwners
           canViewBadges
           onClick={onClickProperty}
           onClickFavourite={toggleFavourite}

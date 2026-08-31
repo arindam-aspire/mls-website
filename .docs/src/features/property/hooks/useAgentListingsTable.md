@@ -9,7 +9,7 @@ Shared agent listings table hook: fetches `GET /agent-properties`, maps rows for
 # Responsibilities
 
 - Call `GET /agent-properties` with `page`, `pageSize`, and optional `search` / `status` query params.
-- Own filter state (`search`, `status`); reset page to `1` when either changes.
+- Own filter state (`search`, `status`); status defaults to empty so **All** listings are shown, and page resets to `1` when either filter changes.
 - Own `page`, `pageSize`, and client-side `sortConfig` for the table.
 - Store raw `listings` as `AgentPropertyListItem[]`; expose `tableListings` mapped via `mapAgentPropertyListItems`.
 - Build `pagination` for `ListTableView` (page size options 10, 15, 20).
@@ -46,3 +46,4 @@ Shared agent listings table hook: fetches `GET /agent-properties`, maps rows for
 # Notes
 
 - Not imported directly by screens; use `useListingPropertyScreen` or `useManageListingsScreen` instead.
+- The initial empty `status` omits the status query parameter, selects the existing **All** placeholder, and fetches listings across every status.

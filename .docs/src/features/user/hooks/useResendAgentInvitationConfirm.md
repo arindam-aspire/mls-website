@@ -11,7 +11,7 @@ Confirmation + copy-link state for the **Resend** workflow action on the agents 
 3. On success:
    - Mutation shows the existing success toast.
    - Confirm modal closes.
-   - If the response includes an invitation URL (`invitation_url` / `inviteLink`), `copyLinkModal` opens automatically with `CopyInvitationLinkModal`.
+   - If the response includes an invitation URL (`invitation_url` / `inviteLink`), `copyLinkModal` opens automatically with `CopyInvitationLinkModal`. The URL host is rewritten onto `window.location.origin` in `parseAgentInviteLink`.
 4. User can **Copy to Clipboard** or **Close** the copy-link modal.
 
 ## Returns

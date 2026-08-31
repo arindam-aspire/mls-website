@@ -12,11 +12,13 @@ import { tokenStore } from "@/src/apis/core/token.store";
 import { useToast } from "@/src/hooks/useToast";
 import {
   canTrackRecentPropertyView,
+  isAgentUser,
   isAgencyUser,
   isSuperAdminUser,
 } from "@/src/features/auth/utils/profileMenuRoleAccess";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { hasPropertyDetailsRestrictedTabsAccess } from "@/src/lib/auth/propertyDetailsTabAccess";
+import { UserRole } from "@/src/lib/auth/roles";
 import { PROPERTY_CREATE_SUBMISSION_ID_PARAM } from "../constants/propertyCreate.constants";
 import {
   PROPERTY_DETAILS_DEFAULT_TAB,
@@ -174,36 +176,20 @@ export function usePropertyDetails(propertyId: string) {
     [user],
   );
 
+  const authenticatedRole = user?.roles?.[0]?.name ?? loggedInUserRole;
+  const canViewLocationAndDocumentTabs = Boolean(
+    authenticatedRole &&
+      authenticatedRole !== UserRole.OWNER &&
+      authenticatedRole !== UserRole.USER,
+  );
+
   const canViewCloseStatus = useMemo(
     () => resolvePropertyClosePermissions(isAgencyUser(user) || isSuperAdminUser(user)).canViewCloseStatus,
     [user],
   );
 
-  const showOwnerDetails = Boolean(user);
-
-  const tabOptions = useMemo(() => {
-    const values = canViewRestrictedTabs
-      ? [
-          ...PROPERTY_DETAILS_PUBLIC_TAB_VALUES,
-          ...PROPERTY_DETAILS_RESTRICTED_TAB_VALUES,
-        ]
-      : [...PROPERTY_DETAILS_PUBLIC_TAB_VALUES];
-
-    return values.map((value) => ({
-      label: tDetails(TAB_I18N_KEYS[value as PropertyDetailsTabValue]),
-      value,
-    }));
-  }, [canViewRestrictedTabs, tDetails]);
-
-  const allowedTabValues = useMemo(
-    () => new Set<string>(tabOptions.map((tab) => tab.value)),
-    [tabOptions],
-  );
-
-  const activeTab = useMemo(
-    () => resolveActiveTab(searchParams, allowedTabValues),
-    [allowedTabValues, searchParams],
-  );
+  const showOwnerDetails =
+    isAgentUser(user) || isAgencyUser(user) || isSuperAdminUser(user);
 
   const {
     withFavouriteFlags,
@@ -246,6 +232,33 @@ export function usePropertyDetails(propertyId: string) {
     useState<PropertyDetailsRejectAction | null>(null);
   const [runningWorkflowActionId, setRunningWorkflowActionId] =
     useState<string | null>(null);
+
+  const tabOptions = useMemo(() => {
+    const values: PropertyDetailsTabValue[] = [
+      ...PROPERTY_DETAILS_PUBLIC_TAB_VALUES,
+    ];
+
+    if (canViewLocationAndDocumentTabs) {
+      values.push(...PROPERTY_DETAILS_RESTRICTED_TAB_VALUES);
+    } else if (propertyDetails?.show_location === true) {
+      values.push(PROPERTY_DETAILS_TAB.locations);
+    }
+
+    return values.map((value) => ({
+      label: tDetails(TAB_I18N_KEYS[value]),
+      value,
+    }));
+  }, [canViewLocationAndDocumentTabs, propertyDetails?.show_location, tDetails]);
+
+  const allowedTabValues = useMemo(
+    () => new Set<string>(tabOptions.map((tab) => tab.value)),
+    [tabOptions],
+  );
+
+  const activeTab = useMemo(
+    () => resolveActiveTab(searchParams, allowedTabValues),
+    [allowedTabValues, searchParams],
+  );
 
   // 5. Data fetching / queries
   const {

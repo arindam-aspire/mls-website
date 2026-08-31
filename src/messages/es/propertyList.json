@@ -348,7 +348,7 @@
     "propertyMediaUploadRequiresDraft": "Guarda el borrador antes de subir archivos",
     "propertyMediaUploadRequiresDraftDescription": "Guarda el borrador primero para vincular las subidas a este envío.",
     "propertyMediaUploadError": "No se pudo subir el archivo multimedia de la propiedad",
-    "propertyMediaUploadInvalidType": "Sube un archivo JPEG, PNG, WebP, GIF, MP4, MOV o WEBM.",
+    "propertyMediaUploadInvalidType": "Sube un archivo JPEG, PNG, WebP, GIF, MP4 o MOV.",
     "propertyMediaUploadTooLarge": "Las imágenes deben ser de 10 MB o menos. Los videos deben ser de 50 MB o menos.",
     "propertyDocumentUploadError": "No se pudo subir el documento de la propiedad",
     "propertyDocumentUploadInvalidType": "Sube un archivo PDF, DOC o DOCX.",
@@ -356,7 +356,16 @@
     "submitSuccess": "Propiedad enviada",
     "submitError": "No se pudo enviar la propiedad",
     "submitSaveError": "No se pudo guardar el borrador antes del envío",
+    "locationVisibility": {
+      "title": "Mostrar ubicación",
+      "description": "Permite que todos los usuarios vean la pestaña Ubicación de esta propiedad.",
+      "ariaLabel": "Mostrar la ubicación de la propiedad a todos los usuarios"
+    },
     "agency": {
+      "routing": {
+        "title": "Enrutamiento de agencia",
+        "question": "¿Te interesa gestionar la propiedad a través de una agencia?"
+      },
       "label": "Agencia",
       "placeholder": "Selecciona una agencia",
       "required": "Selecciona una agencia antes de enviar esta propiedad.",

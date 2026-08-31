@@ -8,10 +8,10 @@ Screens mounted by `app/[locale]/(main)/*/page.tsx` or `app/[locale]/(property)/
 | [ListingPropertyScreen.md](./ListingPropertyScreen.md) | `/en/my-listings` | `(main)/(listings)` | My Listings |
 | [PropertyCreateScreen.md](./PropertyCreateScreen.md) | `/en/property-create` | `(main)/(listings)` | Coming Soon |
 | [PropertyUpdateScreen.md](./PropertyUpdateScreen.md) | `/en/property-update` | `(main)/(listings)` | Coming Soon |
-| [FavouritePropertyScreen.md](./FavouritePropertyScreen.md) | `/en/favourites` | `(main)` | Favourites list (`PropertyCardList`) |
-| [RecentlyViewedScreen.md](./RecentlyViewedScreen.md) | `/en/recently-viewed` | `(main)` | Recent views `PropertyCardList` |
+| [FavouritePropertyScreen.md](./FavouritePropertyScreen.md) | `/en/favourites` | `(main)` | Favourites list (`PropertyListingCardList`) |
+| [RecentlyViewedScreen.md](./RecentlyViewedScreen.md) | `/en/recently-viewed` | `(main)` | Recent views `PropertyListingCardList` |
 | [InquiriesScreen.md](./InquiriesScreen.md) | `/en/inquiries` | `(property)` | Coming Soon |
-| [PropertyListScreen.md](./PropertyListScreen.md) | `/en/property-list` | `(property)` | `PropertyCardList` |
+| [PropertyListScreen.md](./PropertyListScreen.md) | `/en/property-list` | `(property)` | Grid/List cards (`PropertyListingCardList`) |
 | [PropertyDetailsScreen.md](./PropertyDetailsScreen.md) | `/en/propert-details/:id` | `(property)` | `PropertyView` |
 
 ## Conventions

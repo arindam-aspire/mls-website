@@ -5,22 +5,24 @@ Reusable Email / WhatsApp / Call contact modal used by property list, details, f
 ## Flow
 
 1. User clicks Email / WhatsApp / Call on a card or PropertyView.
-2. App maps listing/details → `ContactModalContext` and opens `ContactModal` via `useContactModal` / `usePropertyContactModalActions`.
-3. **Email (property inquiry)** — when `context.createsLead` is true:
+2. App maps listing/details → `ContactModalContext` via `usePropertyContactModalActions`. Card Email/WhatsApp launch native clients; Call and details flows open `ContactModal`.
+3. **Email (property list/favourites/recent cards)** — `mailto:` to the **agent** email (`launchEmailTo`). Missing email toasts `contact.errors.missingRecipientEmail`.
+4. **Email (property details inquiry)** — when `context.createsLead` is true:
    - Validate form (name, email, message).
    - Require auth (`createLead` needs a token); otherwise open choose-account.
    - Call `useCreateLead` → `POST /leads` with `source: "EMAIL_FORM"`.
    - Service layer mocks outbound email with `console.log` (`mockSendInquiryEmails`) until the email API exists.
    - Show success toast via Shared Toaster (`useToast`), then close the modal.
-4. **Email (lead customer)** — when `createsLead` is omitted/false: validate → `mailto:`.
-5. WhatsApp: validate form → `wa.me?text=`.
-6. Call: show details → confirm → `tel:`.
+5. **Email (lead customer)** — when `createsLead` is omitted/false: validate → `mailto:`.
+6. **WhatsApp (property cards)** — open `wa.me` with the **agent** phone (`launchWhatsAppChat`). Missing phone toasts via `openContact` guard.
+7. **WhatsApp (details / modal compose)** — validate form → `wa.me?text=`.
+8. **Call** — show agent name + phone in `ContactModal` → confirm → `tel:`.
 
 ## Recipient resolution
 
 | Entry point | Recipient |
 | --- | --- |
-| Property card Email / Call / WhatsApp | Requires `listing.agent`; otherwise opens auth (`chooseAccount`). Then **agent first** for `To` / `Sent to`, then `brokerName`, then agency, then first owner |
+| Property card Email / Call / WhatsApp | Requires a source `listing.agent` for guests (otherwise `chooseAccount`). Signed-in users without an agent continue so missing fields can toast. Recipient is **agent first**, then agency — **never owner**. Cards hide owner UI. Email is `mailto:`; WhatsApp is `wa.me`; Call still uses `ContactModal`. `cardContact` on mapped listings holds real contact when display fields are remapped. |
 | Property details agent actions | Requires agent on details; otherwise auth. Then mapped agent (`mapPropertyDetailsAgentToContactContext`) |
 | Property details owner actions | Mapped owner |
 

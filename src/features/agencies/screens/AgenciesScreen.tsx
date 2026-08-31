@@ -25,6 +25,10 @@ import { cn } from "@/src/lib/cn";
 import { bodyLargeTextClasses, headingPageClasses } from "@/src/lib/typography";
 import { validateLicenseDocumentFile } from "@/src/lib/validateLicenseDocumentFile";
 
+/**
+ * Rewrites API-returned invitation / password-setup URLs onto the current FE origin.
+ * Backend payloads may hardcode a host such as `http://localhost:3000`.
+ */
 function normalizeInvitationLink(link: string): string {
   try {
     const trimmed = link.trim();
@@ -50,14 +54,19 @@ function normalizeInvitationLink(link: string): string {
 
     const url = new URL(candidate, window.location.origin);
 
+    const lastSegment = url.pathname.split("/").filter(Boolean).pop() ?? "";
+    const tokenFromPath =
+      lastSegment && lastSegment !== "agency-password-setup" ? lastSegment : "";
+
     const token =
       url.searchParams.get("token") ??
       url.searchParams.get("invitation_token") ??
       url.searchParams.get("invitation") ??
-      url.pathname.split("/").filter(Boolean).pop() ??
-      "";
+      tokenFromPath;
 
-    if (!token) return url.href;
+    if (!token) {
+      return `${window.location.origin}${url.pathname}${url.search}${url.hash}`;
+    }
 
     return `${window.location.origin}/${locale}/agency-password-setup?token=${encodeURIComponent(
       token,
@@ -252,9 +261,12 @@ export function AgenciesScreen() {
       setOfflineLegalDocumentError(undefined);
       setOfflinePhoneCountry("JO");
       setOfflinePhoneNational("");
-      const link = response.data.password_setup_link;
-      if (link) {
-        setLatestLink({ label: "Password creation link", value: link });
+      const rawLink = response.data.password_setup_link;
+      if (rawLink) {
+        setLatestLink({
+          label: "Password creation link",
+          value: normalizeInvitationLink(rawLink),
+        });
       }
       toast.success("Agency created", {
         description: response.message ?? "Offline agency registration was created.",
@@ -291,9 +303,12 @@ export function AgenciesScreen() {
       reviewAgency(agencyId, { action }),
     onSuccess: (response) => {
       invalidateAgencies();
-      const link = response.data.password_setup_link;
-      if (link) {
-        setLatestLink({ label: "Password creation link", value: link });
+      const rawLink = response.data.password_setup_link;
+      if (rawLink) {
+        setLatestLink({
+          label: "Password creation link",
+          value: normalizeInvitationLink(rawLink),
+        });
       }
       toast.success("Agency review updated", {
         description: response.message ?? "Agency status was updated.",
@@ -308,8 +323,9 @@ export function AgenciesScreen() {
     mutationFn: ({ agencyId }: { agencyId: string; pendingTab: Window | null }) =>
       sendAgencyPasswordLink(agencyId),
     onSuccess: (response, { pendingTab }) => {
-      const link = response.data.password_setup_link;
-      if (link) {
+      const rawLink = response.data.password_setup_link;
+      if (rawLink) {
+        const link = normalizeInvitationLink(rawLink);
         setLatestLink({ label: "Password creation link", value: link });
         if (pendingTab && !pendingTab.closed) {
           pendingTab.location.assign(link);

@@ -8,7 +8,9 @@ TypeScript types for property list and detail APIs, aligned with `@abdoun/abdoun
 
 - Define query params for listing properties (`PropertyListParams`).
 - Define list and detail API wrappers (`PropertyListResponse`, `PropertyDetailsResponse`).
+- `PropertyListing.cardContact` — app-only agent/agency contact snapshot for card actions when display fields are remapped.
 - Export `PropertyDetails` and `PropertyFeatureDefinition` (inferred from `PropertyView` props).
+- Extend `PropertyDetails` with API `show_location`, which controls public Location-tab visibility without changing privileged role access.
 - Define feature catalog API types (`FeatureCatalogItem`, `FeatureCatalogResponse`).
 
 # Imports
@@ -19,6 +21,8 @@ TypeScript types for property list and detail APIs, aligned with `@abdoun/abdoun
 
 - `PropertyListParams`
 - `PropertyListResponse`
+- `PropertyListing`
+- `PropertyCardContact`
 - `PropertyDetails`
 - `PropertyFeatureDefinition`
 - `PropertyDetailsResponse`
@@ -56,6 +60,8 @@ _N/A — type-only module._
 Request query shape: `PropertyListParams` — required: `page`, `pageSize`, `category`, `status`; optional: `sort`, `type`, `location`, `budgetMin`, `budgetMax`, `furnitureStatus`, `bedrooms`, `bathrooms`, `parking`, `propertyAge`, `minArea`, `maxArea`, `amenities`, `similar_to`, `savedSearchId`.
 
 URL-synced filters: all `PropertyListParams` fields (see [property.types.md](./property.types.md)).
+
+`PropertyDetails.show_location` is optional/nullable for backward compatibility. Only the explicit boolean `true` exposes the Location tab to roles that do not already have restricted-tab access.
 
 ## Agent properties (`GET /agent-properties`)
 
@@ -95,10 +101,12 @@ URL-synced filters: all `PropertyListParams` fields (see [property.types.md](./p
 | `status` | e.g. `submitted`, `approved`, `rejected` |
 | `property_id` / `property_hash` | Property identifiers |
 | `property_title` / `property_reference_number` | Property display fields |
+| `agency` | Assigned agency payload, or `null`/omitted for a property routed directly to Super Admin |
 | `submitted_at` / `reviewed_at` | ISO timestamps |
 | `agent_user_id` / `has_assigned_agent` / `current_step` | workflow metadata |
 
 Mapped to `AgentPropertyListItem` via [adminPropertySubmissions.mapper.md](../mappers/adminPropertySubmissions.mapper.md) before `ListTableView` rendering.
+The raw `agency` value is retained for row-action authorization: Super Admin Approve/Reject requires an unassigned agency (`null`, omitted, or empty `agency_id`).
 
 Mapping to UI/`PropertyListing` is implemented in [agentPropertiesList.mapper.md](../mappers/agentPropertiesList.mapper.md).
 
