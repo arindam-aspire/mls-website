@@ -47,6 +47,13 @@ export type ContactPropertyListingSource = {
     email?: string | null;
     phone?: string | null;
   }>;
+  cardContact?: {
+    name?: string | null;
+    email?: string | null;
+    phone?: string | null;
+    whatsapp?: string | null;
+    hasSourceAgent?: boolean;
+  };
 };
 
 /** Resolves numeric `property_hash` for lead creation (listing or details). */
@@ -97,35 +104,39 @@ export function mapListingToContactContext(params: {
   const { listing, user, locale, buildMessage } = params;
   const agent = listing.agent;
   const agency = listing.agency;
-  const owner = listing.owners?.[0];
+  const cardContact = listing.cardContact;
+  const useCardContact = cardContact != null;
 
-  // Card Email / Call / WhatsApp → agent (To / Sent to). Agency / owner are fallbacks only.
-  const recipientName =
-    agent?.name?.trim() ||
-    listing.brokerName?.trim() ||
-    agency?.agency_name?.trim() ||
-    agency?.agency_trade_name?.trim() ||
-    owner?.name?.trim() ||
-    owner?.full_name?.trim() ||
-    "";
+  // Card Email / Call / WhatsApp → agent (To / Sent to). Agency is the only fallback.
+  // When `cardContact` is set, ignore display-mapped `agent.email` / `agent.phone`.
+  const recipientName = useCardContact
+    ? cardContact.name?.trim() ||
+      agency?.agency_name?.trim() ||
+      agency?.agency_trade_name?.trim() ||
+      ""
+    : agent?.name?.trim() ||
+      listing.brokerName?.trim() ||
+      agency?.agency_name?.trim() ||
+      agency?.agency_trade_name?.trim() ||
+      "";
 
-  const recipientEmail =
-    agent?.email?.trim() ||
-    agency?.email?.trim() ||
-    owner?.email?.trim() ||
-    "";
+  const recipientEmail = useCardContact
+    ? cardContact.email?.trim() || agency?.email?.trim() || ""
+    : agent?.email?.trim() || agency?.email?.trim() || "";
 
-  const recipientPhone =
-    agent?.phone?.trim() ||
-    agency?.phone?.trim() ||
-    owner?.phone?.trim() ||
-    "";
+  const recipientPhone = useCardContact
+    ? cardContact.phone?.trim() || agency?.phone?.trim() || ""
+    : agent?.phone?.trim() || agency?.phone?.trim() || "";
 
-  const recipientWhatsApp =
-    agent?.whatsapp?.trim() ||
-    agent?.phone?.trim() ||
-    agency?.phone?.trim() ||
-    recipientPhone;
+  const recipientWhatsApp = useCardContact
+    ? cardContact.whatsapp?.trim() ||
+      cardContact.phone?.trim() ||
+      agency?.phone?.trim() ||
+      recipientPhone
+    : agent?.whatsapp?.trim() ||
+      agent?.phone?.trim() ||
+      agency?.phone?.trim() ||
+      recipientPhone;
 
   const propertyTitle = resolveLocalizedText(listing.title, locale);
   const propertyReference =

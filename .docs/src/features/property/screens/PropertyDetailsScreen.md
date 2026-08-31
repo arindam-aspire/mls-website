@@ -11,8 +11,7 @@ Route-level property details screen. Renders `PropertyView` from `@abdoun/abdoun
 - Show `UpcomingFeatureModal` only when other unreleased features trigger it (contact actions no longer use it).
 - Show a not-found panel when fetch fails or returns no data.
 - **Public view** (guests and `registered_user`): hide **Property workflow** panel.
-- **Guest (unsigned):** `PropertyView` uses `showOwner={false}`.
-- **Signed-in users:** owner information comes from the library `PropertyView` owner block (`owners[]` supported in library v0.1.80+).
+- **Owner visibility:** `PropertyView` shows owner information only to agent, agency/admin, and super-admin roles (`owners[]` supported in library v0.1.80+). Guests, owners, and registered users receive `showOwner={false}`.
 - **Restricted view** (agency / agent / owner): show workflow panel when API data is available.
 
 # Imports
@@ -61,6 +60,8 @@ Indirect via `usePropertyDetails` → `GET /properties/:id`, `GET /properties/:i
 - **Responsive:** mobile-first via `PropertyView` and error copy scaling
 - **Light/dark:** via `ThemeProvider` and `globals.css`
 - **Sidebar:** `PropertyView` uses `showStatusActionCard={false}` and `showPropertyMetrics={false}` so the library **Property Status** card and **Avg. per unit / Documents** metrics are hidden; handover from API is shown as a library `HandoverBadge` when present. Agency workflow stays in MLS `PropertyStatusActionPanel` below the view.
+- **Contact cards:** scoped styles in `app/globals.css` keep the price summary, Listing Agent, and Owner Details in independent matching card surfaces. Listing Agent and Owner Details never share one visual card. The same split layout is applied to the loading skeleton.
+- **Neighborhood:** the `property-details-view` scope enables the app stylesheet to hide only the library's empty neighborhood placeholder and expand the map to the card's available width. Real local highlights and lifestyle content retain the library layout.
 
 # Flow Description
 
@@ -68,10 +69,11 @@ Indirect via `usePropertyDetails` → `GET /properties/:id`, `GET /properties/:i
 2. Hook fetches property details.
 3. Loading: `PropertyView` skeleton via `isLoading`.
 4. Error / missing data: not-found article.
-5. Success: `PropertyView` with tabs, agent block, and feature catalog.
-6. **Owners (signed-in):** library `PropertyView` owner block via `showOwner` (single or multiple owners).
-7. **Property workflow** only when `canViewRestrictedTabs`.
-8. `SimilarProperties` carousel below, fed by `similarListings` / `isSimilarLoading`.
+5. Success: `PropertyView` with tabs, feature catalog, and visually separate price, Listing Agent, and Owner Details cards while preserving the library handlers and role-based visibility.
+6. Neighborhood with no descriptive data: the empty placeholder is omitted and the existing map fills the padded card at mobile, tablet, and desktop widths.
+7. **Owner details:** library `PropertyView` owner block (single or multiple owners) appears only for agent, agency/admin, and super-admin roles.
+8. **Property workflow** only when `canViewRestrictedTabs`.
+9. `SimilarProperties` carousel below, fed by `similarListings` / `isSimilarLoading`.
 
 # Dependencies
 

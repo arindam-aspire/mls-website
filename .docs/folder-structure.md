@@ -15,6 +15,7 @@ mls_website/
 │   ├── folder-structure.md
 │   ├── packages.md
 │   ├── app/
+│   │   ├── globals.md
 │   │   ├── layout.md
 │   │   ├── loading.md
 │   │   ├── page.md
@@ -342,6 +343,7 @@ mls_website/
 │       │       │   ├── RejectSubmissionModal.md
 │       │       │   ├── PropertyListAdvancedFilters.md
 │       │       │   ├── PropertyListFilters.md
+│       │       │   ├── PropertyListingCardList.md
 │       │       │   ├── PropertyDraftList.md
 │       │       │   └── MyListingFilters.md
 │       │       ├── constants/
@@ -377,6 +379,7 @@ mls_website/
 │       │       │   ├── README.md
 │       │       │   └── property.types.md
 │       │       └── utils/
+│       │           ├── mapListingForPropertyCard.md
 │       │           └── propertyAdvancedFieldVisibility.md
 │       ├── hooks/
 │       ├── i18n/
@@ -1037,8 +1040,10 @@ mls_website/
 │   │       │   ├── RejectSubmissionModal.tsx
 │   │       │   ├── PropertyListAdvancedFilters.tsx
 │   │       │   ├── PropertyListFilters.tsx
+│   │       │   ├── PropertyListingCardList.tsx
 │   │       │   ├── PropertyListingStatusBadge.tsx
 │   │       │   ├── PropertyCreateAgencyField.tsx
+│   │       │   ├── PropertyLocationVisibilityField.tsx
 │   │       │   ├── PropertyCreateUnsavedChangesModal.tsx
 │   │       │   ├── PropertyDraftList.tsx
 │   │       │   ├── MyListingFilters.tsx
@@ -1117,6 +1122,7 @@ mls_website/
 │   │       │   └── upload.types.ts
 │   │       └── utils/
 │   │           ├── propertyContactActions.utils.ts
+│   │           ├── mapListingForPropertyCard.ts
 │   │           ├── applyFavoriteFlagsToListings.ts
 │   │           ├── propertyCreateDirtyState.utils.ts
 │   │           ├── propertyCreateOwnerInfo.utils.ts

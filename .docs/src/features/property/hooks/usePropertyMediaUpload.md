@@ -9,7 +9,7 @@ Hook for property media step uploads on the property create form. Uses the activ
 - Resolve upload context from the active draft: reuse `submission_id` for resumed drafts or a generated `draft_client_id` while the first draft save is pending.
 - Validate property media before upload:
   - images: `JPEG`, `PNG`, `WebP`, `GIF` up to `10 MB`
-  - videos: `MP4`, `MOV`, `WEBM` up to `50 MB`
+  - videos: `MP4`, `MOV` up to `50 MB`
 - Validate documents separately (`PDF`, `DOC`, `DOCX`; max `10 MB`).
 - Delegate uploads to `uploadPropertyMediaImage` / `uploadPropertyDocument` (presign + PUT).
 - Toast localized errors on validation or upload failure.

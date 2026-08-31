@@ -7,7 +7,6 @@ import {
 } from "@headlessui/react";
 import {
   Bell,
-  Building2,
   ChevronRight,
   Globe,
   Lock,
@@ -34,9 +33,7 @@ import { useLogout } from "@/src/features/auth/mutations/auth.mutation";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import {
   resolveDrawerAccountLabel,
-  DRAWER_AGENCY_SETTINGS_PATH,
   DRAWER_NOTIFICATION_SETTINGS_PATH,
-  shouldShowDrawerAgencySettings,
   shouldShowDrawerNotificationSettings,
 } from "@/src/features/auth/utils/resolveDrawerAccountLabel";
 import { resolveProfileRoleLabel } from "@/src/features/auth/utils/resolveProfileRoleLabel";
@@ -259,7 +256,6 @@ function DrawerAccountSection({
   const pathname = usePathname();
   const user = useAuthStore((state) => state.user);
   const accountLabel = resolveDrawerAccountLabel(user, t);
-  const showAgencySettings = shouldShowDrawerAgencySettings(user);
   const showNotificationSettings = shouldShowDrawerNotificationSettings(user);
 
   const isProfileActive =
@@ -278,16 +274,6 @@ function DrawerAccountSection({
               onNavigate={onNavigate}
             />
           </li>
-          {showAgencySettings ? (
-            <li>
-              <DrawerNavLink
-                href={DRAWER_AGENCY_SETTINGS_PATH}
-                icon={Building2}
-                label={t("agencySettings")}
-                onNavigate={onNavigate}
-              />
-            </li>
-          ) : null}
           <li>
             <DrawerNavButton
               icon={Lock}

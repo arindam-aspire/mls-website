@@ -9,7 +9,7 @@ Single-file off-canvas drawer for protected routes below `md`. Mirrors the publi
 - Dialog shell, backdrop, RTL panel animation (`duration-700`).
 - Primary header with theme-aware MLS logo and outline `IconButton` close control (matches header menu open button) on `bg-surface`.
 - Internal sections (not separate files), each in a `DrawerSectionCard` (title above `Card`):
-  - **Account** — role-based profile label (`personalAndBusinessProfile` for admin/agency, else `profile` → `/my-profile`), **Agency Settings** (`admin` / `agency` → `/agency-settings`), Change Password, **Notification Settings** (`owner` / `registered_user` → `/notification-settings`)
+  - **Account** — role-based profile label (`personalAndBusinessProfile` for admin/agency, else `profile` → `/my-profile`), Change Password, **Notification Settings** (`owner` / `registered_user` → `/notification-settings`)
   - **Preferences** — Language, Theme Mode
   - **My Activity** — **My Listings** (`owner`), **Manage Listings** (`admin` / `agency` / `agent`), Favourites, Saved Searches, Recently Viewed (`registered_user` / `owner`) via `filterProfileMenuItemsWithRoleAccess` (`List` icon)
   - **User Management** — **Owners**, **Agents** (`admin` only) via `PROTECTED_USER_MANAGEMENT_NAV_ITEMS` + `hasPermission`

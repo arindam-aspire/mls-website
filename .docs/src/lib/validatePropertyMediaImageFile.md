@@ -10,7 +10,8 @@ Validates files selected in **Create Property -> Media & Documents** before MLS 
   - images up to `10 MB`
   - videos up to `50 MB`
 - Accept image formats: `JPEG`, `PNG`, `WebP`, `GIF`
-- Accept video formats: `MP4`, `MOV`, `WEBM`
+- Accept video formats: `MP4`, `MOV`
+- Resolve a supported media MIME type from either the browser-provided MIME or the filename extension for presign requests
 - Reject unsupported file types or empty files
 - Return localized validation message keys supplied by the caller instead of throwing
 
@@ -24,6 +25,7 @@ Validates files selected in **Create Property -> Media & Documents** before MLS 
 - `ACCEPTED_PROPERTY_MEDIA_VIDEO_EXTENSIONS`
 - `isAcceptedPropertyMediaImageFile(file)`
 - `isAcceptedPropertyMediaVideoFile(file)`
+- `resolvePropertyMediaContentType(file)`
 - `validatePropertyMediaImageFile(file, messages)`
 
 # Props / Parameters
@@ -31,7 +33,8 @@ Validates files selected in **Create Property -> Media & Documents** before MLS 
 | Export | Parameters | Notes |
 | --- | --- | --- |
 | `isAcceptedPropertyMediaImageFile` | `file: File` | Uses MIME type first, then lowercase filename extension fallback |
-| `isAcceptedPropertyMediaVideoFile` | `file: File` | Accepts `video/mp4`, `video/quicktime`, `video/webm`, or `.mp4`, `.mov`, `.webm` |
+| `isAcceptedPropertyMediaVideoFile` | `file: File` | Accepts `video/mp4`, `video/quicktime`, or `.mp4`, `.mov` |
+| `resolvePropertyMediaContentType` | `file: File` | Resolves image and video MIME types, including extension-only MP4/MOV files; unsupported files fall back to `application/octet-stream` |
 | `validatePropertyMediaImageFile` | `file: File`, `messages: { invalidType; tooLarge }` | Returns `null` when valid, otherwise one localized error string |
 
 # Flow Description

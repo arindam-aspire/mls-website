@@ -14,6 +14,7 @@ export type AdminListingRowActionLabels = {
 
 export type AdminListingRowActionOptions = {
   canReviewSubmissions?: boolean;
+  canReviewUnassignedAgencySubmissions?: boolean;
   canManageAgentAssignment?: boolean;
   canDeactivateSubmissions?: boolean;
   canEditRejectedSubmissions?: boolean;
@@ -33,6 +34,19 @@ function normalizeSubmissionStatus(status: string): string {
   return aliases[token] ?? token;
 }
 
+/** True when the submission has no assigned agency (null, omitted, or empty payload). */
+export function isAdminSubmissionAgencyUnassigned(
+  agency: AdminPropertySubmissionListItem["agency"] | undefined,
+): boolean {
+  if (agency == null) {
+    return true;
+  }
+
+  const agencyId = agency.agency_id;
+
+  return agencyId == null || String(agencyId).trim() === "";
+}
+
 /** Per-row action menu for admin manage-listings (`GET /admin/property-submissions`). */
 export function buildAdminListingRowActions(
   item: AdminPropertySubmissionListItem,
@@ -40,6 +54,10 @@ export function buildAdminListingRowActions(
   options: AdminListingRowActionOptions = {},
 ): PropertyListingRowActionDescriptor[] {
   const status = normalizeSubmissionStatus(item.status);
+  const canReviewSubmission =
+    (options.canReviewSubmissions && item.has_assigned_agent) ||
+    (options.canReviewUnassignedAgencySubmissions &&
+      isAdminSubmissionAgencyUnassigned(item.agency));
 
   if (status === "active") {
     const actions: PropertyListingRowActionDescriptor[] = [{ id: "view" }];
@@ -75,6 +93,10 @@ export function buildAdminListingRowActions(
     if (options.canManageAgentAssignment) {
       actions.unshift({ id: "assign", label: labels.assignAgent });
     }
+    if (canReviewSubmission) {
+      actions.unshift({ id: "approve", label: labels.approve });
+      actions.splice(1, 0, { id: "reject", label: labels.reject, tone: "danger" });
+    }
     return actions;
   }
 
@@ -87,10 +109,7 @@ export function buildAdminListingRowActions(
       actions.unshift({ id: "reassign", label: labels.reassign });
       actions.splice(1, 0, { id: "unassign", label: labels.unassign, tone: "danger" });
     }
-    if (
-      options.canReviewSubmissions &&
-      item.has_assigned_agent
-    ) {
+    if (canReviewSubmission) {
       actions.unshift({ id: "approve", label: labels.approve });
       actions.splice(1, 0, { id: "reject", label: labels.reject, tone: "danger" });
     }
@@ -102,7 +121,7 @@ export function buildAdminListingRowActions(
     if (options.canManageAgentAssignment && !item.has_assigned_agent) {
       actions.unshift({ id: "assign", label: labels.assignAgent });
     }
-    if (options.canReviewSubmissions && item.has_assigned_agent) {
+    if (canReviewSubmission) {
       actions.unshift({ id: "approve", label: labels.approve });
       actions.splice(1, 0, { id: "reject", label: labels.reject, tone: "danger" });
     }

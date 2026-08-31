@@ -31,7 +31,7 @@ Client hook for `ProtectedProfileMenu`: role label resolution, menu labels, logo
 | `owner` | Profile, My Listings, Favourites, Saved Searches, Recently Viewed, Inquiries |
 | `registered_user` | Profile, Favourites, Saved Searches, Recently Viewed, Inquiries |
 | `agent` | My Profile only (+ Sign out) |
-| `admin`, `agency` | **My Account** row with chevron; hover/focus opens flyout: Profile (`/my-profile`), Agency Settings (`/agency-settings`) |
+| `admin`, `agency` | **My Account** row with chevron; hover/focus opens flyout: **My Profile** (`/my-profile`), **My Saved Searches** (`/saved-searches`) — same two items as the registered-user account links (no Agency Settings) |
 
 Agency detection uses `isAgencyUser` from `profileMenuRoleAccess`. Other roles pass through `filterProfileMenuItemsWithRoleAccess` with context `protectedPopover`.
 
@@ -39,4 +39,3 @@ Agency detection uses `isAgencyUser` from `profileMenuRoleAccess`. Other roles p
 
 - `useLogout`, `useRouter`, `next-intl`
 - `isAgencyUser`, `filterProfileMenuItemsWithRoleAccess`
-- `DRAWER_AGENCY_SETTINGS_PATH` from `resolveDrawerAccountLabel`

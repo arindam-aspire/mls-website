@@ -3,7 +3,7 @@
 import { ConfirmModal } from "@/src/components/common/ConfirmModal";
 import { ContactModal } from "@/src/features/contact/components/ContactModal";
 import { Button } from "@/src/components/ui/button";
-import { PropertyCardList } from "@abdoun/abdoun-library";
+import { PropertyListingCardList } from "@/src/features/property/components/PropertyListingCardList";
 import { useRecentlyViewedScreen } from "@/src/features/property/hooks/useRecentlyViewedScreen";
 import { cn } from "@/src/lib/cn";
 import { bodyLargeTextClasses, headingPageClasses } from "@/src/lib/typography";
@@ -113,14 +113,12 @@ export default function RecentlyViewedScreen() {
           </Button>
         </div>
 
-        <PropertyCardList
+        <PropertyListingCardList
           data={listings}
           isLoading={isLoading}
           layoutVariant="grid"
           pagination={pagination}
           noDataFound={emptyState}
-          canViewAgents={false}
-          canViewOwners
           canViewBadges
           onClick={onClickProperty}
           canViewDelete={canViewDelete}

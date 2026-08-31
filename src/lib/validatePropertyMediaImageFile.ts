@@ -19,13 +19,11 @@ export const ACCEPTED_PROPERTY_MEDIA_IMAGE_EXTENSIONS = [
 export const ACCEPTED_PROPERTY_MEDIA_VIDEO_TYPES = [
   "video/mp4",
   "video/quicktime",
-  "video/webm",
 ] as const;
 
 export const ACCEPTED_PROPERTY_MEDIA_VIDEO_EXTENSIONS = [
   ".mp4",
   ".mov",
-  ".webm",
 ];
 
 type PropertyMediaImageValidationMessages = {
@@ -57,6 +55,39 @@ export function isAcceptedPropertyMediaVideoFile(file: File): boolean {
 
   const lowerName = file.name.toLowerCase();
   return ACCEPTED_PROPERTY_MEDIA_VIDEO_EXTENSIONS.some((ext) => lowerName.endsWith(ext));
+}
+
+export function resolvePropertyMediaContentType(file: File): string {
+  if (
+    ACCEPTED_PROPERTY_MEDIA_IMAGE_TYPES.includes(
+      file.type as (typeof ACCEPTED_PROPERTY_MEDIA_IMAGE_TYPES)[number],
+    ) ||
+    ACCEPTED_PROPERTY_MEDIA_VIDEO_TYPES.includes(
+      file.type as (typeof ACCEPTED_PROPERTY_MEDIA_VIDEO_TYPES)[number],
+    )
+  ) {
+    return file.type;
+  }
+
+  const extension = file.name.split(".").pop()?.toLowerCase();
+
+  switch (extension) {
+    case "jpg":
+    case "jpeg":
+      return "image/jpeg";
+    case "png":
+      return "image/png";
+    case "webp":
+      return "image/webp";
+    case "gif":
+      return "image/gif";
+    case "mp4":
+      return "video/mp4";
+    case "mov":
+      return "video/quicktime";
+    default:
+      return "application/octet-stream";
+  }
 }
 
 export function validatePropertyMediaImageFile(

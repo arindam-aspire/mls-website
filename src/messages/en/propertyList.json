@@ -348,7 +348,7 @@
     "propertyMediaUploadRequiresDraft": "Save draft before uploading media",
     "propertyMediaUploadRequiresDraftDescription": "Save your draft first so we can attach uploads to this submission.",
     "propertyMediaUploadError": "Could not upload property media",
-    "propertyMediaUploadInvalidType": "Upload a JPEG, PNG, WebP, GIF, MP4, MOV, or WEBM file.",
+    "propertyMediaUploadInvalidType": "Upload a JPEG, PNG, WebP, GIF, MP4, or MOV file.",
     "propertyMediaUploadTooLarge": "Images must be 10 MB or smaller. Videos must be 50 MB or smaller.",
     "propertyDocumentUploadError": "Could not upload property document",
     "propertyDocumentUploadInvalidType": "Upload a PDF, DOC, or DOCX file.",
@@ -356,7 +356,16 @@
     "submitSuccess": "Property submitted",
     "submitError": "Could not submit property",
     "submitSaveError": "Could not save draft before submit",
+    "locationVisibility": {
+      "title": "Show Location",
+      "description": "Allow all users to view this property's Location tab.",
+      "ariaLabel": "Show property location to all users"
+    },
     "agency": {
+      "routing": {
+        "title": "Agency Routing",
+        "question": "Are you interested to route the property through an agency?"
+      },
       "label": "Agency",
       "placeholder": "Select an agency",
       "required": "Select an agency before submitting this property.",

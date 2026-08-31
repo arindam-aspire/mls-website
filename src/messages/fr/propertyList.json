@@ -348,7 +348,7 @@
     "propertyMediaUploadRequiresDraft": "Enregistrez le brouillon avant de téléverser",
     "propertyMediaUploadRequiresDraftDescription": "Enregistrez d'abord le brouillon pour associer les fichiers à cette soumission.",
     "propertyMediaUploadError": "Impossible de téléverser le média du bien",
-    "propertyMediaUploadInvalidType": "Téléversez un fichier JPEG, PNG, WebP, GIF, MP4, MOV ou WEBM.",
+    "propertyMediaUploadInvalidType": "Téléversez un fichier JPEG, PNG, WebP, GIF, MP4 ou MOV.",
     "propertyMediaUploadTooLarge": "Les images doivent faire 10 Mo ou moins. Les vidéos doivent faire 50 Mo ou moins.",
     "propertyDocumentUploadError": "Impossible de téléverser le document du bien",
     "propertyDocumentUploadInvalidType": "Téléversez un fichier PDF, DOC ou DOCX.",
@@ -356,7 +356,16 @@
     "submitSuccess": "Bien soumis",
     "submitError": "Impossible de soumettre le bien",
     "submitSaveError": "Impossible d'enregistrer le brouillon avant la soumission",
+    "locationVisibility": {
+      "title": "Afficher l’emplacement",
+      "description": "Autorisez tous les utilisateurs à voir l’onglet Emplacement de ce bien.",
+      "ariaLabel": "Afficher l’emplacement du bien à tous les utilisateurs"
+    },
     "agency": {
+      "routing": {
+        "title": "Acheminement vers une agence",
+        "question": "Souhaitez-vous acheminer le bien par l’intermédiaire d’une agence ?"
+      },
       "label": "Agence",
       "placeholder": "Sélectionnez une agence",
       "required": "Sélectionnez une agence avant de soumettre ce bien.",

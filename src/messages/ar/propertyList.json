@@ -348,7 +348,7 @@
     "propertyMediaUploadRequiresDraft": "احفظ المسودة قبل رفع الوسائط",
     "propertyMediaUploadRequiresDraftDescription": "احفظ المسودة أولاً حتى نربط الملفات بهذا الإرسال.",
     "propertyMediaUploadError": "تعذر رفع وسائط العقار",
-    "propertyMediaUploadInvalidType": "ارفع ملفًا بصيغة JPEG أو PNG أو WebP أو GIF أو MP4 أو MOV أو WEBM.",
+    "propertyMediaUploadInvalidType": "ارفع ملفًا بصيغة JPEG أو PNG أو WebP أو GIF أو MP4 أو MOV.",
     "propertyMediaUploadTooLarge": "يجب ألا يتجاوز حجم الصور 10 ميغابايت. ويجب ألا يتجاوز حجم الفيديوهات 50 ميغابايت.",
     "propertyDocumentUploadError": "تعذر رفع مستند العقار",
     "propertyDocumentUploadInvalidType": "ارفع ملف PDF أو DOC أو DOCX.",
@@ -356,7 +356,16 @@
     "submitSuccess": "تم إرسال العقار",
     "submitError": "تعذر إرسال العقار",
     "submitSaveError": "تعذر حفظ المسودة قبل الإرسال",
+    "locationVisibility": {
+      "title": "إظهار الموقع",
+      "description": "السماح لجميع المستخدمين بعرض علامة تبويب موقع هذا العقار.",
+      "ariaLabel": "إظهار موقع العقار لجميع المستخدمين"
+    },
     "agency": {
+      "routing": {
+        "title": "توجيه الوكالة",
+        "question": "هل أنت مهتم بتوجيه العقار من خلال وكالة؟"
+      },
       "label": "الوكالة",
       "placeholder": "اختر وكالة",
       "required": "اختر وكالة قبل إرسال هذا العقار.",

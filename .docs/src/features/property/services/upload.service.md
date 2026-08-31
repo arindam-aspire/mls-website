@@ -8,9 +8,11 @@ Presigned upload helpers for property create (owner documents, media images, pro
 
 - `requestUploadPresignedUrl` — authenticated `POST /uploads/presigned-url`.
 - `uploadOwnerDocument` — `context: "owner_document"`.
-- `uploadPropertyMediaImage` — `context: "property_media_image"` (`media_files`).
+- `uploadPropertyMediaImage` — `context: "property_media_image"` (`media_files`) with image/video content-type resolution for JPG, PNG, WebP, GIF, MP4, and MOV.
 - `uploadPropertyDocument` — `context: "property_document"` (`documents`).
-- Each helper presigns, **PUT**s bytes to `upload_url`, returns a readable URI via `resolveUploadedFileUrl` (prefers `signed_read_url`, then legacy `file_url`).
+- Each helper presigns and **PUT**s bytes to `upload_url`.
+- Property media and property-document helpers return a stable persistence reference via `resolvePersistedUploadReference` (`file_url`, then `object_key`, then the query-stripped upload URL) so draft and submit payloads do not store expiring signed URLs.
+- Owner-document uploads retain the existing readable-URI resolution used by that separate form step.
 
 # Exports
 
@@ -47,7 +49,7 @@ Property media (`media_files` / `documents`):
 }
 ```
 
-Response `data.upload_url` → **PUT** file (no `apiClient`; MLS returns `upload_http_method: "PUT"`). Prefer `data.signed_read_url` for preview; fall back to `data.file_url` / stripped upload URL. Persist `file_url` / `object_key` when the feature needs a stable file reference.
+Response `data.upload_url` → **PUT** file (no `apiClient`; MLS returns `upload_http_method: "PUT"`). Create Property media/document callbacks return `data.file_url`, `data.object_key`, or the stripped upload URL for stable draft persistence.
 
 # Dependencies
 

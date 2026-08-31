@@ -1,20 +1,20 @@
 # File Overview
 
-Favourites route screen: paginated favorite properties via `PropertyCardList` (no filters).
+Favourites route screen: paginated favorite properties via `PropertyListingCardList` (no filters).
 
 **Source:** `src/features/property/screens/FavouritePropertyScreen.tsx`
 
 # Responsibilities
 
-- Compose `PropertyCardList` from `@abdoun/abdoun-library` with data from `useFavouritePropertyList`.
+- Compose `PropertyListingCardList` with data from `useFavouritePropertyList`.
 - No filter bar (unlike `PropertyListScreen`).
-- `UpcomingFeatureModal` for contact/favourite actions not yet wired to API.
+- Contact actions via `usePropertyContactModalActions` (agent email/phone).
 
 # Imports
 
-- `PropertyCardList` from `@abdoun/abdoun-library`
+- `PropertyListingCardList` from `../components/PropertyListingCardList`
 - `useFavouritePropertyList` from `../hooks/useFavouritePropertyList`
-- `UpcomingFeatureModal` from `@/src/components/common/UpcomingFeatureModal`
+- `ContactModal` from `@/src/features/contact/components/ContactModal`
 
 # API Usage
 
@@ -28,7 +28,7 @@ Delegated to [useFavouritePropertyList.md](../hooks/useFavouritePropertyList.md)
 
 1. Hook fetches favorites for current page/page size.
 2. Mapper converts nested `property` items to `PropertyListing`.
-3. `PropertyCardList` renders **grid-only** cards with pagination (no toolbar); `canViewAgents={false}` (same as property list / recently viewed).
+3. `PropertyListingCardList` renders **grid-only** cards with pagination (no toolbar); owners hidden; agency/agent names shown when present.
 4. Empty state copy via `propertyList.favourites` (`noDataTitle`, `noDataDescription`, `noDataAction`). **Browse properties** navigates to `/property-list`.
 
 # Dependencies

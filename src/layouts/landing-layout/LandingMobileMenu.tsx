@@ -8,7 +8,6 @@ import {
 import Image from "next/image";
 import {
   Bell,
-  Building2,
   ChevronRight,
   Globe,
   Lock,
@@ -36,9 +35,7 @@ import { useLogout } from "@/src/features/auth/mutations/auth.mutation";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import {
   resolveDrawerAccountLabel,
-  DRAWER_AGENCY_SETTINGS_PATH,
   DRAWER_NOTIFICATION_SETTINGS_PATH,
-  shouldShowDrawerAgencySettings,
   shouldShowDrawerNotificationSettings,
 } from "@/src/features/auth/utils/resolveDrawerAccountLabel";
 import { filterProfileMenuItemsWithRoleAccess } from "@/src/features/auth/utils/profileMenuRoleAccess";
@@ -351,7 +348,6 @@ function MenuContent({
   const { theme } = useTheme();
   const drawerLogoSrc = theme === "dark" ? mlsLogoDark : mlsLogoLight;
   const accountLabel = resolveDrawerAccountLabel(sections.user, t);
-  const showAgencySettings = shouldShowDrawerAgencySettings(sections.user);
   const showNotificationSettings = shouldShowDrawerNotificationSettings(
     sections.user,
   );
@@ -410,17 +406,6 @@ function MenuContent({
                         onClick={() => sections.handleNavigate("/my-profile")}
                       />
                     </li>
-                    {showAgencySettings ? (
-                      <li>
-                        <MenuRow
-                          icon={Building2}
-                          label={t("agencySettings")}
-                          onClick={() =>
-                            sections.handleNavigate(DRAWER_AGENCY_SETTINGS_PATH)
-                          }
-                        />
-                      </li>
-                    ) : null}
                     <li>
                       <MenuRow
                         icon={Lock}

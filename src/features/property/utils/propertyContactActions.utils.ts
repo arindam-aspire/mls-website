@@ -49,18 +49,28 @@ export function listingHasContactAgent(agent: ListingAgentLike): boolean {
 }
 
 /**
- * Card Email / Call / WhatsApp: without an agent, open choose-account login.
- * Returns false when login was opened (caller should not open ContactModal).
+ * Card Email / Call / WhatsApp.
+ * Guests without a source agent open choose-account (list API may omit agent until auth).
+ * Authenticated users without an agent are allowed through so the caller can toast missing fields.
  */
 export function ensureListingAgentContactAllowed(listing: {
   agent?: ListingAgentLike;
+  cardContact?: { hasSourceAgent?: boolean };
 }): boolean {
-  if (listingHasContactAgent(listing.agent)) {
+  const hasSourceAgent =
+    listing.cardContact?.hasSourceAgent ??
+    listingHasContactAgent(listing.agent);
+
+  if (hasSourceAgent) {
     return true;
   }
 
-  openLogin();
-  return false;
+  if (!isAuthenticated()) {
+    openLogin();
+    return false;
+  }
+
+  return true;
 }
 
 function resolveContactAction(

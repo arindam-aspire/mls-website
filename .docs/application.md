@@ -213,7 +213,7 @@ All paths below are **without** locale; prepend `/<locale>` (e.g. `/en/my-listin
 | `/notifications` | `(main)/notifications/page.tsx` | `NotificationScreen` (placeholder) — guarded by `useAuthorize("NOTIFICATIONS")` |
 | `/favourites` | `(main)/favourites/page.tsx` | `FavouritePropertyScreen` — guarded by `useAuthorize("FAVOURITES")` |
 | `/my-listings` | `(main)/(listings)/my-listings/page.tsx` | `ListingPropertyScreen` — guarded by `useAuthorize("MY_LISTINGS")` |
-| `/property-create` | `(main)/(listings)/property-create/page.tsx` | `PropertyCreateScreen` — guarded by `useAuthorize("PROPERTY_CREATE")`; Super Admin and Owner must select `agency_id` on the form |
+| `/property-create` | `(main)/(listings)/property-create/page.tsx` | `PropertyCreateScreen` — guarded by `useAuthorize("PROPERTY_CREATE")`; Location includes `show_location` (default `false`); Step 8 lets Super Admin/Owner opt into `route_through_agency` and conditionally requires `agency_id` |
 | `/property-update` | `(main)/(listings)/property-update/page.tsx` | `PropertyUpdateScreen` — guarded by `useAuthorize("MY_LISTINGS")` |
 | `/recently-viewed` | `(main)/recently-viewed/page.tsx` | `RecentlyViewedScreen` — guarded by `useAuthorize("RECENTLY_VIEWED")` |
 | `/owners` | `(main)/owners/page.tsx` | `OwnersScreen` — guarded by `useAuthorize("OWNERS")` (Super Admin + Agency Admin); list, activate/deactivate, view/edit, linked properties/leads |
@@ -259,6 +259,8 @@ Defined in `ProfilePopover.tsx` (`PROFILE_MENU_ITEMS`):
 | `myInquiries` | `/inquiries` |
 
 Uses `UiLink` + `router.push(path)` and `useClose()` to dismiss the popover.
+
+Protected-header **My Account** flyout (`ProtectedProfileMenu` / `useProtectedProfileMenu`) for agency admin (`admin` / `agency`) lists **My Profile** (`/my-profile`) and **My Saved Searches** (`/saved-searches`) only — Agency Settings is not a menu item. The `/agency-settings` page remains a protected route.
 
 ---
 
@@ -375,13 +377,19 @@ Used by `(main)` route group.
 
 | Screen | Status |
 | --- | --- |
-| `PropertyListScreen` | Stub |
+| `PropertyListScreen` | Browse grid/list cards via `PropertyListingCardList` (owners hidden; agency/agent names; agent contact actions) |
 | `PropertyDetailsScreen` | Property detail (`PropertyView`, `/propert-details/:id`) |
 | `ListingPropertyScreen` | My listings table (`GET /agent-properties`, `ListTableView`) |
 | `ManageListingsScreen` | Manage listings table — agents: `GET /agent-properties`; admins: `GET /admin/property-submissions` (`MANAGE_LISTINGS`) |
-| `FavouritePropertyScreen` | Favourites list (`GET /favorites`, `PropertyCardList`) |
-| `RecentlyViewedScreen` | Recent views list (`GET /users/recent-views`, `PropertyCardList`, clear all) |
+| `FavouritePropertyScreen` | Favourites list (`GET /favorites`, `PropertyListingCardList`) |
+| `RecentlyViewedScreen` | Recent views list (`GET /users/recent-views`, `PropertyListingCardList`, clear all) |
 | `InquiriesScreen` | Coming Soon |
+
+In Manage Listings, Agency Admin keeps the existing assign/reassign/unassign and assigned-agent review workflow. Super Admin can directly Approve or Reject only submissions with an unassigned agency (`agency` null/omitted/empty `agency_id`), reusing the existing confirmation/reason modals, review endpoint, loading states, toasts, and refresh. Agency-assigned submissions and all other roles retain their previous behavior.
+
+Create/update draft payloads send the Location-step visibility choice as `payload.location.show_location`; draft editing hydrates the saved value. On property details, privileged roles retain the existing Location/Documents access. Guests, owners, and registered users receive the Location tab only when `GET /properties/:id` returns `show_location: true`; Documents remains restricted.
+
+After Create Property submission succeeds, the saved snapshot synchronously clears the unsaved-changes guard so the Draft modal is not shown. Navigation proceeds directly to `/my-listings` for Owner/registered user roles or `/manage-listings` for Agent/Agency Admin/Super Admin roles. Existing success/error toasts and direct-submit versus saved-draft submission APIs remain unchanged.
 
 `components/`, `hooks/` — reserved. `mutations/property.mutation.ts` — `useGetPropertyList`. `services/property.service.ts` — `getPropertyList`. `store/property.store.ts` — property list filters/response state. `types/property.types.ts` — list params/response for `/properties`.
 

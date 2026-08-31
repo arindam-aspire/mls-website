@@ -202,6 +202,7 @@ export function useAdminPropertySubmissionsTable({
 
       return {
         canReviewSubmissions: canAgencyAdminManageWorkflow,
+        canReviewUnassignedAgencySubmissions: isSuperAdmin,
         canManageAgentAssignment: canAgencyAdminManageWorkflow,
         canDeactivateSubmissions: isSuperAdmin,
         canEditRejectedSubmissions: false,

@@ -5,7 +5,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useLogout } from "@/src/features/auth/mutations/auth.mutation";
 import type { LoggedInUser } from "@/src/features/auth/types/auth.types";
-import { DRAWER_AGENCY_SETTINGS_PATH } from "@/src/features/auth/utils/resolveDrawerAccountLabel";
 import { resolveProfileRoleLabel } from "@/src/features/auth/utils/resolveProfileRoleLabel";
 import {
   filterProfileMenuItemsWithRoleAccess,
@@ -26,8 +25,7 @@ const PROFILE_MENU_ITEMS = [
 ] as const;
 
 const AGENCY_ACCOUNT_MENU_ITEMS = [
-  { labelKey: "accountProfile", path: "/my-profile" },
-  { labelKey: "agencySettings", path: DRAWER_AGENCY_SETTINGS_PATH },
+  { labelKey: "profile", path: "/my-profile" },
   { labelKey: "mySavedSearches", path: "/saved-searches" },
 ] as const;
 

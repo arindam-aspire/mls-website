@@ -1,5 +1,7 @@
 /**
  * API may return comma-separated URLs; prefer the segment that contains the invite path/token.
+ * Absolute URLs from the API may hardcode a host such as `http://localhost:3000`;
+ * rewrite onto `window.location.origin` while keeping path, query, and token.
  */
 export function parseAgentInviteLink(rawLink: string): string {
   const trimmed = rawLink.trim();
@@ -16,24 +18,33 @@ export function parseAgentInviteLink(rawLink: string): string {
     : [trimmed];
 
   const inviteSegment = segments.find(
-    (segment) => segment.includes("agent-invite") || segment.includes("token="),
+    (segment) =>
+      segment.includes("agent-invite") ||
+      segment.includes("agent-password-setup") ||
+      segment.includes("token="),
   );
 
   const link = inviteSegment ?? segments[segments.length - 1] ?? trimmed;
 
-  if (/^https?:\/\//i.test(link) || typeof window === "undefined") {
+  if (typeof window === "undefined") {
     return link;
   }
 
-  const locale =
-    window.location.pathname.match(/^\/(en|ar|es|fr)(?:\/|$)/)?.[1] ?? "en";
-  const localizedPath = link.startsWith(`/${locale}/`)
-    ? link
-    : link.startsWith("/")
-      ? `/${locale}${link}`
-      : `/${locale}/${link}`;
+  try {
+    const url = new URL(link, window.location.origin);
+    const locale =
+      window.location.pathname.match(/^\/(en|ar|es|fr)(?:\/|$)/)?.[1] ?? "en";
 
-  return `${window.location.origin}${localizedPath}`;
+    const pathname = /^\/(en|ar|es|fr)(?:\/|$)/.test(url.pathname)
+      ? url.pathname.replace(/^\/(en|ar|es|fr)(?=\/|$)/, `/${locale}`)
+      : url.pathname.startsWith("/")
+        ? `/${locale}${url.pathname}`
+        : `/${locale}/${url.pathname}`;
+
+    return `${window.location.origin}${pathname}${url.search}${url.hash}`;
+  } catch {
+    return link;
+  }
 }
 
 type AgentInviteLinkSource = {

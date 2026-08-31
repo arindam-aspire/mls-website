@@ -2,7 +2,7 @@
 
 
 
-Recently viewed properties screen: page header with clear action + paginated `PropertyCardList`.
+Recently viewed properties screen: page header with clear action + paginated `PropertyListingCardList`.
 
 
 
@@ -16,7 +16,7 @@ Recently viewed properties screen: page header with clear action + paginated `Pr
 
 - Page toolbar: localized `h1`, subtitle, **Clear All** (`tertiary` solid, `Eraser` icon).
 
-- Render `PropertyCardList` from `GET /users/recent-views` (same card/favourite UX as property list and favourites).
+- Render `PropertyListingCardList` from `GET /users/recent-views` (same card/favourite UX as property list and favourites).
 
 
 
@@ -24,9 +24,9 @@ Recently viewed properties screen: page header with clear action + paginated `Pr
 
 
 
-- `PropertyCardList` from `@abdoun/abdoun-library`
+- `PropertyListingCardList` from `@/src/features/property/components/PropertyListingCardList`
 
-- `ConfirmModal`, `UpcomingFeatureModal`, `Button`
+- `ConfirmModal`, `ContactModal`, `Button`
 
 - `useRecentlyViewedScreen`
 
@@ -58,7 +58,7 @@ Recently viewed properties screen: page header with clear action + paginated `Pr
 
 - Header row: stack on mobile; title left, clear button right from `sm:`.
 
-- List: `layoutVariant="grid"`, pagination `10` / `15` / `20`, loading via `PropertyCardList`; `canViewAgents={false}`.
+- List: `layoutVariant="grid"`, pagination `10` / `15` / `20`, loading via `PropertyListingCardList`; owners hidden; agency/agent names shown when present.
 
 - Delete confirm: `ConfirmModal` (`variant="danger"`, `Trash2` icon, loading state while delete mutation runs).
 

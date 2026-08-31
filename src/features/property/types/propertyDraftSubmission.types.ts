@@ -19,6 +19,8 @@ export type PropertyDraftSubmissionLocation = {
   /** First item of `PropertyForm` `location_insert.area_ids`. */
   area_id?: number | null;
   address?: string;
+  /** Whether all roles may view the Location tab on published property details. */
+  show_location?: boolean;
 };
 
 export type PropertyDraftSubmissionOwnerDocument = {
@@ -34,8 +36,6 @@ export type PropertyDraftSubmissionOwner = {
   nationality?: string;
   /** From `PropertyForm` `social_security_id`. */
   ssi?: string;
-  /** From `PropertyForm` `owner_address`. */
-  address?: string;
   documents?: PropertyDraftSubmissionOwnerDocument[];
 };
 
@@ -59,6 +59,12 @@ export type PropertyDraftSubmissionPropertyDetails = {
   /** From `PropertyForm` `property_details.permit_dld_number`. */
   permit_number?: string;
   orientation?: string | null;
+  /** From `PropertyForm` `property_details.guard_name`. */
+  guard_name?: string;
+  /** Merged `guard_country_code` + `guard_phone_number` from `PropertyForm` property details. */
+  guard_phone_number?: string;
+  /** @deprecated Legacy draft payloads; prefer `guard_phone_number`. */
+  guard_phone?: string;
 };
 
 export type PropertyDraftSubmissionPricing = {
@@ -125,6 +131,7 @@ export type PropertyDraftSubmissionPayload = {
 
 /** Request body for `POST /property-submissions` (create draft). */
 export type PropertyDraftSubmissionRequestBody = {
+  route_through_agency: boolean;
   agency_id?: string | null;
   payload: PropertyDraftSubmissionPayload;
   /** Active `PropertyForm` step index when saving. */
@@ -138,6 +145,7 @@ export type PropertyDraftSubmissionSaveAction = "save_draft";
 /** Request body for `PATCH /property-submissions/{submissionId}` (update draft). */
 export type PropertyDraftSubmissionUpdateRequestBody = {
   action: PropertyDraftSubmissionSaveAction;
+  route_through_agency: boolean;
   agency_id?: string | null;
   current_step: number;
   /** Furthest step the user has completed when saving. */
@@ -159,6 +167,7 @@ export type PropertyDraftSubmissionStepCompletion = {
 export type PropertyDraftSubmissionData = {
   submission_id: string;
   submitted_by?: string | null;
+  route_through_agency?: boolean;
   agency_id?: string | null;
   status: string;
   workflow_stage?: string | null;
@@ -184,6 +193,7 @@ export type PropertyDraftSubmissionResponse = {
 
 /** Request body for `POST /property-submissions/submit` (no existing draft id). */
 export type PropertySubmissionDirectSubmitRequestBody = {
+  route_through_agency: boolean;
   agency_id?: string | null;
   payload: PropertyDraftSubmissionPayload;
   confirm_submit: true;

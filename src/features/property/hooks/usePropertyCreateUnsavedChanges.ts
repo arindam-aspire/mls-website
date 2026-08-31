@@ -109,9 +109,8 @@ export function usePropertyCreateUnsavedChanges({
 
   const guardActive = enabled && canEdit && hasUnsavedChanges;
 
-  guardActiveRef.current = guardActive;
-
   const commitSavedSnapshot = useCallback((propertyDetails: PropertyFormValues) => {
+    guardActiveRef.current = false;
     savedSnapshotRef.current = buildPropertyCreateStepSnapshot(propertyDetails);
     setDirtyStepIds([]);
     setHasUnsavedChanges(false);
@@ -137,6 +136,10 @@ export function usePropertyCreateUnsavedChanges({
     },
     [canEdit, enabled, syncDirtyState],
   );
+
+  useEffect(() => {
+    guardActiveRef.current = guardActive;
+  }, [guardActive]);
 
   useEffect(() => {
     onLivePayloadChange(propertyDetails);

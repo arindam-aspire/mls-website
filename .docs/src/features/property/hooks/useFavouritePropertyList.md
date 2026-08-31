@@ -9,9 +9,9 @@ Client hook for the favourites screen: fetches paginated favorites, maps to libr
 - `GET /favorites?page=&pageSize=` via `useGetFavoriteList` (auth required).
 - Local `page` / `pageSize` state (no URL search params).
 - Map response with `mapFavoriteListResponse` → `PropertyListing[]`.
-- Expose `pageTitle`, `pageSubtitle`, `PropertyCardList` props: `listings`, `pagination`, `noDataFound`, handlers (no toolbar; grid layout only in screen).
+- Expose `pageTitle`, `pageSubtitle`, `PropertyListingCardList` props: `listings`, `pagination`, `noDataFound`, handlers (no toolbar; grid layout only in screen).
 - `cardButtonSize`: `"md"` for `registered_user` / `owner`; `"sm"` for other roles (`canTrackRecentPropertyView`).
-- Contact actions open `UpcomingFeatureModal`.
+- Contact actions use `usePropertyContactModalActions` (agent email/phone; owners are not used).
 - **Heart icon** calls `DELETE /favorites/:propertyHash` via `useRemoveFavorite`, then refetches the list.
 
 # API Usage

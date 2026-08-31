@@ -48,6 +48,7 @@ export type PropertyDetailsAgent = NonNullable<
 export type PropertyDetails = NonNullable<PropertyViewProps["propertyDetails"]> & {
   property_id?: string | null;
   submission_id?: string | null;
+  show_location?: boolean | null;
   owners?: PropertyOwner[];
   agent?: PropertyDetailsAgent | null;
   agent_name?: string | null;
@@ -127,6 +128,15 @@ export type PropertyListings = {
   meta?: PaginationMeta;
 };
 
+/** Real agent/agency contact for card actions (library display fields may be remapped). */
+export type PropertyCardContact = {
+  name: string;
+  email: string;
+  phone: string;
+  whatsapp: string;
+  hasSourceAgent: boolean;
+};
+
 export interface PropertyListing {
   id: number;
   property_id: string;
@@ -188,6 +198,12 @@ export interface PropertyListing {
     photo: string | null;
     license_number: string | null;
   };
+  /**
+   * App-only snapshot of agent/agency contact for card Email / Call / WhatsApp.
+   * Library cards display `agent.name` plus `agent.phone || agent.email`, so MLS may
+   * remap those fields for Agency Name / Agent Name while keeping real contact here.
+   */
+  cardContact?: PropertyCardContact;
 
   is_exclusive: boolean;
   is_favourite: boolean;
@@ -289,6 +305,8 @@ export type AdminPropertySubmissionListItem = {
   current_actor?: string | null;
   submission_origin?: string | null;
   property_id: string;
+  /** Assigned agency, or `null`/omitted when the property is routed directly (e.g. Owner → Super Admin). */
+  agency?: NonNullable<PropertyListing["agency"]> | null;
   agent_user_id: string | null;
   agent_name: string | null;
   agent_email: string | null;
