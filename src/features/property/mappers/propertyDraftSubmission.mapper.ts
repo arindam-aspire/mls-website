@@ -344,11 +344,6 @@ export function buildPropertyDraftSubmissionPayload(
       ownership_type: details.ownership_type,
       permit_number: details.permit_dld_number || undefined,
       orientation: details.orientation,
-      guard_name: toOptionalTrimmedString(details.guard_name),
-      guard_phone_number: buildOwnerPhone(
-        details.guard_country_code,
-        details.guard_phone_number,
-      ),
     };
   }
 
@@ -601,6 +596,7 @@ export function mapPropertyDraftSubmissionToPropertyFormValues(
           phone_number,
           social_security_id: owner.ssi ?? "",
           nationality: owner.nationality ?? "",
+          owner_address: "",
           owner_documents: (owner.documents ?? []).map((document) => ({
             name: document.file_name ?? "",
             uri: document.url ?? "",
@@ -611,11 +607,6 @@ export function mapPropertyDraftSubmissionToPropertyFormValues(
   }
 
   if (details != null) {
-    const { country_code: guardCountryCode, phone_number: guardPhoneNumber } =
-      parseOwnerPhoneForForm(
-        details.guard_phone_number ?? details.guard_phone,
-      );
-
     propertyDetails.property_details = {
       bedrooms: details.bedrooms ?? null,
       bathrooms: details.bathrooms ?? null,
@@ -629,9 +620,6 @@ export function mapPropertyDraftSubmissionToPropertyFormValues(
       reference_number: details.reference_number ?? "",
       permit_dld_number: details.permit_number ?? "",
       orientation: details.orientation ?? null,
-      guard_name: details.guard_name ?? "",
-      guard_country_code: guardCountryCode,
-      guard_phone_number: guardPhoneNumber,
     };
   }
 

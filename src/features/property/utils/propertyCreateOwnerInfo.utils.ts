@@ -21,6 +21,7 @@ export function buildLoggedInOwnerInfoItem(user: LoggedInUser): OwnerInfoItem {
     phone_number: phoneNumber,
     social_security_id: "",
     nationality: "",
+    owner_address: "",
     owner_documents: [],
   };
 }
@@ -62,6 +63,7 @@ export function hasOwnerInfoRowContent(owner: OwnerInfoItem): boolean {
       owner.phone_number,
       owner.social_security_id,
       owner.nationality,
+      owner.owner_address,
     ].some((value) => value?.trim()) || owner.owner_documents.length > 0
   );
 }
