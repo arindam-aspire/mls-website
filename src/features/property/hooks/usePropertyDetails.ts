@@ -354,6 +354,26 @@ export function usePropertyDetails(propertyId: string) {
     return mapPropertyDetailsForPropertyView(favouriteDetails);
   }, [applyDetailsFavouriteState, propertyDetails, propertyId]);
 
+  const guardDetails = useMemo(() => {
+    const name = propertyDetailsWithFavourites?.guard_name?.trim();
+    const number = (
+      propertyDetailsWithFavourites?.guard_phone_number ??
+      propertyDetailsWithFavourites?.guard_number
+    )?.trim();
+
+    if (!name || !number) {
+      return null;
+    }
+
+    return {
+      name,
+      number,
+      title: tDetails("guard.title"),
+      nameLabel: tDetails("guard.name"),
+      numberLabel: tDetails("guard.number"),
+    };
+  }, [propertyDetailsWithFavourites, tDetails]);
+
   const showAgentDetails = Boolean(propertyDetailsWithFavourites?.agent);
 
   const detailPropertyId = propertyDetailsWithFavourites?.property_id?.trim() ?? "";
@@ -1244,6 +1264,7 @@ export function usePropertyDetails(propertyId: string) {
     isLoading,
     isError,
     propertyDetails: propertyDetailsWithFavourites,
+    guardDetails,
     isFavouriteLoading,
     locale,
     applicationKey: APPLICATION_KEY,

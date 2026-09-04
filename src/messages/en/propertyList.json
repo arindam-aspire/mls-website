@@ -72,6 +72,11 @@
     "owners": {
       "title": "Owner details",
       "noContact": "No contact info"
+    },
+    "guard": {
+      "title": "Guard Details",
+      "name": "Guard Name",
+      "number": "Guard Number"
     }
   },
   "favourites": {

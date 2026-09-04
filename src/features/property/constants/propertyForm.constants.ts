@@ -10,6 +10,24 @@ export const INITIAL_PROPERTY_FORM_VALUES: PropertyFormValues = {
     address: "",
     show_location: false,
   },
+  property_details: {
+    bedrooms: null,
+    bathrooms: null,
+    built_up_area: "",
+    built_up_area_unit: "SQM",
+    parking_spaces: null,
+    property_age: null,
+    completion_status: null,
+    total_floor: "",
+    occupancy: null,
+    ownership_type: null,
+    reference_number: "",
+    permit_dld_number: "",
+    orientation: null,
+    guard_name: "",
+    guard_country_code: "+962",
+    guard_phone_number: "",
+  },
 } as PropertyFormValues;
 
 /** Default `PropertyForm` / API step index (1-based; matches `@abdoun/abdoun-library`). */

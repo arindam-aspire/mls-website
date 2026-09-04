@@ -49,6 +49,9 @@ export type PropertyDetails = NonNullable<PropertyViewProps["propertyDetails"]> 
   property_id?: string | null;
   submission_id?: string | null;
   show_location?: boolean | null;
+  guard_name?: string | null;
+  guard_phone_number?: string | null;
+  guard_number?: string | null;
   owners?: PropertyOwner[];
   agent?: PropertyDetailsAgent | null;
   agent_name?: string | null;

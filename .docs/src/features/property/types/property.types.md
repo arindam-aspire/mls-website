@@ -11,6 +11,7 @@ TypeScript types for property list and detail APIs, aligned with `@abdoun/abdoun
 - `PropertyListing.cardContact` — app-only agent/agency contact snapshot for card actions when display fields are remapped.
 - Export `PropertyDetails` and `PropertyFeatureDefinition` (inferred from `PropertyView` props).
 - Extend `PropertyDetails` with API `show_location`, which controls public Location-tab visibility without changing privileged role access.
+- Extend `PropertyDetails` with optional nullable API `guard_name`, `guard_phone_number`, and compatible `guard_number` fields for the conditional Guard Details card.
 - Define feature catalog API types (`FeatureCatalogItem`, `FeatureCatalogResponse`).
 
 # Imports
@@ -62,6 +63,8 @@ Request query shape: `PropertyListParams` — required: `page`, `pageSize`, `cat
 URL-synced filters: all `PropertyListParams` fields (see [property.types.md](./property.types.md)).
 
 `PropertyDetails.show_location` is optional/nullable for backward compatibility. Only the explicit boolean `true` exposes the Location tab to roles that do not already have restricted-tab access.
+
+The guard fields are optional/nullable because older or incomplete API payloads may omit them. The details UI uses `guard_phone_number` first, accepts `guard_number` as a compatible alias, trims the selected value and `guard_name`, and renders no guard card unless both remain non-empty.
 
 ## Agent properties (`GET /agent-properties`)
 

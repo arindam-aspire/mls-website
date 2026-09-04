@@ -7,7 +7,6 @@ Utilities that adapt the signed-in owner and owner-row state to the `@abdoun/abd
 # Responsibilities
 
 - Build the initial owner row from the authenticated user's name, email, and Jordan phone number.
-- Supply an empty `owner_address` compatibility value required by the current library type. The app does not validate or submit this retired field.
 - Detect meaningful owner-row content for create-form initialization and dirty-state behavior.
 - Resolve owner rows that should be read-only by matching normalized email addresses.
 - Build the library `OwnerInfoConfig`, including localized validation messages and document requirements.
@@ -31,7 +30,6 @@ Utilities that adapt the signed-in owner and owner-row state to the `@abdoun/abd
 1. A new owner-role property form receives an owner row built from the signed-in user.
 2. The utility separates the Jordan dial code from the local phone number.
 3. Existing draft rows are matched by email to determine read-only indices.
-4. Owner address remains an empty compatibility-only value and is not part of API persistence.
 
 # Dependencies
 
@@ -40,4 +38,4 @@ Utilities that adapt the signed-in owner and owner-row state to the `@abdoun/abd
 
 # Notes
 
-The library should remove `owner_address` from `OwnerInfoItem` upstream when the retired field is removed from its form contract. The app-side empty value can then be deleted.
+The v0.1.89 owner contract no longer includes the retired `owner_address` field.
