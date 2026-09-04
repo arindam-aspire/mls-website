@@ -19,7 +19,7 @@ TypeScript request-body shapes for property **draft submission** (create / save 
 | `PropertyDraftSubmissionBasicInformation` | Title, description, taxonomy ids |
 | `PropertyDraftSubmissionLocation` | City, first area, address, and `show_location` visibility boolean |
 | `PropertyDraftSubmissionOwnerInformation` | Owners with merged phone, `nationality`, `ssi`, and document urls (no `owner_address`) |
-| `PropertyDraftSubmissionPropertyDetails` | Bedrooms, area, permit, `guard_name`, merged `guard_phone_number`, etc. |
+| `PropertyDraftSubmissionPropertyDetails` | Bedrooms, Built-up Area value plus `"SQM"`/`"SQFT"` unit, permit, `guard_name`, merged `guard_phone_number`, etc. |
 | `PropertyDraftSubmissionPricing` | Numeric price fields + currency |
 | `PropertyDraftSubmissionAmenities` | `feature_ids` (feature catalog ids) |
 | `PropertyDraftSubmissionMediaDocuments` | Images, videos, documents, urls |
@@ -35,6 +35,7 @@ TypeScript request-body shapes for property **draft submission** (create / save 
 - Request shape: `{ "payload": { … }, "current_step": 1, "last_completed_step": 1 }` on the first form step — `current_step` matches `activeStep`; `last_completed_step` matches `max_reached_step` (1-based, same as the library).
 - Draft `payload`: omit any section or field the user has not filled yet; nested objects and array items also use optional keys.
 - `payload.location.show_location` is sent on create/update. New and legacy drafts default it to `false`; saved drafts hydrate the stored value.
+- Draft payloads retain the entered Built-up Area value and selected unit. Final-submit mapping converts square feet with `1 sq. ft. = 0.09290304 sq. m.` and identifies the normalized value as `"SQM"`.
 - `route_through_agency` is a top-level boolean on create/update/direct-submit requests and defaults to `false`; `agency_id` is `null` when routing is off and required by the UI when routing is on.
 - `media_documents.images` carries uploaded property images; `media_documents.videos` carries uploaded property videos.
 - `review_submit` booleans default to `false` on draft unless the UI sets them explicitly.

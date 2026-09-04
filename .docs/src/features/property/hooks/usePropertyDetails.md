@@ -11,6 +11,7 @@ Custom hook for the property details flow. Fetches a single property by id, expo
 - Map app locale (`es` → `esp`) for `@abdoun/abdoun-library` `PropertyView`.
 - Manage detail tabs synced to URL `tab`. **Overview** and **Features** remain available to every viewer. Existing privileged roles retain **Location** and **Documents**; when API `show_location === true`, **Location** is additionally available to guests, owners, and registered users while **Documents** remains role-restricted.
 - Expose favourite and contact handlers (favourite → add/remove APIs via `usePropertyFavouriteToggle`; agent/owner email, phone, WhatsApp → `propertyContactActions.utils` using API contact fields).
+- Derive localized guard-card data only when trimmed API `guard_name` and guard phone number are both non-empty (`guard_phone_number`, with `guard_number` compatibility).
 - After details load, signed-in **registered_user** / **owner** POST `addRecentView` once per `propertyId` (silent; no UI).
 
 # Imports
@@ -74,6 +75,7 @@ On similar success: `response.data.items` → favourite flags applied → `simil
 | `isLoading` | Fetch pending (property details or feature catalog) |
 | `isError` | Mutation failed |
 | `propertyDetails` | Data for `PropertyView` (`is_favourite` set from favourites lookup when signed in) |
+| `guardDetails` | Localized `{ name, number, title, nameLabel, numberLabel }` for the separate card, or `null` unless both guard fields are non-empty |
 | `isFavouriteLoading` | Passed to `PropertyView.isFavouriteLoading` while toggle is in flight |
 | `locale` | Mapped app locale for library |
 | `applicationKey` | `"abdoun_web"` |
@@ -105,8 +107,9 @@ _N/A — hook only._
 3. `activeTab` is read from `?tab=` and accepted only when present in those role-filtered options (otherwise defaults to `overview`).
 4. On mount or `propertyId` change, fetch property details.
 5. Similar listings and main details merge favourite state from `usePropertyFavouriteToggle`.
-6. Tab change calls `router.replace` with updated `tab` param.
-7. Screen passes values to `PropertyView` / `SimilarProperties`; contact actions use native `mailto:`, `tel:`, and WhatsApp links (no-op when contact field missing).
+6. Guard values are trimmed and returned only when `guard_name` and a number (`guard_phone_number`, falling back to `guard_number`) both exist.
+7. Tab change calls `router.replace` with updated `tab` param.
+8. Screen passes values to `PropertyView` / `SimilarProperties`; contact actions use native `mailto:`, `tel:`, and WhatsApp links (no-op when contact field missing).
 
 # Dependencies
 

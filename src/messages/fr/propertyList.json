@@ -72,6 +72,11 @@
     "owners": {
       "title": "Détails du propriétaire",
       "noContact": "Aucune information de contact"
+    },
+    "guard": {
+      "title": "Détails du gardien",
+      "name": "Nom du gardien",
+      "number": "Numéro du gardien"
     }
   },
   "favourites": {

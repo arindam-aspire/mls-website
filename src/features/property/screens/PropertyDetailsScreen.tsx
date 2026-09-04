@@ -11,10 +11,13 @@ import { ConfirmModal } from "@/src/components/common/ConfirmModal";
 import { ContactModal } from "@/src/features/contact/components/ContactModal";
 import { Button } from "@/src/components/ui/button";
 import type { ButtonColor, ButtonVariant } from "@/src/components/ui/button/types";
+import { Card } from "@/src/components/ui/card";
 import { useRouter } from "@/src/i18n/navigation";
 import {
+  bodySmallTextClasses,
   bodyTextClasses,
   headingPageClasses,
+  overlineLabelClasses,
 } from "@/src/lib/typography";
 import { cn } from "@/src/lib/cn";
 import { AssignAgentModal } from "../components/AssignAgentModal";
@@ -25,6 +28,49 @@ import type { PropertyDetailsStatusActionCard } from "../types/property.types";
 type PropertyDetailsScreenProps = {
   propertyId: string;
 };
+
+type GuardDetailsCardProps = {
+  name: string;
+  number: string;
+  title: string;
+  nameLabel: string;
+  numberLabel: string;
+};
+
+function GuardDetailsCard({
+  name,
+  number,
+  title,
+  nameLabel,
+  numberLabel,
+}: GuardDetailsCardProps) {
+  return (
+    <Card
+      className="flex w-full min-w-0 flex-col gap-4 p-4 sm:p-5 md:p-6"
+      aria-label={title}
+    >
+      <h2 className={cn("text-muted", overlineLabelClasses)}>{title}</h2>
+
+      <dl className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        {[
+          { label: nameLabel, value: name },
+          { label: numberLabel, value: number },
+        ].map(({ label, value }) => (
+          <div
+            key={label}
+            className={cn(
+              "min-w-0 rounded-lg bg-page p-3 text-text/85",
+              bodySmallTextClasses,
+            )}
+          >
+            <dt className="font-medium text-secondary/90">{label}</dt>
+            <dd className="break-words text-text/65">{value}</dd>
+          </div>
+        ))}
+      </dl>
+    </Card>
+  );
+}
 
 function getActionButtonColor(
   tone: NonNullable<PropertyDetailsStatusActionCard["actions"]>[number]["tone"],
@@ -131,6 +177,7 @@ export default function PropertyDetailsScreen({
     isLoading,
     isError,
     propertyDetails,
+    guardDetails,
     isFavouriteLoading,
     locale,
     applicationKey,
@@ -250,6 +297,8 @@ export default function PropertyDetailsScreen({
         onClickOwnerPhone={openOwnerPhone}
         onClickOwnerWhatsApp={openOwnerWhatsApp}
       />
+
+      {guardDetails ? <GuardDetailsCard {...guardDetails} /> : null}
 
       {canViewRestrictedTabs ? (
         <PropertyStatusActionPanel statusActionCard={statusActionCard} />

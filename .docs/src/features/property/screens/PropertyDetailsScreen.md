@@ -8,6 +8,7 @@ Route-level property details screen. Renders `PropertyView` from `@abdoun/abdoun
 
 - Compose `PropertyView` with data and handlers from `usePropertyDetails`.
 - Render `SimilarProperties` from `@abdoun/abdoun-library` below the detail view.
+- Render a separate Guard Details card after `PropertyView` only when API `guard_name` and a guard phone number are non-empty.
 - Show `UpcomingFeatureModal` only when other unreleased features trigger it (contact actions no longer use it).
 - Show a not-found panel when fetch fails or returns no data.
 - **Public view** (guests and `registered_user`): hide **Property workflow** panel.
@@ -17,6 +18,7 @@ Route-level property details screen. Renders `PropertyView` from `@abdoun/abdoun
 # Imports
 
 - `PropertyView`, `SimilarProperties` from `@abdoun/abdoun-library`
+- `Card` from `@/src/components/ui/card`
 - `useRouter` from `@/src/i18n/navigation`
 - `UpcomingFeatureModal` from `@/src/components/common/UpcomingFeatureModal`
 - `usePropertyDetails` from `../hooks/usePropertyDetails`
@@ -61,6 +63,7 @@ Indirect via `usePropertyDetails` → `GET /properties/:id`, `GET /properties/:i
 - **Light/dark:** via `ThemeProvider` and `globals.css`
 - **Sidebar:** `PropertyView` uses `showStatusActionCard={false}` and `showPropertyMetrics={false}` so the library **Property Status** card and **Avg. per unit / Documents** metrics are hidden; handover from API is shown as a library `HandoverBadge` when present. Agency workflow stays in MLS `PropertyStatusActionPanel` below the view.
 - **Contact cards:** scoped styles in `app/globals.css` keep the price summary, Listing Agent, and Owner Details in independent matching card surfaces. Listing Agent and Owner Details never share one visual card. The same split layout is applied to the loading skeleton.
+- **Guard details:** a responsive `Card` uses `rounded-xl` through the shared card primitive, with `rounded-lg bg-page` rows for Guard Name and Guard Number. Copy comes from `propertyList.details.guard`.
 - **Neighborhood:** the `property-details-view` scope enables the app stylesheet to hide only the library's empty neighborhood placeholder and expand the map to the card's available width. Real local highlights and lifestyle content retain the library layout.
 
 # Flow Description
@@ -72,8 +75,9 @@ Indirect via `usePropertyDetails` → `GET /properties/:id`, `GET /properties/:i
 5. Success: `PropertyView` with tabs, feature catalog, and visually separate price, Listing Agent, and Owner Details cards while preserving the library handlers and role-based visibility.
 6. Neighborhood with no descriptive data: the empty placeholder is omitted and the existing map fills the padded card at mobile, tablet, and desktop widths.
 7. **Owner details:** library `PropertyView` owner block (single or multiple owners) appears only for agent, agency/admin, and super-admin roles.
-8. **Property workflow** only when `canViewRestrictedTabs`.
-9. `SimilarProperties` carousel below, fed by `similarListings` / `isSimilarLoading`.
+8. **Guard details:** when trimmed `guard_name` and a number (`guard_phone_number`, with `guard_number` compatibility) both exist, show their dedicated card; omit the entire card if either value is absent or blank.
+9. **Property workflow** only when `canViewRestrictedTabs`.
+10. `SimilarProperties` carousel below, fed by `similarListings` / `isSimilarLoading`.
 
 # Dependencies
 

@@ -19,6 +19,7 @@ Per-locale translation JSON aggregated by `index.ts` for next-intl.
 | `common.json` | `common` | Header, footer, loading, profile menu, search, `backHome` |
 | `home.json` | `home` | Landing / hero |
 | `notFound.json` | `notFound` | 404 page (`code`, `eyebrow`, `title`, `description`, `backHome`) |
+| `propertyList.json` | `propertyList` | Property lists, details, guard card labels, favourites, and listing management |
 | `unauthorized.json` | `unauthorized` | 401 page (`code`, `eyebrow`, `title`, `description`, `backHome`) |
 | `profile.json` | `profile` | Profile page, agency card, modals |
 

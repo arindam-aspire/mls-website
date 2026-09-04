@@ -19,7 +19,7 @@ Screen hook for `PropertyCreateScreen`: page copy, breadcrumb, create-form catal
 - Expose `propertyFormContainerRef` and mark the library-owned `reference_number` input as native read-only whenever the Property Details step mounts. This prevents typing, pasting, or modifying the displayed backend value while preserving the library's existing required validation and form flow.
 - Own the Location-step `show_location` value. It defaults to `false`, survives library step payload emissions, participates in Location dirty-state tracking, and hydrates from saved drafts.
 - `onDraft` → `POST /property-submissions` when no `submission_id` query; `PATCH /property-submissions/{submissionId}` when resuming. A successful response merges its server-generated `payload.property_details.reference_number` into the displayed form state. Returns `boolean` success for unsaved-changes modal and clears the dirty baseline on success.
-- Reference-number merging initializes only fields supported by the current library `PropertyDetailsFormValues` contract; retired guard fields are not injected into form state.
+- Reference-number merging initializes the complete v0.1.89 `PropertyDetailsFormValues` contract, including the default `SQM` Built-up Area unit and empty guard contact fields, before restoring saved values.
 - **Unsaved-changes baseline:** After catalog load (and draft hydration when `submission_id` is present), the dirty baseline is taken from the library `PropertyForm` **live payload** (deferred one tick), not from the API mapper output — avoids false “unsaved changes” when resuming a draft without edits.
 - **Unsaved changes:** delegates to [usePropertyCreateUnsavedChanges.md](./usePropertyCreateUnsavedChanges.md) — per-step dirty tracking, navigation guard + link/back/keyboard refresh interception, custom modal (**Save as Draft** / **Discard** / **Cancel**). Tracks `propertyDetails` from the screen hook until `@abdoun/abdoun-library` ships live payload callbacks.
 - Owner document upload via `useOwnerDocumentUpload` (`context: owner_document`).
@@ -49,7 +49,7 @@ Screen hook for `PropertyCreateScreen`: page copy, breadcrumb, create-form catal
 - Local state: `propertyTaxonomy`, `locationTaxonomy`, `featureCatalogItems`, `activeStep`, `maxReachedStep`, `propertyDetails` (including `location_insert.show_location`), `submissionId`, `routeThroughAgency` (default `false`), `selectedAgencyId`, `agencyFieldError`, `isCatalogLoading`, `isSubmitting`.
 - Reads `submission_id` from `useSearchParams` on load; `router.replace` updates query after first successful draft save.
 - `useGetPropertyTaxonomy` / `useGetLocationTaxonomy` also update `property.store` on success.
-- Host owns `propertyDetails` and `maxReachedStep`; library returns merged values on `onNext` and forward `onStepClick` for persistence.
+- Host owns `propertyDetails` and `maxReachedStep`; library returns merged values on `onNext` and forward `onStepClick` for persistence. The library-owned split Built-up Area control stores its decimal string and `"SQM"`/`"SQFT"` unit in this state.
 
 # Exports
 

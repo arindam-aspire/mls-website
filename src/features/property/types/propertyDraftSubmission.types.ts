@@ -1,3 +1,4 @@
+import type { BuiltUpAreaUnit } from "@abdoun/abdoun-library";
 import type { AgencyCurrency } from "@/src/features/profile/constants/agencyPreferences";
 
 /** Listing purpose sent to draft-submission API (`basic_information.listing_purpose`). */
@@ -48,6 +49,8 @@ export type PropertyDraftSubmissionPropertyDetails = {
   bathrooms?: number | null;
   /** Parsed from `PropertyForm` `property_details.built_up_area` string. */
   built_up_area?: number | null;
+  /** Unit used by the split built-up-area control; submitted values are normalized to `SQM`. */
+  built_up_area_unit?: BuiltUpAreaUnit;
   parking_spaces?: number | null;
   property_age?: string | null;
   /** From `PropertyForm` `property_details.total_floor`. */
