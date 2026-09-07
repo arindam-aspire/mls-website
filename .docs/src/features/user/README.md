@@ -32,7 +32,7 @@ user/
 
 - Sidebar: User Management → Owners (`OWNERS` = Super Admin + Agency Admin)
 - Table: name, phone, email, linked properties, linked leads, status, actions
-- Actions: View, Edit, Activate, Deactivate (confirm + toast + list refresh)
+- Actions: View, Edit, Activate; Deactivate is restricted by `OWNER_DEACTIVATE` to Super Admin (confirm + toast + list refresh)
 - Linked counts open paginated modals fetching properties/leads APIs
 - Route guard: `useAuthorize("OWNERS")` → `/unauthorized` for Agent / Owner / Normal User
 

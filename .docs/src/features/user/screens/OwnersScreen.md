@@ -15,7 +15,8 @@ Admin Owner Management page UI. Composes `OwnerList` with filters/list from `use
 
 - View → `OwnerViewModal`
 - Edit → `OwnerEditModal`
-- Activate / Deactivate → `ConfirmModal` + status API
+- Activate → `ConfirmModal` + status API for existing page roles
+- Deactivate → `ConfirmModal` + status API only when `OWNER_DEACTIVATE` is granted (Super Admin); hidden for Agency and unavailable to Agent
 - Linked property/lead counts → `OwnerLinkedResourcesModal`
 
 ## Styling

@@ -1,17 +1,37 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { PROPERTY_SEARCH_STATUS_OPTIONS } from "@/src/features/property/hooks/propertySearchFilter.constants";
+import { DEFAULT_PROPERTY_LIST_PARAMS } from "@/src/features/property/utils/parsePropertyListUrlParams";
 import { cn } from "@/src/lib/cn";
 import { navDesktopLinkClasses } from "@/src/lib/typography";
 import { useRouter } from "@/src/i18n/navigation";
 
 const NAV_ITEMS = [
-  { path: "/buy", labelKey: "navBuy" },
-  { path: "/rent", labelKey: "navRent" },
-  { path: "/off-plan", labelKey: "navOffPlan" },
   { path: "/sell", labelKey: "navSell" },
+  { path: "/rent", labelKey: "navRent" },
   { path: "/about-us", labelKey: "navAboutUs" },
 ] as const;
+
+const RENT_FILTER_STATUS =
+  PROPERTY_SEARCH_STATUS_OPTIONS.find((option) => option.value === "rent")
+    ?.value ?? "rent";
+
+const SELL_LISTING_HREF = {
+  pathname: "/property-list",
+  query: {
+    status: DEFAULT_PROPERTY_LIST_PARAMS.status,
+    category: DEFAULT_PROPERTY_LIST_PARAMS.category,
+  },
+} as const;
+
+const RENT_LISTING_HREF = {
+  pathname: "/property-list",
+  query: {
+    status: RENT_FILTER_STATUS,
+    category: DEFAULT_PROPERTY_LIST_PARAMS.category,
+  },
+} as const;
 
 interface LandingDesktopNavProps {
   overHero: boolean;
@@ -35,7 +55,19 @@ export function LandingDesktopNav({ overHero }: LandingDesktopNavProps) {
           key={path}
           type="button"
           suppressHydrationWarning
-          onClick={() => router.push(path)}
+          onClick={() => {
+            if (labelKey === "navSell") {
+              router.push(SELL_LISTING_HREF);
+              return;
+            }
+
+            if (labelKey === "navRent") {
+              router.push(RENT_LISTING_HREF);
+              return;
+            }
+
+            router.push(path);
+          }}
           className={cn(
             "cursor-pointer transition-colors",
             navDesktopLinkClasses,

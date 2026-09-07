@@ -22,6 +22,7 @@ export const PERMISSIONS = {
   /** Admin-only user management screens. */
   AGENCIES: [UserRole.SUPER_ADMIN],
   OWNERS: [UserRole.SUPER_ADMIN, UserRole.AGENCY],
+  OWNER_DEACTIVATE: [UserRole.SUPER_ADMIN],
   AGENTS: [UserRole.SUPER_ADMIN, UserRole.AGENCY],
   /** Lead management (`/leads`) — agency admins, agents, and super admin. */
   LEADS: [UserRole.SUPER_ADMIN, UserRole.AGENCY, UserRole.AGENT],

@@ -69,6 +69,8 @@
     "assignedListingsDescription": "Reprenez la file des biens attribués par votre agence.",
     "agencies": "Agences",
     "agenciesHelper": "Agences disponibles dans cet espace de travail.",
+    "activeAgents": "Agents actifs",
+    "activeAgentsHelper": "Agents actifs actuellement rattachés à votre agence.",
     "pendingReviews": "Examens en attente",
     "pendingReviewsHelper": "Biens en attente de l’examen d’un administrateur.",
     "visibleListings": "Annonces visibles",
@@ -80,7 +82,7 @@
     "submissionMeta": "Soumis par {name} · Étape {step}",
     "pending": "En attente",
     "agencySnapshot": "Aperçu des agences",
-    "agencySnapshotDescription": "Agences récemment disponibles.",
+    "agencySnapshotDescription": "L’agence liée à cet espace de travail.",
     "noContact": "Aucun contact"
   }
 }

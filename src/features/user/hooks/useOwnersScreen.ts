@@ -8,6 +8,7 @@ import type { ApiError } from "@/src/apis/core/error.normalizer";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { getAgencyList } from "@/src/features/profile/services/profile.service";
 import { useToast } from "@/src/hooks/useToast";
+import { hasPermission } from "@/src/lib/auth/hasPermission";
 import { UserRole } from "@/src/lib/auth/roles";
 import {
   DEFAULT_OWNER_LIST_PAGE,
@@ -47,6 +48,7 @@ export function useOwnersScreen() {
   const user = useAuthStore((state) => state.user);
   const agencyId = user?.agency?.agency_id?.trim() ?? "";
   const isSuperAdmin = Boolean(user?.roles?.some((role) => role.name === UserRole.SUPER_ADMIN));
+  const canDeactivateOwners = hasPermission(user, "OWNER_DEACTIVATE");
 
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("");
@@ -150,9 +152,13 @@ export function useOwnersScreen() {
 
   const onDeactivateOwner = useCallback(
     (owner: OwnerListRow) => {
+      if (!canDeactivateOwners) {
+        return;
+      }
+
       openOwnerStatusConfirm(owner, "deactivate");
     },
-    [openOwnerStatusConfirm],
+    [canDeactivateOwners, openOwnerStatusConfirm],
   );
 
   const onLinkedPropertiesClick = useCallback(
@@ -174,12 +180,13 @@ export function useOwnersScreen() {
       onView: onViewOwner,
       onEdit: onEditOwner,
       onActivate: onActivateOwner,
-      onDeactivate: onDeactivateOwner,
+      onDeactivate: canDeactivateOwners ? onDeactivateOwner : undefined,
       onLinkedPropertiesClick,
       onLinkedLeadsClick,
     }),
     [
       onActivateOwner,
+      canDeactivateOwners,
       onDeactivateOwner,
       onEditOwner,
       onLinkedLeadsClick,
@@ -203,9 +210,14 @@ export function useOwnersScreen() {
   const libraryWorkflowActions = useMemo<OwnerWorkflowActionsConfig>(
     () => ({
       activate: (owner: Owner) => onActivateOwner(owner as OwnerListRow),
-      suspend: (owner: Owner) => onDeactivateOwner(owner as OwnerListRow),
+      ...(canDeactivateOwners
+        ? {
+            suspend: (owner: Owner) =>
+              onDeactivateOwner(owner as OwnerListRow),
+          }
+        : {}),
     }),
-    [onActivateOwner, onDeactivateOwner],
+    [canDeactivateOwners, onActivateOwner, onDeactivateOwner],
   );
 
   const onSearchChange = useCallback((value: string) => {

@@ -8,6 +8,7 @@ Role-aware dashboard screen composing summary analytics and existing operational
 
 - Render the super-admin dashboard summary widgets.
 - Preserve agency/agent operational dashboard content.
+- For Agency Admin, show the logged-in agency name in the hero workspace label and Agency Snapshot, plus an **Active Agents** KPI (`activeAgents` from `/agents/summary`).
 - Compose responsive KPI, chart, activity, alert, loading, empty, and error states.
 - Use the `dashboard` next-intl namespace for all visible copy.
 
@@ -25,12 +26,13 @@ Role-aware dashboard screen composing summary analytics and existing operational
 
 # State Management
 
-The screen receives server/query state from `useDashboardScreen`. It reads the current user only for the localized welcome name and legacy role presentation.
+The screen receives server/query state from `useDashboardScreen`. It reads the current user only for the localized welcome name and legacy role presentation. The Agency Admin hero uses the hook's backend-derived `loggedInAgency.agency_name`, falling back to the localized Workspace label when the backend does not provide a non-empty name.
 
 # API Usage
 
 - Super admin: `GET /dashboard/summary` through the hook/service.
-- Other roles: existing agency, property submission, agent property, and unread-notification queries.
+- Agency Admin: `GET /agents/summary` for the Active Agents count; agency name from the authenticated user (`/auth/me`) for the hero workspace label and Agency Snapshot. Other operational cards still use property-submission and unread-notification queries.
+- Agent: existing agent property and unread-notification queries.
 
 # Navigation
 
@@ -73,7 +75,8 @@ _No explicit validations detected._
 3. Super admins render seven KPI cards, three line charts, lead-source donut, activities, and health alerts.
 4. Missing arrays render localized empty panels.
 5. Summary failures show a localized alert while global API handling/toasts report the normalized error.
-6. Non-super-admin roles render the existing dashboard workflow.
+6. Agency Admin replaces the generic hero Workspace label with the logged-in agency name, then renders operational KPIs, including Active Agents (`0` when the summary count is zero), and a single Agency Snapshot row for that agency.
+7. Agent roles retain the assigned-listings dashboard workflow.
 
 # Dependencies
 

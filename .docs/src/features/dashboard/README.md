@@ -24,6 +24,6 @@ Authenticated, role-aware dashboard feature.
 
 ## Architecture
 
-Super administrators receive one cached dashboard summary request and render KPIs, trends, lead sources, recent activity, and health alerts. Existing agency and agent experiences retain their previous list/submission/notification queries so adding platform analytics does not change routing or break role-specific workflows.
+Super administrators receive one cached dashboard summary request and render KPIs, trends, lead sources, recent activity, and health alerts. Agency Admin uses `/agents/summary` for the Active Agents card and `/auth/me` for the Agency Snapshot name. Agent experiences retain their previous listing/notification queries so adding platform analytics does not change routing or break role-specific workflows.
 
 All dashboard UI copy is in `src/messages/{en,ar,es,fr}/dashboard.json`. Charts are lightweight SVG/CSS presentations, so no chart dependency was added.
