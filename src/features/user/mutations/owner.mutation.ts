@@ -3,7 +3,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import type { ApiError } from "@/src/apis/core/error.normalizer";
+import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { useToast } from "@/src/hooks/useToast";
+import { hasPermission } from "@/src/lib/auth/hasPermission";
 import { updateOwner, updateOwnerStatus } from "../services/owner.service";
 import type { OwnerStatusUpdateRequest, UpdateOwnerRequest } from "../types/owner.types";
 
@@ -11,6 +13,8 @@ export function useUpdateOwnerStatus() {
   const t = useTranslations("user.owners.statusUpdate");
   const toast = useToast();
   const queryClient = useQueryClient();
+  const user = useAuthStore((state) => state.user);
+  const canDeactivateOwners = hasPermission(user, "OWNER_DEACTIVATE");
 
   return useMutation({
     mutationFn: ({
@@ -19,7 +23,13 @@ export function useUpdateOwnerStatus() {
     }: {
       ownerId: string;
       body: OwnerStatusUpdateRequest;
-    }) => updateOwnerStatus(ownerId, body),
+    }) => {
+      if (body.status === "SUSPENDED" && !canDeactivateOwners) {
+        throw new Error(t("errorDescription"));
+      }
+
+      return updateOwnerStatus(ownerId, body);
+    },
     onSuccess: async (result) => {
       await queryClient.invalidateQueries({ queryKey: ["owners", "list"] });
 

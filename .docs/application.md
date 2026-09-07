@@ -216,7 +216,7 @@ All paths below are **without** locale; prepend `/<locale>` (e.g. `/en/my-listin
 | `/property-create` | `(main)/(listings)/property-create/page.tsx` | `PropertyCreateScreen` — guarded by `useAuthorize("PROPERTY_CREATE")`; Location includes `show_location` (default `false`); Step 8 lets Super Admin/Owner opt into `route_through_agency` and conditionally requires `agency_id` |
 | `/property-update` | `(main)/(listings)/property-update/page.tsx` | `PropertyUpdateScreen` — guarded by `useAuthorize("MY_LISTINGS")` |
 | `/recently-viewed` | `(main)/recently-viewed/page.tsx` | `RecentlyViewedScreen` — guarded by `useAuthorize("RECENTLY_VIEWED")` |
-| `/owners` | `(main)/owners/page.tsx` | `OwnersScreen` — guarded by `useAuthorize("OWNERS")` (Super Admin + Agency Admin); list, activate/deactivate, view/edit, linked properties/leads |
+| `/owners` | `(main)/owners/page.tsx` | `OwnersScreen` — guarded by `useAuthorize("OWNERS")` (Super Admin + Agency Admin); list, activate, view/edit, linked properties/leads; `OWNER_DEACTIVATE` restricts Owner deactivation to Super Admin |
 | `/agents` | `(main)/agents/page.tsx` | `AgentsScreen` (placeholder) — guarded by `useAuthorize("AGENTS")` (admin only) |
 | `/leads` | `(main)/leads/page.tsx` | `LeadsScreen` — guarded by `useAuthorize("LEADS")` (super_admin, agency admin, agent) |
 | `/leads/[leadId]` | `(main)/leads/[leadId]/page.tsx` | `LeadDetailsScreen` — conversation / notes / timeline / close tabs; assigned agents request closure and agency/super administrators approve or reject before `CLOSED` |
@@ -225,17 +225,15 @@ All paths below are **without** locale; prepend `/<locale>` (e.g. `/en/my-listin
 | `/inquiries` | `(property)/inquiries/page.tsx` | Owner `InquiriesScreen` reuses Lead List with `GET /agency/owners/{loggedInUser.id}/leads`; other authenticated roles retain Coming Soon |
 | `/unauthorized` | `(system)/unauthorized/page.tsx` | `UnauthorizedScreen` |
 
-### Header navigation (not yet implemented as routes)
+### Header navigation
 
-Defined in `DesktopNav` / mobile menu — `router.push` only:
+Defined in `DesktopNav` / `LandingDesktopNav` — `router.push` only. Sell and Rent open the existing listing search with Buy/Rent defaults; About Us still uses a placeholder path:
 
-| Path | Label key |
-| --- | --- |
-| `/buy` | `navBuy` |
-| `/rent` | `navRent` |
-| `/off-plan` | `navOffPlan` |
-| `/sell` | `navSell` |
-| `/about-us` | `navAboutUs` |
+| Path | Label key | Click destination |
+| --- | --- | --- |
+| `/sell` | `navSell` | `/property-list` with existing Buy defaults (`status=buy`, `category=residential` from `DEFAULT_PROPERTY_LIST_PARAMS`) |
+| `/rent` | `navRent` | `/property-list` with existing Rent filter (`status=rent` from `PROPERTY_SEARCH_STATUS_OPTIONS`, `category=residential`) |
+| `/about-us` | `navAboutUs` | `/about-us` |
 
 ### Catch-all & errors
 
@@ -417,7 +415,7 @@ After Create Property submission succeeds, the saved snapshot synchronously clea
 | `components/*` | KPI cards, dependency-free growth/donut charts, activity, alerts, and responsive skeleton |
 | `screens/index.tsx` | Super-admin summary dashboard plus preserved agency/agent operational branches |
 
-Super administrators load the consolidated summary with the `["dashboard", "summary"]` query key. The response drives seven KPIs, four month-over-month indicators, three growth charts, a lead-source donut, recent activity, and severity-coded health alerts. The shared interceptor attaches the stored Bearer token and performs existing 401 refresh handling. Missing data renders localized empty states; request failures use normalized errors, the existing toast system, and an inline error state. No route or navigation configuration changed.
+Super administrators load the consolidated summary with the `["dashboard", "summary"]` query key. The response drives seven KPIs, four month-over-month indicators, three growth charts, a lead-source donut, recent activity, and severity-coded health alerts. Agency Admin loads `GET /agents/summary` (`["agents", "summary"]`) for the Active Agents count and uses the logged-in agency name from `/auth/me` in both the hero workspace label and Agency Snapshot instead of generic workspace/agency-list presentation. The shared interceptor attaches the stored Bearer token and performs existing 401 refresh handling. Missing data renders localized empty states; request failures use normalized errors, the existing toast system, and an inline error state. No route or navigation configuration changed.
 
 ---
 

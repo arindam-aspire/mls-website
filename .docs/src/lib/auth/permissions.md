@@ -29,10 +29,12 @@
 | `NOTIFICATIONS` | agency, agent, owner, user |
 | `RECENTLY_VIEWED` | owner, user (`registered_user`) |
 | `OWNERS` | admin (`UserRole.AGENCY`) |
+| `OWNER_DEACTIVATE` | Super Admin only |
 | `AGENTS` | admin (`UserRole.AGENCY`) |
 | `AGENCY_SETTINGS` | admin (`UserRole.AGENCY`) |
 | `NOTIFICATION_SETTINGS` | owner, user (`registered_user`) |
 
 ## Notes
 
+- `OWNER_DEACTIVATE` is action-specific: Agency and Agent roles cannot render or invoke Owner deactivation in the frontend.
 - Backend remains the final authority; this map is for client-side UX guards.

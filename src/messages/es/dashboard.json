@@ -69,6 +69,8 @@
     "assignedListingsDescription": "Continúa desde la cola de propiedades asignadas por tu agencia.",
     "agencies": "Agencias",
     "agenciesHelper": "Registros de agencias disponibles para este espacio.",
+    "activeAgents": "Agentes activos",
+    "activeAgentsHelper": "Agentes activos que pertenecen a tu agencia.",
     "pendingReviews": "Revisiones pendientes",
     "pendingReviewsHelper": "Solicitudes de propiedades pendientes de revisión.",
     "visibleListings": "Anuncios visibles",
@@ -80,7 +82,7 @@
     "submissionMeta": "Enviado por {name} · Paso {step}",
     "pending": "Pendiente",
     "agencySnapshot": "Resumen de agencias",
-    "agencySnapshotDescription": "Agencias disponibles recientemente.",
+    "agencySnapshotDescription": "La agencia vinculada a este espacio de trabajo.",
     "noContact": "Sin contacto"
   }
 }

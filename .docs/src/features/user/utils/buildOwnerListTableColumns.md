@@ -14,7 +14,7 @@ Builds localized `TableColumn<OwnerListRow>[]` for the owners list (app-owned co
 | `propertyOwned` | Linked properties count (click → modal when &gt; 0) |
 | `leadsLinked` | Linked leads count (click → modal when &gt; 0) |
 | `status` | `OwnerStatusBadge` |
-| `actions` | `AgentRowActions`: View, Edit, Activate/Deactivate by status |
+| `actions` | `AgentRowActions`: View, Edit, Activate by status, and Deactivate only when the permission-aware caller supplies `onDeactivate` |
 
 ## Helpers
 

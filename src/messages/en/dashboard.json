@@ -69,6 +69,8 @@
     "assignedListingsDescription": "Continue from your agency-assigned property queue.",
     "agencies": "Agencies",
     "agenciesHelper": "Agency records available to this workspace.",
+    "activeAgents": "Active Agents",
+    "activeAgentsHelper": "Active agents currently belonging to your agency.",
     "pendingReviews": "Pending Reviews",
     "pendingReviewsHelper": "Property submissions waiting for agency admin review.",
     "visibleListings": "Visible Listings",
@@ -80,7 +82,7 @@
     "submissionMeta": "Submitted by {name} · Step {step}",
     "pending": "Pending",
     "agencySnapshot": "Agency Snapshot",
-    "agencySnapshotDescription": "Recently available agencies.",
+    "agencySnapshotDescription": "The agency linked to this workspace.",
     "noContact": "No contact"
   }
 }

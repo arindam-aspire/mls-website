@@ -71,8 +71,8 @@ export default function DashboardScreen() {
     isSummaryDashboard,
     summary,
     kpiMetrics,
-    agencyCount,
-    agencies,
+    activeAgentCount,
+    loggedInAgency,
     pendingSubmissions,
     pendingSubmissionCount,
     activePropertyCount,
@@ -203,7 +203,11 @@ export default function DashboardScreen() {
         <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
           <div className="min-w-0">
             <p className="text-sm font-semibold uppercase tracking-wide text-primary-dark">
-              {isSuperAdmin ? t("hero.platformControl") : t("hero.workspace")}
+              {isSuperAdmin
+                ? t("hero.platformControl")
+                : canReviewSubmissions && loggedInAgency?.agency_name?.trim()
+                  ? loggedInAgency.agency_name
+                  : t("hero.workspace")}
             </p>
             <h1 className="mt-2 text-3xl font-bold text-text">{t("title")}</h1>
             <p className="mt-2 max-w-3xl text-sm text-muted">
@@ -243,12 +247,12 @@ export default function DashboardScreen() {
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4" aria-label={t("kpi.ariaLabel")}>
         <KpiCard
-          label={isAgentDashboard ? t("legacy.assignedListings") : t("legacy.agencies")}
-          value={isAgentDashboard ? activePropertyCount : agencyCount}
+          label={isAgentDashboard ? t("legacy.assignedListings") : t("legacy.activeAgents")}
+          value={isAgentDashboard ? activePropertyCount : activeAgentCount}
           helper={
             isAgentDashboard
               ? t("legacy.assignedListingsHelper")
-              : t("legacy.agenciesHelper")
+              : t("legacy.activeAgentsHelper")
           }
           icon={Building2}
           tone="blue"
@@ -351,15 +355,18 @@ export default function DashboardScreen() {
             <p className="text-sm text-muted">{t("legacy.agencySnapshotDescription")}</p>
           </div>
           <div className="divide-y divide-secondary/10">
-            {agencies.slice(0, 5).map((agency) => (
-              <article key={agency.id} className="px-5 py-4">
-                <h3 className="truncate text-sm font-semibold text-text">{agency.agency_name}</h3>
-                <p className="mt-1 truncate text-xs text-muted">{agency.email || agency.phone || t("legacy.noContact")}</p>
+            {loggedInAgency ? (
+              <article className="px-5 py-4">
+                <h3 className="truncate text-sm font-semibold text-text">
+                  {loggedInAgency.agency_name}
+                </h3>
+                <p className="mt-1 truncate text-xs text-muted">
+                  {loggedInAgency.email || loggedInAgency.phone || t("legacy.noContact")}
+                </p>
               </article>
-            ))}
-            {agencies.length === 0 ? (
+            ) : (
               <p className="px-5 py-10 text-center text-sm text-muted">{t("empty.agencies")}</p>
-            ) : null}
+            )}
           </div>
         </div>
         </section>

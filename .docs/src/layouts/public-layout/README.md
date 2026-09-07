@@ -28,7 +28,7 @@ PublicLayout (index.tsx)
 | [PublicNotificationsButton.md](./PublicNotificationsButton.md) | Shared bell (mobile header + desktop profile row) |
 | [PublicMain.md](./PublicMain.md) | Main content flex wrapper |
 | [PublicFooter.md](./PublicFooter.md) | Footer links/copy |
-| [DesktopNav.md](./DesktopNav.md) | Buy/rent/off-plan/sell/about |
+| [DesktopNav.md](./DesktopNav.md) | Sell/rent/about |
 | [DesktopActions.md](./DesktopActions.md) | Theme, locale, profile CTA |
 | [ProfilePopover.md](./ProfilePopover.md) | Avatar menu, logout, property links |
 | [PublicHeaderThemeButton.md](./PublicHeaderThemeButton.md) | Light/dark toggle |

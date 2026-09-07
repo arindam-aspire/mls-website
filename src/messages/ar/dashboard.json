@@ -69,6 +69,8 @@
     "assignedListingsDescription": "تابع من قائمة العقارات التي أسندتها إليك الوكالة.",
     "agencies": "الوكالات",
     "agenciesHelper": "سجلات الوكالات المتاحة لمساحة العمل.",
+    "activeAgents": "الوكلاء النشطون",
+    "activeAgentsHelper": "الوكلاء النشطون التابعون لوكالتك.",
     "pendingReviews": "المراجعات المعلقة",
     "pendingReviewsHelper": "طلبات العقارات التي تنتظر مراجعة مسؤول الوكالة.",
     "visibleListings": "العقارات الظاهرة",
@@ -80,7 +82,7 @@
     "submissionMeta": "مقدم من {name} · الخطوة {step}",
     "pending": "معلق",
     "agencySnapshot": "لمحة عن الوكالات",
-    "agencySnapshotDescription": "الوكالات المتاحة حديثاً.",
+    "agencySnapshotDescription": "الوكالة المرتبطة بمساحة العمل هذه.",
     "noContact": "لا توجد معلومات اتصال"
   }
 }

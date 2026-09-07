@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useEffect, useMemo } from "react";
 import type { ApiError } from "@/src/apis/core/error.normalizer";
+import type { LoggedInUser, LoggedInUserAgency } from "@/src/features/auth/types/user.types";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { getUnreadNotificationCount } from "@/src/features/notifications/services/notification.service";
 import {
@@ -11,13 +12,32 @@ import {
   getAgentProperties,
 } from "@/src/features/property/services/property.service";
 import { UserRole } from "@/src/lib/auth/roles";
-import { getAgencyList } from "@/src/features/profile/services/profile.service";
+import { getAgentSummary } from "@/src/features/user/services/agent.service";
+import type { AgentSummaryData } from "@/src/features/user/types/agent.types";
 import { useToast } from "@/src/hooks/useToast";
 import type { DashboardKpiMetric } from "../components/DashboardKpiCards";
 import { getDashboardSummary } from "../services/dashboard.service";
 
 const DASHBOARD_PAGE_SIZE = 5;
 const WORKFLOW_QUEUE_STATUSES = ["submitted", "agent-assigned", "pending-approval"] as const;
+
+function resolveLoggedInAgency(
+  user: LoggedInUser | null | undefined,
+): LoggedInUserAgency | null {
+  const nested = user?.agency ?? null;
+  if (nested?.agency_name?.trim()) {
+    return nested;
+  }
+
+  const fromList = user?.agencies?.find((agency) => agency.agency_name?.trim());
+  return fromList ?? nested ?? null;
+}
+
+function resolveActiveAgentCount(summary: AgentSummaryData | null | undefined): number {
+  const raw = summary as (AgentSummaryData & { active_agents?: number }) | null | undefined;
+  const value = raw?.activeAgents ?? raw?.active_agents;
+  return typeof value === "number" && Number.isFinite(value) ? value : 0;
+}
 
 export function useDashboardScreen() {
   const t = useTranslations("dashboard");
@@ -38,9 +58,9 @@ export function useDashboardScreen() {
     enabled: isSuperAdmin,
   });
 
-  const agenciesQuery = useQuery({
-    queryKey: ["dashboard", "agencies"],
-    queryFn: () => getAgencyList({ skip: 0, limit: 100 }),
+  const agentSummaryQuery = useQuery({
+    queryKey: ["agents", "summary"],
+    queryFn: getAgentSummary,
     enabled: canReviewSubmissions && !isSuperAdmin,
   });
 
@@ -102,7 +122,7 @@ export function useDashboardScreen() {
   const isLoading =
     (isSuperAdmin && summaryQuery.isPending) ||
     (!isSuperAdmin &&
-      ((canReviewSubmissions && agenciesQuery.isPending) ||
+      ((canReviewSubmissions && agentSummaryQuery.isPending) ||
         (canReviewSubmissions && pendingSubmissionsQuery.isPending) ||
         (canReviewSubmissions && activeSubmissionsQuery.isPending) ||
         (isAgent && !canReviewSubmissions && agentListingsQuery.isPending) ||
@@ -112,14 +132,14 @@ export function useDashboardScreen() {
     () =>
       [
         isSuperAdmin ? summaryQuery.error : null,
-        canReviewSubmissions ? agenciesQuery.error : null,
+        canReviewSubmissions ? agentSummaryQuery.error : null,
         canReviewSubmissions ? pendingSubmissionsQuery.error : null,
         canReviewSubmissions ? activeSubmissionsQuery.error : null,
         isAgent && !canReviewSubmissions ? agentListingsQuery.error : null,
         notificationsQuery.error,
       ].filter(Boolean),
     [
-      agenciesQuery.error,
+      agentSummaryQuery.error,
       agentListingsQuery.error,
       canReviewSubmissions,
       isAgent,
@@ -200,8 +220,8 @@ export function useDashboardScreen() {
     kpiMetrics,
     canReviewSubmissions,
     isAgent,
-    agencyCount: agenciesQuery.data?.total ?? 0,
-    agencies: agenciesQuery.data?.items ?? [],
+    activeAgentCount: resolveActiveAgentCount(agentSummaryQuery.data),
+    loggedInAgency: resolveLoggedInAgency(user),
     pendingSubmissions: pendingSubmissionsQuery.data?.data?.items ?? [],
     pendingSubmissionCount: pendingSubmissionsQuery.data?.data?.total ?? 0,
     activePropertyCount: canReviewSubmissions

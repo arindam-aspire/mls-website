@@ -9,6 +9,8 @@ React Query mutations for owner edit and status changes.
 ### `useUpdateOwnerStatus`
 
 - Calls `updateOwnerStatus(ownerId, body)`
+- Before a `SUSPENDED` request, checks `OWNER_DEACTIVATE`; unauthorized roles are rejected in the frontend before the API call
+- Activation and other existing status behavior are unchanged
 - On success: invalidates `["owners", "list"]`, success toast (`user.owners.statusUpdate`)
 - On error: error toast (includes 403 / API message)
 

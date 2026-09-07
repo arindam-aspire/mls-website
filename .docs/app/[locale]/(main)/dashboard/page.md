@@ -26,7 +26,7 @@ Uses `useAuthorize("DASHBOARD")` — reads `user` / `isLoadingUser` from `useAut
 
 # API Usage
 
-The page itself performs no request. `DashboardScreen` delegates authenticated summary and legacy role queries to `useDashboardScreen`.
+The page itself performs no request. `DashboardScreen` delegates authenticated summary, Agency Admin agent-summary, and remaining role queries to `useDashboardScreen`.
 
 # Navigation
 

@@ -103,6 +103,7 @@ Response fields: `upload_url` (PUT to S3; `upload_http_method: "PUT"`), `object_
 
 - `useAssignAgentModal` — paginated agent list for assign/reassign modal
 - `useAgentsScreen` — KPI metrics from summary counts
+- `useDashboardScreen` — Agency Admin Active Agents count from `activeAgents`
 - `useInviteAgentByEmailModal` — admin invitation (email or phone)
 - `useManualOnboardAgentModal` — manual agent onboarding
 - `useAgentInviteScreen` — public invitation validate → profile → password instruction
