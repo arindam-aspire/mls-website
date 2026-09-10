@@ -25,6 +25,7 @@ property/
 | `/en/favourites` | `FavouritePropertyScreen` | `(main)` — `useAuthorize("FAVOURITES")` |
 | `/en/recently-viewed` | `RecentlyViewedScreen` | `(main)` — `useAuthorize("RECENTLY_VIEWED")` |
 | `/en/property-list` | `PropertyListScreen` | `(property)` |
+| `/en/property-create` | `PropertyCreateScreen` | `(main)/(listings)` — `useAuthorize("PROPERTY_CREATE")` |
 | `/en/inquiries` | `InquiriesScreen` | `(property)` |
 
 Dynamic detail route: `/en/propert-details/:id` → `PropertyDetailsScreen`.
@@ -41,11 +42,13 @@ Dynamic detail route: `/en/propert-details/:id` → `PropertyDetailsScreen`.
 | `PROPERTY_DETAILS` | `/properties/:id` |
 | `PROPERTY_SIMILAR` | `/properties/:id/similar` |
 | `FEATURE_CATALOG` | `/features?is_active=true` |
+| `PROPERTY_FORM_OPTIONS` | `/property-form-options` |
 
 Types: [types/README.md](./types/README.md). Service: [services/README.md](./services/README.md) (`getPropertyList` via `apiClient`).
 
 ## Subfolders
 
+- [i18n/README.md](./i18n/README.md)
 - [screens/README.md](./screens/README.md)
 - [components/README.md](./components/README.md)
 - [hooks/README.md](./hooks/README.md)

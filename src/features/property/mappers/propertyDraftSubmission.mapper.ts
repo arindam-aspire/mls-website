@@ -4,11 +4,22 @@ import type {
   PropertyDraftSubmissionCurrency,
   PropertyDraftSubmissionData,
   PropertyDraftSubmissionPayload,
+  PropertyDraftSubmissionPropertyDetails,
   PropertyDraftSubmissionRequestBody,
   PropertyDraftSubmissionReviewSubmit,
   PropertyDraftSubmissionUpdateRequestBody,
   PropertySubmissionDirectSubmitRequestBody,
 } from "@/src/features/property/types/propertyDraftSubmission.types";
+import {
+  buildOwnerPhone,
+  parseOwnerPhoneForForm,
+  toOptionalTrimmedString,
+} from "@/src/features/property/utils/propertyOwnerPhone.utils";
+import {
+  EMPTY_PROPERTY_FORM_OPTIONS_CATALOG,
+  resolvePropertyFormMasterOptionValue,
+} from "@/src/features/property/mappers/propertyFormOptions.mapper";
+import type { PropertyFormOptionsCatalog } from "@/src/features/property/types/propertyFormOptions.types";
 import type {
   BuiltUpAreaUnit,
   PropertyFormProps,
@@ -41,8 +52,17 @@ export function withPropertyFormShowLocation(
     ...propertyDetails,
     location_insert: {
       city_id: null,
+      area_id: null,
       area_ids: [],
       address: "",
+      latitude: null,
+      longitude: null,
+      apartment_number: "",
+      plot_number: "",
+      basin_number: "",
+      parcel_number: "",
+      building_number: "",
+      identification_fields: {},
       ...propertyDetails.location_insert,
       show_location: showLocation,
     },
@@ -90,6 +110,59 @@ function parseOptionalNumber(value: string | null | undefined): number | null {
 
   const parsed = Number(value.replace(/,/g, ""));
   return Number.isFinite(parsed) ? parsed : null;
+}
+
+function toDraftMasterOptionValue(
+  value: string | number | null | undefined,
+): string | number | null {
+  if (value == null) {
+    return null;
+  }
+
+  const trimmed = String(value).trim();
+  if (!trimmed) {
+    return null;
+  }
+
+  if (/^\d+$/.test(trimmed)) {
+    return Number(trimmed);
+  }
+
+  return trimmed;
+}
+
+function readDraftMasterOptionField(
+  details: PropertyDraftSubmissionPropertyDetails,
+  keys: Array<keyof PropertyDraftSubmissionPropertyDetails>,
+): unknown {
+  for (const key of keys) {
+    const value = details[key];
+    if (value != null && value !== "") {
+      return value;
+    }
+  }
+
+  return null;
+}
+
+export function getDraftFloorValue(
+  data: PropertyDraftSubmissionData,
+): unknown {
+  const details = data.payload?.property_details;
+  const payload = data.payload;
+
+  return (
+    readDraftMasterOptionField(details ?? {}, [
+      "floor",
+      "floor_id",
+      "floor_level",
+      "floorLevel",
+      "floor_level_id",
+    ]) ??
+    payload?.floor ??
+    data.floor ??
+    null
+  );
 }
 
 const SQUARE_FEET_TO_SQUARE_METERS = 0.09290304;
@@ -156,47 +229,6 @@ function isPropertyDocumentFile(file: { name?: string; mimeType?: string | null 
     PROPERTY_DOCUMENT_MIME_TYPES.includes(file.mimeType ?? "") ||
     hasAcceptedFileExtension(file.name, PROPERTY_DOCUMENT_EXTENSIONS)
   );
-}
-
-const DEFAULT_OWNER_COUNTRY_CODE = "+962";
-
-const OWNER_DIAL_CODES = ["+962", "+966", "+971", "+20", "+1"] as const;
-
-function toOptionalTrimmedString(value: string | undefined | null): string | undefined {
-  const trimmed = value?.trim();
-  return trimmed ? trimmed : undefined;
-}
-
-function buildOwnerPhone(countryCode: string | undefined, phoneNumber: string | undefined): string | undefined {
-  const number = phoneNumber?.trim();
-  if (!number) return undefined;
-  return `${countryCode ?? ""}${number}`.trim() || undefined;
-}
-
-function parseOwnerPhoneForForm(phone: string | undefined | null): {
-  country_code: string;
-  phone_number: string;
-} {
-  const raw = phone?.trim() ?? "";
-
-  if (!raw) {
-    return { country_code: DEFAULT_OWNER_COUNTRY_CODE, phone_number: "" };
-  }
-
-  if (raw.startsWith("+")) {
-    const dialCode = [...OWNER_DIAL_CODES].sort((a, b) => b.length - a.length).find((code) =>
-      raw.startsWith(code),
-    );
-
-    if (dialCode) {
-      return {
-        country_code: dialCode,
-        phone_number: raw.slice(dialCode.length),
-      };
-    }
-  }
-
-  return { country_code: DEFAULT_OWNER_COUNTRY_CODE, phone_number: raw };
 }
 
 type OwnerFormDocument = {
@@ -313,15 +345,27 @@ export function buildPropertyDraftSubmissionPayload(
   const payload: PropertyDraftSubmissionPayload = {};
 
   if (basicInfo != null) {
+    const listingPurposes = Array.from(
+      new Set(
+        (basicInfo.listing_purposes ?? [])
+          .map((value) => value.trim())
+          .filter(Boolean),
+      ),
+    );
+
+    if (listingPurposes.length === 0 && basicInfo.listing_purpose?.trim()) {
+      listingPurposes.push(basicInfo.listing_purpose.trim());
+    }
+
     const listingPurpose =
-      basicInfo.listing_purpose === "sale" || basicInfo.listing_purpose === "rent"
-        ? basicInfo.listing_purpose
-        : basicInfo.listing_purpose === null
-          ? null
-          : undefined;
+      listingPurposes.length === 1 ? listingPurposes[0] : undefined;
 
     payload.basic_information = {
-      listing_purpose: listingPurpose,
+      listing_purposes: listingPurposes.length > 0 ? listingPurposes : undefined,
+      listing_purpose:
+        listingPurpose === "sale" || listingPurpose === "rent"
+          ? listingPurpose
+          : undefined,
       category_id: basicInfo.category_id,
       type_id: basicInfo.type_id,
       title: basicInfo.title || undefined,
@@ -330,22 +374,36 @@ export function buildPropertyDraftSubmissionPayload(
   }
 
   if (location != null) {
+    const areaId = location.area_id ?? location.area_ids?.[0] ?? null;
+
     payload.location = {
       city_id: location.city_id,
-      area_id: location.area_ids[0] ?? null,
+      area_id: areaId,
       address: location.address || undefined,
+      latitude: location.latitude ?? null,
+      longitude: location.longitude ?? null,
+      apartment_number: toOptionalTrimmedString(location.apartment_number),
+      plot_number: toOptionalTrimmedString(location.plot_number),
+      basin_number: toOptionalTrimmedString(location.basin_number),
+      parcel_number: toOptionalTrimmedString(location.parcel_number),
+      building_number: toOptionalTrimmedString(location.building_number),
+      identification_fields: location.identification_fields,
       show_location: getPropertyFormShowLocation(propertyDetails),
     };
   }
 
   if (owners.length > 0) {
+    const ownerInfo = propertyDetails.owner_info;
     payload.owner_information = {
+      owner_id: ownerInfo?.owner_id ?? owners.find((owner) => owner.owner_id)?.owner_id ?? null,
+      owner_mode: ownerInfo?.owner_mode,
       owners: owners.map((owner) => ({
-        full_name: toOptionalTrimmedString(owner.owner_name),
+        owner_id: owner.owner_id,
+        full_name: toOptionalTrimmedString(owner.full_name || owner.owner_name),
         email: toOptionalTrimmedString(owner.email),
         phone: buildOwnerPhone(owner.country_code, owner.phone_number),
         nationality: toOptionalTrimmedString(owner.nationality),
-        ssi: toOptionalTrimmedString(owner.social_security_id),
+        ssi: toOptionalTrimmedString(owner.ssi || owner.social_security_id),
         documents: mapOwnerDocuments(owner.owner_documents),
       })),
     };
@@ -359,18 +417,20 @@ export function buildPropertyDraftSubmissionPayload(
       bathrooms: details.bathrooms,
       built_up_area: options?.forSubmit
         ? normalizeBuiltUpAreaToSquareMeters(
-            details.built_up_area,
+            details.built_up_area ?? "",
             builtUpAreaUnit,
           )
         : parseOptionalNumber(details.built_up_area),
       built_up_area_unit: options?.forSubmit ? "SQM" : builtUpAreaUnit,
       parking_spaces: details.parking_spaces,
-      property_age: details.property_age,
+      year_built: details.year_built ?? null,
+      furnishing_status: toDraftMasterOptionValue(details.furnishing_status),
+      floor_level: toDraftMasterOptionValue(details.floor_level),
+      floor: toDraftMasterOptionValue(details.floor_level),
       total_floors: parseOptionalNumber(details.total_floor),
       completion_status: details.completion_status,
       occupancy: details.occupancy,
       ownership_type: details.ownership_type,
-      permit_number: details.permit_dld_number || undefined,
       orientation: details.orientation,
       guard_name: toOptionalTrimmedString(details.guard_name),
       guard_phone_number: buildOwnerPhone(
@@ -381,34 +441,56 @@ export function buildPropertyDraftSubmissionPayload(
   }
 
   if (pricing != null) {
+    const namedPrices = {
+      furnished_sale_price: parsePrice(pricing.furnished_sale_price),
+      unfurnished_sale_price: parsePrice(pricing.unfurnished_sale_price),
+      furnished_rent_price: parsePrice(pricing.furnished_rent_price),
+      unfurnished_rent_price: parsePrice(pricing.unfurnished_rent_price),
+      semi_furnished_rent_price: parsePrice(pricing.semi_furnished_rent_price),
+    };
+    const fallbackPrice =
+      parsePrice(pricing.price) ||
+      namedPrices.furnished_sale_price ||
+      namedPrices.unfurnished_sale_price ||
+      namedPrices.furnished_rent_price ||
+      namedPrices.unfurnished_rent_price ||
+      namedPrices.semi_furnished_rent_price;
+
     payload.pricing = {
-      price: parsePrice(pricing.price),
+      ...namedPrices,
+      price: fallbackPrice,
       service_charge: parsePrice(pricing.service_charge),
       maintenance_fee: parsePrice(pricing.maintenance_fee),
       currency: resolvePropertyDraftSubmissionCurrency(options?.currency),
     };
   }
 
-  const featureIds = mapSelectedAmenitiesToFeatureIds(
-    selectedAmenities,
-    featuresAndAmenities,
-    categoryId,
-    propertyTypeId,
-  );
+  const selectedFeatureIds = propertyDetails.amenities?.feature_ids ?? [];
+  const featureIds =
+    selectedFeatureIds.length > 0
+      ? Array.from(new Set(selectedFeatureIds))
+      : mapSelectedAmenitiesToFeatureIds(
+          selectedAmenities,
+          featuresAndAmenities,
+          categoryId,
+          propertyTypeId,
+        );
 
   if (featureIds.length > 0) {
     payload.amenities = { feature_ids: featureIds };
   }
 
   if (media != null) {
-    const imageFiles = media.media_files.filter((file) => isImageMediaFile(file));
-    const videoFiles = media.media_files.filter((file) => isVideoMediaFile(file));
+    const mediaFiles = media.media_files ?? [];
+    const imageFiles = mediaFiles.filter((file) => isImageMediaFile(file));
+    const videoFiles = mediaFiles.filter((file) => isVideoMediaFile(file));
 
+    const hasExplicitPrimary = imageFiles.some((file) => file.is_primary);
     const images = imageFiles.map((file, index) => ({
       file_name: file.name,
       url: file.uri,
-      is_primary: index === 0,
-      display_order: index,
+      is_primary: hasExplicitPrimary ? Boolean(file.is_primary) : index === 0,
+      display_order: file.display_order ?? index,
     }));
 
     const videos = videoFiles.map((file, index) => ({
@@ -417,7 +499,7 @@ export function buildPropertyDraftSubmissionPayload(
       display_order: index,
     }));
 
-    const documents = media.documents
+    const documents = (media.documents ?? [])
       .filter((file) => isPropertyDocumentFile(file))
       .map((file, index) => ({
         file_name: file.name,
@@ -515,36 +597,24 @@ function formatPriceField(value: number | null | undefined): string {
   return String(value);
 }
 
-function formatPropertyAgeField(value: string | number | null | undefined): string | null {
-  if (value == null) {
+function formatYearBuiltField(
+  value: string | number | null | undefined,
+): number | null {
+  if (value == null || value === "") {
     return null;
   }
 
-  const text = String(value).trim();
-
-  if (!text) {
+  const numericYear = Number(value);
+  if (!Number.isFinite(numericYear)) {
     return null;
   }
 
-  const numericAge = Number(text);
-
-  if (Number.isFinite(numericAge) && /^\d+(\.\d+)?$/.test(text)) {
-    if (numericAge <= 0) {
-      return "new";
-    }
-
-    if (numericAge <= 5) {
-      return "1-5";
-    }
-
-    if (numericAge <= 10) {
-      return "6-10";
-    }
-
-    return "10+";
+  const year = Math.trunc(numericYear);
+  if (year < 1800 || year > new Date().getFullYear() + 5) {
+    return null;
   }
 
-  return text;
+  return year;
 }
 
 function mapFeatureIdsToSelectedAmenities(
@@ -580,6 +650,7 @@ function mapFeatureIdsToSelectedAmenities(
 export function mapPropertyDraftSubmissionToPropertyFormValues(
   data: PropertyDraftSubmissionData,
   featuresAndAmenities: FeaturesAndAmenities,
+  formOptionsCatalog: PropertyFormOptionsCatalog = EMPTY_PROPERTY_FORM_OPTIONS_CATALOG,
 ): PropertyFormValues {
   const payload = data.payload;
   const basicInfo = payload.basic_information;
@@ -599,42 +670,79 @@ export function mapPropertyDraftSubmissionToPropertyFormValues(
   };
 
   if (basicInfo != null) {
+    const listingPurposes = Array.from(
+      new Set(
+        [
+          ...(basicInfo.listing_purposes ?? []),
+          basicInfo.listing_purpose ?? "",
+        ]
+          .map((value) => value.trim())
+          .filter(Boolean),
+      ),
+    );
+
     propertyDetails.basic_info = {
       title: basicInfo.title ?? "",
       description: basicInfo.description ?? "",
-      listing_purpose: basicInfo.listing_purpose ?? null,
+      listing_purposes: listingPurposes,
+      listing_purpose: listingPurposes.length === 1 ? listingPurposes[0] ?? null : null,
       category_id: basicInfo.category_id ?? null,
       type_id: basicInfo.type_id ?? null,
     };
   }
 
   if (location != null) {
+    const areaId = location.area_id ?? location.area_ids?.[0] ?? null;
+
     propertyDetails.location_insert = {
       city_id: location.city_id ?? null,
-      area_ids: location.area_id != null ? [location.area_id] : [],
+      area_id: areaId,
+      area_ids: areaId != null ? [areaId] : [],
       address: location.address ?? "",
+      latitude: location.latitude ?? null,
+      longitude: location.longitude ?? null,
+      apartment_number: location.apartment_number ?? "",
+      plot_number: location.plot_number ?? "",
+      basin_number: location.basin_number ?? "",
+      parcel_number: location.parcel_number ?? "",
+      building_number: location.building_number ?? "",
+      identification_fields: location.identification_fields ?? {},
       show_location: location.show_location ?? false,
     } as PropertyFormValues["location_insert"];
   }
 
   if (owners.length > 0) {
-    propertyDetails.owner_info = {
-      owners: owners.map((owner) => {
-        const { country_code, phone_number } = parseOwnerPhoneForForm(owner.phone);
+    const hydratedOwners = owners.map((owner) => {
+      const { country_code, phone_number } = parseOwnerPhoneForForm(owner.phone);
+      const fullName = owner.full_name ?? "";
 
-        return {
-          owner_name: owner.full_name ?? "",
-          email: owner.email ?? "",
-          country_code,
-          phone_number,
-          social_security_id: owner.ssi ?? "",
-          nationality: owner.nationality ?? "",
-          owner_documents: (owner.documents ?? []).map((document) => ({
-            name: document.file_name ?? "",
-            uri: document.url ?? "",
-          })),
-        };
-      }),
+      return {
+        owner_id: owner.owner_id,
+        owner_name: fullName,
+        full_name: fullName,
+        email: owner.email ?? "",
+        country_code,
+        phone_number,
+        social_security_id: owner.ssi ?? "",
+        ssi: owner.ssi ?? "",
+        nationality: owner.nationality ?? "",
+        owner_documents: (owner.documents ?? []).map((document) => ({
+          name: document.file_name ?? "",
+          uri: document.url ?? "",
+        })),
+      };
+    });
+    const selectedOwnerId =
+      payload.owner_information?.owner_id ??
+      hydratedOwners.find((owner) => owner.owner_id)?.owner_id ??
+      null;
+
+    propertyDetails.owner_info = {
+      owner_mode:
+        payload.owner_information?.owner_mode ??
+        (selectedOwnerId ? "search" : "create"),
+      owner_id: selectedOwnerId,
+      owners: hydratedOwners,
     };
   }
 
@@ -642,6 +750,9 @@ export function mapPropertyDraftSubmissionToPropertyFormValues(
     const guardPhone = parseOwnerPhoneForForm(
       details.guard_phone_number ?? details.guard_phone,
     );
+    const yearBuilt =
+      formatYearBuiltField(details.year_built) ??
+      formatYearBuiltField(details.property_age);
 
     propertyDetails.property_details = {
       bedrooms: details.bedrooms ?? null,
@@ -650,13 +761,30 @@ export function mapPropertyDraftSubmissionToPropertyFormValues(
       built_up_area_unit:
         details.built_up_area_unit === "SQFT" ? "SQFT" : "SQM",
       parking_spaces: details.parking_spaces ?? null,
-      property_age: formatPropertyAgeField(details.property_age),
+      year_built: yearBuilt,
+      property_age:
+        yearBuilt == null && details.property_age != null
+          ? String(details.property_age)
+          : null,
+      furnishing_status: resolvePropertyFormMasterOptionValue(
+        readDraftMasterOptionField(details, [
+          "furnishing_status",
+          "furnishingStatus",
+          "furniture_status",
+          "furnishing_status_id",
+          "furniture_status_id",
+        ]),
+        formOptionsCatalog.furnishingStatusOptions,
+      ),
+      floor_level: resolvePropertyFormMasterOptionValue(
+        getDraftFloorValue(data),
+        formOptionsCatalog.floorLevelOptions,
+      ),
       total_floor: formatNumberField(details.total_floors),
       completion_status: details.completion_status ?? null,
       occupancy: details.occupancy ?? null,
       ownership_type: details.ownership_type ?? null,
       reference_number: details.reference_number ?? "",
-      permit_dld_number: details.permit_number ?? "",
       orientation: details.orientation ?? null,
       guard_name: details.guard_name ?? "",
       guard_country_code: guardPhone.country_code,
@@ -666,14 +794,38 @@ export function mapPropertyDraftSubmissionToPropertyFormValues(
 
   if (pricing != null) {
     const pricingCurrency = pricing.currency === "USD" ? "USD" : "JOD";
+    const legacyPrice = formatPriceField(pricing.price);
 
     propertyDetails.pricing_details = {
-      price: formatPriceField(pricing.price),
+      price: legacyPrice,
       price_currency: pricingCurrency,
       service_charge: formatPriceField(pricing.service_charge),
       service_charge_currency: pricingCurrency,
       maintenance_fee: formatPriceField(pricing.maintenance_fee),
       maintenance_fee_currency: pricingCurrency,
+      furnished_sale_price: formatPriceField(pricing.furnished_sale_price),
+      unfurnished_sale_price: formatPriceField(
+        pricing.unfurnished_sale_price ??
+          (pricing.furnished_sale_price == null ? pricing.price : undefined),
+      ),
+      furnished_rent_price: formatPriceField(pricing.furnished_rent_price),
+      unfurnished_rent_price: formatPriceField(
+        pricing.unfurnished_rent_price ??
+          (pricing.furnished_rent_price == null &&
+          pricing.furnished_sale_price == null &&
+          pricing.unfurnished_sale_price == null
+            ? pricing.price
+            : undefined),
+      ),
+      semi_furnished_rent_price: formatPriceField(
+        pricing.semi_furnished_rent_price,
+      ),
+      additional_prices: Object.fromEntries(
+        Object.entries(pricing.additional_prices ?? {}).map(([key, value]) => [
+          key,
+          formatPriceField(value),
+        ]),
+      ),
     };
   }
 
@@ -695,12 +847,14 @@ export function mapPropertyDraftSubmissionToPropertyFormValues(
 
   if (media != null) {
     const mediaFiles = [
-      ...(media.images ?? []).map((image) => ({
+      ...(media.images ?? []).map((image, index) => ({
         name: image.file_name ?? "",
         uri: image.url ?? "",
         mimeType: image.file_name?.toLowerCase().endsWith(".gif")
           ? "image/gif"
           : undefined,
+        is_primary: Boolean(image.is_primary) || (index === 0 && !(media.images ?? []).some((item) => item.is_primary)),
+        display_order: image.display_order ?? index,
       })),
       ...(media.videos ?? []).map((video) => ({
         name: video.file_name ?? "",

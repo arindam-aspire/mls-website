@@ -15,6 +15,7 @@ import { Bookmark, MapPin, Minus, RotateCcw, SlidersHorizontal } from "lucide-re
 import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import { cn } from "@/src/lib/cn";
+import { parseLocationOptionValue } from "@/src/features/landing/utils/locationTaxonomy.utils";
 import type { SaveSearchSubmitPayload } from "@/src/features/saved-searches/types/savedSearch.types";
 import { buildSaveSearchCriteria } from "@/src/features/saved-searches/utils/buildSaveSearchCriteria";
 import { buildSaveSearchFilterItems } from "@/src/features/saved-searches/utils/buildSaveSearchFilterItems";
@@ -30,6 +31,14 @@ const mobileToggleScrollItemClassName =
 const mobileScrollItemClassName =
   "w-[9rem] min-w-[9rem] max-w-[9rem] shrink-0 md:max-w-none md:min-w-0 md:w-full";
 
+function formatLocationChipLabel(value: string): string {
+  const { city, locations } = parseLocationOptionValue(value);
+  if (city && locations) {
+    return `${locations}, ${city}`;
+  }
+  return locations || city || value;
+}
+
 export type PropertyListFiltersProps = {
   status: string;
   statusOptions: ToggleButtonItem[];
@@ -41,10 +50,11 @@ export type PropertyListFiltersProps = {
   typeOptions: SelectDropdownOption[];
   onTypeChange: (value: string) => void;
   location: string;
-  locationValue?: string;
+  locationValues?: string[];
   locationOptions: AutocompleteInputOption[];
   onLocationInputChange: (value: string) => void;
   onLocationOptionSelect: (option: AutocompleteInputOption) => void;
+  onLocationRemove?: (value: string) => void;
   onLocationCommit: () => void;
   budgetMin: string;
   budgetMax: string;
@@ -122,10 +132,11 @@ export function PropertyListFilters({
   typeOptions,
   onTypeChange,
   location,
-  locationValue,
+  locationValues = [],
   locationOptions,
   onLocationInputChange,
   onLocationOptionSelect,
+  onLocationRemove,
   onLocationCommit,
   budgetMin,
   budgetMax,
@@ -213,7 +224,7 @@ export function PropertyListFilters({
       type,
       typeOptions,
       location,
-      locationValue,
+      locationValues,
       locationOptions,
       budgetMin,
       budgetMax,
@@ -254,7 +265,7 @@ export function PropertyListFilters({
     categoryOptions,
     location,
     locationOptions,
-    locationValue,
+    locationValues,
     maxArea,
     minArea,
     onSaveSearch,
@@ -329,27 +340,46 @@ export function PropertyListFilters({
             variant="outline"
           />
 
-          <AutocompleteInput
-            className={cn(mobileScrollItemClassName, "md:col-span-1")}
-            aria-label={locationAriaLabel}
-            placeholder={locationPlaceholder}
-            inputValue={location}
-            value={locationValue}
-            options={locationOptions}
-            onInputChange={onLocationInputChange}
-            onOptionSelect={onLocationOptionSelect}
-            onBlur={onLocationCommit}
-            onKeyDown={(event) => {
-              if (event.key === "Enter") {
-                onLocationCommit();
-              }
-            }}
-            iconEnd={<MapPin className="size-4" aria-hidden />}
-            variant="outline"
-            disabled={disabled}
-            minCharsToShow={1}
-            emptyMessage="No locations found"
-          />
+          <div className={cn(mobileScrollItemClassName, "md:col-span-1")}>
+            {locationValues.length > 0 ? (
+              <div className="mb-2 flex flex-wrap gap-1.5">
+                {locationValues.map((value) => (
+                  <button
+                    key={value}
+                    type="button"
+                    className="inline-flex min-h-11 items-center rounded-lg border border-secondary/30 bg-surface px-2.5 text-xs text-text"
+                    onClick={() => onLocationRemove?.(value)}
+                    aria-label={`${tPropertyList("removeArea")}: ${formatLocationChipLabel(value)}`}
+                    disabled={disabled}
+                  >
+                    {formatLocationChipLabel(value)}
+                    <span aria-hidden className="ms-1 text-muted">
+                      ×
+                    </span>
+                  </button>
+                ))}
+              </div>
+            ) : null}
+            <AutocompleteInput
+              aria-label={locationAriaLabel}
+              placeholder={locationPlaceholder}
+              inputValue={location}
+              options={locationOptions}
+              onInputChange={onLocationInputChange}
+              onOptionSelect={onLocationOptionSelect}
+              onBlur={onLocationCommit}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  onLocationCommit();
+                }
+              }}
+              iconEnd={<MapPin className="size-4" aria-hidden />}
+              variant="outline"
+              disabled={disabled}
+              minCharsToShow={1}
+              emptyMessage={tPropertyList("noLocationsFound")}
+            />
+          </div>
 
           <BudgetField
             className={cn(mobileScrollItemClassName, "md:col-span-1")}

@@ -12,7 +12,13 @@ Screen hook for `PropertyCreateScreen`: page copy, breadcrumb, create-form catal
   - `GET /property-taxonomy`
   - `GET /location-taxonomy`
   - `GET /features?is_active=true` (single catalog for both Features and Amenities; `feature_group` `FEATURE` \| `AMENITY`)
-- When `submission_id` is in the query on **initial mount** (e.g. resume from draft listings), after catalogs load, `GET /property-submissions/{id}` hydrates the form. `draftHydratedForRef` is set only after a successful fetch (not from the URL on mount), so resume still loads data while first draft save + URL sync does not re-fetch.
+  - then `GET /property-form-options` (404 → empty catalog; listing purposes fall back to `sale` / `rent`)
+- Build `PropertyForm` `config` via `buildPropertyFormConfig` (`propertyList.propertyCreate.form`).
+- Wire owner search (`usePropertyOwnerSearch`), location map slot, `fieldErrors` / `stepErrors` / `submitError` / `ownerDuplicateError`, and `PropertyFormHandle` (`goToField` on BE field errors).
+- Show the exact backend `message` on draft/submit failure (toast + form `submitError`).
+- When `GET /property-form-options` omits furnishing/floor lists (or 404s), fill those dropdowns from the existing search-filter master values so Floor and Furnishing Status still render.
+- Owner nationality options come from `data.nationalities` (or `data.nationality`) on that same endpoint. If the array is missing or empty, the host does not pass `nationalityOptions`, so the library compatibility list can still render until the master API includes nationalities.
+- When `submission_id` is in the query on **initial mount** (e.g. resume from draft listings), after catalogs load, `GET /property-submissions/{id}` hydrates the form. Floor is taken from GET `floor` (also `floor_id` / `floor_level`) and injected into the Floor dropdown if that option is missing. `draftHydratedForRef` is set only after a successful fetch (not from the URL on mount), so resume still loads data while first draft save + URL sync does not re-fetch.
 - From draft `status`: `submitted` → `canEditSubmission: false` (read-only `PropertyForm`); `rejected` → `rejectionReason` from `review_reason` (library resubmit alert + Resubmit label).
 - Map catalog payloads to `@abdoun/abdoun-library` `PropertyForm` prop shapes via `propertyForm.mapper`.
 - Own `activeStep` and wire `onNext`, `onPrevious`, `onStepClick` against `propertyFormSteps`.
@@ -36,6 +42,7 @@ Screen hook for `PropertyCreateScreen`: page copy, breadcrumb, create-form catal
 | GET | `/property-taxonomy` | `getPropertyTaxonomy` / `useGetPropertyTaxonomy` |
 | GET | `/location-taxonomy` | `getLocationTaxonomy` / `useGetLocationTaxonomy` |
 | GET | `/features?is_active=true` | `getPropertyFeatureCatalog` / `useGetPropertyFeatureCatalog` |
+| GET | `/property-form-options` | `getPropertyFormOptions` / `useGetPropertyFormOptions` (no error toast; 404 allowed) |
 | GET | `/property-submissions/{submissionId}` | `getPropertyDraftSubmission` / `useGetPropertyDraftSubmission` (resume draft) |
 | POST | `/property-submissions` | `savePropertyDraftSubmission` / `useSavePropertyDraftSubmission` (create draft) |
 | PATCH | `/property-submissions/{submissionId}` | `updatePropertyDraftSubmission` / `useUpdatePropertyDraftSubmission` (`action: save_draft`) |
@@ -46,7 +53,8 @@ Screen hook for `PropertyCreateScreen`: page copy, breadcrumb, create-form catal
 # State Management
 
 - Reads `user` from `useAuthStore` for breadcrumb path.
-- Local state: `propertyTaxonomy`, `locationTaxonomy`, `featureCatalogItems`, `activeStep`, `maxReachedStep`, `propertyDetails` (including `location_insert.show_location`), `submissionId`, `routeThroughAgency` (default `false`), `selectedAgencyId`, `agencyFieldError`, `isCatalogLoading`, `isSubmitting`.
+- Local state: `propertyTaxonomy`, `locationTaxonomy`, `featureCatalogItems`, `formOptionsCatalog`, `fieldErrors`, `stepErrors`, `submitError`, `ownerDuplicateError`, `activeStep`, `maxReachedStep`, `propertyDetails` (including `location_insert.show_location`), `submissionId`, `routeThroughAgency` (default `false`), `selectedAgencyId`, `agencyFieldError`, `isCatalogLoading`, `isSubmitting`.
+- `propertyFormRef` (`PropertyFormHandle`) for jumping to the first BE field error.
 - Reads `submission_id` from `useSearchParams` on load; `router.replace` updates query after first successful draft save.
 - `useGetPropertyTaxonomy` / `useGetLocationTaxonomy` also update `property.store` on success.
 - Host owns `propertyDetails` and `maxReachedStep`; library returns merged values on `onNext` and forward `onStepClick` for persistence. The library-owned split Built-up Area control stores its decimal string and `"SQM"`/`"SQFT"` unit in this state.
@@ -78,4 +86,7 @@ Screen hook for `PropertyCreateScreen`: page copy, breadcrumb, create-form catal
 - [propertyTaxonomy.types.md](../../landing/types/propertyTaxonomy.types.md)
 - [propertyForm.mapper.md](../mappers/propertyForm.mapper.md)
 - [propertyDraftSubmission.mapper.md](../mappers/propertyDraftSubmission.mapper.md)
+- [buildPropertyFormConfig.md](../i18n/buildPropertyFormConfig.md)
+- [usePropertyOwnerSearch.md](./usePropertyOwnerSearch.md)
+- [propertySubmissionError.utils.md](../utils/propertySubmissionError.utils.md)
 - [propertyForm.constants.md](../constants/propertyForm.constants.md)

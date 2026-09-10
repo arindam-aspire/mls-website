@@ -15,7 +15,7 @@ Strips a leading locale segment from internal paths so **next-intl** `router.pus
 
 - [navigation.md](./navigation.md) — `useRouter().push` / `replace` normalize href before navigation.
 - [usePropertyCreateUnsavedChanges.md](../features/property/hooks/usePropertyCreateUnsavedChanges.md) — captured `<a href="/en/...">` values from the DOM are stripped before discard/save navigation.
-- [navigation.utils.md](../utils/navigation.utils.md) — imperative `navigateTo` / `navigateReplace`.
+- [navigation.utils.md](../utils/navigation.utils.md) — interceptor href only. The native App Router still receives the locale-prefixed path (`/en/dashboard`).
 
 # Dependencies
 

@@ -10,12 +10,13 @@ Utilities that adapt the signed-in owner and owner-row state to the `@abdoun/abd
 - Detect meaningful owner-row content for create-form initialization and dirty-state behavior.
 - Resolve owner rows that should be read-only by matching normalized email addresses.
 - Build the library `OwnerInfoConfig`, including localized validation messages and document requirements.
+- Pass `nationalityOptions` only when `GET /property-form-options` returned a non-empty nationality list. An empty array would hide the library compatibility defaults.
 
 # Imports
 
 - `getPhoneInputCountryByCode` for Jordan dialing-code normalization.
 - `LoggedInUser` for authenticated profile data.
-- `OwnerInfoConfig` and `PropertyFormValues` from `@abdoun/abdoun-library`.
+- `OwnerInfoConfig` and `OwnerInfoItem` from `@abdoun/abdoun-library`.
 
 # Exports
 
@@ -38,4 +39,4 @@ Utilities that adapt the signed-in owner and owner-row state to the `@abdoun/abd
 
 # Notes
 
-The v0.1.89 owner contract no longer includes the retired `owner_address` field.
+- The v0.1.90 owner contract includes optional `owner_id`, `full_name`, and `ssi` aliases. Logged-in owner auto-fill does **not** set `owner_id` from the user id (user id ≠ owner id).

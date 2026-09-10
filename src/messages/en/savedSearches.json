@@ -35,6 +35,7 @@
     "typePlaceholder": "Select property type",
     "locationPlaceholder": "Search location",
     "locationEmptyMessage": "No locations found",
+    "removeArea": "Remove area",
     "budgetPlaceholder": "Select budget",
     "budgetMinFallback": "Min",
     "budgetMaxFallback": "Max"

@@ -12,6 +12,7 @@ import { checkboxLabelClasses } from "@/src/lib/typography";
 import { Bookmark, MapPin, RotateCcw, Save } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
+import { parseLocationOptionValue } from "@/src/features/landing/utils/locationTaxonomy.utils";
 import {
   ALL_AMENITY_SLUGS,
   BATHROOMS_OPTIONS,
@@ -50,6 +51,14 @@ type SearchCriteriaFormProps = {
 const criteriaFormStackGapClassName = "gap-2 md:gap-4";
 const criteriaFormGridGapClassName = "gap-2 md:gap-4";
 
+function formatLocationChipLabel(value: string): string {
+  const { city, locations } = parseLocationOptionValue(value);
+  if (city && locations) {
+    return `${locations}, ${city}`;
+  }
+  return locations || city || value;
+}
+
 export function SearchCriteriaForm({
   onCancel,
   record,
@@ -83,10 +92,11 @@ export function SearchCriteriaForm({
     typeOptions,
     onTypeChange,
     location,
-    locationValue,
+    locationValues = [],
     locationOptions,
     onLocationInputChange,
     onLocationOptionSelect,
+    onLocationRemove,
     onLocationCommit,
     budgetMin,
     budgetMax,
@@ -282,27 +292,47 @@ export function SearchCriteriaForm({
           criteriaFormGridGapClassName,
         )}
       >
-        <AutocompleteInput
-          label={tLabels("location")}
-          aria-label={tLabels("location")}
-          placeholder={tCriteria("locationPlaceholder")}
-          inputValue={location}
-          value={locationValue}
-          options={locationOptions}
-          onInputChange={onLocationInputChange}
-          onOptionSelect={onLocationOptionSelect}
-          onBlur={onLocationCommit}
-          onKeyDown={(event) => {
-            if (event.key === "Enter") {
-              onLocationCommit();
-            }
-          }}
-          iconEnd={<MapPin className="size-4" aria-hidden />}
-          variant="outline"
-          disabled={disabled}
-          minCharsToShow={1}
-          emptyMessage={tCriteria("locationEmptyMessage")}
-        />
+        <div>
+          {locationValues.length > 0 ? (
+            <div className="mb-2 flex flex-wrap gap-1.5">
+              {locationValues.map((value) => (
+                <button
+                  key={value}
+                  type="button"
+                  className="inline-flex min-h-11 items-center rounded-lg border border-secondary/30 bg-surface px-2.5 text-xs text-text"
+                  onClick={() => onLocationRemove?.(value)}
+                  aria-label={`${tCriteria("removeArea")}: ${formatLocationChipLabel(value)}`}
+                  disabled={disabled}
+                >
+                  {formatLocationChipLabel(value)}
+                  <span aria-hidden className="ms-1 text-muted">
+                    ×
+                  </span>
+                </button>
+              ))}
+            </div>
+          ) : null}
+          <AutocompleteInput
+            label={tLabels("location")}
+            aria-label={tLabels("location")}
+            placeholder={tCriteria("locationPlaceholder")}
+            inputValue={location}
+            options={locationOptions}
+            onInputChange={onLocationInputChange}
+            onOptionSelect={onLocationOptionSelect}
+            onBlur={onLocationCommit}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                onLocationCommit();
+              }
+            }}
+            iconEnd={<MapPin className="size-4" aria-hidden />}
+            variant="outline"
+            disabled={disabled}
+            minCharsToShow={1}
+            emptyMessage={tCriteria("locationEmptyMessage")}
+          />
+        </div>
 
         <BudgetAutocompleteField
           label={tLabels("minBudget")}

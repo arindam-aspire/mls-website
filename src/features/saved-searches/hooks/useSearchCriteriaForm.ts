@@ -91,7 +91,7 @@ export function useSearchCriteriaForm({
         type: criteriaFields.type,
         typeOptions: criteriaFields.typeOptions,
         location: criteriaFields.location,
-        locationValue: criteriaFields.locationValue,
+        locationValues: criteriaFields.locationValues,
         locationOptions: criteriaFields.locationOptions,
         budgetMin: criteriaFields.budgetMin,
         budgetMax: criteriaFields.budgetMax,

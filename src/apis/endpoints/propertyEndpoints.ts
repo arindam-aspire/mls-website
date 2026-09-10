@@ -62,6 +62,7 @@ export const propertyEndpoints = {
 
     return `/features?${search.toString()}`;
   },
+  PROPERTY_FORM_OPTIONS: (): string => "/property-form-options",
   FAVORITE_LIST: (params: { page: number; pageSize: number }): string => {
     const search = new URLSearchParams({
       page: String(params.page),

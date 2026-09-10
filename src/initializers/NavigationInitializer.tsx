@@ -9,7 +9,7 @@ export function NavigationInitializer() {
 
   useEffect(() => {
     initializeNavigation(router);
-  }, []);
+  }, [router]);
 
   return null;
 }

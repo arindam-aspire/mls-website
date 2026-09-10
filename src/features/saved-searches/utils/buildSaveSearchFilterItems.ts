@@ -26,6 +26,7 @@ export type BuildSaveSearchFilterItemsInput = {
   typeOptions: SelectDropdownOption[];
   location: string;
   locationValue?: string;
+  locationValues?: string[];
   locationOptions: { value: string; label: string }[];
   budgetMin: string;
   budgetMax: string;
@@ -160,10 +161,21 @@ export function buildSaveSearchFilterItems(
     });
   }
 
+  const selectedLocationValues =
+    input.locationValues && input.locationValues.length > 0
+      ? input.locationValues
+      : input.locationValue
+        ? [input.locationValue]
+        : [];
   const locationLabel =
-    input.locationOptions.find(
-      (option) => option.value === input.locationValue,
-    )?.label ?? input.location.trim();
+    selectedLocationValues
+      .map(
+        (value) =>
+          input.locationOptions.find((option) => option.value === value)?.label ??
+          value,
+      )
+      .filter(Boolean)
+      .join(", ") || input.location.trim();
 
   if (locationLabel) {
     items.push({

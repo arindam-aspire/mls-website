@@ -7,6 +7,8 @@ Filter bar for the property list: primary row (status, category, type, location,
 # Responsibilities
 
 - Render primary filter controls and action buttons.
+- Multi-select **Area** chips (`locationValues`) with remove buttons; autocomplete adds another area.
+- Toggle **Advanced Search** panel (`PropertyListAdvancedFilters`) via `open` / `onClose`.
 - Toggle **Advanced Search** panel (`PropertyListAdvancedFilters`) via `open` / `onClose`.
 - Auto-expand advanced panel when `hasAdvancedFilters` is true (URL has advanced params).
 - Close advanced panel on **Reset Search**.

@@ -6,7 +6,7 @@ Shared initial values for the create-property `PropertyForm`.
 
 # Responsibilities
 
-- Export `INITIAL_PROPERTY_FORM_VALUES` — library form seed with an empty Location section, app-owned `show_location: false`, and complete Property Details defaults required by v0.1.89.
+- Export `INITIAL_PROPERTY_FORM_VALUES` — library form seed for v0.1.90: `listing_purposes: ["sale"]`, single `area_id`, lat/lng, identification fields, `year_built`, named prices, `owner_mode: "create"`, and host `show_location: false`.
 - Default the split Built-up Area control to `built_up_area_unit: "SQM"`; initialize the decimal value as an empty string.
 - Initialize guard contact fields required by the library contract, using Jordan (`+962`) as the empty phone row's country code.
 - Export `INITIAL_PROPERTY_FORM_ACTIVE_STEP` (`1`) — default step index; matches library and API `current_step` (1-based).

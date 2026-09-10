@@ -1,7 +1,9 @@
 {
   "filters": {
     "advancedSearch": "Advanced Search",
-    "resetSearch": "Reset Search"
+    "resetSearch": "Reset Search",
+    "removeArea": "Remove area",
+    "noLocationsFound": "No locations found"
   },
   "advanced": {
     "title": "Advanced Search",
@@ -361,6 +363,53 @@
     "submitSuccess": "Property submitted",
     "submitError": "Could not submit property",
     "submitSaveError": "Could not save draft before submit",
+    "form": {
+      "listingPurposeLabel": "Purpose of Listing",
+      "listingPurposePlaceholder": "Select listing purposes",
+      "areaLabel": "Area",
+      "areaPlaceholder": "Select area",
+      "yearBuiltLabel": "Year Built / Year of Construction",
+      "yearBuiltPlaceholder": "Enter year of construction",
+      "floorLevelLabel": "Floor",
+      "furnishingStatusLabel": "Furnishing Status",
+      "setAsPrimaryImage": "Set as Primary Image",
+      "listingPurposes": {
+        "sale": "Sale",
+        "rent": "Rent"
+      },
+      "ownerMode": {
+        "searchExisting": "Search Existing Owner",
+        "createNew": "Create New Owner",
+        "searchPlaceholder": "Search by name, email, phone, or SSI",
+        "searchEmpty": "No matching owners found.",
+        "searchLoading": "Searching owners…",
+        "selectOwner": "Select owner",
+        "selectedOwner": "Selected owner",
+        "duplicateDetected": "An owner with matching identity details already exists.",
+        "duplicateSelectExisting": "Select the existing owner to continue. Creating a duplicate is not allowed."
+      },
+      "pricing": {
+        "furnishedSalePrice": "Furnished Sale",
+        "unfurnishedSalePrice": "Unfurnished Sale",
+        "furnishedRentPrice": "Furnished Rent",
+        "unfurnishedRentPrice": "Unfurnished Rent",
+        "semiFurnishedRentPrice": "Semi-Furnished Rent"
+      },
+      "identification": {
+        "apartmentNumber": "Apartment Number",
+        "plotNumber": "Plot Number",
+        "basinNumber": "Basin Number",
+        "parcelNumber": "Parcel Number",
+        "buildingNumber": "Building Number"
+      },
+      "map": {
+        "mapTitle": "Map Location",
+        "latitude": "Latitude",
+        "longitude": "Longitude",
+        "coordinates": "Coordinates",
+        "selectPinHint": "Select or drag the pin to set the property location."
+      }
+    },
     "locationVisibility": {
       "title": "Show Location",
       "description": "Allow all users to view this property's Location tab.",
