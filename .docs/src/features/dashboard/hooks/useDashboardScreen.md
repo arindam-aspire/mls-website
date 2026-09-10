@@ -11,7 +11,7 @@ Owns dashboard data fetching, role selection, error reporting, and memoized KPI 
 - For Agency Admin (`admin`), query `getAgentSummary` with key `["agents", "summary"]` and resolve the logged-in agency from `/auth/me` (`user.agency` / `user.agencies`).
 - Preserve the previous agent dashboard queries (assigned listings, notifications) for non-super-admin roles.
 - Memoize the seven localized dashboard KPI metrics and attach the four available month-over-month deltas.
-- Aggregate loading/error state and report summary failures through the existing toast/error system.
+- Aggregate loading/error state with TanStack Query `isLoading` (`isPending && isFetching`) so disabled queries cannot keep the skeleton up, and report summary failures through the existing toast/error system.
 
 # State Management
 

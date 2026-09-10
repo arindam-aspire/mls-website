@@ -9,7 +9,7 @@ import {
   Plus,
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/src/i18n/navigation";
 import { Button, Card, CardContent } from "@/src/components/ui";
 import { cn } from "@/src/lib/cn";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
@@ -87,7 +87,7 @@ export default function DashboardScreen() {
   const displayName = user?.full_name?.trim() || user?.email || t("userFallback");
 
   const goTo = (path: string) => {
-    router.push(`/${locale}${path}`);
+    router.push(path);
   };
 
   if (isLoading) {

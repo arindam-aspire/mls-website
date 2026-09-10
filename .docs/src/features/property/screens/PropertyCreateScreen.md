@@ -42,7 +42,7 @@ Screen receives all form props from `usePropertyCreateScreen()` — see hook doc
 - On Location step 2, the host-owned Show Location switch is portaled into the library form and disabled with the rest of the form during read-only/save/submit states.
 - On Review & Submit step 8, the host-owned Agency Routing card is portaled before Terms. Routing defaults off; checking it reveals the required agency dropdown.
 - Light/dark semantic tokens; i18n in all four locales for page chrome (form labels live in the library).
-- Requires local `@abdoun/abdoun-library` **0.1.90** (`file:../abdoun-library`) for multi-purpose listing, single area, map slot, owner search, named prices, primary image, and `PropertyFormHandle`.
+- Requires `@abdoun/abdoun-library` **0.1.91** for multi-purpose listing, single area, map slot, owner search, named prices, primary image, and `PropertyFormHandle`.
 - Passes `canEdit` and `rejectionReason` from draft submission `status` / `review_reason`.
 - Passes `isDraftLoading={isDraftSaving}` and `isSubmitting` to disable the form while draft save or submit is in flight.
 - Unsaved-change detection uses `propertyDetails` from `usePropertyCreateScreen` (not library live-payload props on `PropertyForm` in `@abdoun/abdoun-library` v0.1.79).

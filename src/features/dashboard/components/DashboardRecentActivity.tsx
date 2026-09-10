@@ -57,7 +57,11 @@ function DashboardRecentActivityComponent({
         {activities.length > 0 ? (
           <ul className="divide-y divide-secondary/10">
             {activities.map((activity, index) => {
-              const Icon = activityIcons[activity.icon.toLowerCase()] ?? Activity;
+              const iconKey =
+                typeof activity.icon === "string"
+                  ? activity.icon.toLowerCase()
+                  : "";
+              const Icon = activityIcons[iconKey] ?? Activity;
 
               return (
                 <li

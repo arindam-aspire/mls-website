@@ -120,13 +120,13 @@ export function useDashboardScreen() {
   });
 
   const isLoading =
-    (isSuperAdmin && summaryQuery.isPending) ||
+    (isSuperAdmin && summaryQuery.isLoading) ||
     (!isSuperAdmin &&
-      ((canReviewSubmissions && agentSummaryQuery.isPending) ||
-        (canReviewSubmissions && pendingSubmissionsQuery.isPending) ||
-        (canReviewSubmissions && activeSubmissionsQuery.isPending) ||
-        (isAgent && !canReviewSubmissions && agentListingsQuery.isPending) ||
-        notificationsQuery.isPending));
+      ((canReviewSubmissions && agentSummaryQuery.isLoading) ||
+        (canReviewSubmissions && pendingSubmissionsQuery.isLoading) ||
+        (canReviewSubmissions && activeSubmissionsQuery.isLoading) ||
+        (isAgent && !canReviewSubmissions && agentListingsQuery.isLoading) ||
+        notificationsQuery.isLoading));
 
   const errors = useMemo(
     () =>

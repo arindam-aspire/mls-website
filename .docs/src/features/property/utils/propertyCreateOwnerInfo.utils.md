@@ -39,4 +39,4 @@ Utilities that adapt the signed-in owner and owner-row state to the `@abdoun/abd
 
 # Notes
 
-- The v0.1.90 owner contract includes optional `owner_id`, `full_name`, and `ssi` aliases. Logged-in owner auto-fill does **not** set `owner_id` from the user id (user id ≠ owner id).
+- The v0.1.91 owner contract includes optional `owner_id`, `full_name`, and `ssi` aliases. Logged-in owner auto-fill does **not** set `owner_id` from the user id (user id ≠ owner id).

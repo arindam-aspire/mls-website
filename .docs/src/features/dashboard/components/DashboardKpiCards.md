@@ -7,7 +7,7 @@ Responsive presentation for the seven dashboard KPI cards.
 # Responsibilities
 
 - Render localized labels and locale-formatted counts.
-- Map metric ids to semantic-color Lucide icons.
+- Map metric ids to semantic-color Lucide icons, falling back to the registered-users visual when an id is unknown.
 - Show `↑`/`↓` and absolute percentage for the four metrics with a trend.
 - Supply localized trend descriptions to assistive technology.
 

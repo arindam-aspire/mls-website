@@ -36,7 +36,7 @@ The screen receives server/query state from `useDashboardScreen`. It reads the c
 
 # Navigation
 
-Existing buttons continue navigating to locale-prefixed `/en/manage-listings` and `/en/property-create`; dashboard routing is unchanged.
+Action buttons use next-intl `useRouter` with locale-free hrefs (`/manage-listings`, `/property-create`), which resolve to `/en/manage-listings` and `/en/property-create`.
 
 # Props / Parameters
 

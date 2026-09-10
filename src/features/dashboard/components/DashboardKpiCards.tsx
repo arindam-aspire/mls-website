@@ -87,7 +87,7 @@ export function DashboardKpiCards({
     <section aria-label={sectionAriaLabel}>
       <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {metrics.map((metric) => {
-          const visual = METRIC_VISUALS[metric.id];
+          const visual = METRIC_VISUALS[metric.id] ?? METRIC_VISUALS.totalRegisteredUsers;
           const Icon = visual.icon;
           const hasTrend = metric.trend !== undefined;
           const isPositive = (metric.trend ?? 0) >= 0;

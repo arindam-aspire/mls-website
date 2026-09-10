@@ -9,7 +9,7 @@ export default function DashboardPage() {
   usePageTitle("dashboard");
   const { user, isLoadingUser } = useAuthorize("DASHBOARD");
 
-  if (!isLoadingUser && !user) return <LoadingScreen />;
+  if (isLoadingUser || !user) return <LoadingScreen />;
 
   return <DashboardScreen />;
 }

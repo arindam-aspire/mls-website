@@ -71,7 +71,7 @@ See [packages.md](./packages.md) for the full dependency table.
 
 ## Getting started
 
-**Private package:** `@abdoun/abdoun-library` is currently linked as `file:../abdoun-library` (local sibling at version 0.1.90). The library must be built (`dist/` present) before `next build` / `next dev`. [next.config.ts](../next.config.ts) sets `turbopack.root` and `outputFileTracingRoot` to the parent of this app so Turbopack can resolve that `file:` symlink (modules outside the inferred project root are otherwise `Module not found`). Webpack builds set `resolve.symlinks = false` for the same reason.
+**Private package:** `@abdoun/abdoun-library` **0.1.91** is installed from AWS CodeArtifact (see root [`.npmrc`](../.npmrc)). [next.config.ts](../next.config.ts) still sets `turbopack.root` and `outputFileTracingRoot` to the parent of this app so a local `file:../abdoun-library` symlink can be resolved during development; webpack builds set `resolve.symlinks = false` for the same reason.
 
 CI can still install the package from the Coderlook Git (Gitea) npm registry (see root [`.npmrc`](../.npmrc)). Public packages still use `registry.npmjs.org`. CI injects a Gitea package-read token (`GITEA_NPM_TOKEN`) in `azure-pipelines.yml`.
 
@@ -215,7 +215,7 @@ All paths below are **without** locale; prepend `/<locale>` (e.g. `/en/my-listin
 | `/notifications` | `(main)/notifications/page.tsx` | `NotificationScreen` (placeholder) — guarded by `useAuthorize("NOTIFICATIONS")` |
 | `/favourites` | `(main)/favourites/page.tsx` | `FavouritePropertyScreen` — guarded by `useAuthorize("FAVOURITES")` |
 | `/my-listings` | `(main)/(listings)/my-listings/page.tsx` | `ListingPropertyScreen` — guarded by `useAuthorize("MY_LISTINGS")` |
-| `/property-create` | `(main)/(listings)/property-create/page.tsx` | `PropertyCreateScreen` — `@abdoun/abdoun-library` 0.1.90 `PropertyForm`; master-data from `GET /property-form-options` (Furnishing Status and Floor persist as master-table IDs); Location includes map pin + `show_location` (default `false`); Step 8 lets Super Admin/Owner opt into `route_through_agency` and conditionally requires `agency_id` |
+| `/property-create` | `(main)/(listings)/property-create/page.tsx` | `PropertyCreateScreen` — `@abdoun/abdoun-library` 0.1.91 `PropertyForm`; master-data from `GET /property-form-options` (Furnishing Status and Floor persist as master-table IDs); Location includes map pin + `show_location` (default `false`); Step 8 lets Super Admin/Owner opt into `route_through_agency` and conditionally requires `agency_id` |
 | `/property-update` | `(main)/(listings)/property-update/page.tsx` | `PropertyUpdateScreen` — guarded by `useAuthorize("MY_LISTINGS")` |
 | `/recently-viewed` | `(main)/recently-viewed/page.tsx` | `RecentlyViewedScreen` — guarded by `useAuthorize("RECENTLY_VIEWED")` |
 | `/owners` | `(main)/owners/page.tsx` | `OwnersScreen` — guarded by `useAuthorize("OWNERS")` (Super Admin + Agency Admin); list, activate, view/edit, linked properties/leads; `OWNER_DEACTIVATE` restricts Owner deactivation to Super Admin |

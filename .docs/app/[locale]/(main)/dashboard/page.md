@@ -8,12 +8,14 @@ Next.js App Router page for route segment `[locale]/dashboard`. Client wrapper t
 
 - Next.js App Router page for route segment `[locale]/dashboard`.
 - Client wrapper that calls `useAuthorize("DASHBOARD")` before rendering `DashboardScreen`.
-- Returns `null` while `user` is absent so protected content does not flash before redirects.
+- Shows `LoadingScreen` while `isLoadingUser` is true or `user` is absent so dashboard queries do not run before auth hydration (and so a missing-token interceptor cannot bounce the user back to `/`).
 
 # Imports
 
+- `import LoadingScreen from "@/src/features/loading/screens"`
 - `import DashboardScreen from "@/src/features/dashboard/screens"`
 - `import { useAuthorize } from "@/src/lib/auth/authorize"`
+- `import { usePageTitle } from "@/src/hooks/usePageTitle"`
 
 # Exports
 
@@ -55,7 +57,7 @@ _No form validations._
 
 ## Show/Hide Controls
 
-- Page returns `null` until `user` is available.
+- Page returns `LoadingScreen` until `user` is available and `isLoadingUser` is false.
 
 # UI Details
 
@@ -71,7 +73,7 @@ _No form validations._
 3. `proxy.ts` may redirect to `/` if `access_token` cookie is missing.
 4. `useAuthorize("DASHBOARD")` waits for `isLoadingUser`, then checks roles against `PERMISSIONS.DASHBOARD`.
 5. On failure, locale-aware redirect to `/` or `/unauthorized`.
-6. On success, render `DashboardScreen`.
+6. While `isLoadingUser || !user`, render `LoadingScreen`. On success, render `DashboardScreen`.
 
 # Dependencies
 

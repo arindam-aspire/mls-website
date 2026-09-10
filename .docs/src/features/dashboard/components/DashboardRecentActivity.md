@@ -7,7 +7,7 @@ Displays the latest activity items returned by the dashboard summary.
 # Responsibilities
 
 - Render each activity icon, text, relative time, and tone.
-- Resolve known API icon names to Lucide icons with a safe activity fallback.
+- Resolve known API icon names to Lucide icons with a safe activity fallback. Missing or non-string `icon` values use the activity icon instead of calling `toLowerCase`.
 - Map activity tones to semantic theme colors, falling back to `default` when the API tone is unknown.
 - Render localized empty-state copy when no activities exist.
 
