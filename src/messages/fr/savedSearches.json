@@ -35,6 +35,7 @@
     "typePlaceholder": "Sélectionner un type de bien",
     "locationPlaceholder": "Rechercher un emplacement",
     "locationEmptyMessage": "Aucun emplacement trouvé",
+    "removeArea": "Supprimer le secteur",
     "budgetPlaceholder": "Sélectionner un budget",
     "budgetMinFallback": "Min",
     "budgetMaxFallback": "Max"

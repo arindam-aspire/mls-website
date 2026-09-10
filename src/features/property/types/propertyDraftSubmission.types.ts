@@ -2,12 +2,13 @@ import type { BuiltUpAreaUnit } from "@abdoun/abdoun-library";
 import type { AgencyCurrency } from "@/src/features/profile/constants/agencyPreferences";
 
 /** Listing purpose sent to draft-submission API (`basic_information.listing_purpose`). */
-export type PropertyDraftSubmissionListingPurpose = "sale" | "rent";
+export type PropertyDraftSubmissionListingPurpose = "sale" | "rent" | (string & {});
 
 /** Agency currency for draft-submission pricing (`pricing.currency`). */
 export type PropertyDraftSubmissionCurrency = AgencyCurrency;
 
 export type PropertyDraftSubmissionBasicInformation = {
+  listing_purposes?: string[];
   listing_purpose?: PropertyDraftSubmissionListingPurpose | null;
   category_id?: number | null;
   type_id?: number | null;
@@ -17,9 +18,19 @@ export type PropertyDraftSubmissionBasicInformation = {
 
 export type PropertyDraftSubmissionLocation = {
   city_id?: number | null;
-  /** First item of `PropertyForm` `location_insert.area_ids`. */
+  /** Selected area for Add Property (single-select). */
   area_id?: number | null;
+  /** Legacy multi-area drafts; first item hydrates `area_id`. */
+  area_ids?: number[];
   address?: string;
+  latitude?: number | null;
+  longitude?: number | null;
+  apartment_number?: string;
+  plot_number?: string;
+  basin_number?: string;
+  parcel_number?: string;
+  building_number?: string;
+  identification_fields?: Record<string, string>;
   /** Whether all roles may view the Location tab on published property details. */
   show_location?: boolean;
 };
@@ -30,6 +41,7 @@ export type PropertyDraftSubmissionOwnerDocument = {
 };
 
 export type PropertyDraftSubmissionOwner = {
+  owner_id?: string;
   full_name?: string;
   email?: string;
   /** `country_code` + `phone_number` from `PropertyForm` owner row. */
@@ -41,8 +53,22 @@ export type PropertyDraftSubmissionOwner = {
 };
 
 export type PropertyDraftSubmissionOwnerInformation = {
+  owner_id?: string | null;
+  owner_mode?: "search" | "create";
   owners?: PropertyDraftSubmissionOwner[];
 };
+
+export type PropertyDraftMasterOptionValue =
+  | string
+  | number
+  | {
+      id?: string | number | null;
+      value?: string | number | null;
+      slug?: string | number | null;
+      code?: string | number | null;
+      name?: string | null;
+    }
+  | null;
 
 export type PropertyDraftSubmissionPropertyDetails = {
   bedrooms?: number | null;
@@ -52,14 +78,30 @@ export type PropertyDraftSubmissionPropertyDetails = {
   /** Unit used by the split built-up-area control; submitted values are normalized to `SQM`. */
   built_up_area_unit?: BuiltUpAreaUnit;
   parking_spaces?: number | null;
-  property_age?: string | null;
+  year_built?: number | null;
+  /** Legacy bucket or year; preserved on hydrate, omitted from new payloads. */
+  property_age?: string | number | null;
+  /** Master-table id or slug from `PropertyForm` `property_details.furnishing_status`. */
+  furnishing_status?: PropertyDraftMasterOptionValue;
+  /** Alternate GET keys for furnishing; hydrate-only. */
+  furnishingStatus?: PropertyDraftMasterOptionValue;
+  furniture_status?: PropertyDraftMasterOptionValue;
+  furnishing_status_id?: PropertyDraftMasterOptionValue;
+  furniture_status_id?: PropertyDraftMasterOptionValue;
+  /** Master-table id or slug from `PropertyForm` `property_details.floor_level`. */
+  floor_level?: PropertyDraftMasterOptionValue;
+  /** Alternate GET keys for floor; hydrate-only. */
+  floorLevel?: PropertyDraftMasterOptionValue;
+  floor?: PropertyDraftMasterOptionValue;
+  floor_id?: PropertyDraftMasterOptionValue;
+  floor_level_id?: PropertyDraftMasterOptionValue;
   /** From `PropertyForm` `property_details.total_floor`. */
   total_floors?: number | null;
   completion_status?: string | null;
   occupancy?: string | null;
   ownership_type?: string | null;
   reference_number?: string;
-  /** From `PropertyForm` `property_details.permit_dld_number`. */
+  /** @deprecated Removed from Add Property UI; still accepted when hydrating old drafts. */
   permit_number?: string;
   orientation?: string | null;
   /** From `PropertyForm` `property_details.guard_name`. */
@@ -73,6 +115,12 @@ export type PropertyDraftSubmissionPropertyDetails = {
 export type PropertyDraftSubmissionPricing = {
   /** `0` when the form price field is empty. */
   price?: number;
+  furnished_sale_price?: number;
+  unfurnished_sale_price?: number;
+  furnished_rent_price?: number;
+  unfurnished_rent_price?: number;
+  semi_furnished_rent_price?: number;
+  additional_prices?: Record<string, number>;
   service_charge?: number;
   maintenance_fee?: number;
   currency?: PropertyDraftSubmissionCurrency;
@@ -130,6 +178,8 @@ export type PropertyDraftSubmissionPayload = {
   amenities?: PropertyDraftSubmissionAmenities;
   media_documents?: PropertyDraftSubmissionMediaDocuments;
   review_submit?: PropertyDraftSubmissionReviewSubmit;
+  /** Some GET draft responses return floor next to the section objects. */
+  floor?: PropertyDraftMasterOptionValue;
 };
 
 /** Request body for `POST /property-submissions` (create draft). */
@@ -181,6 +231,8 @@ export type PropertyDraftSubmissionData = {
   last_completed_step: number;
   step_completion: PropertyDraftSubmissionStepCompletion;
   payload: PropertyDraftSubmissionPayload;
+  /** Some GET responses return floor on the data object. */
+  floor?: PropertyDraftMasterOptionValue;
   reviewed_by?: string | null;
   reviewed_at?: string | null;
   review_reason?: string | null;

@@ -1,4 +1,5 @@
 import { SELECT_DROPDOWN_EMPTY_VALUE } from "@/src/components/ui";
+import { serializeSearchLocationValues } from "@/src/features/property/utils/propertySearchLocations.utils";
 import { parseLocationOptionValue } from "@/src/features/landing/utils/locationTaxonomy.utils";
 import { serializeAmenitiesParam } from "@/src/features/property/constants/propertyListAdvancedFilters.constants";
 import type { SavedSearchCriteria } from "../types/savedSearch.types";
@@ -27,7 +28,11 @@ export function buildSaveSearchCriteria(
   appendCriteriaValue(criteria, "category", input.category);
   appendCriteriaValue(criteria, "type", input.type);
 
-  if (input.locationValue) {
+  if (input.locationValues && input.locationValues.length > 0) {
+    const serialized = serializeSearchLocationValues(input.locationValues);
+    appendCriteriaValue(criteria, "city", serialized.city);
+    appendCriteriaValue(criteria, "locations", serialized.locations);
+  } else if (input.locationValue) {
     const { city, locations } = parseLocationOptionValue(input.locationValue);
 
     appendCriteriaValue(criteria, "city", city);

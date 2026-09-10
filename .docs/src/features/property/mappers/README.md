@@ -9,6 +9,8 @@ Transforms API or store shapes into UI-ready models for property screens.
 | [propertyList.mapper.md](./propertyList.mapper.md) | Property list mapping (placeholder) |
 | [favoriteList.mapper.md](./favoriteList.mapper.md) | `GET /favorites` → `PropertyListing[]` for `PropertyCardList` |
 | [propertyFeatures.mapper.md](./propertyFeatures.mapper.md) | Feature catalog → `PropertyView` features |
+| [propertyFormOptions.mapper.md](./propertyFormOptions.mapper.md) | `GET /property-form-options` → `PropertyFormOption[]` |
+| [propertyOwnerSearch.mapper.md](./propertyOwnerSearch.mapper.md) | Owner list item → library search result |
 
 ## Conventions
 

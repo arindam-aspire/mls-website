@@ -13,6 +13,7 @@ mls_website/
 │   ├── README.md
 │   ├── application.md
 │   ├── folder-structure.md
+│   ├── next.config.md
 │   ├── packages.md
 │   ├── app/
 │   │   ├── globals.md
@@ -344,6 +345,7 @@ mls_website/
 │       │       │   ├── PropertyListAdvancedFilters.md
 │       │       │   ├── PropertyListFilters.md
 │       │       │   ├── PropertyListingCardList.md
+│       │       │   ├── PropertyLocationMap.md
 │       │       │   ├── PropertyDraftList.md
 │       │       │   └── MyListingFilters.md
 │       │       ├── constants/
@@ -355,15 +357,21 @@ mls_website/
 │       │       │   ├── usePropertyList.md
 │       │       │   ├── useAddPropertyEntry.md
 │       │       │   ├── useFavouritePropertyList.md
+│       │       │   ├── usePropertyOwnerSearch.md
 │       │       │   ├── useRecentlyViewedScreen.md
 │       │       │   ├── useSavedSearchesScreen.md
 │       │       │   └── usePropertySearchFilters.md
+│       │       ├── i18n/
+│       │       │   ├── README.md
+│       │       │   └── buildPropertyFormConfig.md
 │       │       ├── mappers/
 │       │       │   ├── README.md
 │       │       │   ├── favoriteList.mapper.md
 │       │       │   ├── mapPropertyDetailsForPropertyView.md
 │       │       │   ├── propertyFeatures.mapper.md
-│       │       │   └── propertyList.mapper.md
+│       │       │   ├── propertyFormOptions.mapper.md
+│       │       │   ├── propertyList.mapper.md
+│       │       │   └── propertyOwnerSearch.mapper.md
 │       │       ├── mutations/
 │       │       │   ├── README.md
 │       │       │   └── property.mutation.md
@@ -377,10 +385,14 @@ mls_website/
 │       │       │   └── property.store.md
 │       │       ├── types/
 │       │       │   ├── README.md
-│       │       │   └── property.types.md
+│       │       │   ├── property.types.md
+│       │       │   └── propertyFormOptions.types.md
 │       │       └── utils/
 │       │           ├── mapListingForPropertyCard.md
-│       │           └── propertyAdvancedFieldVisibility.md
+│       │           ├── propertyAdvancedFieldVisibility.md
+│       │           ├── propertyOwnerPhone.utils.md
+│       │           ├── propertySearchLocations.utils.md
+│       │           └── propertySubmissionError.utils.md
 │       ├── hooks/
 │       ├── i18n/
 │       ├── initializers/
@@ -1043,6 +1055,7 @@ mls_website/
 │   │       │   ├── PropertyListingCardList.tsx
 │   │       │   ├── PropertyListingStatusBadge.tsx
 │   │       │   ├── PropertyCreateAgencyField.tsx
+│   │       │   ├── PropertyLocationMap.tsx
 │   │       │   ├── PropertyLocationVisibilityField.tsx
 │   │       │   ├── PropertyCreateUnsavedChangesModal.tsx
 │   │       │   ├── PropertyDraftList.tsx
@@ -1068,6 +1081,7 @@ mls_website/
 │   │       │   ├── useRejectSubmissionModal.ts
 │   │       │   ├── useDraftListingsScreen.ts
 │   │       │   ├── useOwnerDocumentUpload.ts
+│   │       │   ├── usePropertyOwnerSearch.ts
 │   │       │   ├── usePropertyMediaUpload.ts
 │   │       │   ├── usePropertyCreateScreen.ts
 │   │       │   ├── usePropertyCreateUnsavedChanges.ts
@@ -1084,6 +1098,7 @@ mls_website/
 │   │       │   └── usePropertySearchFilters.ts
 │   │       ├── i18n/
 │   │       │   ├── buildManageListingTableColumnLabels.ts
+│   │       │   ├── buildPropertyFormConfig.ts
 │   │       │   ├── propertyCreateOwnerInfo.i18n.ts
 │   │       │   └── propertyDetailsOwners.i18n.ts
 │   │       ├── mappers/
@@ -1094,6 +1109,8 @@ mls_website/
 │   │       │   ├── mapPropertyDetailsForPropertyView.ts
 │   │       │   ├── propertyDraftSubmission.mapper.ts
 │   │       │   ├── propertyForm.mapper.ts
+│   │       │   ├── propertyFormOptions.mapper.ts
+│   │       │   ├── propertyOwnerSearch.mapper.ts
 │   │       │   ├── recentViewsList.mapper.ts
 │   │       │   └── propertyFeatures.mapper.ts
 │   │       ├── mutations/
@@ -1119,6 +1136,7 @@ mls_website/
 │   │       │   ├── property.types.ts
 │   │       │   ├── assignAgentModal.types.ts
 │   │       │   ├── propertyDraftSubmission.types.ts
+│   │       │   ├── propertyFormOptions.types.ts
 │   │       │   └── upload.types.ts
 │   │       └── utils/
 │   │           ├── propertyContactActions.utils.ts
@@ -1126,6 +1144,9 @@ mls_website/
 │   │           ├── applyFavoriteFlagsToListings.ts
 │   │           ├── propertyCreateDirtyState.utils.ts
 │   │           ├── propertyCreateOwnerInfo.utils.ts
+│   │           ├── propertyOwnerPhone.utils.ts
+│   │           ├── propertySearchLocations.utils.ts
+│   │           ├── propertySubmissionError.utils.ts
 │   │           ├── propertyListingStatusBadgeColors.ts
 │   │           ├── buildMyListingTableColumns.tsx
 │   │           ├── createMyListingRowActionsResolver.ts
@@ -1169,10 +1190,10 @@ mls_website/
 │   │   │   │   └── savedSearch.types.ts
 │   │   │   └── utils/
 │   │   │       ├── buildSaveSearchCriteria.ts
+│   │   │       ├── buildSaveSearchFilterItems.ts
 │   │   │       ├── parseSavedSearchCriteriaToParams.ts
 │   │   │       ├── searchCriteriaFieldVisibility.ts
 │   │   │       ├── buildSavedSearchCriteriaFilterItems.ts
-│   │   │       ├── buildSavedSearchFilterItems.ts
 │   │   │       ├── buildSavedSearchPropertyListHref.ts
 │   │   │       └── savedSearchPropertyListParams.ts
 │   ├── hooks/

@@ -53,26 +53,38 @@ import {
   mapPropertyDraftSubmissionToPropertyFormValues,
   toPropertyDraftSubmissionCurrency,
   withPropertyFormShowLocation,
+  getDraftFloorValue,
 } from "@/src/features/property/mappers/propertyDraftSubmission.mapper";
 import {
   mapFeatureCatalogForPropertyForm,
   mapLocationTaxonomyForPropertyForm,
   mapPropertyCategoriesForPropertyForm,
 } from "@/src/features/property/mappers/propertyForm.mapper";
+import { buildPropertyFormConfig } from "@/src/features/property/i18n/buildPropertyFormConfig";
 import { useOwnerDocumentUpload } from "@/src/features/property/hooks/useOwnerDocumentUpload";
 import { buildPropertyCreateOwnerInfoValidationMessages } from "@/src/features/property/i18n/propertyCreateOwnerInfo.i18n";
 import { usePropertyCreateUnsavedChanges } from "@/src/features/property/hooks/usePropertyCreateUnsavedChanges";
 import { usePropertyMediaUpload } from "@/src/features/property/hooks/usePropertyMediaUpload";
+import { usePropertyOwnerSearch } from "@/src/features/property/hooks/usePropertyOwnerSearch";
 import {
   useGetPropertyDraftSubmission,
   useGetPropertyFeatureCatalog,
+  useGetPropertyFormOptions,
   useSavePropertyDraftSubmission,
   useSubmitPropertyDraftSubmission,
   useSubmitPropertySubmission,
   useUpdatePropertyDraftSubmission,
 } from "@/src/features/property/mutations/property.mutation";
+import {
+  EMPTY_PROPERTY_FORM_OPTIONS_CATALOG,
+  mapPropertyFormOptionsCatalog,
+  withPropertyFormOptionFallbacks,
+  withEnsuredFloorOption,
+} from "@/src/features/property/mappers/propertyFormOptions.mapper";
 import type { FeatureCatalogItem } from "@/src/features/property/types/property.types";
+import type { PropertyFormOptionsCatalog } from "@/src/features/property/types/propertyFormOptions.types";
 import type { PropertyDraftSubmissionData } from "@/src/features/property/types/propertyDraftSubmission.types";
+import { parsePropertySubmissionError } from "@/src/features/property/utils/propertySubmissionError.utils";
 import {
   buildLoggedInOwnerInfoItem,
   buildPropertyCreateOwnerInfoConfig,
@@ -82,6 +94,8 @@ import {
 import {
   propertyFormSteps,
   type OwnerInfoConfig,
+  type PropertyFormExternalErrors,
+  type PropertyFormHandle,
   type PropertyFormStep,
   type PropertyFormValues,
 } from "@abdoun/abdoun-library";
@@ -177,11 +191,13 @@ function withServerGeneratedReferenceNumber(
       built_up_area_unit: "SQM",
       parking_spaces: null,
       property_age: null,
+      furnishing_status: null,
+      floor_level: null,
+      year_built: null,
       completion_status: null,
       total_floor: "",
       occupancy: null,
       ownership_type: null,
-      permit_dld_number: "",
       orientation: null,
       guard_name: "",
       guard_country_code: "+962",
@@ -200,7 +216,9 @@ export function usePropertyCreateScreen() {
 
   // 2. UI utilities
   const t = useTranslations("propertyList.propertyCreate");
+  const tForm = useTranslations("propertyList.propertyCreate.form");
   const tOwnerInfo = useTranslations("propertyList.propertyCreate.ownerInfo");
+  const tAdvanced = useTranslations("propertyList.advanced");
   const tCommon = useTranslations("common");
   const toast = useToast();
 
@@ -233,6 +251,19 @@ export function usePropertyCreateScreen() {
   );
   const [routeThroughAgency, setRouteThroughAgency] = useState(false);
   const [agencyFieldError, setAgencyFieldError] = useState<string | null>(null);
+  const [formOptionsCatalog, setFormOptionsCatalog] =
+    useState<PropertyFormOptionsCatalog>(EMPTY_PROPERTY_FORM_OPTIONS_CATALOG);
+  const [fieldErrors, setFieldErrors] = useState<
+    NonNullable<PropertyFormExternalErrors["fieldErrors"]>
+  >({});
+  const [stepErrors, setStepErrors] = useState<
+    NonNullable<PropertyFormExternalErrors["stepErrors"]>
+  >({});
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [ownerDuplicateError, setOwnerDuplicateError] = useState<string | null>(
+    null,
+  );
+  const propertyFormRef = useRef<PropertyFormHandle | null>(null);
   // Set only after a successful fetch or first draft save — not from URL on mount,
   // otherwise resume-from-draft-list skips hydration.
   const draftHydratedForRef = useRef<string | null>(null);
@@ -251,6 +282,7 @@ export function usePropertyCreateScreen() {
   const { mutateAsync: fetchPropertyTaxonomy } = useGetPropertyTaxonomy();
   const { mutateAsync: fetchLocationTaxonomy } = useGetLocationTaxonomy();
   const { mutateAsync: fetchFeatureCatalog } = useGetPropertyFeatureCatalog();
+  const { mutateAsync: fetchPropertyFormOptions } = useGetPropertyFormOptions();
   const { mutateAsync: fetchPropertyDraftSubmission } = useGetPropertyDraftSubmission();
   const { mutateAsync: saveDraftSubmission, isPending: isCreateDraftSaving } =
     useSavePropertyDraftSubmission();
@@ -262,6 +294,7 @@ export function usePropertyCreateScreen() {
   const { onUploadOwnerDocument } = useOwnerDocumentUpload();
   const { onUploadPropertyMedia, onUploadPropertyDocument } =
     usePropertyMediaUpload(submissionId);
+  const { onSearchOwners } = usePropertyOwnerSearch();
   const {
     data: agencyListData,
     isPending: isAgencyListPending,
@@ -439,13 +472,24 @@ export function usePropertyCreateScreen() {
       requireDocuments: true,
       validationMessages: ownerInfoValidationMessages,
       readOnlyOwnerIndices,
+      nationalityOptions: formOptionsCatalog.nationalityOptions,
     });
   }, [
+    formOptionsCatalog.nationalityOptions,
     ownerInfoValidationMessages,
     propertyDetails.owner_info?.owners,
     submissionId,
     user,
   ]);
+
+  const formConfig = useMemo(
+    () =>
+      buildPropertyFormConfig(
+        tForm as Parameters<typeof buildPropertyFormConfig>[0],
+        formOptionsCatalog,
+      ),
+    [formOptionsCatalog, tForm],
+  );
 
   const syncSubmissionIdInUrl = useCallback(
     (nextSubmissionId: string) => {
@@ -459,7 +503,11 @@ export function usePropertyCreateScreen() {
   );
 
   const hydrateDraftSubmission = useCallback(
-    async (submissionIdToLoad: string, catalogItems: FeatureCatalogItem[]) => {
+    async (
+      submissionIdToLoad: string,
+      catalogItems: FeatureCatalogItem[],
+      formOptions: PropertyFormOptionsCatalog,
+    ) => {
       if (draftHydratedForRef.current === submissionIdToLoad) {
         return;
       }
@@ -468,11 +516,17 @@ export function usePropertyCreateScreen() {
 
       if (draftResponse.success && draftResponse.data) {
         const featuresForForm = mapFeatureCatalogForPropertyForm(catalogItems);
+        const catalogWithFloor = withEnsuredFloorOption(
+          formOptions,
+          getDraftFloorValue(draftResponse.data),
+        );
         const hydratedDetails = mapPropertyDraftSubmissionToPropertyFormValues(
           draftResponse.data,
           featuresForForm,
+          catalogWithFloor,
         );
 
+        setFormOptionsCatalog(catalogWithFloor);
         setPropertyDetails(hydratedDetails);
         setActiveStep(draftResponse.data.current_step);
         setMaxReachedStep(
@@ -540,14 +594,34 @@ export function usePropertyCreateScreen() {
             fetchFeatureCatalog(),
           ]);
 
+        const formOptionsResponse = await fetchPropertyFormOptions().catch(
+          () => null,
+        );
+
+        const formOptionsCatalog = withPropertyFormOptionFallbacks(
+          mapPropertyFormOptionsCatalog(formOptionsResponse),
+          {
+            furnished: tAdvanced("furnitureOptions.furnished"),
+            unfurnished: tAdvanced("furnitureOptions.unfurnished"),
+            semiFurnished: tAdvanced("furnitureOptions.semiFurnished"),
+            ground: tAdvanced("floorOptions.ground"),
+            penthouse: tAdvanced("floorOptions.penthouse"),
+          },
+        );
+
         setPropertyTaxonomy(propertyTaxonomyResponse);
         setLocationTaxonomy(locationTaxonomyResponse);
+        setFormOptionsCatalog(formOptionsCatalog);
 
         const catalogItems = featureCatalogResponse.data?.items ?? [];
         setFeatureCatalogItems(catalogItems);
 
         if (initialSubmissionId) {
-          await hydrateDraftSubmission(initialSubmissionId, catalogItems);
+          await hydrateDraftSubmission(
+            initialSubmissionId,
+            catalogItems,
+            formOptionsCatalog,
+          );
         }
       } finally {
         setIsCatalogLoading(false);
@@ -556,8 +630,10 @@ export function usePropertyCreateScreen() {
     [
       fetchFeatureCatalog,
       fetchLocationTaxonomy,
+      fetchPropertyFormOptions,
       fetchPropertyTaxonomy,
       hydrateDraftSubmission,
+      tAdvanced,
     ],
   );
 
@@ -611,6 +687,38 @@ export function usePropertyCreateScreen() {
     );
   }, []);
 
+  const applySubmissionError = useCallback(
+    (error: unknown, fallbackMessage: string) => {
+      const parsed = parsePropertySubmissionError(error, fallbackMessage);
+      setSubmitError(parsed.message);
+      setFieldErrors(parsed.fieldErrors);
+      setStepErrors(parsed.stepErrors);
+      setOwnerDuplicateError(parsed.ownerDuplicateError);
+      toast.error(parsed.message);
+
+      const firstFieldPath = Object.keys(parsed.fieldErrors)[0];
+      if (firstFieldPath) {
+        propertyFormRef.current?.goToField(firstFieldPath);
+      }
+    },
+    [toast],
+  );
+
+  const clearSubmissionErrors = useCallback(() => {
+    setSubmitError(null);
+    setFieldErrors({});
+    setStepErrors({});
+    setOwnerDuplicateError(null);
+  }, []);
+
+  const onRequestStepChange = useCallback(
+    (step: number) => {
+      setActiveStep(step);
+      setMaxReachedStep((maxPrevious) => Math.max(maxPrevious, step));
+    },
+    [],
+  );
+
   const onSubmit = useCallback(async () => {
     const currentStep = propertyDetails.active_step ?? activeStep;
     const lastCompletedStep = Math.max(
@@ -642,6 +750,7 @@ export function usePropertyCreateScreen() {
     }
 
     setIsSubmitting(true);
+    clearSubmissionErrors();
 
     try {
       if (!submissionId) {
@@ -666,9 +775,7 @@ export function usePropertyCreateScreen() {
           return;
         }
 
-        toast.error(t("submitError"), {
-          description: submitResponse.message ?? undefined,
-        });
+        applySubmissionError(submitResponse, submitResponse.message ?? t("submitError"));
         return;
       }
 
@@ -688,9 +795,7 @@ export function usePropertyCreateScreen() {
       });
 
       if (!saveResponse.success) {
-        toast.error(t("submitSaveError"), {
-          description: saveResponse.message ?? undefined,
-        });
+        applySubmissionError(saveResponse, saveResponse.message ?? t("submitSaveError"));
         return;
       }
 
@@ -708,17 +813,16 @@ export function usePropertyCreateScreen() {
         return;
       }
 
-      toast.error(t("submitError"), {
-        description: submitResponse.message ?? undefined,
-      });
+      applySubmissionError(submitResponse, submitResponse.message ?? t("submitError"));
     } catch (error) {
-      const message = error instanceof Error ? error.message : undefined;
-      toast.error(t("submitError"), { description: message });
+      applySubmissionError(error, t("submitError"));
     } finally {
       setIsSubmitting(false);
     }
   }, [
     activeStep,
+    applySubmissionError,
+    clearSubmissionErrors,
       featuresAndAmenities,
       maxReachedStep,
       pricingCurrency,
@@ -766,6 +870,7 @@ export function usePropertyCreateScreen() {
       }
 
       try {
+        clearSubmissionErrors();
         const routingOptions = {
           agencyId,
           routeThroughAgency: shouldRouteThroughAgency,
@@ -811,18 +916,17 @@ export function usePropertyCreateScreen() {
           return true;
         }
 
-        toast.error(t("draftSaveError"), {
-          description: response.message ?? undefined,
-        });
+        applySubmissionError(response, response.message ?? t("draftSaveError"));
         return false;
       } catch (error) {
-        const message = error instanceof Error ? error.message : undefined;
-        toast.error(t("draftSaveError"), { description: message });
+        applySubmissionError(error, t("draftSaveError"));
         return false;
       }
     },
     [
       activeStep,
+      applySubmissionError,
+      clearSubmissionErrors,
       featuresAndAmenities,
       maxReachedStep,
       pricingCurrency,
@@ -935,6 +1039,14 @@ export function usePropertyCreateScreen() {
     hasUnsavedChanges,
     dirtyStepIds,
     ownerInfoConfig,
+    formConfig,
+    fieldErrors,
+    stepErrors,
+    submitError,
+    ownerDuplicateError,
+    onSearchOwners,
+    onRequestStepChange,
+    propertyFormRef,
     pricingCurrency,
     measurementUnit,
     propertyFormContainerRef,

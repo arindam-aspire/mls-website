@@ -35,6 +35,7 @@
     "typePlaceholder": "اختر نوع العقار",
     "locationPlaceholder": "ابحث عن موقع",
     "locationEmptyMessage": "لم يتم العثور على مواقع",
+    "removeArea": "إزالة المنطقة",
     "budgetPlaceholder": "اختر الميزانية",
     "budgetMinFallback": "الحد الأدنى",
     "budgetMaxFallback": "الحد الأقصى"

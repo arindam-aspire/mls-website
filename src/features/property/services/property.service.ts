@@ -11,6 +11,7 @@ import type {
   PropertySubmissionDeleteResponse,
   PropertySubmissionDirectSubmitRequestBody,
 } from "../types/propertyDraftSubmission.types";
+import type { PropertyFormOptionsResponse } from "../types/propertyFormOptions.types";
 import type {
   AdminPropertyAssignAgentRequestBody,
   AdminPropertyAssignAgentResponse,
@@ -78,6 +79,14 @@ export async function getPropertyFeatureCatalog(): Promise<FeatureCatalogRespons
     endpoint: propertyEndpoints.FEATURE_CATALOG(),
     method: "GET",
     auth: false,
+  });
+}
+
+export async function getPropertyFormOptions(): Promise<PropertyFormOptionsResponse> {
+  return apiClient.request<PropertyFormOptionsResponse>({
+    endpoint: propertyEndpoints.PROPERTY_FORM_OPTIONS(),
+    method: "GET",
+    auth: tokenStore.hasAuthCredentials(),
   });
 }
 

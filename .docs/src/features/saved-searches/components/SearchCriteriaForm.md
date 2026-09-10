@@ -8,7 +8,7 @@ Self-contained **saved search criteria** form for the add-new modal. Three top r
 
 1. **Row 1** — Search title (`Input`, full width)
 2. **Row 2** — `SelectDropdown` grid (`md:grid-cols-3`): Looking For (Buy / Rent), category, type
-3. **Row 3** — Location, Min Budget, Max Budget (`BudgetAutocompleteField`; buy/rent suggestions)
+3. **Row 3** — Location (multi-select chips + autocomplete), Min Budget, Max Budget (`BudgetAutocompleteField`; buy/rent suggestions)
 4. **Conditional criteria** — responsive grid (`md:grid-cols-4`), no section heading; amenities below when visible
 5. **Footer** — Cancel, Reset, Save / Update (right-aligned)
 

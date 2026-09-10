@@ -8,12 +8,13 @@ import {
 import { getPropertyCategories } from "@/src/features/landing/types/propertyTaxonomy.types";
 import {
   buildLocationSuggestions,
-  encodeLocationOptionValue,
   filterLocationSuggestions,
   findLocationSuggestionByLabel,
-  getLocationLabelFromParams,
-  parseLocationOptionValue,
 } from "@/src/features/landing/utils/locationTaxonomy.utils";
+import {
+  parseSearchLocationValues,
+  serializeSearchLocationValues,
+} from "@/src/features/property/utils/propertySearchLocations.utils";
 import type {
   AutocompleteInputOption,
   SelectDropdownOption,
@@ -39,10 +40,11 @@ export type SearchCriteriaFieldsProps = {
   typeOptions: SelectDropdownOption[];
   onTypeChange: (value: string) => void;
   location: string;
-  locationValue?: string;
+  locationValues?: string[];
   locationOptions: AutocompleteInputOption[];
   onLocationInputChange: (value: string) => void;
   onLocationOptionSelect: (option: AutocompleteInputOption) => void;
+  onLocationRemove?: (value: string) => void;
   onLocationCommit: () => void;
   budgetMin: string;
   budgetMax: string;
@@ -110,17 +112,9 @@ export function useSearchCriteriaFilters({
   const { propertyTaxonomy, locationTaxonomy } = usePropertyStore();
 
   // 4. Local state
-  const [locationDraft, setLocationDraft] = useState(() =>
-    getLocationLabelFromParams(
-      filterParams.city,
-      filterParams.locations,
-      locationTaxonomy ?? undefined,
-    ) || filterParams.location || "",
-  );
-  const [selectedLocationValue, setSelectedLocationValue] = useState(() =>
-    filterParams.city
-      ? encodeLocationOptionValue(filterParams.city, filterParams.locations)
-      : "",
+  const [locationDraft, setLocationDraft] = useState("");
+  const [selectedLocationValues, setSelectedLocationValues] = useState(() =>
+    parseSearchLocationValues(filterParams.city, filterParams.locations),
   );
   const [budgetMinDraft, setBudgetMinDraft] = useState(
     () =>
@@ -214,23 +208,18 @@ export function useSearchCriteriaFilters({
     setParcelNameDraft(parcelNameFromParams);
   }
 
-  const locationLabelFromParams =
-    getLocationLabelFromParams(
-      filterParams.city,
-      filterParams.locations,
-      locationTaxonomy ?? undefined,
-    ) || filterParams.location || "";
-  const locationValueFromParams = filterParams.city
-    ? encodeLocationOptionValue(filterParams.city, filterParams.locations)
-    : "";
-  const locationParamsKey = `${locationLabelFromParams}|${locationValueFromParams}`;
+  const locationValuesFromParams = parseSearchLocationValues(
+    filterParams.city,
+    filterParams.locations,
+  );
+  const locationParamsKey = locationValuesFromParams.join("|");
   const [prevLocationParamsKey, setPrevLocationParamsKey] =
     useState(locationParamsKey);
 
   if (locationParamsKey !== prevLocationParamsKey) {
     setPrevLocationParamsKey(locationParamsKey);
-    setLocationDraft(locationLabelFromParams);
-    setSelectedLocationValue(locationValueFromParams);
+    setSelectedLocationValues(locationValuesFromParams);
+    setLocationDraft("");
   }
 
   // 5. Data fetching / queries
@@ -246,13 +235,13 @@ export function useSearchCriteriaFilters({
   );
 
   const locationOptions = useMemo((): AutocompleteInputOption[] => {
-    return filterLocationSuggestions(locationSuggestions, locationDraft).map(
-      (item) => ({
+    return filterLocationSuggestions(locationSuggestions, locationDraft)
+      .filter((item) => !selectedLocationValues.includes(item.value))
+      .map((item) => ({
         value: item.value,
         label: item.label,
-      }),
-    );
-  }, [locationDraft, locationSuggestions]);
+      }));
+  }, [locationDraft, locationSuggestions, selectedLocationValues]);
 
   const categories = useMemo(
     () => getPropertyCategories(propertyTaxonomy ?? undefined),
@@ -407,18 +396,40 @@ export function useSearchCriteriaFilters({
 
   const onLocationInputChange = useCallback((nextValue: string) => {
     setLocationDraft(nextValue);
-    setSelectedLocationValue("");
   }, []);
 
   const onLocationOptionSelect = useCallback(
     (option: AutocompleteInputOption) => {
-      const { city, locations } = parseLocationOptionValue(option.value);
-      setLocationDraft(option.label);
-      setSelectedLocationValue(option.value);
-      updateFilterParams({
-        city,
-        locations: locations ?? "",
-        location: "",
+      setSelectedLocationValues((previous) => {
+        if (previous.includes(option.value)) {
+          return previous;
+        }
+
+        const nextValues = [...previous, option.value];
+        const serialized = serializeSearchLocationValues(nextValues);
+        updateFilterParams({
+          city: serialized.city,
+          locations: serialized.locations,
+          location: "",
+        });
+        return nextValues;
+      });
+      setLocationDraft("");
+    },
+    [updateFilterParams],
+  );
+
+  const onLocationRemove = useCallback(
+    (value: string) => {
+      setSelectedLocationValues((previous) => {
+        const nextValues = previous.filter((item) => item !== value);
+        const serialized = serializeSearchLocationValues(nextValues);
+        updateFilterParams({
+          city: serialized.city,
+          locations: serialized.locations,
+          location: "",
+        });
+        return nextValues;
       });
     },
     [updateFilterParams],
@@ -428,20 +439,6 @@ export function useSearchCriteriaFilters({
     const trimmedLocation = locationDraft.trim();
 
     if (!trimmedLocation) {
-      if (
-        !filterParams.city &&
-        !filterParams.locations &&
-        !filterParams.location
-      ) {
-        return;
-      }
-
-      updateFilterParams({
-        city: "",
-        locations: "",
-        location: "",
-      });
-      setSelectedLocationValue("");
       return;
     }
 
@@ -451,34 +448,12 @@ export function useSearchCriteriaFilters({
     );
 
     if (matched) {
-      const { city, locations } = parseLocationOptionValue(matched.value);
-      setSelectedLocationValue(matched.value);
-      updateFilterParams({
-        city,
-        locations: locations ?? "",
-        location: "",
+      onLocationOptionSelect({
+        value: matched.value,
+        label: matched.label,
       });
-      return;
     }
-
-    if ((filterParams.location ?? "") === trimmedLocation) {
-      return;
-    }
-
-    updateFilterParams({
-      location: trimmedLocation,
-      city: "",
-      locations: "",
-    });
-    setSelectedLocationValue("");
-  }, [
-    filterParams.locations,
-    filterParams.city,
-    filterParams.location,
-    locationDraft,
-    locationSuggestions,
-    updateFilterParams,
-  ]);
+  }, [locationDraft, locationSuggestions, onLocationOptionSelect]);
 
   const onBudgetCommit = useCallback(() => {
     updateFilterParams({
@@ -745,10 +720,11 @@ export function useSearchCriteriaFilters({
       typeOptions,
       onTypeChange,
       location: locationDraft,
-      locationValue: selectedLocationValue,
+      locationValues: selectedLocationValues,
       locationOptions,
       onLocationInputChange,
       onLocationOptionSelect,
+      onLocationRemove,
       onLocationCommit,
       budgetMin: budgetMinDraft,
       budgetMax: budgetMaxDraft,
@@ -837,6 +813,7 @@ export function useSearchCriteriaFilters({
       onLocationCommit,
       onLocationInputChange,
       onLocationOptionSelect,
+      onLocationRemove,
       onMaxAreaChange,
       onMaxAreaCommit,
       onMaxPlotAreaChange,
@@ -856,7 +833,7 @@ export function useSearchCriteriaFilters({
       onVillageCommit,
       parcelNameDraft,
       selectedAmenities,
-      selectedLocationValue,
+      selectedLocationValues,
       typeOptions,
       villageDraft,
     ],

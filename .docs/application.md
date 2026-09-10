@@ -71,7 +71,9 @@ See [packages.md](./packages.md) for the full dependency table.
 
 ## Getting started
 
-**Private package:** `@abdoun/abdoun-library` comes from the Coderlook Git (Gitea) npm registry (see root [`.npmrc`](../.npmrc)). Public packages still use `registry.npmjs.org`. CI injects a Gitea package-read token (`GITEA_NPM_TOKEN`) in `azure-pipelines.yml`.
+**Private package:** `@abdoun/abdoun-library` is currently linked as `file:../abdoun-library` (local sibling at version 0.1.90). The library must be built (`dist/` present) before `next build` / `next dev`. [next.config.ts](../next.config.ts) sets `turbopack.root` and `outputFileTracingRoot` to the parent of this app so Turbopack can resolve that `file:` symlink (modules outside the inferred project root are otherwise `Module not found`). Webpack builds set `resolve.symlinks = false` for the same reason.
+
+CI can still install the package from the Coderlook Git (Gitea) npm registry (see root [`.npmrc`](../.npmrc)). Public packages still use `registry.npmjs.org`. CI injects a Gitea package-read token (`GITEA_NPM_TOKEN`) in `azure-pipelines.yml`.
 
 **If `npm install` fails with `E401`:** credentials are missing or expired in your **user** npmrc, not in the repo.
 
@@ -213,7 +215,7 @@ All paths below are **without** locale; prepend `/<locale>` (e.g. `/en/my-listin
 | `/notifications` | `(main)/notifications/page.tsx` | `NotificationScreen` (placeholder) — guarded by `useAuthorize("NOTIFICATIONS")` |
 | `/favourites` | `(main)/favourites/page.tsx` | `FavouritePropertyScreen` — guarded by `useAuthorize("FAVOURITES")` |
 | `/my-listings` | `(main)/(listings)/my-listings/page.tsx` | `ListingPropertyScreen` — guarded by `useAuthorize("MY_LISTINGS")` |
-| `/property-create` | `(main)/(listings)/property-create/page.tsx` | `PropertyCreateScreen` — guarded by `useAuthorize("PROPERTY_CREATE")`; Location includes `show_location` (default `false`); Step 8 lets Super Admin/Owner opt into `route_through_agency` and conditionally requires `agency_id` |
+| `/property-create` | `(main)/(listings)/property-create/page.tsx` | `PropertyCreateScreen` — `@abdoun/abdoun-library` 0.1.90 `PropertyForm`; master-data from `GET /property-form-options` (Furnishing Status and Floor persist as master-table IDs); Location includes map pin + `show_location` (default `false`); Step 8 lets Super Admin/Owner opt into `route_through_agency` and conditionally requires `agency_id` |
 | `/property-update` | `(main)/(listings)/property-update/page.tsx` | `PropertyUpdateScreen` — guarded by `useAuthorize("MY_LISTINGS")` |
 | `/recently-viewed` | `(main)/recently-viewed/page.tsx` | `RecentlyViewedScreen` — guarded by `useAuthorize("RECENTLY_VIEWED")` |
 | `/owners` | `(main)/owners/page.tsx` | `OwnersScreen` — guarded by `useAuthorize("OWNERS")` (Super Admin + Agency Admin); list, activate, view/edit, linked properties/leads; `OWNER_DEACTIVATE` restricts Owner deactivation to Super Admin |
@@ -583,7 +585,9 @@ From `src/configs/environment.config.ts` → `API_BASE_URL` (env: `NEXT_PUBLIC_A
 
 | Constant | Path |
 | --- | --- |
-| `PROPERTY_LIST` | `/properties` — query may include `city`, `locations` (names from location taxonomy), plus existing filters |
+| `PROPERTY_LIST` | `/properties` — query may include `city`, `locations` (single area name or comma-joined `city\|area` values), plus existing filters |
+| `FEATURE_CATALOG()` | `/features?is_active=true` |
+| `PROPERTY_FORM_OPTIONS()` | `/property-form-options` — Add Property master-data options including `nationalities` (auth when credentials exist) |
 | `FAVORITE_LIST` | `/favorites` — `page`, `pageSize` (auth required) |
 | `FAVORITE_REMOVE` | `/favorites/:propertyHash` — DELETE (auth required) |
 
@@ -707,7 +711,7 @@ All use `ComingSoonCard` with custom `title` / `description`:
 | `navigateTo`, `navigateReplace`, `navigateBack` | `utils/navigation.utils.ts` | Imperative nav (uses router from `NavigationInitializer`) |
 | `initializeNavigation` | Same | Called once at app boot |
 
-**Important:** `NavigationInitializer` uses `useRouter` from `next/navigation`, while feature code should prefer `useRouter` from `@/src/i18n/navigation` for locale-aware paths.
+**Important:** `NavigationInitializer` uses `useRouter` from `next/navigation` (root layout is outside `NextIntlClientProvider`). Imperative `navigateTo(\`/${locale}/dashboard\`)` must **keep** that locale prefix so Next matches `app/[locale]/dashboard` instead of treating `dashboard` as the locale (which renders the 404 page). Feature UI should prefer `useRouter` from `@/src/i18n/navigation`.
 
 ---
 

@@ -1,16 +1,20 @@
 # File Overview
 
-Project source module.
+Registers the App Router instance so non-React code can navigate (sign-in redirect, logout, Axios 401).
 
 **Source:** `src/initializers/NavigationInitializer.tsx` (Client Component)
 
+**Where used:** Root [layout.md](../../app/layout.md), inside `AuthProvider`.
+
 # Responsibilities
 
-- Project source module.
+- Call `useRouter()` from `next/navigation` (not next-intl). This component sits in the root layout, **outside** `NextIntlClientProvider` in `app/[locale]/layout.tsx`.
+- Pass that router to `initializeNavigation` so `navigateTo` / `navigateReplace` / `navigateBack` work.
 
 # Imports
 
-- `import { initializeNavigation } from "@/src/utils/navigation.utils"`
+- `useRouter` from `next/navigation`
+- `initializeNavigation` from `@/src/utils/navigation.utils`
 
 # Exports
 
@@ -18,54 +22,54 @@ Project source module.
 
 # State Management
 
-_No significant state; presentational or config module._
+_No local state._ The router reference is stored in `navigation.utils`.
 
 # API Usage
 
-_N/A unless extended._
+_N/A._
 
 # Navigation
 
-_No direct navigation._
+Does not navigate itself. After registration, auth mutations call `navigateTo(\`/${locale}/dashboard\`)` for agents and agency admins. That path **must keep** the locale prefix because this initializer uses the native App Router.
 
 # Props / Parameters
 
-- See component/handler props in source (TypeScript interfaces).
+None.
 
 # Actions / Inputs
 
 ## Inputs
 
-_No explicit inputs detected._
+_N/A._
 
 ## Actions
 
-_No explicit actions detected._
+On mount (and when the router identity changes), store the router on the navigation module.
 
 ## Validations
 
-_No explicit validations detected._
+_N/A._
 
 ## Show/Hide Controls
 
-_No explicit show/hide controls detected._
+Renders `null`.
 
 # UI Details
 
-- **Theme:** semantic tokens (`bg-page`, `bg-surface`, `text-text`, `text-muted`, `bg-primary`, `border-secondary/15`).
-- **Light/dark:** via `ThemeProvider` / `html.light` | `html.dark`.
-- **Radius:** `rounded-lg` controls; `rounded-xl` cards/modals/popovers; `rounded-full` avatars/pills.
-- **Responsive:** mobile-first (`sm:`, `md:`, `lg:`).
+_N/A — no UI._
 
 # Flow Description
 
-See source in `src/initializers/NavigationInitializer.tsx` for step-by-step behavior aligned with [application.md](../../application.md) (path relative may vary).
+1. Root layout renders `NavigationInitializer` under providers.
+2. `useEffect` calls `initializeNavigation(router)`.
+3. Later, `completeSignInFlow` can `navigateTo("/en/dashboard")` without importing React hooks.
 
 # Dependencies
 
-- Parent feature or route that imports this file.
-- See **Imports** for direct module dependencies.
+- [layout.md](../../app/layout.md)
+- [navigation.utils.md](../utils/navigation.utils.md)
 
 # Notes
 
+- Feature UI should keep using `useRouter` from `@/src/i18n/navigation`.
 - Keep in sync when `src/initializers/NavigationInitializer.tsx` changes.

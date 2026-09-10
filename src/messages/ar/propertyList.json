@@ -1,7 +1,9 @@
 {
   "filters": {
     "advancedSearch": "بحث متقدم",
-    "resetSearch": "إعادة تعيين البحث"
+    "resetSearch": "إعادة تعيين البحث",
+    "removeArea": "إزالة المنطقة",
+    "noLocationsFound": "لم يتم العثور على مواقع"
   },
   "advanced": {
     "title": "بحث متقدم",
@@ -361,6 +363,53 @@
     "submitSuccess": "تم إرسال العقار",
     "submitError": "تعذر إرسال العقار",
     "submitSaveError": "تعذر حفظ المسودة قبل الإرسال",
+    "form": {
+      "listingPurposeLabel": "غرض الإدراج",
+      "listingPurposePlaceholder": "اختر أغراض الإدراج",
+      "areaLabel": "المنطقة",
+      "areaPlaceholder": "اختر المنطقة",
+      "yearBuiltLabel": "سنة البناء / سنة الإنشاء",
+      "yearBuiltPlaceholder": "أدخل سنة الإنشاء",
+      "floorLevelLabel": "الطابق",
+      "furnishingStatusLabel": "حالة التأثيث",
+      "setAsPrimaryImage": "تعيين كصورة رئيسية",
+      "listingPurposes": {
+        "sale": "بيع",
+        "rent": "إيجار"
+      },
+      "ownerMode": {
+        "searchExisting": "البحث عن مالك موجود",
+        "createNew": "إنشاء مالك جديد",
+        "searchPlaceholder": "ابحث بالاسم أو البريد أو الهاتف أو الرقم الوطني",
+        "searchEmpty": "لم يتم العثور على مالكين مطابقين.",
+        "searchLoading": "جارٍ البحث عن المالكين…",
+        "selectOwner": "اختر المالك",
+        "selectedOwner": "المالك المحدد",
+        "duplicateDetected": "يوجد مالك بتفاصيل هوية مطابقة بالفعل.",
+        "duplicateSelectExisting": "اختر المالك الحالي للمتابعة. لا يُسمح بإنشاء تكرار."
+      },
+      "pricing": {
+        "furnishedSalePrice": "بيع مفروش",
+        "unfurnishedSalePrice": "بيع غير مفروش",
+        "furnishedRentPrice": "إيجار مفروش",
+        "unfurnishedRentPrice": "إيجار غير مفروش",
+        "semiFurnishedRentPrice": "إيجار شبه مفروش"
+      },
+      "identification": {
+        "apartmentNumber": "رقم الشقة",
+        "plotNumber": "رقم القطعة",
+        "basinNumber": "رقم الحوض",
+        "parcelNumber": "رقم الطرد",
+        "buildingNumber": "رقم المبنى"
+      },
+      "map": {
+        "mapTitle": "موقع الخريطة",
+        "latitude": "خط العرض",
+        "longitude": "خط الطول",
+        "coordinates": "الإحداثيات",
+        "selectPinHint": "حدد الدبوس أو اسحبه لتعيين موقع العقار."
+      }
+    },
     "locationVisibility": {
       "title": "إظهار الموقع",
       "description": "السماح لجميع المستخدمين بعرض علامة تبويب موقع هذا العقار.",

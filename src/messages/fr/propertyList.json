@@ -1,7 +1,9 @@
 {
   "filters": {
     "advancedSearch": "Recherche avancée",
-    "resetSearch": "Réinitialiser la recherche"
+    "resetSearch": "Réinitialiser la recherche",
+    "removeArea": "Supprimer le secteur",
+    "noLocationsFound": "Aucun lieu trouvé"
   },
   "advanced": {
     "title": "Recherche avancée",
@@ -361,6 +363,53 @@
     "submitSuccess": "Bien soumis",
     "submitError": "Impossible de soumettre le bien",
     "submitSaveError": "Impossible d'enregistrer le brouillon avant la soumission",
+    "form": {
+      "listingPurposeLabel": "Objet de l’annonce",
+      "listingPurposePlaceholder": "Sélectionnez les objets",
+      "areaLabel": "Secteur",
+      "areaPlaceholder": "Sélectionnez le secteur",
+      "yearBuiltLabel": "Année de construction",
+      "yearBuiltPlaceholder": "Saisissez l’année de construction",
+      "floorLevelLabel": "Étage",
+      "furnishingStatusLabel": "État d’ameublement",
+      "setAsPrimaryImage": "Définir comme image principale",
+      "listingPurposes": {
+        "sale": "Vente",
+        "rent": "Location"
+      },
+      "ownerMode": {
+        "searchExisting": "Rechercher un propriétaire existant",
+        "createNew": "Créer un nouveau propriétaire",
+        "searchPlaceholder": "Rechercher par nom, e-mail, téléphone ou SSI",
+        "searchEmpty": "Aucun propriétaire correspondant.",
+        "searchLoading": "Recherche des propriétaires…",
+        "selectOwner": "Sélectionner le propriétaire",
+        "selectedOwner": "Propriétaire sélectionné",
+        "duplicateDetected": "Un propriétaire avec les mêmes informations d’identité existe déjà.",
+        "duplicateSelectExisting": "Sélectionnez le propriétaire existant pour continuer. La création d’un doublon n’est pas autorisée."
+      },
+      "pricing": {
+        "furnishedSalePrice": "Vente meublée",
+        "unfurnishedSalePrice": "Vente non meublée",
+        "furnishedRentPrice": "Location meublée",
+        "unfurnishedRentPrice": "Location non meublée",
+        "semiFurnishedRentPrice": "Location semi-meublée"
+      },
+      "identification": {
+        "apartmentNumber": "Numéro d’appartement",
+        "plotNumber": "Numéro de parcelle",
+        "basinNumber": "Numéro de bassin",
+        "parcelNumber": "Numéro de lot",
+        "buildingNumber": "Numéro de bâtiment"
+      },
+      "map": {
+        "mapTitle": "Emplacement sur la carte",
+        "latitude": "Latitude",
+        "longitude": "Longitude",
+        "coordinates": "Coordonnées",
+        "selectPinHint": "Sélectionnez ou faites glisser l’épingle pour définir l’emplacement du bien."
+      }
+    },
     "locationVisibility": {
       "title": "Afficher l’emplacement",
       "description": "Autorisez tous les utilisateurs à voir l’onglet Emplacement de ce bien.",

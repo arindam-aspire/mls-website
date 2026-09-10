@@ -2,6 +2,7 @@
 
 import { Breadcrumb } from "@/src/components/ui/breadcrumb";
 import { PropertyCreateAgencyField } from "@/src/features/property/components/PropertyCreateAgencyField";
+import { PropertyLocationMap } from "@/src/features/property/components/PropertyLocationMap";
 import { PropertyLocationVisibilityField } from "@/src/features/property/components/PropertyLocationVisibilityField";
 import { PropertyCreateUnsavedChangesModal } from "@/src/features/property/components/PropertyCreateUnsavedChangesModal";
 import { PropertyCreateScreenSkeleton } from "@/src/features/property/components/PropertyCreateScreenSkeleton";
@@ -41,6 +42,14 @@ export default function PropertyCreateScreen() {
     onUploadPropertyMedia,
     onUploadPropertyDocument,
     ownerInfoConfig,
+    formConfig,
+    fieldErrors,
+    stepErrors,
+    submitError,
+    ownerDuplicateError,
+    onSearchOwners,
+    onRequestStepChange,
+    propertyFormRef,
     pricingCurrency,
     measurementUnit,
     propertyFormContainerRef,
@@ -70,6 +79,7 @@ export default function PropertyCreateScreen() {
 
       <div ref={propertyFormContainerRef} className="min-w-0">
         <PropertyForm
+          ref={propertyFormRef}
           activeStep={activeStep}
           stickyTopOffset="5.1rem"
           maxReachedStep={maxReachedStep}
@@ -92,6 +102,14 @@ export default function PropertyCreateScreen() {
           canEdit={canEditSubmission}
           rejectionReason={rejectionReason}
           ownerInfoConfig={ownerInfoConfig}
+          config={formConfig}
+          onSearchOwners={onSearchOwners}
+          ownerDuplicateError={ownerDuplicateError}
+          fieldErrors={fieldErrors}
+          stepErrors={stepErrors}
+          submitError={submitError}
+          onRequestStepChange={onRequestStepChange}
+          renderLocationMap={(props) => <PropertyLocationMap {...props} />}
           pricingCurrency={pricingCurrency}
           measurementUnit={measurementUnit}
         />

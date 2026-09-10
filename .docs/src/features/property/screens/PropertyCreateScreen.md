@@ -9,14 +9,14 @@ Create-property screen at `/en/property-create`. Loads taxonomy/feature catalog 
 - Render localized page title and subtitle.
 - Show role-aware breadcrumb on `md+` (hidden on `sm`) in the header row right section.
 - Show `PropertyCreateScreenSkeleton` while catalog APIs load.
-- Render `PropertyForm` with mapped catalog data, `ownerInfoConfig`, and step navigation from `usePropertyCreateScreen`.
+- Render `PropertyForm` with mapped catalog data, `config`, `ownerInfoConfig`, owner search, location map slot, external BE errors, and step navigation from `usePropertyCreateScreen`.
 - Mount `PropertyCreateAgencyField` only on Step 8 so it can portal the Agency Routing card immediately before Terms & Conditions.
 - Attach `propertyFormContainerRef` around the library form so Reference Number remains visible and focusable but cannot be manually edited.
 - Render `PropertyLocationVisibilityField` only on the Location step so the API-backed visibility setting appears after the existing City, Area, and Address controls.
 
 # Imports
 
-- `usePropertyCreateScreen`, `PropertyCreateAgencyField`, `PropertyLocationVisibilityField`, `PropertyCreateScreenSkeleton`, `Breadcrumb`, `PropertyForm` from `@abdoun/abdoun-library`, typography helpers
+- `usePropertyCreateScreen`, `PropertyCreateAgencyField`, `PropertyLocationMap`, `PropertyLocationVisibilityField`, `PropertyCreateScreenSkeleton`, `Breadcrumb`, `PropertyForm` from `@abdoun/abdoun-library`, typography helpers
 
 # Navigation
 
@@ -42,7 +42,7 @@ Screen receives all form props from `usePropertyCreateScreen()` — see hook doc
 - On Location step 2, the host-owned Show Location switch is portaled into the library form and disabled with the rest of the form during read-only/save/submit states.
 - On Review & Submit step 8, the host-owned Agency Routing card is portaled before Terms. Routing defaults off; checking it reveals the required agency dropdown.
 - Light/dark semantic tokens; i18n in all four locales for page chrome (form labels live in the library).
-- Requires `@abdoun/abdoun-library` v0.1.61+ for `PropertyForm` `canEdit` / `rejectionReason` (read-only submitted, resubmit alert when rejected).
+- Requires local `@abdoun/abdoun-library` **0.1.90** (`file:../abdoun-library`) for multi-purpose listing, single area, map slot, owner search, named prices, primary image, and `PropertyFormHandle`.
 - Passes `canEdit` and `rejectionReason` from draft submission `status` / `review_reason`.
 - Passes `isDraftLoading={isDraftSaving}` and `isSubmitting` to disable the form while draft save or submit is in flight.
 - Unsaved-change detection uses `propertyDetails` from `usePropertyCreateScreen` (not library live-payload props on `PropertyForm` in `@abdoun/abdoun-library` v0.1.79).
@@ -63,6 +63,7 @@ Screen receives all form props from `usePropertyCreateScreen()` — see hook doc
 
 - [usePropertyCreateScreen.md](../hooks/usePropertyCreateScreen.md)
 - [PropertyCreateAgencyField.md](../components/PropertyCreateAgencyField.md)
+- [PropertyLocationMap.md](../components/PropertyLocationMap.md)
 - [PropertyLocationVisibilityField.md](../components/PropertyLocationVisibilityField.md)
 - [PropertyCreateScreenSkeleton.md](../components/PropertyCreateScreenSkeleton.md)
 - [propertyForm.mapper.md](../mappers/propertyForm.mapper.md)

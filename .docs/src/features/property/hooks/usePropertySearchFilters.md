@@ -30,7 +30,7 @@ Reusable hook that owns property search **filter** UI state and handlers. Return
 # State Management
 
 - **Zustand (read):** `propertyTaxonomy`, `locationTaxonomy`
-- **Local:** draft strings for location, budget, areas, governorate block; `selectedLocationValue` for autocomplete
+- **Local:** `selectedLocationValues` (encoded `city|area`), draft strings for location input, budget, areas, governorate block.
 
 Draft fields resync from `filterParams` during render when param-derived keys change (replacing prior `useEffect` sync).
 

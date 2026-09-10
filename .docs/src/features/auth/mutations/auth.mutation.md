@@ -45,7 +45,7 @@ TanStack React Query mutation hooks.
 
 - **`navigateTo`** after logout → `/${locale}`.
 - **`useLogout` `onSuccess`:** `clearNotificationQueryCache(queryClient)` then `clearAuth()` — drops cached notification list/unread count so the bell badge does not persist after sign-out.
-- After password or OTP sign-in: `completeSignInFlow` closes the modal and redirects together. Dashboard path uses JWT role when present, else OTP/password `variables.role` (`admin` → agency dashboard).
+- After password or OTP sign-in: `completeSignInFlow` closes the modal and redirects together. Dashboard path uses JWT role when present, else OTP/password `variables.role` (`admin` → agency dashboard). The href is locale-prefixed (`/en/dashboard`) and `navigateTo` must not strip that prefix — see [navigation.utils.md](../../../utils/navigation.utils.md).
 
 # Props / Parameters
 

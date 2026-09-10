@@ -19,6 +19,7 @@ import {
   deactivateAdminPropertySubmission,
   getPropertyDraftSubmission,
   getPropertyFeatureCatalog,
+  getPropertyFormOptions,
   getPropertyList,
   getRecentViewsList,
   removeFavorite,
@@ -90,6 +91,12 @@ export const useGetPropertyFeatureCatalog = () => {
         description: error.message,
       });
     },
+  });
+};
+
+export const useGetPropertyFormOptions = () => {
+  return useMutation({
+    mutationFn: getPropertyFormOptions,
   });
 };
 

@@ -9,7 +9,8 @@ API service for listing and fetching a single property.
 - Call `GET /properties` with query params from `PropertyListParams`.
 - Call `GET /properties/:id` for a single property record.
 - Call `GET /properties/:id/similar` for related listings.
-- Call `GET /agent-properties?page=&pageSize=` for the owner's my-listings screen.
+- Call `GET /features?is_active=true` for the Features/Amenities catalog.
+- Call `GET /property-form-options` for Add Property master-data option lists (furnishing, floor, completion, orientation, listing purposes, nationalities).
 - Call `GET /property-submissions/{submissionId}` to load an existing draft for property create resume.
 - Call `POST /property-submissions` with `{ payload, current_step }` to create a property draft.
 - Call `PATCH /property-submissions/{submissionId}` with `{ action: "save_draft", current_step, payload }` to update an existing draft.
@@ -35,6 +36,7 @@ API service for listing and fetching a single property.
 - `getPropertyDetails`
 - `getSimilarProperties`
 - `getPropertyFeatureCatalog`
+- `getPropertyFormOptions`
 - `getAgentProperties`
 - `getAgentPropertyDrafts`
 - `getPropertyDraftSubmission`
@@ -62,6 +64,7 @@ _N/A — stateless service._
 | `getPropertyDetails` | GET | `/properties/:id` | optional (`auth: tokenStore.hasAuthCredentials()`) |
 | `getSimilarProperties` | GET | `/properties/:id/similar` | optional (`auth: tokenStore.hasAuthCredentials()`) |
 | `getPropertyFeatureCatalog` | GET | `/features?is_active=true` | no (`auth: false`) |
+| `getPropertyFormOptions` | GET | `/property-form-options` | optional (`auth: tokenStore.hasAuthCredentials()`) |
 | `getAgentProperties` | GET | `/agent-properties?page=&pageSize=` | yes |
 | `getAdminPropertySubmissions` | GET | `/admin/property-submissions?status=&page=&pageSize=` | yes |
 | `reviewAdminPropertySubmission` | POST | `/admin/property-submissions/{submissionId}/review` body `{ action }` | yes |

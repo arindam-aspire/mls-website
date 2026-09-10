@@ -7,7 +7,7 @@ TypeScript request-body shapes for property **draft submission** (create / save 
 # Responsibilities
 
 - Define nested submission sections under `payload`: `basic_information`, `location`, `owner_information`, `property_details`, `pricing`, `amenities`, `media_documents`, `review_submit`.
-- Document field renames and transforms vs `PropertyForm` (e.g. `area_ids[0]` → `area_id`, `permit_dld_number` → `permit_number`, `total_floor` → `total_floors`).
+- Document field renames and transforms vs `PropertyForm` (e.g. `listing_purposes[]`, `area_id`, lat/lng, identification fields, `year_built`, named prices, `owner_id`). `permit_number` is accepted only when hydrating old drafts.
 - Export `PropertyDraftSubmissionPayload` (mapped form data; **every key optional** for partial drafts) and top-level request/response routing fields (`route_through_agency`, `agency_id`).
 
 # Exports
@@ -16,11 +16,12 @@ TypeScript request-body shapes for property **draft submission** (create / save 
 | --- | --- |
 | `PropertyDraftSubmissionListingPurpose` | `"sale"` \| `"rent"` |
 | `PropertyDraftSubmissionCurrency` | `AgencyCurrency` (`"JOD"` \| `"USD"`) |
-| `PropertyDraftSubmissionBasicInformation` | Title, description, taxonomy ids |
-| `PropertyDraftSubmissionLocation` | City, first area, address, and `show_location` visibility boolean |
-| `PropertyDraftSubmissionOwnerInformation` | Owners with merged phone, `nationality`, `ssi`, and document urls (no `owner_address`) |
-| `PropertyDraftSubmissionPropertyDetails` | Bedrooms, Built-up Area value plus `"SQM"`/`"SQFT"` unit, permit, `guard_name`, merged `guard_phone_number`, etc. |
-| `PropertyDraftSubmissionPricing` | Numeric price fields + currency |
+| `PropertyDraftMasterOptionValue` | Master-table id/slug or nested `{ id }` used by furnishing and floor |
+| `PropertyDraftSubmissionBasicInformation` | `listing_purposes[]`, optional legacy `listing_purpose`, title, description, taxonomy ids |
+| `PropertyDraftSubmissionLocation` | City, single `area_id`, lat/lng, identification fields, `show_location` |
+| `PropertyDraftSubmissionOwnerInformation` | `owner_id`, `owner_mode`, owners with merged phone, `nationality`, `ssi`, documents |
+| `PropertyDraftSubmissionPropertyDetails` | Bedrooms, Built-up Area, `year_built`, furnishing/floor master IDs, completion; `permit_number` hydrate-only |
+| `PropertyDraftSubmissionPricing` | Named furnished/unfurnished sale and rent prices plus legacy `price` |
 | `PropertyDraftSubmissionAmenities` | `feature_ids` (feature catalog ids) |
 | `PropertyDraftSubmissionMediaDocuments` | Images, videos, documents, urls |
 | `PropertyDraftSubmissionReviewSubmit` | Terms / privacy / display / fees flags |

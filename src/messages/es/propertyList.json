@@ -1,7 +1,9 @@
 {
   "filters": {
     "advancedSearch": "Búsqueda avanzada",
-    "resetSearch": "Restablecer búsqueda"
+    "resetSearch": "Restablecer búsqueda",
+    "removeArea": "Quitar zona",
+    "noLocationsFound": "No se encontraron ubicaciones"
   },
   "advanced": {
     "title": "Búsqueda avanzada",
@@ -361,6 +363,53 @@
     "submitSuccess": "Propiedad enviada",
     "submitError": "No se pudo enviar la propiedad",
     "submitSaveError": "No se pudo guardar el borrador antes del envío",
+    "form": {
+      "listingPurposeLabel": "Finalidad del anuncio",
+      "listingPurposePlaceholder": "Seleccione las finalidades",
+      "areaLabel": "Zona",
+      "areaPlaceholder": "Seleccione la zona",
+      "yearBuiltLabel": "Año de construcción",
+      "yearBuiltPlaceholder": "Introduzca el año de construcción",
+      "floorLevelLabel": "Planta",
+      "furnishingStatusLabel": "Estado de amueblado",
+      "setAsPrimaryImage": "Establecer como imagen principal",
+      "listingPurposes": {
+        "sale": "Venta",
+        "rent": "Alquiler"
+      },
+      "ownerMode": {
+        "searchExisting": "Buscar propietario existente",
+        "createNew": "Crear propietario nuevo",
+        "searchPlaceholder": "Buscar por nombre, correo, teléfono o SSI",
+        "searchEmpty": "No se encontraron propietarios coincidentes.",
+        "searchLoading": "Buscando propietarios…",
+        "selectOwner": "Seleccionar propietario",
+        "selectedOwner": "Propietario seleccionado",
+        "duplicateDetected": "Ya existe un propietario con los mismos datos de identidad.",
+        "duplicateSelectExisting": "Seleccione el propietario existente para continuar. No se permite crear un duplicado."
+      },
+      "pricing": {
+        "furnishedSalePrice": "Venta amueblada",
+        "unfurnishedSalePrice": "Venta sin amueblar",
+        "furnishedRentPrice": "Alquiler amueblado",
+        "unfurnishedRentPrice": "Alquiler sin amueblar",
+        "semiFurnishedRentPrice": "Alquiler semiamueblado"
+      },
+      "identification": {
+        "apartmentNumber": "Número de apartamento",
+        "plotNumber": "Número de parcela",
+        "basinNumber": "Número de cuenca",
+        "parcelNumber": "Número de predio",
+        "buildingNumber": "Número de edificio"
+      },
+      "map": {
+        "mapTitle": "Ubicación en el mapa",
+        "latitude": "Latitud",
+        "longitude": "Longitud",
+        "coordinates": "Coordenadas",
+        "selectPinHint": "Seleccione o arrastre el pin para fijar la ubicación de la propiedad."
+      }
+    },
     "locationVisibility": {
       "title": "Mostrar ubicación",
       "description": "Permite que todos los usuarios vean la pestaña Ubicación de esta propiedad.",

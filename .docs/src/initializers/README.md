@@ -14,4 +14,4 @@ Mounted once in `app/layout.tsx` (client component).
 
 ## Note
 
-Feature code should prefer `@/src/i18n/navigation` for locale-aware paths. `navigateTo` is used where locale is passed explicitly (e.g. logout → `/${locale}`).
+Feature code should prefer `@/src/i18n/navigation` for locale-aware paths. `navigateTo` is used where locale is passed explicitly (e.g. logout → `/${locale}`, agent sign-in → `/${locale}/dashboard`). Those hrefs keep the locale prefix because the stored router is `next/navigation`.
