@@ -7,6 +7,8 @@ Project source module.
 # Responsibilities
 
 - Project source module.
+- Export `API_BASE_URL` from `NEXT_PUBLIC_API_BASE_URL`.
+- Export `GOOGLE_MAPS_API_KEY` from `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` (empty when unset). The create-property location map needs the Maps JavaScript API enabled on that key.
 
 # Imports
 
@@ -16,6 +18,7 @@ _No notable imports._
 
 - `getEnvironmentConfig`
 - `API_BASE_URL`
+- `GOOGLE_MAPS_API_KEY` (`NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`, empty string when unset)
 
 # State Management
 

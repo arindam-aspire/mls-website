@@ -97,6 +97,7 @@ npm run lint
 | Variable | Purpose |
 | --- | --- |
 | `NEXT_PUBLIC_API_BASE_URL` | Backend API base URL (defaults to dev API in `environment.config.ts`) |
+| `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | Google Maps JavaScript API key for the Add Property location map |
 
 ---
 
@@ -215,7 +216,7 @@ All paths below are **without** locale; prepend `/<locale>` (e.g. `/en/my-listin
 | `/notifications` | `(main)/notifications/page.tsx` | `NotificationScreen` (placeholder) — guarded by `useAuthorize("NOTIFICATIONS")` |
 | `/favourites` | `(main)/favourites/page.tsx` | `FavouritePropertyScreen` — guarded by `useAuthorize("FAVOURITES")` |
 | `/my-listings` | `(main)/(listings)/my-listings/page.tsx` | `ListingPropertyScreen` — guarded by `useAuthorize("MY_LISTINGS")` |
-| `/property-create` | `(main)/(listings)/property-create/page.tsx` | `PropertyCreateScreen` — `@abdoun/abdoun-library` 0.1.91 `PropertyForm`; master-data from `GET /property-form-options` (Furnishing Status and Floor persist as master-table IDs); Location includes map pin + `show_location` (default `false`); Step 8 lets Super Admin/Owner opt into `route_through_agency` and conditionally requires `agency_id` |
+| `/property-create` | `(main)/(listings)/property-create/page.tsx` | `PropertyCreateScreen` — `@abdoun/abdoun-library` `PropertyForm`; catalogs + draft/submit/upload/owner-search; Location **Google Map** (zoom, Map/Satellite, draggable pin) + `show_location`; Step 8 Agency Routing for Super Admin/Owner (`route_through_agency` / `agency_id`; Owner **Verify through Agency** switch default off, Super Admin keeps the existing checkbox; Owner `?agency_id=` still hydrates routing **and** agency); resume via `?submission_id=`; media/docs prefer `submission_id` (auto-save draft first if missing, else `draft_client_id`); owner docs use `draft_client_id` before submission exists |
 | `/property-update` | `(main)/(listings)/property-update/page.tsx` | `PropertyUpdateScreen` — guarded by `useAuthorize("MY_LISTINGS")` |
 | `/recently-viewed` | `(main)/recently-viewed/page.tsx` | `RecentlyViewedScreen` — guarded by `useAuthorize("RECENTLY_VIEWED")` |
 | `/owners` | `(main)/owners/page.tsx` | `OwnersScreen` — guarded by `useAuthorize("OWNERS")` (Super Admin + Agency Admin); list, activate, view/edit, linked properties/leads; `OWNER_DEACTIVATE` restricts Owner deactivation to Super Admin |
@@ -578,8 +579,8 @@ From `src/configs/environment.config.ts` → `API_BASE_URL` (env: `NEXT_PUBLIC_A
 | --- | --- |
 | `PROPERTY_TAXONOMY` | `/property-taxonomy` |
 | `LOCATION_TAXONOMY` | `/location-taxonomy` |
+| `DLS_LOCATIONS(params)` | `/dls-locations?level=gov\|dept\|vill\|hod\|sect` plus parent codes |
 | `FEATURE_CATALOG()` | `/features?is_active=true` |
-| `LOCATION_TAXONOMY` | `/location-taxonomy` |
 
 **Property** (`propertyEndpoints.ts`):
 
@@ -723,6 +724,7 @@ All use `ComingSoonCard` with custom `title` / `description`:
 | --- | --- |
 | `getEnvironmentConfig()` | Returns `baseUrl` + `environment` |
 | `API_BASE_URL` | Used by Axios factory |
+| `GOOGLE_MAPS_API_KEY` | Google Maps JS API key (`NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`) |
 
 Default API: `https://dev-api-abdn.wpsitedesigner.com/api/v1`
 

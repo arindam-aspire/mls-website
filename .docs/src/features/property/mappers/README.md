@@ -10,6 +10,7 @@ Transforms API or store shapes into UI-ready models for property screens.
 | [favoriteList.mapper.md](./favoriteList.mapper.md) | `GET /favorites` → `PropertyListing[]` for `PropertyCardList` |
 | [propertyFeatures.mapper.md](./propertyFeatures.mapper.md) | Feature catalog → `PropertyView` features |
 | [propertyFormOptions.mapper.md](./propertyFormOptions.mapper.md) | `GET /property-form-options` → `PropertyFormOption[]` |
+| [dlsLocations.mapper.md](./dlsLocations.mapper.md) | `GET /dls-locations` → select options and payload DLS codes/names |
 | [propertyOwnerSearch.mapper.md](./propertyOwnerSearch.mapper.md) | Owner list item → library search result |
 
 ## Conventions

@@ -35,8 +35,13 @@ export function useOwnerDocumentUpload() {
       try {
         return await uploadOwnerDocument(file, draftClientIdRef.current);
       } catch (error) {
-        const message = error instanceof Error ? error.message : undefined;
-        toastRef.current.error(t("ownerDocumentUploadError"), { description: message });
+        const message =
+          error instanceof Error && error.message.trim().length > 0
+            ? error.message
+            : undefined;
+        toastRef.current.error(t("ownerDocumentUploadError"), {
+          description: message,
+        });
         return null;
       }
     },

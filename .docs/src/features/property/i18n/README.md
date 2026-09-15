@@ -8,6 +8,8 @@ Helpers that resolve `next-intl` strings into objects consumed by property scree
 | --- | --- |
 | [buildPropertyFormConfig.md](./buildPropertyFormConfig.md) | Host `PropertyFormConfig` from catalog options + `propertyList.propertyCreate.form` copy |
 | `propertyCreateOwnerInfo.i18n.ts` | Owner-step validation messages |
+| [propertyLocationDls.i18n.md](./propertyLocationDls.i18n.md) | DLS cascading-select labels (`Government` … `Section`, loading/empty/error) |
+| [propertyLocationMap.i18n.md](./propertyLocationMap.i18n.md) | Google Map overlay labels (`zoomIn`, Map/Satellite, load errors) |
 
 ## Conventions
 

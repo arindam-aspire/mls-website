@@ -9,14 +9,15 @@ Create-property screen at `/en/property-create`. Loads taxonomy/feature catalog 
 - Render localized page title and subtitle.
 - Show role-aware breadcrumb on `md+` (hidden on `sm`) in the header row right section.
 - Show `PropertyCreateScreenSkeleton` while catalog APIs load.
-- Render `PropertyForm` with mapped catalog data, `config`, `ownerInfoConfig`, owner search, location map slot, external BE errors, and step navigation from `usePropertyCreateScreen`.
+- Render `PropertyForm` with mapped catalog data, `config`, `ownerInfoConfig`, owner search, Google location map slot, external BE errors, and step navigation from `usePropertyCreateScreen`.
 - Mount `PropertyCreateAgencyField` only on Step 8 so it can portal the Agency Routing card immediately before Terms & Conditions.
-- Attach `propertyFormContainerRef` around the library form so Reference Number remains visible and focusable but cannot be manually edited.
+- Attach `propertyFormContainerRef` around the library form so Reference Number stays hidden until the backend returns a value (then read-only), Built-up Area unit is sqm-only, and owner document labels read **Owner ID or Passport**.
 - Render `PropertyLocationVisibilityField` only on the Location step so the API-backed visibility setting appears after the existing City, Area, and Address controls.
+- Render `PropertyLocationDlsFields` only on the Location step so Government → Department → Village → HOD → Section appear after parcel identification fields.
 
 # Imports
 
-- `usePropertyCreateScreen`, `PropertyCreateAgencyField`, `PropertyLocationMap`, `PropertyLocationVisibilityField`, `PropertyCreateScreenSkeleton`, `Breadcrumb`, `PropertyForm` from `@abdoun/abdoun-library`, typography helpers
+- `usePropertyCreateScreen`, `PropertyCreateAgencyField`, `PropertyLocationMap`, `PropertyLocationDlsFields`, `PropertyLocationVisibilityField`, `PropertyCreateScreenSkeleton`, `Breadcrumb`, `PropertyForm` from `@abdoun/abdoun-library`, typography helpers
 
 # Navigation
 
@@ -38,9 +39,9 @@ Screen receives all form props from `usePropertyCreateScreen()` — see hook doc
 - Loading skeleton mirrors header + multi-step form shell (vertical step list on `lg`, horizontal step pills on smaller viewports, field grid, footer actions).
 - Breadcrumb: `hidden md:flex` on the right; Home icon, List icon + listings label, Create (current).
 - `PropertyForm` owns step content and validation; host controls `activeStep`, `maxReachedStep`, persisted `propertyDetails`, and navigation callbacks.
-- Reference Number is backend-owned. The host applies native read-only semantics to the library input, displays the value returned by draft hydration/save responses, and does not include it in outbound property payloads.
-- On Location step 2, the host-owned Show Location switch is portaled into the library form and disabled with the rest of the form during read-only/save/submit states.
-- On Review & Submit step 8, the host-owned Agency Routing card is portaled before Terms. Routing defaults off; checking it reveals the required agency dropdown.
+- Reference Number is backend-owned. The host hides the empty field on new create, shows it read-only after draft hydration/save returns a value, and echoes a non-empty value on outbound payloads so PATCH does not clear it.
+- On Location step 2, host-owned DLS selects are portaled into the library form (Government → Department → Village → HOD → Section) with Agency-style loading/empty/retry. The Show Location switch is portaled after those fields and disabled with the rest of the form during read-only/save/submit states.
+- On Review & Submit step 8, the host-owned Agency Routing card is portaled before Terms. Super Admin keeps the existing checkbox. Owner uses **Verify through Agency** (default off); turning it on reveals the required agency dropdown.
 - Light/dark semantic tokens; i18n in all four locales for page chrome (form labels live in the library).
 - Requires `@abdoun/abdoun-library` **0.1.91** for multi-purpose listing, single area, map slot, owner search, named prices, primary image, and `PropertyFormHandle`.
 - Passes `canEdit` and `rejectionReason` from draft submission `status` / `review_reason`.
@@ -54,9 +55,9 @@ Screen receives all form props from `usePropertyCreateScreen()` — see hook doc
 2. Hook fetches property taxonomy, location taxonomy, and active features in parallel.
 3. Screen shows skeleton until catalog load completes.
 4. Screen renders the header and `PropertyForm` with mapped `categoryTaxonomy`, `locationTaxonomy`, and `featuresAndAmenities`.
-5. On Location, the Show Location switch defaults to off and emits changes to the host hook without changing existing location validation.
-6. On Property Details, Reference Number cannot be manually changed; an existing or newly generated backend value is displayed without frontend generation.
-7. On Step 8, eligible users can opt into Agency Routing and must select an agency only when checked.
+5. On Location, DLS cascading selects load from `GET /dls-locations` and persist codes plus names on draft/submit. The Show Location switch defaults to off and emits changes to the host hook without changing existing location validation.
+6. On Property Details, Reference Number is hidden while empty. After draft save or resume, the backend value is shown read-only; it cannot be typed or pasted.
+7. On Step 8, eligible users can opt into Agency Routing and must select an agency only when routing is on. Owner uses the Verify through Agency switch; Super Admin keeps the existing checkbox.
 8. `onDraft` saves `route_through_agency`, conditional `agency_id`, and the normal form payload; `onSubmit` preserves the same routing state without changing Terms behavior.
 
 # Dependencies
@@ -64,6 +65,7 @@ Screen receives all form props from `usePropertyCreateScreen()` — see hook doc
 - [usePropertyCreateScreen.md](../hooks/usePropertyCreateScreen.md)
 - [PropertyCreateAgencyField.md](../components/PropertyCreateAgencyField.md)
 - [PropertyLocationMap.md](../components/PropertyLocationMap.md)
+- [PropertyLocationDlsFields.md](../components/PropertyLocationDlsFields.md)
 - [PropertyLocationVisibilityField.md](../components/PropertyLocationVisibilityField.md)
 - [PropertyCreateScreenSkeleton.md](../components/PropertyCreateScreenSkeleton.md)
 - [propertyForm.mapper.md](../mappers/propertyForm.mapper.md)

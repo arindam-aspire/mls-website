@@ -7,7 +7,7 @@ Owner **My Listings** screen at `/en/my-listings`: page header, **Add Property**
 # Responsibilities
 
 - Render localized page title and subtitle (`propertyList.myListings`).
-- **Add Property** primary button (right on `sm+`) uses `useAddPropertyEntry`: if `user.has_agency === true` → `/property-create`; otherwise opens `SelectAgencyModal` from profile feature.
+- **Add Property** primary button (right on `sm+`) uses `useAddPropertyEntry` to go to `/property-create`. Owner no longer must pick an agency first; they opt in on Step 8.
 - Show `Card` (`rounded-xl`) with `MyListingFilters` and `ListTableView` from `@abdoun/abdoun-library`.
 
 # Imports
@@ -41,7 +41,7 @@ Owner **My Listings** screen at `/en/my-listings`: page header, **Add Property**
 
 | Action | Behavior |
 | --- | --- |
-| Add Property | If `has_agency === true` → `/property-create`; else open `SelectAgencyModal` |
+| Add Property | Navigate to `/property-create` (Owner opts into agency on Step 8) |
 | Search / status filters | Via `MyListingFilters` → refetch API (page resets to 1) |
 | Table sort | Client-side `sortConfig` on current page rows |
 | Pagination | Server page / page size via `ListTableView` footer |

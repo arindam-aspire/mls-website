@@ -1,14 +1,18 @@
 "use client";
 
-import { Button, Card, CheckboxField, Select } from "@/src/components/ui";
+import { Button, Card, CheckboxField, Select, SwitchField } from "@/src/components/ui";
 import type { SelectOption } from "@/src/components/ui/select/types";
 import { Building2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
+export type PropertyCreateAgencyRoutingControl = "checkbox" | "switch";
+
 export type PropertyCreateAgencyFieldProps = {
   sectionTitle: string;
   routingQuestion: string;
+  routingAriaLabel?: string;
+  routingControl?: PropertyCreateAgencyRoutingControl;
   routeThroughAgency: boolean;
   onRouteThroughAgencyChange: (checked: boolean) => void;
   label: string;
@@ -28,6 +32,8 @@ export type PropertyCreateAgencyFieldProps = {
 export function PropertyCreateAgencyField({
   sectionTitle,
   routingQuestion,
+  routingAriaLabel,
+  routingControl = "checkbox",
   routeThroughAgency,
   onRouteThroughAgencyChange,
   label,
@@ -88,7 +94,7 @@ export function PropertyCreateAgencyField({
       <span ref={sourceAnchorRef} hidden aria-hidden />
       {portalTarget
         ? createPortal(
-            <Card className="border border-secondary/10 bg-page p-4 sm:p-5">
+            <Card className="rounded-xl border border-secondary/10 bg-page p-4 sm:p-5">
               <h3 className="mb-4 text-xs font-bold tracking-[0.08em] text-secondary uppercase sm:text-sm">
                 <span className="inline-flex items-center gap-2">
                   <Building2 className="size-5 shrink-0 text-secondary" aria-hidden />
@@ -96,15 +102,27 @@ export function PropertyCreateAgencyField({
                 </span>
               </h3>
 
-              <CheckboxField
-                id="route-through-agency"
-                name="route_through_agency"
-                label={routingQuestion}
-                checked={routeThroughAgency}
-                onChange={onRouteThroughAgencyChange}
-                disabled={routingDisabled}
-                labelClassName="overflow-visible whitespace-normal [text-overflow:clip]"
-              />
+              {routingControl === "switch" ? (
+                <SwitchField
+                  id="route-through-agency"
+                  title={routingQuestion}
+                  checked={routeThroughAgency}
+                  onChange={onRouteThroughAgencyChange}
+                  disabled={routingDisabled}
+                  aria-label={routingAriaLabel ?? routingQuestion}
+                  className="overflow-visible"
+                />
+              ) : (
+                <CheckboxField
+                  id="route-through-agency"
+                  name="route_through_agency"
+                  label={routingQuestion}
+                  checked={routeThroughAgency}
+                  onChange={onRouteThroughAgencyChange}
+                  disabled={routingDisabled}
+                  labelClassName="overflow-visible whitespace-normal [text-overflow:clip]"
+                />
+              )}
 
               {routeThroughAgency ? (
                 <div className="mt-4 border-t border-secondary/10 pt-4">

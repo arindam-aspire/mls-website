@@ -361,8 +361,15 @@
     "propertyDocumentUploadInvalidType": "Sube un archivo PDF, DOC o DOCX.",
     "propertyDocumentUploadTooLarge": "El archivo debe ser de 10 MB o menos.",
     "submitSuccess": "Propiedad enviada",
+    "submitSuccessPendingAdmin": "Tu anuncio se envió para la aprobación del administrador.",
+    "submitSuccessPendingAgency": "Tu anuncio se envió para la verificación de la agencia.",
     "submitError": "No se pudo enviar la propiedad",
     "submitSaveError": "No se pudo guardar el borrador antes del envío",
+    "errors": {
+      "unreachable": "No se pudo contactar con el servidor. Comprueba la conexión e inténtalo de nuevo.",
+      "timeout": "La solicitud ha caducado. Inténtalo de nuevo.",
+      "server": "El servidor no pudo completar esta solicitud. Inténtalo de nuevo."
+    },
     "form": {
       "listingPurposeLabel": "Finalidad del anuncio",
       "listingPurposePlaceholder": "Seleccione las finalidades",
@@ -372,6 +379,7 @@
       "yearBuiltPlaceholder": "Introduzca el año de construcción",
       "floorLevelLabel": "Planta",
       "furnishingStatusLabel": "Estado de amueblado",
+      "ownerDocumentsLabel": "DNI o pasaporte del propietario",
       "setAsPrimaryImage": "Establecer como imagen principal",
       "listingPurposes": {
         "sale": "Venta",
@@ -395,19 +403,37 @@
         "unfurnishedRentPrice": "Alquiler sin amueblar",
         "semiFurnishedRentPrice": "Alquiler semiamueblado"
       },
+      "completionStatuses": {
+        "ready": "Lista",
+        "offPlan": "Sobre plano",
+        "secondary": "Secundaria"
+      },
       "identification": {
         "apartmentNumber": "Número de apartamento",
         "plotNumber": "Número de parcela",
         "basinNumber": "Número de cuenca",
         "parcelNumber": "Número de predio",
-        "buildingNumber": "Número de edificio"
+        "buildingNumber": "Número de edificio",
+        "governorate": "Gobernación",
+        "directorate": "Dirección",
+        "village": "Pueblo",
+        "neighborhood": "Barrio",
+        "sheetNumber": "Número de hoja"
       },
       "map": {
         "mapTitle": "Ubicación en el mapa",
         "latitude": "Latitud",
         "longitude": "Longitud",
         "coordinates": "Coordenadas",
-        "selectPinHint": "Seleccione o arrastre el pin para fijar la ubicación de la propiedad."
+        "selectPinHint": "Seleccione o arrastre el pin para fijar la ubicación de la propiedad.",
+        "zoomIn": "Acercar",
+        "zoomOut": "Alejar",
+        "mapView": "Mapa",
+        "satelliteView": "Satélite",
+        "mapTypeGroup": "Tipo de mapa",
+        "missingApiKey": "El mapa no está disponible en este momento.",
+        "loadError": "No se pudo cargar Google Maps.",
+        "loading": "Cargando mapa"
       }
     },
     "locationVisibility": {
@@ -415,10 +441,35 @@
       "description": "Permite que todos los usuarios vean la pestaña Ubicación de esta propiedad.",
       "ariaLabel": "Mostrar la ubicación de la propiedad a todos los usuarios"
     },
+    "dls": {
+      "sectionTitle": "DLS",
+      "government": "Gobierno",
+      "department": "Departamento",
+      "village": "Pueblo",
+      "hod": "HOD",
+      "section": "Sección",
+      "governmentPlaceholder": "Selecciona el gobierno",
+      "departmentPlaceholder": "Selecciona el departamento",
+      "villagePlaceholder": "Selecciona el pueblo",
+      "hodPlaceholder": "Selecciona el HOD",
+      "sectionPlaceholder": "Selecciona la sección",
+      "selectGovernmentFirst": "Selecciona un gobierno primero.",
+      "selectDepartmentFirst": "Selecciona un departamento primero.",
+      "selectVillageFirst": "Selecciona un pueblo primero.",
+      "selectHodFirst": "Selecciona un HOD primero.",
+      "loading": "Cargando opciones DLS…",
+      "empty": "No hay opciones DLS disponibles.",
+      "loadError": "No se pudieron cargar las opciones DLS.",
+      "retry": "Reintentar"
+    },
     "agency": {
       "routing": {
         "title": "Enrutamiento de agencia",
         "question": "¿Te interesa gestionar la propiedad a través de una agencia?"
+      },
+      "verify": {
+        "label": "Verificar a través de agencia",
+        "ariaLabel": "Verificar a través de agencia"
       },
       "label": "Agencia",
       "placeholder": "Selecciona una agencia",

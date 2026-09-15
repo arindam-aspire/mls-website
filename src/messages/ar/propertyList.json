@@ -361,8 +361,15 @@
     "propertyDocumentUploadInvalidType": "ارفع ملف PDF أو DOC أو DOCX.",
     "propertyDocumentUploadTooLarge": "يجب ألا يتجاوز الملف 10 ميغابايت.",
     "submitSuccess": "تم إرسال العقار",
+    "submitSuccessPendingAdmin": "تم إرسال إعلانك بانتظار موافقة المسؤول.",
+    "submitSuccessPendingAgency": "تم إرسال إعلانك للتحقق عبر الوكالة.",
     "submitError": "تعذر إرسال العقار",
     "submitSaveError": "تعذر حفظ المسودة قبل الإرسال",
+    "errors": {
+      "unreachable": "تعذر الوصول إلى الخادم. تحقق من الاتصال ثم حاول مرة أخرى.",
+      "timeout": "انتهت مهلة الطلب. يرجى المحاولة مرة أخرى.",
+      "server": "تعذر على الخادم إكمال هذا الطلب. يرجى المحاولة مرة أخرى."
+    },
     "form": {
       "listingPurposeLabel": "غرض الإدراج",
       "listingPurposePlaceholder": "اختر أغراض الإدراج",
@@ -372,6 +379,7 @@
       "yearBuiltPlaceholder": "أدخل سنة الإنشاء",
       "floorLevelLabel": "الطابق",
       "furnishingStatusLabel": "حالة التأثيث",
+      "ownerDocumentsLabel": "هوية المالك أو جواز السفر",
       "setAsPrimaryImage": "تعيين كصورة رئيسية",
       "listingPurposes": {
         "sale": "بيع",
@@ -395,19 +403,37 @@
         "unfurnishedRentPrice": "إيجار غير مفروش",
         "semiFurnishedRentPrice": "إيجار شبه مفروش"
       },
+      "completionStatuses": {
+        "ready": "جاهز",
+        "offPlan": "على المخطط",
+        "secondary": "ثانوي"
+      },
       "identification": {
         "apartmentNumber": "رقم الشقة",
         "plotNumber": "رقم القطعة",
         "basinNumber": "رقم الحوض",
         "parcelNumber": "رقم الطرد",
-        "buildingNumber": "رقم المبنى"
+        "buildingNumber": "رقم المبنى",
+        "governorate": "المحافظة",
+        "directorate": "المديرية",
+        "village": "القرية",
+        "neighborhood": "الحي",
+        "sheetNumber": "رقم اللوحة"
       },
       "map": {
         "mapTitle": "موقع الخريطة",
         "latitude": "خط العرض",
         "longitude": "خط الطول",
         "coordinates": "الإحداثيات",
-        "selectPinHint": "حدد الدبوس أو اسحبه لتعيين موقع العقار."
+        "selectPinHint": "حدد الدبوس أو اسحبه لتعيين موقع العقار.",
+        "zoomIn": "تكبير",
+        "zoomOut": "تصغير",
+        "mapView": "خريطة",
+        "satelliteView": "قمر صناعي",
+        "mapTypeGroup": "نوع الخريطة",
+        "missingApiKey": "الخريطة غير متاحة حالياً.",
+        "loadError": "تعذر تحميل خرائط Google.",
+        "loading": "جارٍ تحميل الخريطة"
       }
     },
     "locationVisibility": {
@@ -415,10 +441,35 @@
       "description": "السماح لجميع المستخدمين بعرض علامة تبويب موقع هذا العقار.",
       "ariaLabel": "إظهار موقع العقار لجميع المستخدمين"
     },
+    "dls": {
+      "sectionTitle": "DLS",
+      "government": "الحكومة",
+      "department": "الدائرة",
+      "village": "القرية",
+      "hod": "الحوض",
+      "section": "القسم",
+      "governmentPlaceholder": "اختر الحكومة",
+      "departmentPlaceholder": "اختر الدائرة",
+      "villagePlaceholder": "اختر القرية",
+      "hodPlaceholder": "اختر الحوض",
+      "sectionPlaceholder": "اختر القسم",
+      "selectGovernmentFirst": "اختر الحكومة أولاً.",
+      "selectDepartmentFirst": "اختر الدائرة أولاً.",
+      "selectVillageFirst": "اختر القرية أولاً.",
+      "selectHodFirst": "اختر الحوض أولاً.",
+      "loading": "جارٍ تحميل خيارات DLS…",
+      "empty": "لا توجد خيارات DLS متاحة.",
+      "loadError": "تعذر تحميل خيارات DLS.",
+      "retry": "إعادة المحاولة"
+    },
     "agency": {
       "routing": {
         "title": "توجيه الوكالة",
         "question": "هل أنت مهتم بتوجيه العقار من خلال وكالة؟"
+      },
+      "verify": {
+        "label": "التحقق عبر وكالة",
+        "ariaLabel": "التحقق عبر وكالة"
       },
       "label": "الوكالة",
       "placeholder": "اختر وكالة",

@@ -1,182 +1,184 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useEffect } from "react";
 import type { PropertyLocationMapRenderProps } from "@abdoun/abdoun-library";
-import { cn } from "@/src/lib/cn";
+import {
+  APIProvider,
+  Map,
+  Marker,
+  useMap,
+} from "@vis.gl/react-google-maps";
+import { Minus, Plus } from "lucide-react";
+import { IconButton, Skeleton, ToggleButton } from "@/src/components/ui";
+import {
+  PROPERTY_LOCATION_MAP_DEFAULT_ZOOM,
+  PROPERTY_LOCATION_MAP_MAX_ZOOM,
+  PROPERTY_LOCATION_MAP_MIN_ZOOM,
+  PROPERTY_LOCATION_MAP_REGION,
+  PROPERTY_LOCATION_MAP_TYPE,
+} from "@/src/features/property/constants/propertyLocationMap.constants";
+import { usePropertyLocationMap } from "@/src/features/property/hooks/usePropertyLocationMap";
 
-const DEFAULT_LATITUDE = 31.9539;
-const DEFAULT_LONGITUDE = 35.9106;
-const DEFAULT_ZOOM = 13;
+function PropertyLocationMapInstanceBridge({
+  onMap,
+}: {
+  onMap: (map: ReturnType<typeof useMap>) => void;
+}) {
+  const map = useMap();
 
-function clampLatitude(latitude: number): number {
-  return Math.max(-85, Math.min(85, latitude));
+  useEffect(() => {
+    onMap(map);
+    return () => onMap(null);
+  }, [map, onMap]);
+
+  return null;
 }
 
-function lonToTileX(longitude: number, zoom: number): number {
-  return ((longitude + 180) / 360) * 2 ** zoom;
-}
+export function PropertyLocationMap(props: PropertyLocationMapRenderProps) {
+  const {
+    apiKey,
+    hasApiKey,
+    locale,
+    labels,
+    controlLabels,
+    resolvedLatitude,
+    resolvedLongitude,
+    markerPosition,
+    zoom,
+    mapTypeId,
+    renderingType,
+    colorScheme,
+    isMapReady,
+    hasLoadError,
+    canZoomIn,
+    canZoomOut,
+    setMapInstance,
+    onMapClick,
+    onMarkerDragEnd,
+    onZoomIn,
+    onZoomOut,
+    onMapTypeChange,
+    onZoomChanged,
+    onIdle,
+    onApiError,
+  } = usePropertyLocationMap(props);
 
-function latToTileY(latitude: number, zoom: number): number {
-  const clamped = clampLatitude(latitude);
-  const radians = (clamped * Math.PI) / 180;
-  return (
-    ((1 - Math.log(Math.tan(radians) + 1 / Math.cos(radians)) / Math.PI) / 2) *
-    2 ** zoom
-  );
-}
-
-function tileXToLon(x: number, zoom: number): number {
-  return (x / 2 ** zoom) * 360 - 180;
-}
-
-function tileYToLat(y: number, zoom: number): number {
-  const n = Math.PI - (2 * Math.PI * y) / 2 ** zoom;
-  return (180 / Math.PI) * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n)));
-}
-
-type PointerPoint = {
-  clientX: number;
-  clientY: number;
-};
-
-export function PropertyLocationMap({
-  latitude,
-  longitude,
-  onCoordinatesChange,
-  labels,
-}: PropertyLocationMapRenderProps) {
-  const [isDragging, setIsDragging] = useState(false);
-
-  const resolvedLatitude = latitude ?? DEFAULT_LATITUDE;
-  const resolvedLongitude = longitude ?? DEFAULT_LONGITUDE;
-
-  const centerTile = useMemo(
-    () => ({
-      x: lonToTileX(resolvedLongitude, DEFAULT_ZOOM),
-      y: latToTileY(resolvedLatitude, DEFAULT_ZOOM),
-    }),
-    [resolvedLatitude, resolvedLongitude],
-  );
-
-  const tileOrigin = useMemo(
-    () => ({
-      x: Math.floor(centerTile.x) - 1,
-      y: Math.floor(centerTile.y) - 1,
-    }),
-    [centerTile.x, centerTile.y],
-  );
-
-  const pinLeft =
-    ((centerTile.x - tileOrigin.x) / 3) * 100;
-  const pinTop =
-    ((centerTile.y - tileOrigin.y) / 3) * 100;
-
-  const updateFromPoint = useCallback(
-    (event: PointerPoint, target: HTMLElement) => {
-      const bounds = target.getBoundingClientRect();
-      if (bounds.width === 0 || bounds.height === 0) {
-        return;
-      }
-
-      const xRatio = (event.clientX - bounds.left) / bounds.width;
-      const yRatio = (event.clientY - bounds.top) / bounds.height;
-      const tileX = tileOrigin.x + xRatio * 3;
-      const tileY = tileOrigin.y + yRatio * 3;
-
-      onCoordinatesChange({
-        latitude: Number(tileYToLat(tileY, DEFAULT_ZOOM).toFixed(6)),
-        longitude: Number(tileXToLon(tileX, DEFAULT_ZOOM).toFixed(6)),
-      });
-    },
-    [onCoordinatesChange, tileOrigin.x, tileOrigin.y],
-  );
-
-  const tiles = useMemo(() => {
-    const next: { x: number; y: number; key: string }[] = [];
-    const maxTile = 2 ** DEFAULT_ZOOM;
-
-    for (let y = 0; y < 3; y += 1) {
-      for (let x = 0; x < 3; x += 1) {
-        const tileX = ((tileOrigin.x + x) % maxTile + maxTile) % maxTile;
-        const tileY = Math.max(0, Math.min(maxTile - 1, tileOrigin.y + y));
-        next.push({
-          x: tileX,
-          y: tileY,
-          key: `${tileX}-${tileY}`,
-        });
-      }
-    }
-
-    return next;
-  }, [tileOrigin.x, tileOrigin.y]);
+  const unavailableMessage = hasApiKey
+    ? controlLabels.loadError
+    : controlLabels.missingApiKey;
+  const showUnavailable = !hasApiKey || hasLoadError;
 
   return (
     <div className="flex flex-col gap-2">
       <p className="text-sm text-muted">{labels.selectPinHint}</p>
-      <div
-        className={cn(
-          "relative h-56 w-full overflow-hidden rounded-xl border border-secondary/15 bg-page sm:h-64 md:h-80",
-          isDragging ? "cursor-grabbing" : "cursor-crosshair",
-        )}
-        onClick={(event) => {
-          updateFromPoint(event, event.currentTarget);
-        }}
-        onPointerMove={(event) => {
-          if (!isDragging) {
-            return;
-          }
-
-          updateFromPoint(event, event.currentTarget);
-        }}
-        onPointerUp={() => setIsDragging(false)}
-        onPointerLeave={() => setIsDragging(false)}
-        role="application"
-        aria-label={labels.mapTitle}
-      >
+      {showUnavailable ? (
         <div
-          className="absolute inset-0 grid grid-cols-3 grid-rows-3"
-          aria-hidden
+          className="flex h-56 w-full items-center justify-center rounded-xl border border-secondary/15 bg-page px-4 text-center sm:h-64 md:h-80"
+          role="status"
+          aria-label={labels.mapTitle}
         >
-          {tiles.map((tile) => (
-            <div
-              key={tile.key}
-              aria-hidden
-              className="size-full bg-cover bg-center"
-              style={{
-                backgroundImage: `url(https://tile.openstreetmap.org/${DEFAULT_ZOOM}/${tile.x}/${tile.y}.png)`,
-              }}
-            />
-          ))}
+          <p className="text-sm text-muted">{unavailableMessage}</p>
         </div>
-        <button
-          type="button"
-          className="absolute z-10 -translate-x-1/2 -translate-y-full rounded-full"
-          style={{ left: `${pinLeft}%`, top: `${pinTop}%` }}
-          aria-label={labels.coordinates}
-          onPointerDown={(event) => {
-            event.stopPropagation();
-            setIsDragging(true);
-            event.currentTarget.setPointerCapture(event.pointerId);
-          }}
-          onPointerMove={(event) => {
-            if (!isDragging) {
-              return;
-            }
-
-            const map = event.currentTarget.parentElement;
-            if (!map) {
-              return;
-            }
-
-            updateFromPoint(event, map);
-          }}
-          onPointerUp={() => setIsDragging(false)}
+      ) : (
+        <div
+          className="relative h-56 w-full overflow-hidden rounded-xl border border-secondary/15 bg-page sm:h-64 md:h-80"
+          role="application"
+          aria-label={labels.mapTitle}
         >
-          <span className="block size-5 rounded-full border-2 border-white bg-primary shadow-md" />
-        </button>
-      </div>
+          <APIProvider
+            apiKey={apiKey}
+            language={locale}
+            region={PROPERTY_LOCATION_MAP_REGION}
+            version="weekly"
+            onError={onApiError}
+          >
+            <Map
+              className="size-full"
+              style={{ width: "100%", height: "100%" }}
+              defaultCenter={markerPosition}
+              defaultZoom={PROPERTY_LOCATION_MAP_DEFAULT_ZOOM}
+              zoom={zoom}
+              mapTypeId={mapTypeId}
+              renderingType={renderingType}
+              colorScheme={colorScheme}
+              isFractionalZoomEnabled
+              minZoom={PROPERTY_LOCATION_MAP_MIN_ZOOM}
+              maxZoom={PROPERTY_LOCATION_MAP_MAX_ZOOM}
+              gestureHandling="greedy"
+              disableDefaultUI
+              clickableIcons={false}
+              onClick={onMapClick}
+              onZoomChanged={onZoomChanged}
+              onIdle={onIdle}
+            >
+              <Marker
+                position={markerPosition}
+                draggable
+                onDragEnd={onMarkerDragEnd}
+                title={labels.coordinates}
+              />
+              <PropertyLocationMapInstanceBridge onMap={setMapInstance} />
+            </Map>
+          </APIProvider>
+          {!isMapReady ? (
+            <div
+              className="absolute inset-0 z-10"
+              aria-busy
+              aria-label={controlLabels.loading}
+            >
+              <Skeleton variant="block" className="size-full rounded-none" />
+            </div>
+          ) : null}
+          <div className="pointer-events-none absolute inset-0 z-20">
+            <div className="pointer-events-auto absolute end-3 top-3 max-w-[calc(100%-1.5rem)]">
+              <ToggleButton
+                size="md"
+                color="primary"
+                variant="solid"
+                value={mapTypeId}
+                onChange={onMapTypeChange}
+                aria-label={controlLabels.mapTypeGroup}
+                className="min-h-11 shadow-md"
+                items={[
+                  {
+                    value: PROPERTY_LOCATION_MAP_TYPE.roadmap,
+                    label: controlLabels.mapView,
+                  },
+                  {
+                    value: PROPERTY_LOCATION_MAP_TYPE.satellite,
+                    label: controlLabels.satelliteView,
+                  },
+                ]}
+              />
+            </div>
+            <div className="pointer-events-auto absolute end-3 bottom-12 flex flex-col gap-1 rounded-xl border border-secondary/15 bg-surface/95 p-1 shadow-md">
+              <IconButton
+                size="md"
+                color="inherit"
+                variant="ghost"
+                icon={<Plus />}
+                aria-label={controlLabels.zoomIn}
+                disabled={!canZoomIn}
+                onClick={onZoomIn}
+                className="min-h-11 min-w-11"
+              />
+              <IconButton
+                size="md"
+                color="inherit"
+                variant="ghost"
+                icon={<Minus />}
+                aria-label={controlLabels.zoomOut}
+                disabled={!canZoomOut}
+                onClick={onZoomOut}
+                className="min-h-11 min-w-11"
+              />
+            </div>
+          </div>
+        </div>
+      )}
       <p className="text-xs text-muted">
-        {labels.coordinates}: {resolvedLatitude.toFixed(5)}, {resolvedLongitude.toFixed(5)}
+        {labels.coordinates}: {resolvedLatitude.toFixed(5)},{" "}
+        {resolvedLongitude.toFixed(5)}
       </p>
     </div>
   );

@@ -10,7 +10,7 @@ Screen hook for **Draft Listings** (`/draft-listings`). Fetches `GET /agent-prop
 - Map API items via `mapAgentPropertyDraftListItems` → `MappedDraftListItem[]` (includes `canEdit`, `canDelete`).
 - Expose `DraftList` props: `pagination`, `onResume`, `onDelete`, `onCreateNew`, labels, `emptyStateContent`.
 - **Resume** → `/property-create?submission_id={id}`.
-- **Create new** via `useAddPropertyEntry({ restrictForOwnerOnly: true })` — owner + no `has_agency` opens agency modal; otherwise `/property-create`.
+- **Create new** via `useAddPropertyEntry({ restrictForOwnerOnly: true })` → `/property-create` (Owner no longer opens the agency modal first).
 - **Delete** — stub until delete API exists.
 
 # API Usage

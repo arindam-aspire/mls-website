@@ -18,7 +18,7 @@ TypeScript request-body shapes for property **draft submission** (create / save 
 | `PropertyDraftSubmissionCurrency` | `AgencyCurrency` (`"JOD"` \| `"USD"`) |
 | `PropertyDraftMasterOptionValue` | Master-table id/slug or nested `{ id }` used by furnishing and floor |
 | `PropertyDraftSubmissionBasicInformation` | `listing_purposes[]`, optional legacy `listing_purpose`, title, description, taxonomy ids |
-| `PropertyDraftSubmissionLocation` | City, single `area_id`, lat/lng, identification fields, `show_location` |
+| `PropertyDraftSubmissionLocation` | City, single `area_id`, lat/lng, identification fields, official DLS codes/names (`gov_code` … `sect_name`), `show_location` |
 | `PropertyDraftSubmissionOwnerInformation` | `owner_id`, `owner_mode`, owners with merged phone, `nationality`, `ssi`, documents |
 | `PropertyDraftSubmissionPropertyDetails` | Bedrooms, Built-up Area, `year_built`, furnishing/floor master IDs, completion; `permit_number` hydrate-only |
 | `PropertyDraftSubmissionPricing` | Named furnished/unfurnished sale and rent prices plus legacy `price` |
@@ -28,7 +28,7 @@ TypeScript request-body shapes for property **draft submission** (create / save 
 | `PropertyDraftSubmissionPayload` | Mapped submission data (`payload` object) |
 | `PropertyDraftSubmissionRequestBody` | `{ route_through_agency, agency_id?, payload, current_step, last_completed_step }` POST body |
 | `PropertyDraftSubmissionUpdateRequestBody` | `{ action: "save_draft", route_through_agency, agency_id?, current_step, last_completed_step, payload }` PATCH body |
-| `PropertyDraftSubmissionData` | Draft response including `route_through_agency`, `agency_id`, steps, status, and payload |
+| `PropertyDraftSubmissionData` | Draft response including `route_through_agency`, `agency_id`, steps, status, optional `can_edit` / `can_edit_submission`, and payload |
 | `PropertyDraftSubmissionResponse` | `{ success, message, data: PropertyDraftSubmissionData, error, meta }` |
 
 # Notes
@@ -36,8 +36,9 @@ TypeScript request-body shapes for property **draft submission** (create / save 
 - Request shape: `{ "payload": { … }, "current_step": 1, "last_completed_step": 1 }` on the first form step — `current_step` matches `activeStep`; `last_completed_step` matches `max_reached_step` (1-based, same as the library).
 - Draft `payload`: omit any section or field the user has not filled yet; nested objects and array items also use optional keys.
 - `payload.location.show_location` is sent on create/update. New and legacy drafts default it to `false`; saved drafts hydrate the stored value.
-- Draft payloads retain the entered Built-up Area value and selected unit. Final-submit mapping converts square feet with `1 sq. ft. = 0.09290304 sq. m.` and identifies the normalized value as `"SQM"`.
+- Draft payloads retain the entered Built-up Area value and always persist `"SQM"`. Legacy `"SQFT"` values are converted with `1 sq. ft. = 0.09290304 sq. m.`
 - `route_through_agency` is a top-level boolean on create/update/direct-submit requests and defaults to `false`; `agency_id` is `null` when routing is off and required by the UI when routing is on.
+- Optional GET flags `can_edit` / `can_edit_submission` override client editability rules when present (`false` locks; `true` unlocks; omitted → status/role rules).
 - `media_documents.images` carries uploaded property images; `media_documents.videos` carries uploaded property videos.
 - `review_submit` booleans default to `false` on draft unless the UI sets them explicitly.
 - Mapper from `PropertyFormValues` is not in this file; add under `src/features/property/mappers/` when wiring the API.

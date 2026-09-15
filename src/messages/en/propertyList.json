@@ -361,8 +361,15 @@
     "propertyDocumentUploadInvalidType": "Upload a PDF, DOC, or DOCX file.",
     "propertyDocumentUploadTooLarge": "File must be 10 MB or smaller.",
     "submitSuccess": "Property submitted",
+    "submitSuccessPendingAdmin": "Your listing was submitted for admin approval.",
+    "submitSuccessPendingAgency": "Your listing was submitted for agency verification.",
     "submitError": "Could not submit property",
     "submitSaveError": "Could not save draft before submit",
+    "errors": {
+      "unreachable": "Could not reach the server. Check your connection and try again.",
+      "timeout": "The request timed out. Please try again.",
+      "server": "The server could not complete this request. Please try again."
+    },
     "form": {
       "listingPurposeLabel": "Purpose of Listing",
       "listingPurposePlaceholder": "Select listing purposes",
@@ -372,6 +379,7 @@
       "yearBuiltPlaceholder": "Enter year of construction",
       "floorLevelLabel": "Floor",
       "furnishingStatusLabel": "Furnishing Status",
+      "ownerDocumentsLabel": "Owner ID or Passport",
       "setAsPrimaryImage": "Set as Primary Image",
       "listingPurposes": {
         "sale": "Sale",
@@ -395,19 +403,37 @@
         "unfurnishedRentPrice": "Unfurnished Rent",
         "semiFurnishedRentPrice": "Semi-Furnished Rent"
       },
+      "completionStatuses": {
+        "ready": "Ready",
+        "offPlan": "Off-plan",
+        "secondary": "Secondary"
+      },
       "identification": {
         "apartmentNumber": "Apartment Number",
         "plotNumber": "Plot Number",
         "basinNumber": "Basin Number",
         "parcelNumber": "Parcel Number",
-        "buildingNumber": "Building Number"
+        "buildingNumber": "Building Number",
+        "governorate": "Governorate",
+        "directorate": "Directorate",
+        "village": "Village",
+        "neighborhood": "Neighborhood",
+        "sheetNumber": "Sheet Number"
       },
       "map": {
         "mapTitle": "Map Location",
         "latitude": "Latitude",
         "longitude": "Longitude",
         "coordinates": "Coordinates",
-        "selectPinHint": "Select or drag the pin to set the property location."
+        "selectPinHint": "Select or drag the pin to set the property location.",
+        "zoomIn": "Zoom in",
+        "zoomOut": "Zoom out",
+        "mapView": "Map",
+        "satelliteView": "Satellite",
+        "mapTypeGroup": "Map type",
+        "missingApiKey": "The map is unavailable right now.",
+        "loadError": "Google Maps could not be loaded.",
+        "loading": "Loading map"
       }
     },
     "locationVisibility": {
@@ -415,10 +441,35 @@
       "description": "Allow all users to view this property's Location tab.",
       "ariaLabel": "Show property location to all users"
     },
+    "dls": {
+      "sectionTitle": "DLS",
+      "government": "Government",
+      "department": "Department",
+      "village": "Village",
+      "hod": "HOD",
+      "section": "Section",
+      "governmentPlaceholder": "Select government",
+      "departmentPlaceholder": "Select department",
+      "villagePlaceholder": "Select village",
+      "hodPlaceholder": "Select HOD",
+      "sectionPlaceholder": "Select section",
+      "selectGovernmentFirst": "Select a government first.",
+      "selectDepartmentFirst": "Select a department first.",
+      "selectVillageFirst": "Select a village first.",
+      "selectHodFirst": "Select an HOD first.",
+      "loading": "Loading DLS options…",
+      "empty": "No DLS options available.",
+      "loadError": "Could not load DLS options.",
+      "retry": "Retry"
+    },
     "agency": {
       "routing": {
         "title": "Agency Routing",
         "question": "Are you interested to route the property through an agency?"
+      },
+      "verify": {
+        "label": "Verify through Agency",
+        "ariaLabel": "Verify through Agency"
       },
       "label": "Agency",
       "placeholder": "Select an agency",

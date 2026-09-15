@@ -20,6 +20,11 @@ import {
   resolvePropertyFormMasterOptionValue,
 } from "@/src/features/property/mappers/propertyFormOptions.mapper";
 import type { PropertyFormOptionsCatalog } from "@/src/features/property/types/propertyFormOptions.types";
+import {
+  applyPropertyLocationDls,
+  extractPropertyLocationDls,
+} from "@/src/features/property/mappers/dlsLocations.mapper";
+import type { PropertyLocationDlsSelection } from "@/src/features/property/types/dls.types";
 import type {
   BuiltUpAreaUnit,
   PropertyFormProps,
@@ -28,45 +33,81 @@ import type {
 
 type FeaturesAndAmenities = PropertyFormProps["featuresAndAmenities"];
 type FeaturesAndAmenityItem = FeaturesAndAmenities[number];
-type PropertyFormLocationWithVisibility = NonNullable<
+type PropertyFormLocationWithHostFields = NonNullable<
   PropertyFormValues["location_insert"]
-> & {
-  show_location?: boolean;
-};
+> &
+  Partial<PropertyLocationDlsSelection> & {
+    show_location?: boolean;
+  };
+
+const LEGACY_FREE_TEXT_DLS_IDENTIFICATION_KEYS = [
+  "governorate",
+  "directorate",
+  "village",
+  "neighborhood",
+  "sheet_number",
+] as const;
 
 export function getPropertyFormShowLocation(
   propertyDetails: PropertyFormValues,
 ): boolean {
   const location = propertyDetails.location_insert as
-    | PropertyFormLocationWithVisibility
+    | PropertyFormLocationWithHostFields
     | undefined;
 
   return location?.show_location ?? false;
+}
+
+export function extractPropertyFormDls(
+  propertyDetails: PropertyFormValues,
+): PropertyLocationDlsSelection {
+  return extractPropertyLocationDls(
+    propertyDetails.location_insert as Record<string, unknown> | undefined,
+  );
+}
+
+export function withPropertyFormHostLocationFields(
+  propertyDetails: PropertyFormValues,
+  extras: {
+    showLocation: boolean;
+    dls?: PropertyLocationDlsSelection;
+  },
+): PropertyFormValues {
+  const location = (propertyDetails.location_insert ??
+    {}) as PropertyFormLocationWithHostFields;
+  const dls =
+    extras.dls ??
+    extractPropertyLocationDls(location as Record<string, unknown>);
+
+  return {
+    ...propertyDetails,
+    location_insert: applyPropertyLocationDls(
+      {
+        city_id: null,
+        area_id: null,
+        area_ids: [],
+        address: "",
+        latitude: null,
+        longitude: null,
+        apartment_number: "",
+        plot_number: "",
+        basin_number: "",
+        parcel_number: "",
+        building_number: "",
+        identification_fields: {},
+        ...location,
+        show_location: extras.showLocation,
+      },
+      dls,
+    ),
+  } as PropertyFormValues;
 }
 
 export function withPropertyFormShowLocation(
   propertyDetails: PropertyFormValues,
   showLocation: boolean,
 ): PropertyFormValues {
-  return {
-    ...propertyDetails,
-    location_insert: {
-      city_id: null,
-      area_id: null,
-      area_ids: [],
-      address: "",
-      latitude: null,
-      longitude: null,
-      apartment_number: "",
-      plot_number: "",
-      basin_number: "",
-      parcel_number: "",
-      building_number: "",
-      identification_fields: {},
-      ...propertyDetails.location_insert,
-      show_location: showLocation,
-    },
-  } as PropertyFormValues;
+  return withPropertyFormHostLocationFields(propertyDetails, { showLocation });
 }
 
 function matchesFeaturesAndAmenitiesTaxonomy(
@@ -167,6 +208,21 @@ export function getDraftFloorValue(
 
 const SQUARE_FEET_TO_SQUARE_METERS = 0.09290304;
 
+function withoutLegacyFreeTextDlsIdentificationFields(
+  fields: Record<string, string> | undefined,
+): Record<string, string> | undefined {
+  if (fields == null) {
+    return fields;
+  }
+
+  const next = { ...fields };
+  for (const key of LEGACY_FREE_TEXT_DLS_IDENTIFICATION_KEYS) {
+    delete next[key];
+  }
+
+  return Object.keys(next).length > 0 ? next : undefined;
+}
+
 function normalizeBuiltUpAreaToSquareMeters(
   value: string,
   unit: BuiltUpAreaUnit,
@@ -178,6 +234,23 @@ function normalizeBuiltUpAreaToSquareMeters(
   }
 
   return Number((parsed * SQUARE_FEET_TO_SQUARE_METERS).toFixed(8));
+}
+
+function formatBuiltUpAreaField(
+  value: number | null | undefined,
+  unit: BuiltUpAreaUnit | undefined,
+): string {
+  if (value == null) {
+    return "";
+  }
+
+  if (unit === "SQFT") {
+    return formatNumberField(
+      Number((value * SQUARE_FEET_TO_SQUARE_METERS).toFixed(4)),
+    );
+  }
+
+  return formatNumberField(value);
 }
 
 function parsePrice(value: string | undefined): number {
@@ -373,23 +446,33 @@ export function buildPropertyDraftSubmissionPayload(
     };
   }
 
+  const dls = extractPropertyLocationDls(
+    location as Record<string, unknown> | undefined,
+    details as Record<string, unknown> | undefined,
+  );
+
   if (location != null) {
     const areaId = location.area_id ?? location.area_ids?.[0] ?? null;
 
-    payload.location = {
-      city_id: location.city_id,
-      area_id: areaId,
-      address: location.address || undefined,
-      latitude: location.latitude ?? null,
-      longitude: location.longitude ?? null,
-      apartment_number: toOptionalTrimmedString(location.apartment_number),
-      plot_number: toOptionalTrimmedString(location.plot_number),
-      basin_number: toOptionalTrimmedString(location.basin_number),
-      parcel_number: toOptionalTrimmedString(location.parcel_number),
-      building_number: toOptionalTrimmedString(location.building_number),
-      identification_fields: location.identification_fields,
-      show_location: getPropertyFormShowLocation(propertyDetails),
-    };
+    payload.location = applyPropertyLocationDls(
+      {
+        city_id: location.city_id,
+        area_id: areaId,
+        address: location.address || undefined,
+        latitude: location.latitude ?? null,
+        longitude: location.longitude ?? null,
+        apartment_number: toOptionalTrimmedString(location.apartment_number),
+        plot_number: toOptionalTrimmedString(location.plot_number),
+        basin_number: toOptionalTrimmedString(location.basin_number),
+        parcel_number: toOptionalTrimmedString(location.parcel_number),
+        building_number: toOptionalTrimmedString(location.building_number),
+        identification_fields: withoutLegacyFreeTextDlsIdentificationFields(
+          location.identification_fields,
+        ),
+        show_location: getPropertyFormShowLocation(propertyDetails),
+      },
+      dls,
+    );
   }
 
   if (owners.length > 0) {
@@ -412,16 +495,16 @@ export function buildPropertyDraftSubmissionPayload(
   if (details != null) {
     const builtUpAreaUnit = details.built_up_area_unit ?? "SQM";
 
-    payload.property_details = {
+    const referenceNumber = toOptionalTrimmedString(details.reference_number);
+
+    const propertyDetailsPayload: PropertyDraftSubmissionPropertyDetails = {
       bedrooms: details.bedrooms,
       bathrooms: details.bathrooms,
-      built_up_area: options?.forSubmit
-        ? normalizeBuiltUpAreaToSquareMeters(
-            details.built_up_area ?? "",
-            builtUpAreaUnit,
-          )
-        : parseOptionalNumber(details.built_up_area),
-      built_up_area_unit: options?.forSubmit ? "SQM" : builtUpAreaUnit,
+      built_up_area: normalizeBuiltUpAreaToSquareMeters(
+        details.built_up_area ?? "",
+        builtUpAreaUnit,
+      ),
+      built_up_area_unit: "SQM",
       parking_spaces: details.parking_spaces,
       year_built: details.year_built ?? null,
       furnishing_status: toDraftMasterOptionValue(details.furnishing_status),
@@ -431,6 +514,7 @@ export function buildPropertyDraftSubmissionPayload(
       completion_status: details.completion_status,
       occupancy: details.occupancy,
       ownership_type: details.ownership_type,
+      ...(referenceNumber ? { reference_number: referenceNumber } : {}),
       orientation: details.orientation,
       guard_name: toOptionalTrimmedString(details.guard_name),
       guard_phone_number: buildOwnerPhone(
@@ -438,6 +522,11 @@ export function buildPropertyDraftSubmissionPayload(
         details.guard_phone_number,
       ),
     };
+
+    payload.property_details = applyPropertyLocationDls(
+      propertyDetailsPayload,
+      dls,
+    );
   }
 
   if (pricing != null) {
@@ -455,10 +544,21 @@ export function buildPropertyDraftSubmissionPayload(
       namedPrices.furnished_rent_price ||
       namedPrices.unfurnished_rent_price ||
       namedPrices.semi_furnished_rent_price;
+    const additionalPrices = Object.fromEntries(
+      Object.entries(pricing.additional_prices ?? {})
+        .map(([key, value]) => [
+          key,
+          parsePrice(typeof value === "string" ? value : String(value ?? "")),
+        ] as const)
+        .filter(([, value]) => value > 0),
+    );
 
     payload.pricing = {
       ...namedPrices,
       price: fallbackPrice,
+      ...(Object.keys(additionalPrices).length > 0
+        ? { additional_prices: additionalPrices }
+        : {}),
       service_charge: parsePrice(pricing.service_charge),
       maintenance_fee: parsePrice(pricing.maintenance_fee),
       currency: resolvePropertyDraftSubmissionCurrency(options?.currency),
@@ -694,21 +794,32 @@ export function mapPropertyDraftSubmissionToPropertyFormValues(
   if (location != null) {
     const areaId = location.area_id ?? location.area_ids?.[0] ?? null;
 
-    propertyDetails.location_insert = {
-      city_id: location.city_id ?? null,
-      area_id: areaId,
-      area_ids: areaId != null ? [areaId] : [],
-      address: location.address ?? "",
-      latitude: location.latitude ?? null,
-      longitude: location.longitude ?? null,
-      apartment_number: location.apartment_number ?? "",
-      plot_number: location.plot_number ?? "",
-      basin_number: location.basin_number ?? "",
-      parcel_number: location.parcel_number ?? "",
-      building_number: location.building_number ?? "",
-      identification_fields: location.identification_fields ?? {},
-      show_location: location.show_location ?? false,
-    } as PropertyFormValues["location_insert"];
+    const dls = extractPropertyLocationDls(
+      location as Record<string, unknown>,
+      details as Record<string, unknown> | undefined,
+    );
+
+    propertyDetails.location_insert = applyPropertyLocationDls(
+      {
+        city_id: location.city_id ?? null,
+        area_id: areaId,
+        area_ids: areaId != null ? [areaId] : [],
+        address: location.address ?? "",
+        latitude: location.latitude ?? null,
+        longitude: location.longitude ?? null,
+        apartment_number: location.apartment_number ?? "",
+        plot_number: location.plot_number ?? "",
+        basin_number: location.basin_number ?? "",
+        parcel_number: location.parcel_number ?? "",
+        building_number: location.building_number ?? "",
+        identification_fields:
+          withoutLegacyFreeTextDlsIdentificationFields(
+            location.identification_fields,
+          ) ?? {},
+        show_location: location.show_location ?? false,
+      },
+      dls,
+    ) as PropertyFormValues["location_insert"];
   }
 
   if (owners.length > 0) {
@@ -757,9 +868,11 @@ export function mapPropertyDraftSubmissionToPropertyFormValues(
     propertyDetails.property_details = {
       bedrooms: details.bedrooms ?? null,
       bathrooms: details.bathrooms ?? null,
-      built_up_area: formatNumberField(details.built_up_area),
-      built_up_area_unit:
-        details.built_up_area_unit === "SQFT" ? "SQFT" : "SQM",
+      built_up_area: formatBuiltUpAreaField(
+        details.built_up_area,
+        details.built_up_area_unit,
+      ),
+      built_up_area_unit: "SQM",
       parking_spaces: details.parking_spaces ?? null,
       year_built: yearBuilt,
       property_age:
