@@ -31,6 +31,32 @@ export type PropertyDraftSubmissionLocation = {
   parcel_number?: string;
   building_number?: string;
   identification_fields?: Record<string, string>;
+  gov_code?: string;
+  gov_name?: string;
+  dept_code?: string;
+  dept_name?: string;
+  vill_code?: string;
+  vill_name?: string;
+  hod_code?: string;
+  hod_name?: string;
+  sect_code?: string;
+  sect_name?: string;
+  /** @deprecated Hydrate-only aliases for older free-text DLS drafts. */
+  governorate?: string;
+  directorate?: string;
+  village?: string;
+  neighborhood?: string;
+  sheet_number?: string;
+  GOV_CODE?: string;
+  GOV_NAME?: string;
+  DEPT_CODE?: string;
+  DEPT_NAME?: string;
+  VILL_CODE?: string;
+  VILL_NAME?: string;
+  HOD_CODE?: string;
+  HOD_NAME?: string;
+  SECT_CODE?: string;
+  SECT_NAME?: string;
   /** Whether all roles may view the Location tab on published property details. */
   show_location?: boolean;
 };
@@ -75,7 +101,7 @@ export type PropertyDraftSubmissionPropertyDetails = {
   bathrooms?: number | null;
   /** Parsed from `PropertyForm` `property_details.built_up_area` string. */
   built_up_area?: number | null;
-  /** Unit used by the split built-up-area control; submitted values are normalized to `SQM`. */
+  /** Always persisted and submitted as square metres (`SQM`). */
   built_up_area_unit?: BuiltUpAreaUnit;
   parking_spaces?: number | null;
   year_built?: number | null;
@@ -100,6 +126,16 @@ export type PropertyDraftSubmissionPropertyDetails = {
   completion_status?: string | null;
   occupancy?: string | null;
   ownership_type?: string | null;
+  gov_code?: string;
+  gov_name?: string;
+  dept_code?: string;
+  dept_name?: string;
+  vill_code?: string;
+  vill_name?: string;
+  hod_code?: string;
+  hod_name?: string;
+  sect_code?: string;
+  sect_name?: string;
   reference_number?: string;
   /** @deprecated Removed from Add Property UI; still accepted when hydrating old drafts. */
   permit_number?: string;
@@ -236,6 +272,9 @@ export type PropertyDraftSubmissionData = {
   reviewed_by?: string | null;
   reviewed_at?: string | null;
   review_reason?: string | null;
+  /** Explicit backend edit lock; when present, overrides client status rules. */
+  can_edit?: boolean;
+  can_edit_submission?: boolean;
 };
 
 export type PropertyDraftSubmissionResponse = {

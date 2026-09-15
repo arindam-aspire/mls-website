@@ -1,10 +1,16 @@
-import { isApiError } from "@/src/apis/core/error.normalizer";
+import { isApiError, type ApiError } from "@/src/apis/core/error.normalizer";
 
 export type PropertySubmissionUiError = {
   message: string;
   fieldErrors: Record<string, string>;
   stepErrors: Record<string, string>;
   ownerDuplicateError: string | null;
+};
+
+export type PropertySubmissionErrorCopy = {
+  unreachable: string;
+  timeout: string;
+  server: string;
 };
 
 type ValidationErrorItem = {
@@ -107,15 +113,81 @@ function isOwnerDuplicateMessage(message: string, path: string | null): boolean 
   );
 }
 
+function isGenericTransportMessage(message: string): boolean {
+  const normalized = message.trim().toLowerCase();
+
+  return (
+    normalized === "network error" ||
+    normalized.startsWith("network error.") ||
+    normalized === "err_network" ||
+    normalized === "failed to fetch" ||
+    normalized === "network error. check your connection and try again." ||
+    normalized === "the request timed out. please try again." ||
+    normalized === "something went wrong on the server. please try again later."
+  );
+}
+
+function resolveTransportMessage(
+  apiError: ApiError | null,
+  fallbackMessage: string,
+  copy?: PropertySubmissionErrorCopy,
+): string {
+  if (!copy) {
+    return fallbackMessage;
+  }
+
+  if (apiError?.code === "TIMEOUT") {
+    return copy.timeout;
+  }
+
+  if (apiError?.code === "SERVER_ERROR") {
+    return copy.server;
+  }
+
+  return copy.unreachable;
+}
+
+function resolveSubmissionErrorMessage(
+  error: unknown,
+  fallbackMessage: string,
+  copy?: PropertySubmissionErrorCopy,
+): { apiError: ApiError | null; source: unknown; message: string } {
+  const apiError = isApiError(error) ? error : null;
+  const source = apiError?.details ?? error;
+  const extractedFromSource = extractMessage(source, "");
+  const rawMessage = apiError?.message?.trim()
+    ? apiError.message
+    : extractedFromSource || fallbackMessage;
+  const usefulSourceMessage =
+    extractedFromSource && !isGenericTransportMessage(extractedFromSource)
+      ? extractedFromSource
+      : null;
+
+  if (usefulSourceMessage) {
+    return { apiError, source, message: usefulSourceMessage };
+  }
+
+  if (isGenericTransportMessage(rawMessage)) {
+    return {
+      apiError,
+      source,
+      message: resolveTransportMessage(apiError, fallbackMessage, copy),
+    };
+  }
+
+  return { apiError, source, message: rawMessage };
+}
+
 export function parsePropertySubmissionError(
   error: unknown,
   fallbackMessage: string,
+  copy?: PropertySubmissionErrorCopy,
 ): PropertySubmissionUiError {
-  const apiError = isApiError(error) ? error : null;
-  const source = apiError?.details ?? error;
-  const message = apiError?.message?.trim()
-    ? apiError.message
-    : extractMessage(source, fallbackMessage);
+  const { source, message } = resolveSubmissionErrorMessage(
+    error,
+    fallbackMessage,
+    copy,
+  );
   const fieldErrors: Record<string, string> = {};
   const stepErrors: Record<string, string> = {};
   let ownerDuplicateError: string | null = null;

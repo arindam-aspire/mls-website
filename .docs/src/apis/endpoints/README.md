@@ -5,7 +5,7 @@ Central path constants for backend routes.
 | File | Contents |
 | --- | --- |
 | [authEndpoints.md](./authEndpoints.md) | Login, OTP, me, logout, signup, … |
-| [publicEndpoints.md](./publicEndpoints.md) | `/property-taxonomy`, `/location-taxonomy` |
+| [publicEndpoints.md](./publicEndpoints.md) | `/property-taxonomy`, `/location-taxonomy`, `/dls-locations` |
 | [propertyEndpoints.md](./propertyEndpoints.md) | `PROPERTY_LIST` → `/properties` |
 | [index.md](./index.md) | Re-exports all endpoint modules |
 

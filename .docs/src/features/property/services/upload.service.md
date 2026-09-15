@@ -7,19 +7,19 @@ Presigned upload helpers for property create (owner documents, media images, pro
 # Responsibilities
 
 - `requestUploadPresignedUrl` — authenticated `POST /uploads/presigned-url`.
-- `uploadOwnerDocument` — `context: "owner_document"`.
+- `uploadOwnerDocument` — `context: "owner_document"` with `draft_client_id` (works before a submission id exists). Returns a **stable** persistence reference via `resolvePersistedUploadReference` (same as media/docs — never store expiring `signed_read_url` in drafts).
 - `uploadPropertyMediaImage` — `context: "property_media_image"` (`media_files`) with image/video content-type resolution for JPG, PNG, WebP, GIF, MP4, and MOV.
 - `uploadPropertyDocument` — `context: "property_document"` (`documents`).
-- Each helper presigns and **PUT**s bytes to `upload_url`.
-- Property media and property-document helpers return a stable persistence reference via `resolvePersistedUploadReference` (`file_url`, then `object_key`, then the query-stripped upload URL) so draft and submit payloads do not store expiring signed URLs.
-- Owner-document uploads retain the existing readable-URI resolution used by that separate form step.
+- Each helper: presign → **PUT** or **POST** bytes to `upload_url` (per `upload_http_method`).
+- Media and property-document helpers accept `UploadSubmissionTarget` (`submission_id` and/or `draft_client_id`).
+- Presign failures throw with the backend `message` when present (empty string otherwise); callers toast localized titles.
 
 # Exports
 
 - `requestUploadPresignedUrl(body)`
 - `uploadOwnerDocument(file, draftClientId)`
-- `uploadPropertyMediaImage(file, draftClientId)`
-- `uploadPropertyDocument(file, draftClientId)`
+- `uploadPropertyMediaImage(file, target)`
+- `uploadPropertyDocument(file, target)`
 
 # API Usage
 
@@ -49,7 +49,7 @@ Property media (`media_files` / `documents`):
 }
 ```
 
-Response `data.upload_url` → **PUT** file (no `apiClient`; MLS returns `upload_http_method: "PUT"`). Create Property media/document callbacks return `data.file_url`, `data.object_key`, or the stripped upload URL for stable draft persistence.
+Response `data.upload_url` → **PUT**/**POST** file (no `apiClient`). Create Property callbacks return `data.file_url`, `data.object_key`, or the stripped upload URL for stable draft persistence.
 
 # Dependencies
 

@@ -38,7 +38,7 @@ async function uploadWithPresignedUrl(
   const uploadUrl = presignResponse.data?.upload_url;
 
   if (!presignResponse.success || !uploadUrl) {
-    throw new Error(presignResponse.message ?? "Upload presign failed");
+    throw new Error(presignResponse.message?.trim() || "");
   }
 
   if (!uploadUrl.startsWith("dev://")) {
@@ -93,13 +93,18 @@ export async function uploadOwnerDocument(
 ): Promise<string> {
   const contentType = resolveOwnerDocumentContentType(file);
 
-  return uploadWithPresignedUrl(file, {
-    draft_client_id: draftClientId,
-    context: "owner_document",
-    file_name: file.name,
-    content_type: contentType,
-    file_size: file.size,
-  });
+  // Persist stable file_url/object_key — never store expiring signed_read_url in drafts.
+  return uploadWithPresignedUrl(
+    file,
+    {
+      draft_client_id: draftClientId,
+      context: "owner_document",
+      file_name: file.name,
+      content_type: contentType,
+      file_size: file.size,
+    },
+    true,
+  );
 }
 
 export async function uploadPropertyMediaImage(

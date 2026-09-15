@@ -32,9 +32,7 @@ import {
 } from "@/src/features/property/constants/propertyForm.constants";
 import {
   DEFAULT_AGENCY_CURRENCY,
-  DEFAULT_AGENCY_MEASUREMENT_UNIT,
   type AgencyCurrency,
-  type AgencyMeasurementUnit,
 } from "@/src/features/profile/constants/agencyPreferences";
 import {
   getAgencyById,
@@ -42,19 +40,23 @@ import {
 } from "@/src/features/profile/services/profile.service";
 import {
   normalizeAgencyCurrency,
-  normalizeAgencyMeasurementUnit,
 } from "@/src/features/profile/utils/agencyPreferences.utils";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
 import {
   buildPropertyDraftSubmissionRequestBody,
   buildPropertyDraftSubmissionUpdateRequestBody,
   buildPropertySubmissionDirectSubmitRequestBody,
+  extractPropertyFormDls,
   getPropertyFormShowLocation,
   mapPropertyDraftSubmissionToPropertyFormValues,
   toPropertyDraftSubmissionCurrency,
+  withPropertyFormHostLocationFields,
   withPropertyFormShowLocation,
   getDraftFloorValue,
 } from "@/src/features/property/mappers/propertyDraftSubmission.mapper";
+import { buildPropertyLocationDlsLabels } from "@/src/features/property/i18n/propertyLocationDls.i18n";
+import { usePropertyLocationDls } from "@/src/features/property/hooks/usePropertyLocationDls";
+import type { PropertyLocationDlsSelection } from "@/src/features/property/types/dls.types";
 import {
   mapFeatureCatalogForPropertyForm,
   mapLocationTaxonomyForPropertyForm,
@@ -84,6 +86,7 @@ import {
 import type { FeatureCatalogItem } from "@/src/features/property/types/property.types";
 import type { PropertyFormOptionsCatalog } from "@/src/features/property/types/propertyFormOptions.types";
 import type { PropertyDraftSubmissionData } from "@/src/features/property/types/propertyDraftSubmission.types";
+import { applyPropertyCreateFormDomPatches } from "@/src/features/property/utils/propertyCreateFormDom.utils";
 import { parsePropertySubmissionError } from "@/src/features/property/utils/propertySubmissionError.utils";
 import {
   buildLoggedInOwnerInfoItem,
@@ -129,6 +132,45 @@ function shouldShowPropertyCreateAgencyField(
   return isSuperAdminUser(user) || isOwnerUser(user);
 }
 
+function resolveSubmitSuccessDescription(
+  data: PropertyDraftSubmissionData | null | undefined,
+  apiMessage: string | null | undefined,
+  copy: {
+    isOwner: boolean;
+    pendingAdmin: string;
+    pendingAgency: string;
+  },
+): string | undefined {
+  const message = apiMessage?.trim();
+  if (message) {
+    return message;
+  }
+
+  if (!copy.isOwner) {
+    return undefined;
+  }
+
+  const status = normalizeSubmissionStatusToken(data?.status);
+  const workflowStage = normalizeSubmissionStatusToken(data?.workflow_stage);
+
+  if (
+    status === "pending-admin-approval" ||
+    workflowStage === "pending-admin-approval"
+  ) {
+    return copy.pendingAdmin;
+  }
+
+  if (
+    status === "pending-approval" ||
+    workflowStage === "pending-approval" ||
+    status === "submitted"
+  ) {
+    return copy.pendingAgency;
+  }
+
+  return undefined;
+}
+
 function getLocationTaxonomyTotal(
   taxonomy: LocationTaxonomyResponse | null,
 ): number | undefined {
@@ -141,32 +183,59 @@ function getLocationTaxonomyTotal(
   return payload.total;
 }
 
+function normalizeSubmissionStatusToken(value: string | null | undefined): string {
+  return String(value ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/_/g, "-");
+}
+
+function resolveApiCanEditSubmission(
+  data: PropertyDraftSubmissionData,
+): boolean | null {
+  if (typeof data.can_edit === "boolean") {
+    return data.can_edit;
+  }
+
+  if (typeof data.can_edit_submission === "boolean") {
+    return data.can_edit_submission;
+  }
+
+  return null;
+}
+
 function resolveSubmissionFormAccess(
   data: PropertyDraftSubmissionData,
   user: LoggedInUser | null | undefined,
 ) {
-  const status = data.status?.trim().toLowerCase();
-  const workflowStage = data.workflow_stage?.trim().toLowerCase();
+  const status = normalizeSubmissionStatusToken(data.status);
+  const workflowStage = normalizeSubmissionStatusToken(data.workflow_stage);
   const userId = user?.id ? String(user.id) : "";
   const submittedBy = data.submitted_by ? String(data.submitted_by) : "";
+  const assignedAgentId = data.assigned_agent_id
+    ? String(data.assigned_agent_id)
+    : "";
   const isAssignedAgent =
-    Boolean(data.assigned_agent_id && userId === String(data.assigned_agent_id)) ||
-    (!data.assigned_agent_id && isAgentUser(user));
+    (Boolean(assignedAgentId) && userId === assignedAgentId) ||
+    (!assignedAgentId && isAgentUser(user));
   const isSubmitter = Boolean(userId && submittedBy && userId === submittedBy);
+  const isDraftLike = status === "draft" || status === "in-progress";
   const isRejectedEditable = status === "rejected" && (isSubmitter || isAssignedAgent);
   const isAgentEditable =
     (status === "agent-assigned" ||
       workflowStage === "agent-assigned" ||
-      workflowStage === "with_agent" ||
-      workflowStage === "returned_to_agent") &&
+      workflowStage === "with-agent" ||
+      workflowStage === "returned-to-agent") &&
     isAssignedAgent;
 
+  const clientCanEdit =
+    isDraftLike || isRejectedEditable || isAgentEditable;
+  const apiCanEdit = resolveApiCanEditSubmission(data);
+  const canEdit =
+    apiCanEdit === false ? false : apiCanEdit === true ? true : clientCanEdit;
+
   return {
-    canEdit:
-      status === "draft" ||
-      status === "in_progress" ||
-      isRejectedEditable ||
-      isAgentEditable,
+    canEdit,
     rejectionReason:
       status === "rejected" ? data.review_reason?.trim() || null : null,
   };
@@ -224,6 +293,7 @@ export function usePropertyCreateScreen() {
 
   // 3. Global state
   const user = useAuthStore((state) => state.user);
+  const isOwner = isOwnerUser(user);
   const showAgencyField = shouldShowPropertyCreateAgencyField(user);
 
   // 4. Local state
@@ -249,7 +319,13 @@ export function usePropertyCreateScreen() {
   const [selectedAgencyId, setSelectedAgencyId] = useState<string | null>(() =>
     normalizePropertyCreateAgencyId(searchParams.get(PROPERTY_CREATE_AGENCY_ID_PARAM)),
   );
-  const [routeThroughAgency, setRouteThroughAgency] = useState(false);
+  // Owner `?agency_id=` (legacy continue URL) hydrates routing + agency (toggle stays off on a fresh create).
+  const [routeThroughAgency, setRouteThroughAgency] = useState(
+    () =>
+      normalizePropertyCreateAgencyId(
+        searchParams.get(PROPERTY_CREATE_AGENCY_ID_PARAM),
+      ) != null,
+  );
   const [agencyFieldError, setAgencyFieldError] = useState<string | null>(null);
   const [formOptionsCatalog, setFormOptionsCatalog] =
     useState<PropertyFormOptionsCatalog>(EMPTY_PROPERTY_FORM_OPTIONS_CATALOG);
@@ -277,6 +353,12 @@ export function usePropertyCreateScreen() {
     async () => false,
   );
   const propertyFormObserverRef = useRef<MutationObserver | null>(null);
+  const propertyFormContainerElRef = useRef<HTMLDivElement | null>(null);
+  const propertyDetailsRef = useRef(propertyDetails);
+  propertyDetailsRef.current = propertyDetails;
+  const submissionIdRef = useRef(submissionId);
+  submissionIdRef.current = submissionId;
+  const ensureSubmissionIdRef = useRef<() => Promise<string | null>>(async () => null);
 
   // 5. Data fetching / queries
   const { mutateAsync: fetchPropertyTaxonomy } = useGetPropertyTaxonomy();
@@ -292,8 +374,10 @@ export function usePropertyCreateScreen() {
   const { mutateAsync: submitPropertySubmissionDirect } = useSubmitPropertySubmission();
   const isDraftSaving = isCreateDraftSaving || isUpdateDraftSaving;
   const { onUploadOwnerDocument } = useOwnerDocumentUpload();
-  const { onUploadPropertyMedia, onUploadPropertyDocument } =
-    usePropertyMediaUpload(submissionId);
+  const { onUploadPropertyMedia, onUploadPropertyDocument } = usePropertyMediaUpload(
+    submissionId,
+    { ensureSubmissionIdRef },
+  );
   const { onSearchOwners } = usePropertyOwnerSearch();
   const {
     data: agencyListData,
@@ -304,6 +388,32 @@ export function usePropertyCreateScreen() {
     queryKey: ["agency", "property-create-list"],
     queryFn: () => getAgencyList({ skip: 0, limit: 100 }),
     enabled: showAgencyField && routeThroughAgency,
+  });
+
+  const resolvedAgencyIdForQuery = (
+    showAgencyField && routeThroughAgency
+      ? selectedAgencyId ?? searchParams.get(PROPERTY_CREATE_AGENCY_ID_PARAM) ?? ""
+      : user?.agency?.agency_id ?? ""
+  ).trim();
+
+  const { data: agencyResponse } = useQuery({
+    queryKey: ["agency", resolvedAgencyIdForQuery],
+    queryFn: () => getAgencyById(resolvedAgencyIdForQuery),
+    enabled: resolvedAgencyIdForQuery.length > 0,
+  });
+
+  const locationDls = usePropertyLocationDls({
+    selection: extractPropertyFormDls(propertyDetails),
+    onChange: (dls: PropertyLocationDlsSelection) => {
+      setPropertyDetails((previous) =>
+        withPropertyFormHostLocationFields(previous, {
+          showLocation: getPropertyFormShowLocation(previous),
+          dls,
+        }),
+      );
+    },
+    disabled: !canEditSubmission || isDraftSaving || isSubmitting,
+    labels: buildPropertyLocationDlsLabels(t),
   });
 
   // 6. Derived / memoized values
@@ -364,28 +474,20 @@ export function usePropertyCreateScreen() {
 
   const minStepIndex = INITIAL_PROPERTY_FORM_ACTIVE_STEP;
   const maxStepIndex = propertyFormSteps.length;
-  const showLocation = getPropertyFormShowLocation(propertyDetails);
-
-  const resolvedAgencyId = useMemo(
-    () =>
-      (showAgencyField && routeThroughAgency
-        ? selectedAgencyId ?? searchParams.get(PROPERTY_CREATE_AGENCY_ID_PARAM) ?? ""
-        : user?.agency?.agency_id ?? ""
-      ).trim(),
-    [
-      routeThroughAgency,
-      searchParams,
-      selectedAgencyId,
-      showAgencyField,
-      user?.agency?.agency_id,
-    ],
+  const hasReferenceNumber = Boolean(
+    propertyDetails.property_details?.reference_number?.trim(),
   );
+  const hasReferenceNumberRef = useRef(hasReferenceNumber);
+  hasReferenceNumberRef.current = hasReferenceNumber;
+  const showLocation = getPropertyFormShowLocation(propertyDetails);
+  const dlsSelection = useMemo(
+    () => extractPropertyFormDls(propertyDetails),
+    [propertyDetails],
+  );
+  const dlsSelectionRef = useRef(dlsSelection);
+  dlsSelectionRef.current = dlsSelection;
 
-  const { data: agencyResponse } = useQuery({
-    queryKey: ["agency", resolvedAgencyId],
-    queryFn: () => getAgencyById(resolvedAgencyId),
-    enabled: resolvedAgencyId.length > 0,
-  });
+  const resolvedAgencyId = resolvedAgencyIdForQuery;
 
   const pricingCurrency = useMemo(
     (): AgencyCurrency =>
@@ -393,13 +495,7 @@ export function usePropertyCreateScreen() {
     [agencyResponse?.data?.currency],
   );
 
-  const measurementUnit = useMemo(
-    (): AgencyMeasurementUnit =>
-      normalizeAgencyMeasurementUnit(
-        agencyResponse?.data?.measurement_unit ?? DEFAULT_AGENCY_MEASUREMENT_UNIT,
-      ),
-    [agencyResponse?.data?.measurement_unit],
-  );
+  const measurementUnit = "SQM" as const;
 
   const isAgencyListLoading =
     showAgencyField && routeThroughAgency && isAgencyListPending;
@@ -493,6 +589,7 @@ export function usePropertyCreateScreen() {
 
   const syncSubmissionIdInUrl = useCallback(
     (nextSubmissionId: string) => {
+      submissionIdRef.current = nextSubmissionId;
       setSubmissionId(nextSubmissionId);
 
       const params = new URLSearchParams(searchParams.toString());
@@ -536,6 +633,7 @@ export function usePropertyCreateScreen() {
           ),
         );
         setSubmissionId(draftResponse.data.submission_id);
+        submissionIdRef.current = draftResponse.data.submission_id;
         setRouteThroughAgency(Boolean(draftResponse.data.route_through_agency));
         setSelectedAgencyId(
           normalizePropertyCreateAgencyId(draftResponse.data.agency_id),
@@ -557,30 +655,25 @@ export function usePropertyCreateScreen() {
   const propertyFormContainerRef = useCallback((container: HTMLDivElement | null) => {
     propertyFormObserverRef.current?.disconnect();
     propertyFormObserverRef.current = null;
+    propertyFormContainerElRef.current = container;
 
     if (!container) {
       return;
     }
 
-    const lockReferenceNumberInput = () => {
-      const referenceNumberInput = container?.querySelector<HTMLInputElement>(
-        'input[name="reference_number"]',
-      );
-
-      if (!referenceNumberInput) {
-        return;
-      }
-
-      referenceNumberInput.readOnly = true;
-      referenceNumberInput.setAttribute("aria-readonly", "true");
+    const applyHostFormPatches = () => {
+      applyPropertyCreateFormDomPatches(container, {
+        ownerDocumentsLabel: tForm("ownerDocumentsLabel"),
+        hasReferenceNumber: hasReferenceNumberRef.current,
+      });
     };
 
-    lockReferenceNumberInput();
+    applyHostFormPatches();
 
-    const observer = new MutationObserver(lockReferenceNumberInput);
+    const observer = new MutationObserver(applyHostFormPatches);
     observer.observe(container, { childList: true, subtree: true });
     propertyFormObserverRef.current = observer;
-  }, []);
+  }, [tForm]);
 
   const loadCreateCatalog = useCallback(
     async (initialSubmissionId?: string | null) => {
@@ -640,7 +733,10 @@ export function usePropertyCreateScreen() {
   const onNext = useCallback(
     (nextPropertyDetails: PropertyFormValues) => {
       setPropertyDetails(
-        withPropertyFormShowLocation(nextPropertyDetails, showLocation),
+        withPropertyFormHostLocationFields(nextPropertyDetails, {
+          showLocation,
+          dls: dlsSelectionRef.current,
+        }),
       );
       setActiveStep((previous) => {
         const nextStep = Math.min(previous + 1, maxStepIndex);
@@ -672,7 +768,10 @@ export function usePropertyCreateScreen() {
   const onStepClick = useCallback(
     (step: number, _step: PropertyFormStep, nextPropertyDetails: PropertyFormValues) => {
       setPropertyDetails(
-        withPropertyFormShowLocation(nextPropertyDetails, showLocation),
+        withPropertyFormHostLocationFields(nextPropertyDetails, {
+          showLocation,
+          dls: dlsSelectionRef.current,
+        }),
       );
       setActiveStep(step);
       const nextMaxReachedStep = nextPropertyDetails.max_reached_step ?? step;
@@ -689,7 +788,11 @@ export function usePropertyCreateScreen() {
 
   const applySubmissionError = useCallback(
     (error: unknown, fallbackMessage: string) => {
-      const parsed = parsePropertySubmissionError(error, fallbackMessage);
+      const parsed = parsePropertySubmissionError(error, fallbackMessage, {
+        unreachable: t("errors.unreachable"),
+        timeout: t("errors.timeout"),
+        server: t("errors.server"),
+      });
       setSubmitError(parsed.message);
       setFieldErrors(parsed.fieldErrors);
       setStepErrors(parsed.stepErrors);
@@ -701,7 +804,7 @@ export function usePropertyCreateScreen() {
         propertyFormRef.current?.goToField(firstFieldPath);
       }
     },
-    [toast],
+    [t, toast],
   );
 
   const clearSubmissionErrors = useCallback(() => {
@@ -768,7 +871,15 @@ export function usePropertyCreateScreen() {
 
         if (submitResponse.success) {
           toast.success(t("submitSuccess"), {
-            description: submitResponse.message ?? undefined,
+            description: resolveSubmitSuccessDescription(
+              submitResponse.data,
+              submitResponse.message,
+              {
+                isOwner,
+                pendingAdmin: t("submitSuccessPendingAdmin"),
+                pendingAgency: t("submitSuccessPendingAgency"),
+              },
+            ),
           });
           commitSavedSnapshotRef.current(detailsForSubmit);
           router.push(listingsPath);
@@ -806,7 +917,15 @@ export function usePropertyCreateScreen() {
 
       if (submitResponse.success) {
         toast.success(t("submitSuccess"), {
-          description: submitResponse.message ?? undefined,
+          description: resolveSubmitSuccessDescription(
+            submitResponse.data,
+            submitResponse.message,
+            {
+              isOwner,
+              pendingAdmin: t("submitSuccessPendingAdmin"),
+              pendingAgency: t("submitSuccessPendingAgency"),
+            },
+          ),
         });
         commitSavedSnapshotRef.current(detailsForSubmit);
         router.push(listingsPath);
@@ -823,10 +942,11 @@ export function usePropertyCreateScreen() {
     activeStep,
     applySubmissionError,
     clearSubmissionErrors,
-      featuresAndAmenities,
-      maxReachedStep,
-      pricingCurrency,
-      propertyDetails,
+    featuresAndAmenities,
+    isOwner,
+    maxReachedStep,
+    pricingCurrency,
+    propertyDetails,
     routeThroughAgency,
     router,
     searchParams,
@@ -843,9 +963,12 @@ export function usePropertyCreateScreen() {
 
   const onDraft = useCallback(
     async (nextPropertyDetails: PropertyFormValues): Promise<boolean> => {
-      const detailsWithLocationVisibility = withPropertyFormShowLocation(
+      const detailsWithLocationVisibility = withPropertyFormHostLocationFields(
         nextPropertyDetails,
-        showLocation,
+        {
+          showLocation,
+          dls: dlsSelectionRef.current,
+        },
       );
       setPropertyDetails(detailsWithLocationVisibility);
 
@@ -961,6 +1084,18 @@ export function usePropertyCreateScreen() {
   useEffect(() => {
     onDraftRef.current = onDraft;
     commitSavedSnapshotRef.current = commitSavedSnapshot;
+    ensureSubmissionIdRef.current = async () => {
+      if (submissionIdRef.current) {
+        return submissionIdRef.current;
+      }
+
+      const didSave = await onDraftRef.current(propertyDetailsRef.current);
+      if (!didSave) {
+        return null;
+      }
+
+      return submissionIdRef.current;
+    };
   }, [commitSavedSnapshot, onDraft]);
 
   useEffect(() => {
@@ -973,8 +1108,20 @@ export function usePropertyCreateScreen() {
       return;
     }
 
-    hasEstablishedBaselineRef.current = true;
-    commitSavedSnapshot(propertyDetails);
+    // Defer one tick so baseline uses library live payload after hydrate/catalog, not mapper-only state.
+    let cancelled = false;
+    queueMicrotask(() => {
+      if (cancelled || hasEstablishedBaselineRef.current) {
+        return;
+      }
+
+      hasEstablishedBaselineRef.current = true;
+      commitSavedSnapshot(propertyDetailsRef.current);
+    });
+
+    return () => {
+      cancelled = true;
+    };
   }, [commitSavedSnapshot, isCatalogLoading, propertyDetails, submissionId, user]);
 
   useEffect(() => {
@@ -1018,6 +1165,18 @@ export function usePropertyCreateScreen() {
     );
   }, [loadCreateCatalog, searchParams]);
 
+  useEffect(() => {
+    const container = propertyFormContainerElRef.current;
+    if (!container) {
+      return;
+    }
+
+    applyPropertyCreateFormDomPatches(container, {
+      ownerDocumentsLabel: tForm("ownerDocumentsLabel"),
+      hasReferenceNumber,
+    });
+  }, [hasReferenceNumber, tForm]);
+
   // 10. Return values
   return {
     pageTitle: t("pageTitle"),
@@ -1058,11 +1217,19 @@ export function usePropertyCreateScreen() {
       ariaLabel: t("locationVisibility.ariaLabel"),
       onChange: onShowLocationChange,
     },
+    locationDlsField: {
+      sectionTitle: locationDls.sectionTitle,
+      fields: locationDls.fields,
+    },
     unsavedChangesModal,
     agencyField: showAgencyField
       ? {
           sectionTitle: t("agency.routing.title"),
-          routingQuestion: t("agency.routing.question"),
+          routingQuestion: isOwner
+            ? t("agency.verify.label")
+            : t("agency.routing.question"),
+          routingAriaLabel: isOwner ? t("agency.verify.ariaLabel") : undefined,
+          routingControl: isOwner ? ("switch" as const) : ("checkbox" as const),
           routeThroughAgency,
           onRouteThroughAgencyChange,
           label: t("agency.label"),

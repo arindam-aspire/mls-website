@@ -7,7 +7,7 @@ Draft listings screen using **`PropertyDraftList`** (per-row actions from API `c
 # Responsibilities
 
 - Page heading from `propertyList.draftListings`.
-- **Add Property** primary button in page header (always visible, same layout as My Listings) — uses `onCreateNew` from `useAddPropertyEntry({ restrictForOwnerOnly: true })`.
+- **Add Property** primary button in page header (always visible, same layout as My Listings) — uses `onCreateNew` from `useAddPropertyEntry({ restrictForOwnerOnly: true })` and navigates to `/property-create`.
 - Render `PropertyDraftList` with API-backed items, pagination, and per-row actions.
 
 # Imports

@@ -10,8 +10,9 @@ Builds the host `PropertyFormConfig` for `@abdoun/abdoun-library` `PropertyForm`
 - Fall back listing purposes to existing BE values `sale` / `rent` with i18n labels when the catalog is empty.
 - Furnishing Status and Floor use catalog arrays when present. If the Master API omits those lists, the host fills the existing search-filter values (`furnished` / `unfurnished` / `semi-furnished`, Ground–10–Penthouse) so the library still renders both dropdowns. Empty arrays are not passed through (that hides the fields).
 - Nationality uses the catalog when `nationalities` is present. There is no host country list; omitting the array lets the library compatibility defaults render until the Master API returns nationalities.
-- Define purpose- and furnishing-aware pricing fields (`furnished_sale_price`, `unfurnished_sale_price`, `furnished_rent_price`, `unfurnished_rent_price`, `semi_furnished_rent_price`).
-- Define identification fields (apartment, plot, basin, parcel, building).
+- Define purpose- and furnishing-aware pricing fields (`furnished_sale_price`, `unfurnished_sale_price`, `furnished_rent_price`, `unfurnished_rent_price`, `semi_furnished_rent_price`). Visible fields follow Listing Purpose + Furnishing Status (Sale+Furnished, Sale+Unfurnished, Rent+Furnished, Rent+Unfurnished, Rent+Semi-Furnished).
+- Define identification fields (apartment, plot, basin, parcel, building). Official DLS hierarchy is host-owned cascading selects, not extra free-text identification fields.
+- Filter **Under Construction** out of Completion Status. When the catalog is empty, pass Ready / Off-plan / Secondary so the library does not restore its deprecated Under Construction option.
 - Disable DLD (`legacyFields.permit_dld_number: false`). Keep emitting legacy `listing_purpose` and `area_ids` during the deprecation window.
 
 # Imports

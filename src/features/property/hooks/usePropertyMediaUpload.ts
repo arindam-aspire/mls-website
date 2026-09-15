@@ -5,86 +5,113 @@ import {
   uploadPropertyMediaImage,
 } from "@/src/features/property/services/upload.service";
 import { useToast } from "@/src/hooks/useToast";
+import { createDraftClientId } from "@/src/lib/createDraftClientId";
 import { validateOwnerDocumentFile } from "@/src/lib/validateOwnerDocumentFile";
 import { validatePropertyMediaImageFile } from "@/src/lib/validatePropertyMediaImageFile";
 import { useTranslations } from "next-intl";
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, type MutableRefObject } from "react";
 
-export function usePropertyMediaUpload(submissionId: string | null) {
+type UsePropertyMediaUploadOptions = {
+  /**
+   * Prefer `submission_id`. When missing, save draft first and return the new id.
+   * Returns `null` if draft save fails — caller then falls back to `draft_client_id`.
+   */
+  ensureSubmissionIdRef?: MutableRefObject<() => Promise<string | null>>;
+};
+
+export function usePropertyMediaUpload(
+  submissionId: string | null,
+  options?: UsePropertyMediaUploadOptions,
+) {
   // 2. UI utilities
   const t = useTranslations("propertyList.propertyCreate");
   const toast = useToast();
 
-  // 8. Refs
-  const draftClientIdRef = useRef<string | null>(null);
+  // 8. Refs — prefer submission_id; else draft_client_id after ensure attempt
+  const draftClientIdRef = useRef<string>(createDraftClientId());
+  const toastRef = useRef(toast);
+  toastRef.current = toast;
 
   // 7. Callbacks
-  const resolveUploadTarget = useCallback((): { submission_id?: string; draft_client_id?: string } => {
+  const resolveUploadTarget = useCallback(async (): Promise<{
+    submission_id?: string;
+    draft_client_id?: string;
+  }> => {
     if (submissionId) {
       return { submission_id: submissionId };
     }
 
-    if (!draftClientIdRef.current) {
-      draftClientIdRef.current =
-        globalThis.crypto?.randomUUID?.() ??
-        `property-draft-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    const ensuredId = options?.ensureSubmissionIdRef
+      ? await options.ensureSubmissionIdRef.current()
+      : null;
+
+    if (ensuredId) {
+      return { submission_id: ensuredId };
     }
 
     return { draft_client_id: draftClientIdRef.current };
-  }, [submissionId]);
+  }, [options?.ensureSubmissionIdRef, submissionId]);
 
   const onUploadPropertyMedia = useCallback(
     async (file: File) => {
-      const uploadTarget = resolveUploadTarget();
-
       const validationError = validatePropertyMediaImageFile(file, {
         invalidType: t("propertyMediaUploadInvalidType"),
         tooLarge: t("propertyMediaUploadTooLarge"),
       });
 
       if (validationError) {
-        toast.error(t("propertyMediaUploadError"), {
+        toastRef.current.error(t("propertyMediaUploadError"), {
           description: validationError,
         });
         return null;
       }
 
       try {
+        const uploadTarget = await resolveUploadTarget();
         return await uploadPropertyMediaImage(file, uploadTarget);
       } catch (error) {
-        const message = error instanceof Error ? error.message : undefined;
-        toast.error(t("propertyMediaUploadError"), { description: message });
+        const message =
+          error instanceof Error && error.message.trim().length > 0
+            ? error.message
+            : undefined;
+        toastRef.current.error(t("propertyMediaUploadError"), {
+          description: message,
+        });
         return null;
       }
     },
-    [resolveUploadTarget, t, toast],
+    [resolveUploadTarget, t],
   );
 
   const onUploadPropertyDocument = useCallback(
     async (file: File) => {
-      const uploadTarget = resolveUploadTarget();
-
       const validationError = validateOwnerDocumentFile(file, {
         invalidType: t("propertyDocumentUploadInvalidType"),
         tooLarge: t("propertyDocumentUploadTooLarge"),
       });
 
       if (validationError) {
-        toast.error(t("propertyDocumentUploadError"), {
+        toastRef.current.error(t("propertyDocumentUploadError"), {
           description: validationError,
         });
         return null;
       }
 
       try {
+        const uploadTarget = await resolveUploadTarget();
         return await uploadPropertyDocument(file, uploadTarget);
       } catch (error) {
-        const message = error instanceof Error ? error.message : undefined;
-        toast.error(t("propertyDocumentUploadError"), { description: message });
+        const message =
+          error instanceof Error && error.message.trim().length > 0
+            ? error.message
+            : undefined;
+        toastRef.current.error(t("propertyDocumentUploadError"), {
+          description: message,
+        });
         return null;
       }
     },
-    [resolveUploadTarget, t, toast],
+    [resolveUploadTarget, t],
   );
 
   // 10. Return values

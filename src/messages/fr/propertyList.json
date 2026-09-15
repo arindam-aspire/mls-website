@@ -361,8 +361,15 @@
     "propertyDocumentUploadInvalidType": "Téléversez un fichier PDF, DOC ou DOCX.",
     "propertyDocumentUploadTooLarge": "Le fichier doit faire 10 Mo ou moins.",
     "submitSuccess": "Bien soumis",
+    "submitSuccessPendingAdmin": "Votre annonce a été soumise pour approbation administrateur.",
+    "submitSuccessPendingAgency": "Votre annonce a été soumise pour vérification par l'agence.",
     "submitError": "Impossible de soumettre le bien",
     "submitSaveError": "Impossible d'enregistrer le brouillon avant la soumission",
+    "errors": {
+      "unreachable": "Impossible de joindre le serveur. Vérifiez votre connexion puis réessayez.",
+      "timeout": "La requête a expiré. Veuillez réessayer.",
+      "server": "Le serveur n’a pas pu traiter cette demande. Veuillez réessayer."
+    },
     "form": {
       "listingPurposeLabel": "Objet de l’annonce",
       "listingPurposePlaceholder": "Sélectionnez les objets",
@@ -372,6 +379,7 @@
       "yearBuiltPlaceholder": "Saisissez l’année de construction",
       "floorLevelLabel": "Étage",
       "furnishingStatusLabel": "État d’ameublement",
+      "ownerDocumentsLabel": "Pièce d’identité ou passeport du propriétaire",
       "setAsPrimaryImage": "Définir comme image principale",
       "listingPurposes": {
         "sale": "Vente",
@@ -395,19 +403,37 @@
         "unfurnishedRentPrice": "Location non meublée",
         "semiFurnishedRentPrice": "Location semi-meublée"
       },
+      "completionStatuses": {
+        "ready": "Prêt",
+        "offPlan": "Sur plan",
+        "secondary": "Secondaire"
+      },
       "identification": {
         "apartmentNumber": "Numéro d’appartement",
         "plotNumber": "Numéro de parcelle",
         "basinNumber": "Numéro de bassin",
         "parcelNumber": "Numéro de lot",
-        "buildingNumber": "Numéro de bâtiment"
+        "buildingNumber": "Numéro de bâtiment",
+        "governorate": "Gouvernorat",
+        "directorate": "Direction",
+        "village": "Village",
+        "neighborhood": "Quartier",
+        "sheetNumber": "Numéro de feuille"
       },
       "map": {
         "mapTitle": "Emplacement sur la carte",
         "latitude": "Latitude",
         "longitude": "Longitude",
         "coordinates": "Coordonnées",
-        "selectPinHint": "Sélectionnez ou faites glisser l’épingle pour définir l’emplacement du bien."
+        "selectPinHint": "Sélectionnez ou faites glisser l’épingle pour définir l’emplacement du bien.",
+        "zoomIn": "Zoom avant",
+        "zoomOut": "Zoom arrière",
+        "mapView": "Carte",
+        "satelliteView": "Satellite",
+        "mapTypeGroup": "Type de carte",
+        "missingApiKey": "La carte n’est pas disponible pour le moment.",
+        "loadError": "Impossible de charger Google Maps.",
+        "loading": "Chargement de la carte"
       }
     },
     "locationVisibility": {
@@ -415,10 +441,35 @@
       "description": "Autorisez tous les utilisateurs à voir l’onglet Emplacement de ce bien.",
       "ariaLabel": "Afficher l’emplacement du bien à tous les utilisateurs"
     },
+    "dls": {
+      "sectionTitle": "DLS",
+      "government": "Gouvernement",
+      "department": "Département",
+      "village": "Village",
+      "hod": "HOD",
+      "section": "Section",
+      "governmentPlaceholder": "Sélectionnez le gouvernement",
+      "departmentPlaceholder": "Sélectionnez le département",
+      "villagePlaceholder": "Sélectionnez le village",
+      "hodPlaceholder": "Sélectionnez le HOD",
+      "sectionPlaceholder": "Sélectionnez la section",
+      "selectGovernmentFirst": "Sélectionnez d’abord un gouvernement.",
+      "selectDepartmentFirst": "Sélectionnez d’abord un département.",
+      "selectVillageFirst": "Sélectionnez d’abord un village.",
+      "selectHodFirst": "Sélectionnez d’abord un HOD.",
+      "loading": "Chargement des options DLS…",
+      "empty": "Aucune option DLS disponible.",
+      "loadError": "Impossible de charger les options DLS.",
+      "retry": "Réessayer"
+    },
     "agency": {
       "routing": {
         "title": "Acheminement vers une agence",
         "question": "Souhaitez-vous acheminer le bien par l’intermédiaire d’une agence ?"
+      },
+      "verify": {
+        "label": "Vérifier via une agence",
+        "ariaLabel": "Vérifier via une agence"
       },
       "label": "Agence",
       "placeholder": "Sélectionnez une agence",

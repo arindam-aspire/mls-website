@@ -4,6 +4,7 @@ import type {
   PropertyIdentificationFieldDefinition,
   PropertyPricingFieldDefinition,
 } from "@abdoun/abdoun-library";
+import { withoutUnderConstructionCompletionOptions } from "../mappers/propertyFormOptions.mapper";
 import type { PropertyFormOptionsCatalog } from "../types/propertyFormOptions.types";
 
 type PropertyFormConfigTranslation = {
@@ -37,6 +38,9 @@ type PropertyFormConfigTranslation = {
   (key: "identification.basinNumber"): string;
   (key: "identification.parcelNumber"): string;
   (key: "identification.buildingNumber"): string;
+  (key: "completionStatuses.ready"): string;
+  (key: "completionStatuses.offPlan"): string;
+  (key: "completionStatuses.secondary"): string;
   (key: "map.mapTitle"): string;
   (key: "map.latitude"): string;
   (key: "map.longitude"): string;
@@ -135,6 +139,12 @@ export function buildPropertyFormConfig(
     { key: "building_number", label: t("identification.buildingNumber") },
   ];
 
+  const completionStatusFallback: PropertyFormOption[] = [
+    { value: "ready", label: t("completionStatuses.ready") },
+    { value: "off-plan", label: t("completionStatuses.offPlan") },
+    { value: "secondary", label: t("completionStatuses.secondary") },
+  ];
+
   const pricingFields: PropertyPricingFieldDefinition[] = [
     {
       key: "furnished_sale_price",
@@ -175,7 +185,10 @@ export function buildPropertyFormConfig(
     ),
     furnishingStatusOptions: mergeOptions(catalog.furnishingStatusOptions, []),
     floorLevelOptions: mergeOptions(catalog.floorLevelOptions, []),
-    completionStatusOptions: mergeOptions(catalog.completionStatusOptions, []),
+    completionStatusOptions: mergeOptions(
+      withoutUnderConstructionCompletionOptions(catalog.completionStatusOptions),
+      completionStatusFallback,
+    ),
     orientationOptions: mergeOptions(catalog.orientationOptions, []),
     nationalityOptions: mergeOptions(catalog.nationalityOptions, []),
     ownerModeLabels: {

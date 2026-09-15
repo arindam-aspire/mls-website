@@ -22,7 +22,7 @@ profile/
 | Path | Role |
 | --- | --- |
 | [hooks/useProfileScreen.md](./hooks/useProfileScreen.md) | Toolbar labels and modal state |
-| [modals/SelectAgencyModal.md](./modals/SelectAgencyModal.md) | Agency picker shell (My Listings Add Property gate) |
+| [modals/SelectAgencyModal.md](./modals/SelectAgencyModal.md) | Agency picker shell (optional `?agency_id=` continue URL) |
 | [components/SelectAgencyListItem.md](./components/SelectAgencyListItem.md) | Selectable agency row |
 | [components/SelectAgencyModalSkeleton.md](./components/SelectAgencyModalSkeleton.md) | Agency list loading skeleton |
 | [hooks/useSelectAgencyModal.md](./hooks/useSelectAgencyModal.md) | Select agency modal labels and close |

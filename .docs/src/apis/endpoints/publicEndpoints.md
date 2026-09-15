@@ -14,7 +14,7 @@ _No notable imports._
 
 # Exports
 
-- `publicEndpoints`
+- `PROPERTY_TAXONOMY`, `LOCATION_TAXONOMY`, `DLS_LOCATIONS(params)`, deprecated `CATEGORY_PROPERTY_LIST`
 
 # State Management
 

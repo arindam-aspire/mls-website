@@ -30,6 +30,12 @@
 | --- | --- | --- |
 | @abdoun/abdoun-library | 0.1.91 | Shared MLS property UI components (cards, detail view, property form, draft list, agent list, owner list) |
 
+## Maps
+
+| Package | Version | Purpose |
+| --- | --- | --- |
+| @vis.gl/react-google-maps | ^1.10.0 | React components and hooks for the Google Maps JavaScript API |
+
 ## UI (accessible primitives & icons)
 
 | Package | Version | Purpose |

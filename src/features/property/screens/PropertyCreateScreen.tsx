@@ -3,6 +3,7 @@
 import { Breadcrumb } from "@/src/components/ui/breadcrumb";
 import { PropertyCreateAgencyField } from "@/src/features/property/components/PropertyCreateAgencyField";
 import { PropertyLocationMap } from "@/src/features/property/components/PropertyLocationMap";
+import { PropertyLocationDlsFields } from "@/src/features/property/components/PropertyLocationDlsFields";
 import { PropertyLocationVisibilityField } from "@/src/features/property/components/PropertyLocationVisibilityField";
 import { PropertyCreateUnsavedChangesModal } from "@/src/features/property/components/PropertyCreateUnsavedChangesModal";
 import { PropertyCreateScreenSkeleton } from "@/src/features/property/components/PropertyCreateScreenSkeleton";
@@ -54,6 +55,7 @@ export default function PropertyCreateScreen() {
     measurementUnit,
     propertyFormContainerRef,
     locationVisibilityField,
+    locationDlsField,
     unsavedChangesModal,
     agencyField,
   } = usePropertyCreateScreen();
@@ -115,7 +117,10 @@ export default function PropertyCreateScreen() {
         />
 
         {activeStep === PROPERTY_FORM_LOCATION_STEP ? (
-          <PropertyLocationVisibilityField {...locationVisibilityField} />
+          <>
+            <PropertyLocationDlsFields {...locationDlsField} />
+            <PropertyLocationVisibilityField {...locationVisibilityField} />
+          </>
         ) : null}
 
         {activeStep === PROPERTY_FORM_FINALIZE_STEP && agencyField ? (

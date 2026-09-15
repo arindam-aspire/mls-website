@@ -1,12 +1,12 @@
 # Profile modals (`src/features/profile/modals/`)
 
-Modal shells owned by the profile feature. Used from profile screens and cross-feature entry points (e.g. My Listings **Add Property** when the owner has no linked agency).
+Modal shells owned by the profile feature. `SelectAgencyModal` remains available for agency picking (for example a legacy `/property-create?agency_id=` continue URL). Owner **Add Property** now goes straight to create and uses **Verify through Agency** on Step 8.
 
 ## Files
 
 | File | Role |
 | --- | --- |
-| [SelectAgencyModal.md](./SelectAgencyModal.md) | Agency list picker (`GET /agency/list`) before property create |
+| [SelectAgencyModal.md](./SelectAgencyModal.md) | Agency list picker (`GET /agency/list`); optional pre-create continue URL |
 
 ## Conventions
 

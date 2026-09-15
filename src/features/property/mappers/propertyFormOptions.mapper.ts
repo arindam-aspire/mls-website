@@ -324,6 +324,22 @@ function parseSavedMasterOption(
   };
 }
 
+function isUnderConstructionCompletionOption(option: PropertyFormOption): boolean {
+  const token = normalizeOptionToken(
+    [option.value, option.label, option.id == null ? "" : String(option.id)]
+      .filter(Boolean)
+      .join(" "),
+  );
+
+  return token.includes("underconstruction");
+}
+
+export function withoutUnderConstructionCompletionOptions(
+  options: PropertyFormOption[],
+): PropertyFormOption[] {
+  return options.filter((option) => !isUnderConstructionCompletionOption(option));
+}
+
 function optionMatchesSaved(option: PropertyFormOption, raw: string): boolean {
   const rawLower = raw.toLowerCase();
   const rawToken = normalizeOptionToken(raw);
@@ -491,10 +507,12 @@ export function mapPropertyFormOptionsCatalog(
       ),
       true,
     ),
-    completionStatusOptions: mapOptionList([
-      optionsData?.completion_statuses,
-      optionsData?.completionStatuses,
-    ]),
+    completionStatusOptions: withoutUnderConstructionCompletionOptions(
+      mapOptionList([
+        optionsData?.completion_statuses,
+        optionsData?.completionStatuses,
+      ]),
+    ),
     orientationOptions: mapOptionList([optionsData?.orientations]),
     nationalityOptions: mapOptionList(
       listsMatching(

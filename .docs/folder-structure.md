@@ -346,15 +346,20 @@ mls_website/
 │       │       │   ├── PropertyListFilters.md
 │       │       │   ├── PropertyListingCardList.md
 │       │       │   ├── PropertyLocationMap.md
+│       │       │   ├── PropertyLocationDlsFields.md
 │       │       │   ├── PropertyDraftList.md
 │       │       │   └── MyListingFilters.md
 │       │       ├── constants/
 │       │       │   ├── myListingStatusFilters.constants.md
-│       │       │   └── propertyListAdvancedFilters.constants.md
+│       │       │   ├── propertyListAdvancedFilters.constants.md
+│       │       │   ├── propertyLocationDls.constants.md
+│       │       │   └── propertyLocationMap.constants.md
 │       │       ├── hooks/
 │       │       │   ├── README.md
 │       │       │   ├── usePropertyDetails.md
 │       │       │   ├── usePropertyList.md
+│       │       │   ├── usePropertyLocationDls.md
+│       │       │   ├── usePropertyLocationMap.md
 │       │       │   ├── useAddPropertyEntry.md
 │       │       │   ├── useFavouritePropertyList.md
 │       │       │   ├── usePropertyOwnerSearch.md
@@ -363,13 +368,16 @@ mls_website/
 │       │       │   └── usePropertySearchFilters.md
 │       │       ├── i18n/
 │       │       │   ├── README.md
-│       │       │   └── buildPropertyFormConfig.md
+│       │       │   ├── buildPropertyFormConfig.md
+│       │       │   ├── propertyLocationDls.i18n.md
+│       │       │   └── propertyLocationMap.i18n.md
 │       │       ├── mappers/
 │       │       │   ├── README.md
 │       │       │   ├── favoriteList.mapper.md
 │       │       │   ├── mapPropertyDetailsForPropertyView.md
 │       │       │   ├── propertyFeatures.mapper.md
 │       │       │   ├── propertyFormOptions.mapper.md
+│       │       │   ├── dlsLocations.mapper.md
 │       │       │   ├── propertyList.mapper.md
 │       │       │   └── propertyOwnerSearch.mapper.md
 │       │       ├── mutations/
@@ -379,17 +387,20 @@ mls_website/
 │       │       │   └── README.md
 │       │       ├── services/
 │       │       │   ├── README.md
+│       │       │   ├── dls.service.md
 │       │       │   └── property.service.md
 │       │       ├── store/
 │       │       │   ├── README.md
 │       │       │   └── property.store.md
 │       │       ├── types/
 │       │       │   ├── README.md
+│       │       │   ├── dls.types.md
 │       │       │   ├── property.types.md
 │       │       │   └── propertyFormOptions.types.md
 │       │       └── utils/
 │       │           ├── mapListingForPropertyCard.md
 │       │           ├── propertyAdvancedFieldVisibility.md
+│       │           ├── propertyCreateFormDom.utils.md
 │       │           ├── propertyOwnerPhone.utils.md
 │       │           ├── propertySearchLocations.utils.md
 │       │           └── propertySubmissionError.utils.md
@@ -1055,6 +1066,7 @@ mls_website/
 │   │       │   ├── PropertyListingCardList.tsx
 │   │       │   ├── PropertyListingStatusBadge.tsx
 │   │       │   ├── PropertyCreateAgencyField.tsx
+│   │       │   ├── PropertyLocationDlsFields.tsx
 │   │       │   ├── PropertyLocationMap.tsx
 │   │       │   ├── PropertyLocationVisibilityField.tsx
 │   │       │   ├── PropertyCreateUnsavedChangesModal.tsx
@@ -1071,8 +1083,10 @@ mls_website/
 │   │       │   ├── myListingStatusFilters.constants.ts
 │   │       │   ├── myListingTableColumns.constants.ts
 │   │       │   ├── propertyCreate.constants.ts
+│   │       │   ├── propertyLocationDls.constants.ts
 │   │       │   ├── propertyDetailsTabs.constants.ts
 │   │       │   ├── propertyForm.constants.ts
+│   │       │   ├── propertyLocationMap.constants.ts
 │   │       │   └── propertyListAdvancedFilters.constants.ts
 │   │       ├── hooks/
 │   │       │   ├── propertySearchFilter.constants.ts
@@ -1088,6 +1102,8 @@ mls_website/
 │   │       │   ├── usePropertyDetails.ts
 │   │       │   ├── usePropertyFavouriteToggle.ts
 │   │       │   ├── usePropertyList.ts
+│   │       │   ├── usePropertyLocationDls.ts
+│   │       │   ├── usePropertyLocationMap.ts
 │   │       │   ├── useFavouritePropertyList.ts
 │   │       │   ├── useAdminPropertySubmissionsTable.ts
 │   │       │   ├── useAgentListingsTable.ts
@@ -1100,7 +1116,9 @@ mls_website/
 │   │       │   ├── buildManageListingTableColumnLabels.ts
 │   │       │   ├── buildPropertyFormConfig.ts
 │   │       │   ├── propertyCreateOwnerInfo.i18n.ts
-│   │       │   └── propertyDetailsOwners.i18n.ts
+│   │       │   ├── propertyLocationDls.i18n.ts
+│   │       │   ├── propertyDetailsOwners.i18n.ts
+│   │       │   └── propertyLocationMap.i18n.ts
 │   │       ├── mappers/
 │   │       │   ├── adminPropertySubmissions.mapper.ts
 │   │       │   ├── agentPropertiesList.mapper.ts
@@ -1108,6 +1126,7 @@ mls_website/
 │   │       │   ├── favoriteList.mapper.ts
 │   │       │   ├── mapPropertyDetailsForPropertyView.ts
 │   │       │   ├── propertyDraftSubmission.mapper.ts
+│   │       │   ├── dlsLocations.mapper.ts
 │   │       │   ├── propertyForm.mapper.ts
 │   │       │   ├── propertyFormOptions.mapper.ts
 │   │       │   ├── propertyOwnerSearch.mapper.ts
@@ -1116,6 +1135,7 @@ mls_website/
 │   │       ├── mutations/
 │   │       │   └── property.mutation.ts
 │   │       ├── services/
+│   │       │   ├── dls.service.ts
 │   │       │   ├── property.service.ts
 │   │       │   └── upload.service.ts
 │   │       ├── screens/
@@ -1134,6 +1154,7 @@ mls_website/
 │   │       │   └── property.store.ts
 │   │       ├── types/
 │   │       │   ├── property.types.ts
+│   │       │   ├── dls.types.ts
 │   │       │   ├── assignAgentModal.types.ts
 │   │       │   ├── propertyDraftSubmission.types.ts
 │   │       │   ├── propertyFormOptions.types.ts
@@ -1143,6 +1164,7 @@ mls_website/
 │   │           ├── mapListingForPropertyCard.ts
 │   │           ├── applyFavoriteFlagsToListings.ts
 │   │           ├── propertyCreateDirtyState.utils.ts
+│   │           ├── propertyCreateFormDom.utils.ts
 │   │           ├── propertyCreateOwnerInfo.utils.ts
 │   │           ├── propertyOwnerPhone.utils.ts
 │   │           ├── propertySearchLocations.utils.ts
