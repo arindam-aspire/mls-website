@@ -11,6 +11,9 @@ Agency path helpers used by `profile.service.ts` and agency screens.
 | `LIST(params)` | `GET /agency/list` |
 | `OFFLINE_REGISTRATION` | `POST /agency/offline-registration` (super admin) |
 | `INVITATIONS` | `POST /agency/invitations` |
+| `VALIDATE_INVITATION(token)` | `GET /agency/invitations/validate?token=` (public) |
+| `ACCEPT_INVITATION` | `POST /agency/invitations/accept` (public) |
+| `INVITATION_DOCUMENT_UPLOAD` | `POST /agency/invitations/document-upload` (public legal-document presign) |
 | `PASSWORD_SETUP` | `POST /agency/password/setup` (public) |
 | `review(agencyId)` | `POST /agency/{agencyId}/review` |
 | `activation(agencyId)` | `POST /agency/{agencyId}/activation` |

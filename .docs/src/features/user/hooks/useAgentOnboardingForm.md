@@ -12,7 +12,7 @@ Form state, validation, and identity-document upload for agent onboarding (invit
 - Upload via `uploadAgentIdentityDocument(file, invitationToken?)` → invitation uses `POST /agents/invitations/document-upload`
 - Validate required fields only: full name, email, phone, service area (position + identity optional)
 - When `invitationToken` is set: `isEmailReadOnly` and email changes are blocked; Full Name autofill is disabled
-- `buildSubmitPayload` prefers `object_key` for `identityDocument`
+- `buildSubmitPayload` prefers `object_key` for `identityDocument` and includes `serviceAreaIds` for `POST /agents/onboarding`
 
 ## State Management
 

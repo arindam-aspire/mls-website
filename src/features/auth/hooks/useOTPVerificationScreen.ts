@@ -22,7 +22,6 @@ export function useOTPVerificationScreen() {
   const pendingPhone = useAuthStore((state) => state.pendingPhone);
   const pendingPhoneCountry = useAuthStore((state) => state.pendingPhoneCountry);
   const otpSession = useAuthStore((state) => state.otpSession);
-  const otpCode = useAuthStore((state) => state.otpCode);
   const setOtpCode = useAuthStore((state) => state.setOtpCode);
   const setOtpSession = useAuthStore((state) => state.setOtpSession);
   const {
@@ -41,11 +40,9 @@ export function useOTPVerificationScreen() {
 
   const onResend = useCallback(() => {
     if (otpFlow === "forgot") {
-      resendOtp({
-        email: pendingEmail ?? undefined,
-        phoneCountryCode: pendingPhoneCountry ?? undefined,
-        phoneNationalNumber: pendingPhone ?? undefined,
-      });
+      if (pendingEmail?.trim()) {
+        resendOtp({ email: pendingEmail.trim() });
+      }
       return;
     }
 
@@ -57,7 +54,6 @@ export function useOTPVerificationScreen() {
         {
           onSuccess: (response) => {
             setOtpSession(response.data.session);
-            setOtpCode(response.data.otp);
           },
         },
       );
@@ -65,11 +61,8 @@ export function useOTPVerificationScreen() {
   }, [
     otpFlow,
     pendingEmail,
-    pendingPhone,
-    pendingPhoneCountry,
     resendOtp,
     resendSignInOtp,
-    setOtpCode,
     setOtpSession,
   ]);
 
@@ -103,7 +96,6 @@ export function useOTPVerificationScreen() {
     contactEmail: pendingEmail ?? undefined,
     contactPhone: pendingPhone ?? undefined,
     contactPhoneCountry: pendingPhoneCountry ?? undefined,
-    displayOtp: otpFlow === "signin" ? otpCode ?? undefined : undefined,
     otpFlow: otpFlow ?? "signin",
     onSubmit,
     onResend,

@@ -5,9 +5,7 @@ export type ForgotPasswordFormValues = {
 };
 
 export type ForgotPasswordRequest = {
-  email?: string;
-  phoneCountryCode?: string;
-  phoneNationalNumber?: string;
+  email: string;
 };
 
 export type ForgotPasswordResponse = {

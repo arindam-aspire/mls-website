@@ -9,8 +9,9 @@ export const authEndpoints = {
   REFRESH: "/auth/refresh",
   LOGOUT: "/auth/logout",
 
-  //Sign Up for user and owner
+  // Sign up for user and owner
   USER_SIGN_UP: "/auth/signup",
   CONFIRM_SIGN_UP_OTP: "/auth/confirm-signup",
+  RESEND_CONFIRMATION: "/auth/resend-confirmation",
   AGENCY_REGISTER: "/agency/register",
 } as const;

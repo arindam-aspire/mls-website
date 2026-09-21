@@ -1,10 +1,24 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { confirmSignUp, agencySignUp, changePassword, forgotPassword, getLoggedInUser, logout, resetPassword, signInWithOtpRequest, signInWithOtpVerify, signInWithPassword, signUp } from "../services/auth.service";
+import { useLocale, useTranslations } from "next-intl";
+import {
+  confirmSignUp,
+  agencySignUp,
+  changePassword,
+  forgotPassword,
+  getLoggedInUser,
+  logout,
+  resendConfirmation,
+  resetPassword,
+  signInWithOtpRequest,
+  signInWithOtpVerify,
+  signInWithPassword,
+  signUp,
+} from "../services/auth.service";
 import { useToast } from "@/src/hooks/useToast";
 import { clearNotificationQueryCache } from "@/src/features/notifications/utils/clearNotificationQueryCache";
-import { type ApiError } from "@/src/apis/core/error.normalizer";
+import { isConflictStatus, type ApiError } from "@/src/apis/core/error.normalizer";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import type {
   LoggedInUser,
@@ -19,7 +33,6 @@ import {
 } from "../utils/postSignInRedirect";
 import { navigateTo } from "@/src/utils/navigation.utils";
 import { AppLocale } from "@/src/i18n/routing";
-import { useLocale } from "next-intl";
 
 async function completeSignInFlow(
   accessToken: string,
@@ -66,6 +79,7 @@ async function completeSignInFlow(
 
 export const useSignInWithPassword = () => {
   const toast = useToast();
+  const tApi = useTranslations("auth.api");
   const locale = useLocale() as AppLocale;
   const { setAuth, setUser } = useAuthStore();
 
@@ -87,12 +101,12 @@ export const useSignInWithPassword = () => {
         locale,
         setUser,
         (message) => {
-          toast.error("Failed", { description: message });
+          toast.error(tApi("profileLoadFailedTitle"), { description: message });
         },
       );
     },
     onError: (error: ApiError) => {
-      toast.error("Sign in failed", {
+      toast.error(tApi("signInFailedTitle"), {
         description: error.message,
       });
     },
@@ -101,37 +115,47 @@ export const useSignInWithPassword = () => {
 
 export const useLogout = () => {
   const toast = useToast();
+  const tApi = useTranslations("auth.api");
   const queryClient = useQueryClient();
   const { clearAuth } = useAuthStore();
   const locale = useLocale() as AppLocale;
 
   return useMutation({
     mutationFn: logout,
-    onSuccess: () => {
+    onSettled: (_data, error) => {
       clearNotificationQueryCache(queryClient);
       clearAuth();
       navigateTo(`/${locale}`);
-    },
-    onError: (error: ApiError) => {
-      toast.error("Logout failed", {
-        description: error.message,
-      });
+
+      if (error) {
+        toast.error(tApi("logoutFailedTitle"), {
+          description: error.message,
+        });
+      }
     },
   });
 };
 
 export const useSignUp = () => {
   const toast = useToast();
+  const tApi = useTranslations("auth.api");
 
   return useMutation({
     mutationFn: signUp,
-    onSuccess: () => {
-      toast.success("Account created successfully", {
-        description: "Check your email for the verification code.",
+    onSuccess: (response) => {
+      toast.success(tApi("signUpSuccessTitle"), {
+        description: response.message || tApi("signUpSuccessDescription"),
       });
     },
     onError: (error: ApiError) => {
-      toast.error("Sign up failed", {
+      if (isConflictStatus(error)) {
+        toast.error(tApi("signUpEmailExistsTitle"), {
+          description: error.message || tApi("signUpEmailExistsDescription"),
+        });
+        return;
+      }
+
+      toast.error(tApi("signUpFailedTitle"), {
         description: error.message,
       });
     },
@@ -140,16 +164,36 @@ export const useSignUp = () => {
 
 export const useConfirmSignUp = () => {
   const toast = useToast();
+  const tApi = useTranslations("auth.api");
 
   return useMutation({
     mutationFn: confirmSignUp,
-    onSuccess: () => {
-      toast.success("Account verified successfully", {
-        description: "You can now sign in with your credentials.",
+    onSuccess: (response) => {
+      toast.success(tApi("confirmSuccessTitle"), {
+        description: response.message || tApi("confirmSuccessDescription"),
       });
     },
     onError: (error: ApiError) => {
-      toast.error("Verification failed", {
+      toast.error(tApi("confirmFailedTitle"), {
+        description: error.message,
+      });
+    },
+  });
+};
+
+export const useResendConfirmation = () => {
+  const toast = useToast();
+  const tApi = useTranslations("auth.api");
+
+  return useMutation({
+    mutationFn: resendConfirmation,
+    onSuccess: (response) => {
+      toast.success(tApi("resendSuccessTitle"), {
+        description: response.message || tApi("resendSuccessDescription"),
+      });
+    },
+    onError: (error: ApiError) => {
+      toast.error(tApi("resendFailedTitle"), {
         description: error.message,
       });
     },
@@ -158,20 +202,19 @@ export const useConfirmSignUp = () => {
 
 export const useSignInWithOtpRequest = () => {
   const toast = useToast();
+  const tApi = useTranslations("auth.api");
   const setOtpSession = useAuthStore((state) => state.setOtpSession);
-  const setOtpCode = useAuthStore((state) => state.setOtpCode);
 
   return useMutation({
     mutationFn: signInWithOtpRequest,
     onSuccess: (response: SignInWithOtpResponse) => {
       setOtpSession(response.data.session);
-      setOtpCode(response.data.otp);
-      toast.success("OTP Sent Successfully", {
-        description: "A verification code has been sent. Please check your inbox.",
+      toast.success(tApi("otpSentTitle"), {
+        description: response.message || tApi("otpSentDescription"),
       });
     },
     onError: (error: ApiError) => {
-      toast.error("Failed to send OTP", {
+      toast.error(tApi("otpSendFailedTitle"), {
         description: error.message,
       });
     },
@@ -180,6 +223,7 @@ export const useSignInWithOtpRequest = () => {
 
 export const useSignInWithOtpVerify = () => {
   const toast = useToast();
+  const tApi = useTranslations("auth.api");
   const locale = useLocale() as AppLocale;
   const { setAuth, setUser, clearOtpSession } = useAuthStore();
 
@@ -197,12 +241,12 @@ export const useSignInWithOtpVerify = () => {
         locale,
         setUser,
         (message) => {
-          toast.error("Failed", { description: message });
+          toast.error(tApi("profileLoadFailedTitle"), { description: message });
         },
       );
     },
     onError: (error: ApiError) => {
-      toast.error("OTP verification failed", {
+      toast.error(tApi("otpVerifyFailedTitle"), {
         description: error.message,
       });
     },
@@ -211,16 +255,24 @@ export const useSignInWithOtpVerify = () => {
 
 export const useAgencySignUp = () => {
   const toast = useToast();
+  const tApi = useTranslations("auth.api");
 
   return useMutation({
     mutationFn: agencySignUp,
-    onSuccess: () => {
-      toast.success("Registration submitted", {
-        description: "Check your email for the verification code.",
+    onSuccess: (response) => {
+      toast.success(tApi("agencySignUpSuccessTitle"), {
+        description: response.message || tApi("agencySignUpSuccessDescription"),
       });
     },
     onError: (error: ApiError) => {
-      toast.error("Agency registration failed", {
+      if (isConflictStatus(error)) {
+        toast.error(tApi("signUpEmailExistsTitle"), {
+          description: error.message || tApi("signUpEmailExistsDescription"),
+        });
+        return;
+      }
+
+      toast.error(tApi("agencySignUpFailedTitle"), {
         description: error.message,
       });
     },
@@ -229,15 +281,17 @@ export const useAgencySignUp = () => {
 
 export const useForgotPassword = () => {
   const toast = useToast();
+  const tApi = useTranslations("auth.api");
+
   return useMutation({
     mutationFn: forgotPassword,
-    onSuccess: () => {
-      toast.success("OTP Sent Successfully", {
-        description: "A verification code has been sent. Please check your inbox.",
+    onSuccess: (response) => {
+      toast.success(tApi("forgotPasswordSuccessTitle"), {
+        description: response.message || tApi("forgotPasswordSuccessDescription"),
       });
     },
     onError: (error: ApiError) => {
-      toast.error("Failed to send OTP", {
+      toast.error(tApi("forgotPasswordFailedTitle"), {
         description: error.message,
       });
     },
@@ -246,16 +300,17 @@ export const useForgotPassword = () => {
 
 export const useResetPassword = () => {
   const toast = useToast();
+  const tApi = useTranslations("auth.api");
 
   return useMutation({
     mutationFn: resetPassword,
-    onSuccess: () => {
-      toast.success("Password reset successfully", {
-        description: "You can now sign in with your new password.",
+    onSuccess: (response) => {
+      toast.success(tApi("resetPasswordSuccessTitle"), {
+        description: response.message || tApi("resetPasswordSuccessDescription"),
       });
     },
     onError: (error: ApiError) => {
-      toast.error("Password reset failed", {
+      toast.error(tApi("resetPasswordFailedTitle"), {
         description: error.message,
       });
     },
@@ -264,16 +319,17 @@ export const useResetPassword = () => {
 
 export const useChangePassword = () => {
   const toast = useToast();
+  const tApi = useTranslations("auth.api");
 
   return useMutation({
     mutationFn: changePassword,
-    onSuccess: () => {
-      toast.success("Password updated successfully", {
-        description: "Your password has been changed.",
+    onSuccess: (response) => {
+      toast.success(tApi("changePasswordSuccessTitle"), {
+        description: response.message || tApi("changePasswordSuccessDescription"),
       });
     },
     onError: (error: ApiError) => {
-      toast.error("Change password failed", {
+      toast.error(tApi("changePasswordFailedTitle"), {
         description: error.message,
       });
     },

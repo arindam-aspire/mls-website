@@ -53,3 +53,4 @@ Presentational cascading DLS selects inserted into the library-owned Create Prop
 
 - The portal is a scoped app-boundary integration and does not modify or copy library source.
 - Options come from `GET /dls-locations`; the Excel master file is never loaded in the browser.
+- Host DLS API field errors (for example `hod_code`) render on these selects, not on library `PropertyForm` `fieldErrors`, so they cannot trap the **Next** button.

@@ -19,6 +19,7 @@ One screen component per **auth view** (`AUTH_VIEW` in `authViews.ts`). Rendered
 | [SignInWithOTPScreen.md](./SignInWithOTPScreen.md) | `signin-otp` |
 | [OTPVerificationScreen.md](./OTPVerificationScreen.md) | `otp-verify` |
 | [ConfirmSignUpScreen.md](./ConfirmSignUpScreen.md) | `confirm-sign-up` |
+| [AgencyPasswordSetupScreen](./AgencyPasswordSetupScreen.md) | routed page `/agency-password-setup` (not modal) |
 
 ## Responsibilities
 
@@ -27,4 +28,6 @@ One screen component per **auth view** (`AUTH_VIEW` in `authViews.ts`). Rendered
 
 ## Not routed directly
 
-These are **not** App Router pages. They only appear inside the modal on existing routes (e.g. `/en/`).
+These modal screens are **not** App Router pages. They only appear inside the modal on existing routes (e.g. `/en/`).
+
+`AgencyPasswordSetupScreen` is a **routed** landing page (`/agency-password-setup`), not an auth-modal view.

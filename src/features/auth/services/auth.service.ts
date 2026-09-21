@@ -1,7 +1,7 @@
 import { authClient } from "@/src/apis/clients/api.client";
 import { authEndpoints } from "@/src/apis/endpoints/authEndpoints";
 import { withDisplayableProfilePicture } from "../utils/normalizeLoggedInUser";
-import type { AgencySignUpRequest, AgencySignUpResponse, ChangePasswordRequest, ChangePasswordResponse, ConfirmSignUpRequest, ConfirmSignUpResponse, ForgotPasswordRequest, ForgotPasswordResponse, LoggedInUserResponse, LogoutResponse, ResetPasswordRequest, ResetPasswordResponse, SignInRequest, SignInResponse, SignInWithOtpRequest, SignInWithOtpResponse, SignInWithOtpVerifyRequest, SignInWithOtpVerifyResponse, SignUpRequest, SignUpResponse } from "../types/auth.types";
+import type { AgencySignUpRequest, AgencySignUpResponse, ChangePasswordRequest, ChangePasswordResponse, ConfirmSignUpRequest, ConfirmSignUpResponse, ForgotPasswordRequest, ForgotPasswordResponse, LoggedInUserResponse, LogoutResponse, ResendConfirmationRequest, ResendConfirmationResponse, ResetPasswordRequest, ResetPasswordResponse, SignInRequest, SignInResponse, SignInWithOtpRequest, SignInWithOtpResponse, SignInWithOtpVerifyRequest, SignInWithOtpVerifyResponse, SignUpRequest, SignUpResponse } from "../types/auth.types";
 
 export async function signInWithPassword(data: SignInRequest): Promise<SignInResponse> {
   return authClient.request<SignInResponse>({
@@ -64,7 +64,9 @@ export async function agencySignUp(
   formData.append("agency_trade_name", data.agency_trade_name);
   formData.append("email", data.email);
   formData.append("phone_number", data.phone_number);
-  formData.append("password", data.password);
+  if (data.password) {
+    formData.append("password", data.password);
+  }
   formData.append("legal_document", data.legal_document);
 
   return authClient.request<AgencySignUpResponse>({
@@ -79,6 +81,16 @@ export async function agencySignUp(
 export async function confirmSignUp(data: ConfirmSignUpRequest): Promise<ConfirmSignUpResponse> {
   return authClient.request<ConfirmSignUpResponse>({
     endpoint: authEndpoints.CONFIRM_SIGN_UP_OTP,
+    method: "POST",
+    body: data,
+  });
+}
+
+export async function resendConfirmation(
+  data: ResendConfirmationRequest,
+): Promise<ResendConfirmationResponse> {
+  return authClient.request<ResendConfirmationResponse>({
+    endpoint: authEndpoints.RESEND_CONFIRMATION,
     method: "POST",
     body: data,
   });

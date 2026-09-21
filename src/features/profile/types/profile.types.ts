@@ -369,6 +369,34 @@ export type AgencyInvitationResponse = {
   meta: Record<string, unknown>;
 };
 
+export type AgencyInvitationPreview = {
+  email: string;
+  agency_name: string | null;
+  agency_trade_name: string | null;
+  phone: string | null;
+  status: string;
+  expires_at: string | null;
+  password_setup_link?: string | null;
+};
+
+export type AgencyInvitationPreviewResponse = {
+  success: boolean;
+  message: string | null;
+  data: AgencyInvitationPreview | null;
+  error: unknown;
+  meta: Record<string, unknown>;
+};
+
+export type AgencyInvitationAcceptRequest = {
+  token: string;
+  agency_name: string;
+  agency_trade_name: string;
+  phone: string;
+  legal_document_s3_link?: string;
+};
+
+export type AgencyInvitationAcceptResponse = AgencyInvitationResponse;
+
 export type DeleteAgencyLogoResponse = GetAgencyResponse;
 
 export type EditAgencyFormValues = {

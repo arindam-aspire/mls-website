@@ -25,6 +25,10 @@ export const agencyEndpoints = {
   },
   OFFLINE_REGISTRATION: "/agency/offline-registration",
   INVITATIONS: "/agency/invitations",
+  VALIDATE_INVITATION: (token: string) =>
+    `/agency/invitations/validate?token=${encodeURIComponent(token)}`,
+  ACCEPT_INVITATION: "/agency/invitations/accept",
+  INVITATION_DOCUMENT_UPLOAD: "/agency/invitations/document-upload",
   PASSWORD_SETUP: "/agency/password/setup",
   review: (agencyId: string) => `/agency/${agencyId}/review`,
   activation: (agencyId: string) => `/agency/${agencyId}/activation`,

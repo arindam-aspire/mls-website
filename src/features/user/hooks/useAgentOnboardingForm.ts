@@ -11,6 +11,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { uploadAgentIdentityDocument } from "../services/agentUpload.service";
 import { buildServiceAreaSelectOptions } from "../utils/buildServiceAreaSelectOptions";
 import { formatManualOnboardServiceArea } from "../utils/formatManualOnboardServiceArea";
+import { resolveServiceAreaIds } from "../utils/resolveServiceAreaIds";
 import {
   validateFullNameValue,
   validateInviteEmailValue,
@@ -300,10 +301,14 @@ export function useAgentOnboardingForm({
         formState.serviceAreaValues,
         serviceAreaOptions,
       ),
+      serviceAreaIds: resolveServiceAreaIds(
+        formState.serviceAreaValues,
+        locationTaxonomy ?? undefined,
+      ),
       position: formState.position.trim(),
       identityDocument,
     };
-  }, [formState, serviceAreaOptions]);
+  }, [formState, locationTaxonomy, serviceAreaOptions]);
 
   const setFieldErrors = useCallback((nextErrors: AgentOnboardingFormErrors) => {
     setErrors(nextErrors);

@@ -4,6 +4,7 @@ import { useCallback, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { AUTH_VIEW } from "../authViews";
 import { useAgencySignUp } from "../mutations/auth.mutation";
+import { isConflictStatus, type ApiError } from "@/src/apis/core/error.normalizer";
 import type { AgencySignUpSubmitValues } from "../types/auth.types";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { useAuthModalNavigation } from "./useAuthPortal";
@@ -22,16 +23,28 @@ export function useAgencyRegistrationScreen() {
   const onSubmit = useCallback(
     (values: AgencySignUpSubmitValues) => {
       setPendingAgencySignUp(values);
-      agencySignUpMutate({
-        agency_name: values.agencyName,
-        agency_trade_name: values.tradeName,
-        email: values.email,
-        phone_number: values.phone,
-        password: values.password,
-        legal_document: values.legalDocument,
-      });
+      agencySignUpMutate(
+        {
+          agency_name: values.agencyName,
+          agency_trade_name: values.tradeName,
+          email: values.email,
+          phone_number: values.phone,
+          password: values.password,
+          legal_document: values.legalDocument,
+        },
+        {
+          onError: (error: ApiError) => {
+            if (!isConflictStatus(error)) {
+              return;
+            }
+
+            setPendingAgencySignUp(null);
+            navigate(AUTH_VIEW.agencyEmailSignIn);
+          },
+        },
+      );
     },
-    [agencySignUpMutate, setPendingAgencySignUp],
+    [agencySignUpMutate, navigate, setPendingAgencySignUp],
   );
 
   const onSignInClick = useCallback(() => {

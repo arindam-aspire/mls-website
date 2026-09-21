@@ -14,6 +14,7 @@ Feature or shared UI component.
 - `import { useForm } from "@/src/hooks/useForm"`
 - `import type { SignUpFormValues } from "../types/auth.types"`
 - `import { PasswordStrengthIndicator } from "@/src/components/common/PasswordStrengthIndicator"`
+- `import { formatPhoneNumberE164 } from "@/src/features/profile/utils/formatPhoneNumberE164"`
 
 # Exports
 
@@ -87,4 +88,5 @@ See source in `src/features/auth/components/SignUpForm.tsx` for step-by-step beh
 
 # Notes
 
+- Phone is submitted as E.164 via `formatPhoneNumberE164` (for example `+9627xxxxxxx`).
 - Keep in sync when `src/features/auth/components/SignUpForm.tsx` changes.

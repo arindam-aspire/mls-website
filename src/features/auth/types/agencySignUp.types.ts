@@ -3,7 +3,7 @@ export type AgencySignUpRequest = {
   agency_trade_name: string;
   email: string;
   phone_number: string;
-  password: string;
+  password?: string;
   legal_document: File;
 };
 

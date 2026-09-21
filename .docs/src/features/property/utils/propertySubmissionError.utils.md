@@ -11,19 +11,23 @@ Maps backend create/submit errors into `PropertyForm` `fieldErrors`, `stepErrors
 - Collect FastAPI-style `loc` / `field` / `path` validation items into field paths.
 - Strip `body.` / `payload.` / `data.` prefixes so library `goToField` can focus the control.
 - Detect owner-duplicate wording and set `ownerDuplicateError`.
+- Identify host-owned Location DLS / `show_location` field paths so they are not passed into library `PropertyForm` `fieldErrors` (those keys would otherwise default to step 1 and block Next).
 
 # Exports
 
 - `PropertySubmissionUiError`
 - `PropertySubmissionErrorCopy`
 - `parsePropertySubmissionError(error, fallbackMessage, copy?)`
+- `isHostLocationFieldPath(path)`
+- `omitHostLocationFieldErrors(fieldErrors)`
+- `getHostLocationFieldError(fieldErrors, fieldName)`
 
 # Flow Description
 
 1. Draft save or submit fails.
 2. `usePropertyCreateScreen.applySubmissionError` parses the error.
 3. Toast shows `parsed.message`.
-4. `propertyFormRef.goToField` runs for the first field path.
+4. `propertyFormRef.goToField` runs for the first **library** field path. Host DLS keys such as `hod_code` stay on the DLS selects and do not trigger `goToField`.
 
 # Dependencies
 

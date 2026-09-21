@@ -138,6 +138,10 @@ export function normalizeAxiosError(error: unknown): ApiError {
   };
 }
 
+export function isConflictStatus(error: ApiError): boolean {
+  return error.status === 409 || error.code === 409;
+}
+
 export function isApiError(value: unknown): value is ApiError {
   return (
     typeof value === "object" &&

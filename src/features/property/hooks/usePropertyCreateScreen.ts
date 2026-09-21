@@ -87,7 +87,11 @@ import type { FeatureCatalogItem } from "@/src/features/property/types/property.
 import type { PropertyFormOptionsCatalog } from "@/src/features/property/types/propertyFormOptions.types";
 import type { PropertyDraftSubmissionData } from "@/src/features/property/types/propertyDraftSubmission.types";
 import { applyPropertyCreateFormDomPatches } from "@/src/features/property/utils/propertyCreateFormDom.utils";
-import { parsePropertySubmissionError } from "@/src/features/property/utils/propertySubmissionError.utils";
+import {
+  getHostLocationFieldError,
+  omitHostLocationFieldErrors,
+  parsePropertySubmissionError,
+} from "@/src/features/property/utils/propertySubmissionError.utils";
 import {
   buildLoggedInOwnerInfoItem,
   buildPropertyCreateOwnerInfoConfig,
@@ -405,6 +409,8 @@ export function usePropertyCreateScreen() {
   const locationDls = usePropertyLocationDls({
     selection: extractPropertyFormDls(propertyDetails),
     onChange: (dls: PropertyLocationDlsSelection) => {
+      setFieldErrors((previous) => omitHostLocationFieldErrors(previous));
+      setSubmitError(null);
       setPropertyDetails((previous) =>
         withPropertyFormHostLocationFields(previous, {
           showLocation: getPropertyFormShowLocation(previous),
@@ -587,6 +593,21 @@ export function usePropertyCreateScreen() {
     [formOptionsCatalog, tForm],
   );
 
+  const libraryFieldErrors = useMemo(
+    () => omitHostLocationFieldErrors(fieldErrors),
+    [fieldErrors],
+  );
+
+  const locationDlsFields = useMemo(
+    () =>
+      locationDls.fields.map((field) => ({
+        ...field,
+        error:
+          field.error ?? getHostLocationFieldError(fieldErrors, field.name),
+      })),
+    [fieldErrors, locationDls.fields],
+  );
+
   const syncSubmissionIdInUrl = useCallback(
     (nextSubmissionId: string) => {
       submissionIdRef.current = nextSubmissionId;
@@ -730,8 +751,16 @@ export function usePropertyCreateScreen() {
     ],
   );
 
+  const clearSubmissionErrors = useCallback(() => {
+    setSubmitError(null);
+    setFieldErrors({});
+    setStepErrors({});
+    setOwnerDuplicateError(null);
+  }, []);
+
   const onNext = useCallback(
     (nextPropertyDetails: PropertyFormValues) => {
+      clearSubmissionErrors();
       setPropertyDetails(
         withPropertyFormHostLocationFields(nextPropertyDetails, {
           showLocation,
@@ -744,12 +773,13 @@ export function usePropertyCreateScreen() {
         return nextStep;
       });
     },
-    [maxStepIndex, showLocation],
+    [clearSubmissionErrors, maxStepIndex, showLocation],
   );
 
   const onPrevious = useCallback(() => {
+    clearSubmissionErrors();
     setActiveStep((previous) => Math.max(previous - 1, minStepIndex));
-  }, [minStepIndex]);
+  }, [clearSubmissionErrors, minStepIndex]);
 
   const onAgencyChange = useCallback((value: string) => {
     setSelectedAgencyId(normalizePropertyCreateAgencyId(value));
@@ -767,6 +797,7 @@ export function usePropertyCreateScreen() {
 
   const onStepClick = useCallback(
     (step: number, _step: PropertyFormStep, nextPropertyDetails: PropertyFormValues) => {
+      clearSubmissionErrors();
       setPropertyDetails(
         withPropertyFormHostLocationFields(nextPropertyDetails, {
           showLocation,
@@ -777,7 +808,7 @@ export function usePropertyCreateScreen() {
       const nextMaxReachedStep = nextPropertyDetails.max_reached_step ?? step;
       setMaxReachedStep((maxPrevious) => Math.max(maxPrevious, nextMaxReachedStep));
     },
-    [showLocation],
+    [clearSubmissionErrors, showLocation],
   );
 
   const onShowLocationChange = useCallback((checked: boolean) => {
@@ -799,20 +830,15 @@ export function usePropertyCreateScreen() {
       setOwnerDuplicateError(parsed.ownerDuplicateError);
       toast.error(parsed.message);
 
-      const firstFieldPath = Object.keys(parsed.fieldErrors)[0];
-      if (firstFieldPath) {
-        propertyFormRef.current?.goToField(firstFieldPath);
+      const firstLibraryFieldPath = Object.keys(
+        omitHostLocationFieldErrors(parsed.fieldErrors),
+      )[0];
+      if (firstLibraryFieldPath) {
+        propertyFormRef.current?.goToField(firstLibraryFieldPath);
       }
     },
     [t, toast],
   );
-
-  const clearSubmissionErrors = useCallback(() => {
-    setSubmitError(null);
-    setFieldErrors({});
-    setStepErrors({});
-    setOwnerDuplicateError(null);
-  }, []);
 
   const onRequestStepChange = useCallback(
     (step: number) => {
@@ -1199,7 +1225,7 @@ export function usePropertyCreateScreen() {
     dirtyStepIds,
     ownerInfoConfig,
     formConfig,
-    fieldErrors,
+    fieldErrors: libraryFieldErrors,
     stepErrors,
     submitError,
     ownerDuplicateError,
@@ -1219,7 +1245,7 @@ export function usePropertyCreateScreen() {
     },
     locationDlsField: {
       sectionTitle: locationDls.sectionTitle,
-      fields: locationDls.fields,
+      fields: locationDlsFields,
     },
     unsavedChangesModal,
     agencyField: showAgencyField

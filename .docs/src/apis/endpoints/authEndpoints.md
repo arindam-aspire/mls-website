@@ -24,6 +24,8 @@ _N/A — no local/global state in this module._
 
 - Path constants only; consumed by feature services.
 - Includes `CHANGE_PASSWORD` mapped to `POST /auth/change-password`.
+- Includes `RESEND_CONFIRMATION` mapped to `POST /auth/resend-confirmation`.
+- Includes `AGENCY_REGISTER` mapped to `POST /agency/register`.
 
 # Navigation
 

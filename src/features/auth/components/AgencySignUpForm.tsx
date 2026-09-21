@@ -11,6 +11,7 @@ import { bodyTextClasses } from "@/src/lib/typography";
 import { validateLicenseDocumentFile } from "@/src/lib/validateLicenseDocumentFile";
 import { useForm } from "@/src/hooks/useForm";
 import type { AgencySignUpSubmitValues } from "../types/auth.types";
+import { formatPhoneNumberE164 } from "@/src/features/profile/utils/formatPhoneNumberE164";
 
 export type AgencySignUpFormValues = {
   agencyName: string;
@@ -122,9 +123,10 @@ export function AgencySignUpForm({ onSubmit, isLoading }: AgencySignUpFormProps)
     setPhoneCountryCode(payload.country.iso2);
     setPhoneNationalNumber(payload.nationalNumber);
 
-    const phoneNumber = payload.nationalNumber
-      ? `${payload.country.dialCode}${payload.nationalNumber}`
-      : "";
+    const phoneNumber = formatPhoneNumberE164(
+      payload.country.dialCode,
+      payload.nationalNumber,
+    );
 
     setValues((prev) => ({
       ...prev,
