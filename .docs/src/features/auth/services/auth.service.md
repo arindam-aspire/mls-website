@@ -25,6 +25,7 @@ API service functions calling HTTP clients.
 - `signUp`
 - `agencySignUp`
 - `confirmSignUp`
+- `resendConfirmation`
 - `forgotPassword`
 - `resetPassword`
 - `changePassword`
@@ -39,6 +40,8 @@ _No significant state; presentational or config module._
 - Endpoints: `authEndpoints`.
 - Base URL: `API_BASE_URL` from `environment.config.ts`.
 - `changePassword` sends authenticated `POST /auth/change-password` with `{ password, previous_password }`.
+- `resendConfirmation` sends unauthenticated `POST /auth/resend-confirmation` with `{ email }`.
+- `agencySignUp` sends unauthenticated multipart `POST /agency/register`. Password is omitted when empty.
 
 # Navigation
 

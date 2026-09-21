@@ -7,8 +7,9 @@ Sign-up and confirm-sign-up API/form types.
 # Exports
 
 - `SignUpFormValues` — form fields only (no `role`)
-- `SignUpRequest` — `SignUpFormValues` + `role: SignInRole` for `POST` signup
+- `SignUpRequest` — `{ full_name, email, phone_number?, password, role }` for `POST /auth/signup`. Phone is E.164 when present.
 - `SignUpResponse`, `ConfirmSignUpRequest`, `ConfirmSignUpResponse`
+- `ResendConfirmationRequest`, `ResendConfirmationResponse` — `POST /auth/resend-confirmation`
 
 # API Usage
 

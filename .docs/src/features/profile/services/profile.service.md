@@ -29,6 +29,9 @@ Profile and agency HTTP helpers. Super-admin offline agency creation lives here:
 | `createOfflineAgency` | Super-admin `POST /agency/offline-registration` |
 | `uploadOfflineAgencyLegalDocument` | Presign + PUT + persistable URL |
 | `createAgencyInvitation` | Super-admin invitations |
+| `validateAgencyInvitation` | Public `GET /agency/invitations/validate` |
+| `uploadAgencyInvitationLegalDocument` | Public invitation license presign + PUT |
+| `acceptAgencyInvitation` | Public `POST /agency/invitations/accept` |
 | `reviewAgency` / `updateAgencyActivation` / `sendAgencyPasswordLink` | Workflow |
 | `setupAgencyPassword` | Public password setup |
 | `updateProfile` / `requestProfileUpdate` / `verifyProfileUpdate*` | Profile |

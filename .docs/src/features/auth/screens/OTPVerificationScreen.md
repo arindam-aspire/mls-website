@@ -27,9 +27,8 @@ Route-level screen component composing feature UI.
 
 # API Usage
 
-- Sign-in flow: `useSignInWithOtpVerify` → `POST /auth/login/otp/verify` with `{ username, code, session, role }`
-- `session` and display OTP from URL query params (`otp-session`, `otp-code`), with store fallback via `resolveSignInOtpSession`
-- On verify success, calls `onSighinSuccess` to close the auth modal
+- Sign-in flow: `useSignInWithOtpVerify` → `POST /auth/login/otp/verify` with `{ username, code, session }`
+- Request/resend stores `data.session` only. OTP from the API is never rendered.
 
 # Navigation
 

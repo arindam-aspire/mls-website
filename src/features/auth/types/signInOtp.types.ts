@@ -6,7 +6,9 @@ export type SignInWithOtpRequest = {
 
 export type SignInWithOtpResponseData = {
   session: string;
-  otp: string;
+  /** Local/dev only when the backend sets EXPOSE_OTP_IN_RESPONSE. Never show in production UI. */
+  otp?: string | null;
+  dev_email_otp?: string | null;
 };
 
 export type SignInWithOtpResponse = {

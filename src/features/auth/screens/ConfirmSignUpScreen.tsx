@@ -9,19 +9,16 @@ import {
 } from "@/src/components/ui";
 import { cn } from "@/src/lib/cn";
 import {
-  headingAuthClasses,
-  bodyTextClasses,
   bodyLargeTextClasses,
   captionTextClasses,
 } from "@/src/lib/typography";
 import { AuthModalHeader } from "../components/AuthModalHeader";
+import { OtpVerificationTitle } from "../components/OtpVerificationTitle";
 import { OTPVerificationForm } from "../components/OTPVerificationForm";
 import { useConfirmSignUpScreen } from "../hooks/useConfirmSignUpScreen";
 
 export function ConfirmSignUpScreen() {
   const {
-    title,
-    subtitle,
     contactEmail,
     contactPhone,
     onSubmit,
@@ -42,10 +39,11 @@ export function ConfirmSignUpScreen() {
       <AuthModalHeader showBack={showBack} onBack={onBack} />
       <ModalCloseButton />
       <ModalContent className="!py-0 sm:!py-0">
-        <div className="space-y-1 px-4 !pb-4 text-center sm:px-6">
-          <h2 className={headingAuthClasses}>{title}</h2>
-          <p className={cn(bodyTextClasses, "text-muted")}>{subtitle}</p>
-        </div>
+        <OtpVerificationTitle
+          contactEmail={contactEmail}
+          contactPhone={contactPhone}
+          titleKey="confirmSignUpTitle"
+        />
         <div className="px-4 pb-4 sm:px-6 sm:pb-6">
           <OTPVerificationForm
             onSubmit={onSubmit}

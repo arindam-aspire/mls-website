@@ -8,63 +8,74 @@ import { ResetPasswordForm } from "@/src/features/auth/components/ResetPasswordF
 import { setupAgencyPassword } from "@/src/features/profile/services/profile.service";
 import { useToast } from "@/src/hooks/useToast";
 import { useRouter } from "@/src/i18n/navigation";
+import { useTranslations } from "next-intl";
 
 export function AgencyPasswordSetupScreen() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const toast = useToast();
+  const t = useTranslations("auth.agencyPasswordSetup");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const token = searchParams.get("token")?.trim() ?? "";
 
   const handleSubmit = useCallback(
     async (password: string) => {
       if (!token) {
-        toast.error("Password setup link is invalid", {
-          description: "The activation token is missing. Please request a new link.",
+        toast.error(t("missingTokenTitle"), {
+          description: t("missingTokenDescription"),
         });
         return;
       }
 
       try {
         setIsSubmitting(true);
-        await setupAgencyPassword({ token, password });
-        toast.success("Agency activated", {
-          description: "Your password has been created. You can now sign in.",
+        const response = await setupAgencyPassword({ token, password });
+        setIsSuccess(true);
+        toast.success(t("successTitle"), {
+          description: response.message || t("successDescription"),
         });
-        router.replace("/");
       } catch (error) {
-        toast.error("Could not activate agency", {
-          description: error instanceof Error ? error.message : "Please request a new link.",
+        toast.error(t("errorTitle"), {
+          description:
+            error instanceof Error ? error.message : t("missingTokenDescription"),
         });
       } finally {
         setIsSubmitting(false);
       }
     },
-    [router, toast, token],
+    [t, toast, token],
   );
 
   return (
     <main className="mx-auto flex w-full max-w-xl flex-col px-4 py-10 sm:px-6 lg:px-8">
-      <section className="rounded-lg border border-border bg-surface p-6 shadow-sm sm:p-8">
+      <section className="rounded-xl border border-secondary/15 bg-surface p-6 shadow-sm sm:p-8">
         <div className="mb-6 flex items-start gap-3">
           <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
             <KeyRound className="size-5" aria-hidden />
           </span>
           <div className="min-w-0 flex-1">
-            <h1 className="text-2xl font-semibold text-text">Create agency password</h1>
-            <p className="mt-1 text-sm text-muted">
-              Set the password for your agency account to complete activation.
-            </p>
+            <h1 className="text-2xl font-semibold text-text">{t("title")}</h1>
+            <p className="mt-1 text-sm text-muted">{t("description")}</p>
           </div>
         </div>
 
         {!token ? (
           <div className="flex flex-col gap-4">
             <p className="rounded-lg border border-danger/20 bg-danger/5 px-4 py-3 text-sm text-danger">
-              This password setup link is missing its activation token.
+              {t("missingTokenDescription")}
             </p>
             <Button type="button" color="primary" fullWidth onClick={() => router.replace("/")}>
-              Back to sign in
+              {t("backToSignIn")}
+            </Button>
+          </div>
+        ) : isSuccess ? (
+          <div className="flex flex-col gap-4">
+            <p className="rounded-lg border border-success/20 bg-success/5 px-4 py-3 text-sm text-success">
+              {t("successDescription")}
+            </p>
+            <Button type="button" color="primary" fullWidth onClick={() => router.replace("/")}>
+              {t("backToSignIn")}
             </Button>
           </div>
         ) : (

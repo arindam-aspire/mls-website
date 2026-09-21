@@ -10,6 +10,7 @@ import { useToast } from "@/src/hooks/useToast";
 
 export function useResetPasswordScreen() {
   const t = useTranslations("auth");
+  const tApi = useTranslations("auth.api");
   const { termsText, privacyText } = useAuthScreenLegalFooter();
   const navigate = useAuthStore((state) => state.navigate);
   const { onBack, canGoBack } = useAuthModalNavigation();
@@ -23,15 +24,15 @@ export function useResetPasswordScreen() {
   const onSubmit = useCallback(
     (newPassword: string) => {
       if (!pendingEmail?.trim()) {
-        toast.info("Unable to reset password", {
-          description: "Email address is missing.",
+        toast.info(tApi("missingEmailTitle"), {
+          description: tApi("missingEmailDescription"),
         });
         return;
       }
 
       if (!otpCode?.trim()) {
-        toast.info("Unable to reset password", {
-          description: "Verification code is missing. Please verify OTP again.",
+        toast.info(tApi("missingOtpTitle"), {
+          description: tApi("missingOtpDescription"),
         });
         return;
       }
@@ -57,6 +58,7 @@ export function useResetPasswordScreen() {
       navigate,
       resetPasswordMutate,
       signInViewAfterReset,
+      tApi,
       toast,
     ],
   );

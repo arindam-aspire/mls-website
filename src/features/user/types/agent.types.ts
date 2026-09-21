@@ -96,7 +96,9 @@ export type AgentSummaryResponse = {
 
 export type AgentInviteRequest = {
   email?: string;
-  phone?: string;
+  phone_number?: string;
+  full_name?: string;
+  service_area?: string;
 };
 
 export type AgentInviteData = {
@@ -146,15 +148,26 @@ export type AgentInvitationPreviewResponse = {
   meta: Record<string, unknown>;
 };
 
-export type AgentInvitationSubmitRequest = {
-  token: string;
+export type AgentOnboardingSubmitValues = {
   fullName: string;
   email: string;
   phone: string;
   whatsappNumber?: string;
   serviceArea: string;
+  serviceAreaIds: number[];
   position?: string;
   identityDocument?: string;
+};
+
+export type AgentInvitationSubmitRequest = {
+  token: string;
+  full_name: string;
+  phone: string;
+  whatsapp_number?: string;
+  service_area_ids?: number[];
+  service_area: string;
+  position?: string;
+  identity_document_url?: string;
 };
 
 export type AgentInvitationSubmitData = {

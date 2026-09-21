@@ -1,21 +1,19 @@
 # File Overview
 
-Route-level screen component composing feature UI.
+Signup email OTP confirmation screen inside `AuthModal`.
 
 **Source:** `src/features/auth/screens/ConfirmSignUpScreen.tsx` (Client Component)
 
 # Responsibilities
 
-- Route-level screen component composing feature UI.
+- Render the 6-digit verification UI after user, owner, or agency registration.
+- Show the masked contact email (and phone when present). Never display an OTP from the API.
 
 # Imports
 
-- `import { usePathname, useRouter } from "@/src/i18n/navigation"`
-- `import { AuthModalHeader } from "../components/AuthModalHeader"`
-- `import { OTPVerificationForm } from "../components/OTPVerificationForm"`
-- `import { useConfirmSignUp, useSignUp } from "../mutations/auth.mutation"`
-- `import { useToast } from "@/src/hooks/useToast"`
-- `import { useAuthStore } from "../store/auth.store"`
+- UI: `ModalPanel`, `ModalContent`, `ModalFooter`, `Link`
+- `AuthModalHeader`, `OtpVerificationTitle`, `OTPVerificationForm`
+- `useConfirmSignUpScreen`
 
 # Exports
 
@@ -23,61 +21,51 @@ Route-level screen component composing feature UI.
 
 # State Management
 
-- **Zustand** `useAuthStore`
+Logic lives in `useConfirmSignUpScreen` (Zustand `useAuthStore`).
 
 # API Usage
 
-- `useConfirmSignUp` → `POST /auth/confirm-signup` with `{ email, code }`
-- Resend: `useSignUp` (user/owner) or `useAgencySignUp` (agency) from stored pending registration
-- After verify success → email sign-in view via `resolveSignInViewFromSignUpReturnView(from)` (`user-sign-in`, `owner-sign-in`, or `agency-email-sign-in`)
-- Redirect runs in `confirmSignUpMutate` `onSuccess` **before** clearing pending registration, avoiding a race with a missing-email guard
-- Contact email: `otp-email` query param first, then `pendingSignUp` / `pendingAgencySignUp` from store
+See `useConfirmSignUpScreen`.
 
 # Navigation
 
-- Reached after successful user, owner, or agency registration (`from=user-sign-up`, `owner-sign-up`, or `agency-sign-up`)
-- Registration screens pass `contactEmail` in URL (`otp-email`) when navigating here
-- Pending email fallback from `pendingSignUp` or `pendingAgencySignUp` in auth store (resend)
+Modal-only. After success, auto-login when a pending password exists; otherwise navigate to the matching email sign-in view.
 
 # Props / Parameters
 
-- See component/handler props in source (TypeScript interfaces).
+None.
 
 # Actions / Inputs
 
 ## Inputs
 
-_No explicit inputs detected._
+- 6-digit OTP fields
 
 ## Actions
 
-- Submit form
-
-## Validations
-
-_No explicit validations detected._
-
-## Show/Hide Controls
-
-_No explicit show/hide controls detected._
+- Verify
+- Resend (60s cooldown)
+- Sign in link
+- Back
 
 # UI Details
 
-- **Theme:** semantic tokens (`bg-page`, `bg-surface`, `text-text`, `text-muted`, `bg-primary`, `border-secondary/15`).
-- **Light/dark:** via `ThemeProvider` / `html.light` | `html.dark`.
-- **Radius:** `rounded-lg` controls; `rounded-xl` cards/modals/popovers; `rounded-full` avatars/pills.
-- **Responsive:** mobile-first (`sm:`, `md:`, `lg:`).
-- Uses **`Modal`** from UI kit (`rounded-xl`).
+- Semantic tokens; `rounded-xl` modal; `rounded-lg` OTP digits and button
+- Light/dark via `ThemeProvider`
+- Mobile-first OTP digit sizes (`size-12 sm:size-14`)
 
 # Flow Description
 
-See source in `src/features/auth/screens/ConfirmSignUpScreen.tsx` for step-by-step behavior aligned with [application.md](../../application.md) (path relative may vary).
+1. Registration success navigates here with `pendingEmail` set.
+2. User enters the email OTP and submits.
+3. Wrong/expired codes stay on this screen (toast from `useConfirmSignUp`).
+4. Resend calls `POST /auth/resend-confirmation`.
 
 # Dependencies
 
-- Parent feature or route that imports this file.
-- See **Imports** for direct module dependencies.
+- `useConfirmSignUpScreen`
+- `OtpVerificationTitle` / `OTPVerificationForm`
 
 # Notes
 
-- Keep in sync when `src/features/auth/screens/ConfirmSignUpScreen.tsx` changes.
+Production never renders `data.otp` / `data.dev_email_otp`.

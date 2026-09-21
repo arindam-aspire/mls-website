@@ -1,4 +1,5 @@
 import { isApiError, type ApiError } from "@/src/apis/core/error.normalizer";
+import { PROPERTY_LOCATION_DLS_FIELD_KEYS } from "@/src/features/property/constants/propertyLocationDls.constants";
 
 export type PropertySubmissionUiError = {
   message: string;
@@ -233,4 +234,41 @@ export function parsePropertySubmissionError(
     stepErrors,
     ownerDuplicateError,
   };
+}
+
+const HOST_LOCATION_FIELD_KEYS = new Set<string>([
+  ...PROPERTY_LOCATION_DLS_FIELD_KEYS,
+  "show_location",
+]);
+
+function getFieldPathLeaf(path: string): string {
+  const segments = path.split(".").filter(Boolean);
+  return segments[segments.length - 1] ?? path;
+}
+
+export function isHostLocationFieldPath(path: string): boolean {
+  return HOST_LOCATION_FIELD_KEYS.has(getFieldPathLeaf(path));
+}
+
+export function omitHostLocationFieldErrors(
+  fieldErrors: Record<string, string>,
+): Record<string, string> {
+  return Object.fromEntries(
+    Object.entries(fieldErrors).filter(
+      ([path]) => !isHostLocationFieldPath(path),
+    ),
+  );
+}
+
+export function getHostLocationFieldError(
+  fieldErrors: Record<string, string>,
+  fieldName: string,
+): string | undefined {
+  for (const [path, message] of Object.entries(fieldErrors)) {
+    if (getFieldPathLeaf(path) === fieldName && message.trim()) {
+      return message;
+    }
+  }
+
+  return undefined;
 }

@@ -4,12 +4,14 @@ import { useCallback, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import {
   AUTH_VIEW,
+  resolveSignInViewForAccountType,
   resolveSocialSignInViewForAccountType,
 } from "../authViews";
 import type { SocialAccountType } from "../components/SocialAuthForm";
 import { resolveSignInRole } from "../types/signIn.types";
 import type { SignUpFormValues, SignUpRequest } from "../types/auth.types";
 import { useSignUp } from "../mutations/auth.mutation";
+import { isConflictStatus, type ApiError } from "@/src/apis/core/error.normalizer";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { useAuthModalNavigation } from "./useAuthPortal";
 import { useAuthScreenLegalFooter } from "./authScreen.utils";
@@ -31,16 +33,32 @@ export function useUserRegistrationScreen({ type }: UseUserRegistrationScreenPar
 
   const onSubmit = useCallback(
     (values: SignUpFormValues) => {
+      const phoneNumber = values.phone_number.trim();
       const payload: SignUpRequest = {
-        ...values,
+        full_name: values.full_name.trim(),
+        email: values.email.trim(),
+        password: values.password,
         role: resolveSignInRole(type),
+        ...(phoneNumber ? { phone_number: phoneNumber } : {}),
       };
 
-      setPendingSignUp(payload);
-      setPendingEmail(values.email);
-      signUpMutate(payload);
+      setPendingSignUp({
+        ...payload,
+        phone_number: phoneNumber,
+      });
+      setPendingEmail(values.email.trim());
+      signUpMutate(payload, {
+        onError: (error: ApiError) => {
+          if (!isConflictStatus(error)) {
+            return;
+          }
+
+          setPendingSignUp(null);
+          navigate(resolveSignInViewForAccountType(type));
+        },
+      });
     },
-    [setPendingEmail, setPendingSignUp, signUpMutate, type],
+    [navigate, setPendingEmail, setPendingSignUp, signUpMutate, type],
   );
 
   const onSignInClick = useCallback(() => {

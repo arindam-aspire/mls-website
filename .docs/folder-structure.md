@@ -20,6 +20,10 @@ mls_website/
 │   │   ├── layout.md
 │   │   ├── loading.md
 │   │   ├── page.md
+│   │   ├── agency-invitation/
+│   │   │   └── page.md
+│   │   ├── agent-invite/
+│   │   │   └── page.md
 │   │   └── [locale]/
 │   │       ├── layout.md
 │   │       ├── not-found.md
@@ -33,7 +37,12 @@ mls_website/
 │   │       ├── (landing)/
 │   │       │   ├── README.md
 │   │       │   ├── layout.md
-│   │       │   └── page.md
+│   │       │   ├── page.md
+│   │       │   ├── agency-invitation/
+│   │       │   │   └── page.md
+│   │       │   ├── agency-password-setup/
+│   │       │   ├── agent-invite/
+│   │       │   └── agent-password-setup/
 │   │       ├── (main)/
 │   │       │   ├── README.md
 │   │       │   ├── layout.md
@@ -101,8 +110,14 @@ mls_website/
 │       ├── features/
 │       │   ├── README.md
 │       │   ├── agencies/
+│       │   │   ├── README.md
+│       │   │   ├── components/
+│       │   │   │   └── AgencyInvitationForm.md
+│       │   │   ├── hooks/
+│       │   │   │   └── useAgencyInvitationScreen.md
 │       │   │   └── screens/
-│       │   │       └── AgenciesScreen.md
+│       │   │       ├── AgenciesScreen.md
+│       │   │       └── AgencyInvitationScreen.md
 │       │   ├── auth/
 │       │   │   ├── README.md
 │       │   │   ├── components/
@@ -332,6 +347,7 @@ mls_website/
 │       │   │       ├── mapAgentSummaryToKpiMetrics.md
 │       │   │       ├── parseAgentInviteLink.md
 │       │   │       ├── resolveInvitationFullName.md
+│       │   │       ├── resolveServiceAreaIds.md
 │       │   │       ├── formatAgentStatusLabel.md
 │       │   │       └── index.md
 │       │   └── property/
@@ -483,7 +499,15 @@ mls_website/
 │   │   │       └── page.tsx
 │   │   ├── (landing)/
 │   │   │   ├── layout.tsx
-│   │   │   └── page.tsx
+│   │   │   ├── page.tsx
+│   │   │   ├── agency-invitation/
+│   │   │   │   └── page.tsx
+│   │   │   ├── agency-password-setup/
+│   │   │   │   └── page.tsx
+│   │   │   ├── agent-invite/
+│   │   │   │   └── page.tsx
+│   │   │   └── agent-password-setup/
+│   │   │       └── page.tsx
 │   │   ├── (main)/
 │   │   │   ├── layout.tsx
 │   │   │   ├── (listings)/
@@ -535,7 +559,15 @@ mls_website/
 │   ├── icon.png
 │   ├── layout.tsx
 │   ├── loading.tsx
-│   └── page.tsx
+│   ├── page.tsx
+│   ├── agency-invitation/
+│   │   └── page.tsx
+│   ├── agency-password-setup/
+│   │   └── page.tsx
+│   ├── agent-invite/
+│   │   └── page.tsx
+│   └── agent-password-setup/
+│       └── page.tsx
 ├── eslint.config.mjs
 ├── next-env.d.ts
 ├── next.config.ts
@@ -688,6 +720,14 @@ mls_website/
 │   │   ├── profilePictureCache.ts
 │   │   └── typography.ts
 │   ├── features/
+│   │   ├── agencies/
+│   │   │   ├── components/
+│   │   │   │   └── AgencyInvitationForm.tsx
+│   │   │   ├── hooks/
+│   │   │   │   └── useAgencyInvitationScreen.ts
+│   │   │   └── screens/
+│   │   │       ├── AgenciesScreen.tsx
+│   │   │       └── AgencyInvitationScreen.tsx
 │   │   ├── auth/
 │   │   │   ├── authViews.ts
 │   │   │   ├── maskContact.ts
@@ -730,6 +770,7 @@ mls_website/
 │   │   │   │   ├── ConfirmSignUpScreen.tsx
 │   │   │   │   ├── AccountChooseScreen.tsx
 │   │   │   │   ├── AgencyEmailSignInScreen.tsx
+│   │   │   │   ├── AgencyPasswordSetupScreen.tsx
 │   │   │   │   ├── AgencyRegistrationScreen.tsx
 │   │   │   │   ├── AgencySignInScreen.tsx
 │   │   │   │   ├── ForgotPasswordScreen.tsx
@@ -1051,7 +1092,9 @@ mls_website/
 │   │   │       ├── mapAgentSummaryToKpiMetrics.ts
 │   │   │       ├── parseAgentInviteLink.ts
 │   │   │       ├── resolveInvitationFullName.ts
+│   │   │       ├── resolveServiceAreaIds.ts
 │   │   │       ├── formatAgentStatusLabel.ts
+│   │   │       ├── formatManualOnboardServiceArea.ts
 │   │   │       ├── validateOnboardAgentForms.ts
 │   │   │       └── index.ts
 │   │   └── property/

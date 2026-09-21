@@ -56,7 +56,11 @@ function normalizeInvitationLink(link: string): string {
 
     const lastSegment = url.pathname.split("/").filter(Boolean).pop() ?? "";
     const tokenFromPath =
-      lastSegment && lastSegment !== "agency-password-setup" ? lastSegment : "";
+      lastSegment &&
+      lastSegment !== "agency-password-setup" &&
+      lastSegment !== "agency-invitation"
+        ? lastSegment
+        : "";
 
     const token =
       url.searchParams.get("token") ??
@@ -64,11 +68,17 @@ function normalizeInvitationLink(link: string): string {
       url.searchParams.get("invitation") ??
       tokenFromPath;
 
+    const isPasswordSetup =
+      candidate.includes("agency-password-setup") ||
+      candidate.includes("password-setup");
+
     if (!token) {
       return `${window.location.origin}${url.pathname}${url.search}${url.hash}`;
     }
 
-    return `${window.location.origin}/${locale}/agency-password-setup?token=${encodeURIComponent(
+    const path = isPasswordSetup ? "agency-password-setup" : "agency-invitation";
+
+    return `${window.location.origin}/${locale}/${path}?token=${encodeURIComponent(
       token,
     )}`;
   } catch {

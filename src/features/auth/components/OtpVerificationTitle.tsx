@@ -12,6 +12,7 @@ type OtpVerificationTitleProps = {
   contactPhone?: string;
   contactPhoneCountry?: string;
   displayOtp?: string;
+  titleKey?: "otpVerifyTitle" | "confirmSignUpTitle";
 };
 
 export function OtpVerificationTitle({
@@ -19,6 +20,7 @@ export function OtpVerificationTitle({
   contactPhone,
   contactPhoneCountry = "JO",
   displayOtp,
+  titleKey = "otpVerifyTitle",
 }: OtpVerificationTitleProps) {
   const maskedEmail = contactEmail?.trim() ? maskEmail(contactEmail) : null;
   const maskedPhone = contactPhone?.trim()
@@ -34,9 +36,11 @@ export function OtpVerificationTitle({
         ? "otpVerifySubtitleEmail"
         : hasPhone
           ? "otpVerifySubtitlePhone"
-          : "otpVerifySubtitle";
+          : titleKey === "confirmSignUpTitle"
+            ? "otpVerifySubtitleEmail"
+            : "otpVerifySubtitle";
 
-  const labels = useOtpVerificationTitleLabels("auth", subtitleKey);
+  const labels = useOtpVerificationTitleLabels("auth", subtitleKey, titleKey);
   const contactLine = [maskedEmail, maskedPhone].filter(Boolean).join(" | ");
 
   return (

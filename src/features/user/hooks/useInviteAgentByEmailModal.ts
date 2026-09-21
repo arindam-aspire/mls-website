@@ -159,7 +159,7 @@ export function useInviteAgentByEmailModal() {
       const result = await inviteAgent(
         contactMethod === "email"
           ? { email: email.trim() }
-          : { phone: e164Phone },
+          : { phone_number: e164Phone },
       );
       setInviteResult(result);
 

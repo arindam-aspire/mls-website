@@ -25,6 +25,7 @@ TanStack React Query mutation hooks.
 - `useSignUp`
 - `useAgencySignUp`
 - `useConfirmSignUp`
+- `useResendConfirmation`
 - `useSignInWithOtpRequest`
 - `useSignInWithOtpVerify`
 - `useForgotPassword`
@@ -39,7 +40,11 @@ TanStack React Query mutation hooks.
 # API Usage
 
 - `useResetPassword` → `POST /auth/forgot-password/confirm` — success toast, error toast on failure
+- `useResendConfirmation` → `POST /auth/resend-confirmation` — 60s UI cooldown lives in `OtpVerificationForm`
 - `useChangePassword` → `POST /auth/change-password` (auth required) — success/error toasts; consumer can close modal on success
+- Signup 409 (`isConflictStatus`) uses existing-account copy and does not treat the account as created
+- OTP request stores `data.session` only. Dev-only `otp` / `dev_email_otp` is never shown in the auth UI
+- Logout always `clearAuth()` on settle (success or error) so tokens are dropped client-side
 
 # Navigation
 

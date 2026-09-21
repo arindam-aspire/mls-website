@@ -4,8 +4,8 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
-/** Parent of `mls_website` and the local `file:../abdoun-library` package. */
-const workspaceRoot = path.resolve(__dirname, "..");
+/** This app directory — not the parent `azure/` folder, which contains other Next apps. */
+const projectRoot = path.resolve(__dirname);
 
 const allowedDevOrigins = (
   process.env.NEXT_ALLOWED_DEV_ORIGINS ??
@@ -17,11 +17,12 @@ const allowedDevOrigins = (
 
 const nextConfig: NextConfig = {
   transpilePackages: ["@abdoun/abdoun-library"],
-  // `file:../abdoun-library` is a symlink outside this app. Turbopack does not
-  // resolve modules outside the inferred project root unless the root includes both.
-  outputFileTracingRoot: workspaceRoot,
+  // Pin the workspace root to this app. The parent `azure/` folder has other
+  // Next.js apps and lockfiles; using it as `turbopack.root` makes `/en` 404
+  // because App Router pages under `app/[locale]` are not discovered.
+  outputFileTracingRoot: projectRoot,
   turbopack: {
-    root: workspaceRoot,
+    root: projectRoot,
   },
   webpack: (config) => {
     config.resolve = config.resolve ?? {};

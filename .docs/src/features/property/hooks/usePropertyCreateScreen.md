@@ -21,12 +21,12 @@ Screen hook for `PropertyCreateScreen`: page copy, breadcrumb, create-form catal
 - From draft `status` / `workflow_stage` (and optional GET `can_edit` / `can_edit_submission`): editable for `draft` / `in_progress`, rejected resubmit (submitter or assigned agent), and agent-assigned stages; `submitted` and other non-editable statuses → `canEditSubmission: false`. Rejected → `rejectionReason` from `review_reason` (library resubmit alert + Resubmit label).
 - Owner pre-selected `?agency_id=` (legacy Select Agency continue URL) hydrates `selectedAgencyId` and sets `routeThroughAgency` to `true` so draft/submit keep `agency_id` (not cleared as unchecked routing). Owner Add Property itself no longer opens that modal; routing defaults off.
 - Map catalog payloads to `@abdoun/abdoun-library` `PropertyForm` prop shapes via `propertyForm.mapper`.
-- Own `activeStep` and wire `onNext`, `onPrevious`, `onStepClick` against `propertyFormSteps`.
+- Own `activeStep` and wire `onNext`, `onPrevious`, `onStepClick` against `propertyFormSteps`. Clear stale draft/submit `fieldErrors` / `stepErrors` / `submitError` on those navigations so leftover API errors (for example **Unknown DLS hod code**) cannot snap the library back to the error step and make **Next** look broken.
 - Expose `propertyFormContainerRef` and apply host DOM patches via [propertyCreateFormDom.utils.md](../utils/propertyCreateFormDom.utils.md): hide empty backend Reference Number and show it read-only once valued, hide Built-up Area unit (sqm only), rewrite owner document labels to **Owner ID or Passport**.
 - Pass `measurementUnit="SQM"` into `PropertyForm` (agency measurement preference is not used on Add Property).
 - Show the exact backend `message` on draft/submit failure (toast + form `submitError`). Generic Axios **Network Error** is replaced with localized unreachable/timeout/server copy; useful BE messages are kept.
 - Own the Location-step `show_location` value. It defaults to `false`, survives library step payload emissions, participates in Location dirty-state tracking, and hydrates from saved drafts.
-- Own Location-step DLS selection (`gov_code` … `sect_name`) via `usePropertyLocationDls`. Library step emissions are merged with the latest DLS selection the same way as `show_location`. Options load from `GET /dls-locations`; child levels stay disabled until the parent code is set.
+- Own Location-step DLS selection (`gov_code` … `sect_name`) via `usePropertyLocationDls`. Library step emissions are merged with the latest DLS selection the same way as `show_location`. Options load from `GET /dls-locations`; child levels stay disabled until the parent code is set. DLS-only API field errors are kept off `PropertyForm` `fieldErrors` (shown on the host DLS selects instead) so the library does not treat `hod_code` as step 1 and trap Next.
 - `onDraft` → `POST /property-submissions` when no `submission_id` query; `PATCH /property-submissions/{submissionId}` when resuming. A successful response merges its server-generated `payload.property_details.reference_number` into the displayed form state. Returns `boolean` success for unsaved-changes modal and clears the dirty baseline on success.
 - Reference-number merging initializes the complete v0.1.89 `PropertyDetailsFormValues` contract, including the default `SQM` Built-up Area unit and empty guard contact fields, before restoring saved values.
 - **Unsaved-changes baseline:** After catalog load (and draft hydration when `submission_id` is present), the dirty baseline is taken from the library `PropertyForm` **live payload**, deferred one tick (`queueMicrotask`) — not from the API mapper output alone — avoids false “unsaved changes” when resuming a draft without edits.
@@ -72,9 +72,9 @@ Screen hook for `PropertyCreateScreen`: page copy, breadcrumb, create-form catal
 
 | Callback | Behavior |
 | --- | --- |
-| `onNext(propertyDetails)` | Persist merged step values from library, advance `activeStep`, bump `maxReachedStep` |
-| `onPrevious` | Decrement `activeStep` (min 0) |
-| `onStepClick(index, step, propertyDetails)` | Persist values when moving forward; set `activeStep` and update `maxReachedStep` |
+| `onNext(propertyDetails)` | Persist merged step values from library, clear stale submission errors, advance `activeStep`, bump `maxReachedStep` |
+| `onPrevious` | Clear stale submission errors and decrement `activeStep` (min 0) |
+| `onStepClick(index, step, propertyDetails)` | Clear stale submission errors; persist values when moving forward; set `activeStep` and update `maxReachedStep` |
 | `onSubmit` | Direct-submit or PATCH-then-submit; sends `route_through_agency`, then redirects to the role-specific listing page on success without opening the Draft modal. Requires `agency_id` only when routing is on. Owner success toast description prefers the API `message`, else maps approval/status tokens without changing the form UI |
 | `onRouteThroughAgencyChange` | Toggles routing, clears stale field errors, and controls agency query/dropdown visibility |
 | `onAgencyChange` | Sets `selectedAgencyId` for the conditional Super Admin / Owner dropdown |

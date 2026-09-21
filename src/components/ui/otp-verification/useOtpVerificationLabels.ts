@@ -36,15 +36,20 @@ export function useOtpVerificationTitleLabels(
     | "otpVerifySubtitleEmail"
     | "otpVerifySubtitlePhone"
     | "otpVerifySubtitleBoth",
+  titleKey: "otpVerifyTitle" | "confirmSignUpTitle" = "otpVerifyTitle",
 ): OtpVerificationTitleLabels {
   const t = useTranslations(namespace);
+  const tAuth = useTranslations("auth");
 
   return useMemo(
     () => ({
-      title: t("otpVerifyTitle"),
+      title:
+        titleKey === "confirmSignUpTitle"
+          ? tAuth("confirmSignUpTitle")
+          : t("otpVerifyTitle"),
       subtitle: t(subtitleKey),
       sentCodeLabel: t("otpVerifySentCodeLabel"),
     }),
-    [subtitleKey, t],
+    [subtitleKey, t, tAuth, titleKey],
   );
 }

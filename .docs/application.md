@@ -71,7 +71,7 @@ See [packages.md](./packages.md) for the full dependency table.
 
 ## Getting started
 
-**Private package:** `@abdoun/abdoun-library` **0.1.91** is installed from AWS CodeArtifact (see root [`.npmrc`](../.npmrc)). [next.config.ts](../next.config.ts) still sets `turbopack.root` and `outputFileTracingRoot` to the parent of this app so a local `file:../abdoun-library` symlink can be resolved during development; webpack builds set `resolve.symlinks = false` for the same reason.
+**Private package:** `@abdoun/abdoun-library` **0.1.91** is installed from AWS CodeArtifact (see root [`.npmrc`](../.npmrc)). [next.config.ts](../next.config.ts) pins `turbopack.root` and `outputFileTracingRoot` to this app so sibling Next.js projects under `azure/` cannot steal App Router discovery (`GET /en` 404). Webpack builds set `resolve.symlinks = false`.
 
 CI can still install the package from the Coderlook Git (Gitea) npm registry (see root [`.npmrc`](../.npmrc)). Public packages still use `registry.npmjs.org`. CI injects a Gitea package-read token (`GITEA_NPM_TOKEN`) in `azure-pipelines.yml`.
 
@@ -87,10 +87,12 @@ Then run `npm install` again.
 ```bash
 npm install
 npm run dev    # http://localhost:3000 → redirects to /en
-npm run build
+npm run build  # prebuild clears `.next`, including leftover `.next/dev/types`
 npm run start
 npm run lint
 ```
+
+Stop `npm run dev` before `npm run build`. Stale `.next/dev/types/validator.ts` from a previous `next dev` is included by `tsconfig.json` and can fail typecheck with `Cannot find name 'AppRoutes'`.
 
 **Environment variable (API):**
 
@@ -227,6 +229,10 @@ All paths below are **without** locale; prepend `/<locale>` (e.g. `/en/my-listin
 | `/propert-details/:id` | `(property)/propert-details/[id]/page.tsx` | `PropertyDetailsScreen` (`PropertyView`) |
 | `/inquiries` | `(property)/inquiries/page.tsx` | Owner `InquiriesScreen` reuses Lead List with `GET /agency/owners/{loggedInUser.id}/leads`; other authenticated roles retain Coming Soon |
 | `/unauthorized` | `(system)/unauthorized/page.tsx` | `UnauthorizedScreen` |
+| `/agency-invitation` | `(landing)/agency-invitation/page.tsx` | `AgencyInvitationScreen` — public email deep link (`?token=`). Unprefixed `/agency-invitation` redirects to `/en/agency-invitation`. |
+| `/agency-password-setup` | `(landing)/agency-password-setup/page.tsx` | `AgencyPasswordSetupScreen` — public email deep link (`?token=`). Unprefixed `/agency-password-setup` redirects to `/en/agency-password-setup`. |
+| `/agent-invite` | `(landing)/agent-invite/page.tsx` | `AgentInviteScreen` — public email deep link (`?token=`). Unprefixed `/agent-invite` redirects to `/en/agent-invite`. |
+| `/agent-password-setup` | `(landing)/agent-password-setup/page.tsx` | `AgentPasswordSetupScreen` — public email deep link (`?token=`). Unprefixed `/agent-password-setup` redirects to `/en/agent-password-setup`. |
 
 ### Header navigation
 
@@ -528,11 +534,14 @@ Session persistence helpers: `src/features/auth/store/authModalStorage.ts`.
 | --- | --- |
 | `useSignInWithPassword` | Login + fetch user |
 | `useLogout` | Logout + clear + redirect home |
-| `useSignUp` | Register |
-| `useConfirmSignUp` | Verify signup OTP |
-| `useSignInWithOtpRequest` | Request login OTP |
+| `useSignUp` | Register (`POST /auth/signup`); 409 existing email → login |
+| `useConfirmSignUp` | Verify signup OTP (`POST /auth/confirm-signup`) |
+| `useResendConfirmation` | Resend signup OTP (`POST /auth/resend-confirmation`) |
+| `useAgencySignUp` | Agency self-register (`POST /agency/register` multipart) |
+| `useSignInWithOtpRequest` | Request login OTP (stores `data.session` only; never shows OTP) |
 | `useSignInWithOtpVerify` | Verify login OTP |
-| `useForgotPassword` | Forgot password request |
+| `useForgotPassword` | Forgot password request (generic success copy) |
+| `useResetPassword` | Confirm forgot password (`POST /auth/forgot-password/confirm`) |
 | `useChangePassword` | Authenticated password change (`/auth/change-password`) |
 
 ---
@@ -570,8 +579,10 @@ From `src/configs/environment.config.ts` → `API_BASE_URL` (env: `NEXT_PUBLIC_A
 | `CHANGE_PASSWORD` | POST | `/auth/change-password` — `{ password, previous_password }` (auth required) |
 | `REFRESH` | POST | `/auth/refresh` |
 | `LOGOUT` | POST | `/auth/logout` |
-| `USER_SIGN_UP` | POST | `/auth/signup` — `{ full_name, email, phone_number, password, role }` (`registered_user` or `owner`) |
-| `CONFIRM_SIGN_UP_OTP` | POST | `/auth/confirm-signup` |
+| `USER_SIGN_UP` | POST | `/auth/signup` — `{ full_name, email, phone_number?, password, role }` (`registered_user` or `owner`). Phone is E.164 when present. Production does not return OTP in `data`. |
+| `CONFIRM_SIGN_UP_OTP` | POST | `/auth/confirm-signup` — `{ email, code }` |
+| `RESEND_CONFIRMATION` | POST | `/auth/resend-confirmation` — `{ email }` (user, owner, and agency signup OTP resend) |
+| `AGENCY_REGISTER` | POST | `/agency/register` — multipart `{ agency_name, agency_trade_name, email, phone_number, legal_document, password? }`. Confirm with `/auth/confirm-signup`. |
 
 **Public** (`publicEndpoints.ts`):
 

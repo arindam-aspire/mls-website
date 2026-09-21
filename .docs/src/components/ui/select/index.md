@@ -55,8 +55,10 @@ _No explicit show/hide controls detected._
 
 - **Theme:** semantic tokens (`bg-page`, `bg-surface`, `text-text`, `text-muted`, `bg-primary`, `border-secondary/15`).
 - **Light/dark:** via `ThemeProvider` / `html.light` | `html.dark`.
-- **Radius:** `rounded-lg` controls; `rounded-xl` cards/modals/popovers; `rounded-full` avatars/pills.
+- **Radius:** `rounded-lg` trigger; `rounded-xl` options panel.
 - **Responsive:** mobile-first (`sm:`, `md:`, `lg:`).
+- Headless UI `ListboxButton` is `type="button"` so it does not submit a parent form.
+- Options use `modal={false}` and `data-closed:pointer-events-none` so a closed/transitioning panel cannot sit over sibling controls (for example Create Property **Next**).
 
 # Flow Description
 

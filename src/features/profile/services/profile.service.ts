@@ -4,6 +4,7 @@ import { profileEndpoints } from "@/src/apis/endpoints/profileEndpoints";
 import { getLoggedInUser } from "@/src/features/auth/services/auth.service";
 import type { LoggedInUser } from "@/src/features/auth/types/auth.types";
 import { requestUploadPresignedUrl } from "@/src/features/property/services/upload.service";
+import type { UploadPresignedUrlResponse } from "@/src/features/property/types/upload.types";
 import {
   assignUserAgency,
   assignUserAgencyAndRefreshUser,
@@ -22,7 +23,11 @@ import {
 import type {
   Agency,
   AgencyActivationRequest,
+  AgencyInvitationAcceptRequest,
+  AgencyInvitationAcceptResponse,
   AgencyInvitationCreateRequest,
+  AgencyInvitationPreview,
+  AgencyInvitationPreviewResponse,
   AgencyInvitationResponse,
   AgencyLegalDocumentUploadRequest,
   AgencyLegalDocumentUploadResponse,
@@ -170,6 +175,116 @@ export async function createAgencyInvitation(
     body,
     auth: true,
   });
+}
+
+function pickRecordString(
+  record: Record<string, unknown>,
+  ...keys: string[]
+): string | null {
+  for (const key of keys) {
+    const value = record[key];
+    if (typeof value === "string" && value.trim()) {
+      return value;
+    }
+  }
+
+  return null;
+}
+
+function normalizeAgencyInvitationPreview(data: unknown): AgencyInvitationPreview {
+  const record =
+    data && typeof data === "object" ? (data as Record<string, unknown>) : {};
+
+  return {
+    email: pickRecordString(record, "email") ?? "",
+    agency_name: pickRecordString(record, "agency_name", "agencyName"),
+    agency_trade_name: pickRecordString(
+      record,
+      "agency_trade_name",
+      "agencyTradeName",
+    ),
+    phone: pickRecordString(record, "phone", "phone_number"),
+    status: pickRecordString(record, "status") ?? "",
+    expires_at: pickRecordString(record, "expires_at", "expiresAt"),
+    password_setup_link: pickRecordString(
+      record,
+      "password_setup_link",
+      "passwordSetupLink",
+    ),
+  };
+}
+
+export async function validateAgencyInvitation(
+  token: string,
+): Promise<AgencyInvitationPreview> {
+  const response = await authClient.request<AgencyInvitationPreviewResponse>({
+    endpoint: agencyEndpoints.VALIDATE_INVITATION(token),
+    method: "GET",
+    auth: false,
+  });
+
+  if (!response.success || !response.data) {
+    throw new Error(response.message ?? "Invitation link is invalid");
+  }
+
+  return normalizeAgencyInvitationPreview(response.data);
+}
+
+export async function acceptAgencyInvitation(
+  body: AgencyInvitationAcceptRequest,
+): Promise<AgencyInvitationAcceptResponse> {
+  return authClient.request<AgencyInvitationAcceptResponse>({
+    endpoint: agencyEndpoints.ACCEPT_INVITATION,
+    method: "POST",
+    body,
+    auth: false,
+  });
+}
+
+export async function uploadAgencyInvitationLegalDocument(
+  file: File,
+  token: string,
+): Promise<string> {
+  const contentType = resolveLicenseDocumentContentType(file);
+  const response = await authClient.request<UploadPresignedUrlResponse>({
+    endpoint: agencyEndpoints.INVITATION_DOCUMENT_UPLOAD,
+    method: "POST",
+    auth: false,
+    body: {
+      token,
+      file_name: file.name,
+      content_type: contentType,
+      file_size: file.size,
+    },
+  });
+
+  const uploadUrl = response.data?.upload_url;
+
+  if (!response.success || !uploadUrl) {
+    throw new Error(response.message ?? "Legal document upload failed");
+  }
+
+  if (!uploadUrl.startsWith("dev://")) {
+    await putFileToPresignedUrl(
+      uploadUrl,
+      file,
+      contentType,
+      undefined,
+      response.data?.upload_http_method === "POST" ? "POST" : "PUT",
+    );
+  }
+
+  const persistedUrl = resolvePersistedUploadReference({
+    file_url: response.data?.file_url,
+    object_key: response.data?.object_key,
+    upload_url: uploadUrl,
+  });
+
+  if (!persistedUrl) {
+    throw new Error(response.message ?? "Legal document upload failed");
+  }
+
+  return persistedUrl;
 }
 
 export async function reviewAgency(

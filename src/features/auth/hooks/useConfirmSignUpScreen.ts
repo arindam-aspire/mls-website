@@ -4,9 +4,9 @@ import { useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { AUTH_VIEW, resolveSignInViewFromSignUpReturnView } from "../authViews";
 import {
-  useAgencySignUp,
   useConfirmSignUp,
-  useSignUp,
+  useResendConfirmation,
+  useSignInWithPassword,
 } from "../mutations/auth.mutation";
 import { useToast } from "@/src/hooks/useToast";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
@@ -15,6 +15,7 @@ import { useAuthScreenLegalFooter } from "./authScreen.utils";
 
 export function useConfirmSignUpScreen() {
   const t = useTranslations("auth");
+  const tApi = useTranslations("auth.api");
   const { termsText, privacyText } = useAuthScreenLegalFooter();
   const pop = useAuthStore((state) => state.pop);
   const navigate = useAuthStore((state) => state.navigate);
@@ -43,13 +44,10 @@ export function useConfirmSignUpScreen() {
 
   const { mutate: confirmSignUpMutate, isPending: isVerifying } =
     useConfirmSignUp();
-  const { mutate: resendUserSignUp, isPending: isResendingUserSignUp } =
-    useSignUp();
-  const { mutate: resendAgencySignUp, isPending: isResendingAgencySignUp } =
-    useAgencySignUp();
-  const isResending = isAgencyConfirm
-    ? isResendingAgencySignUp
-    : isResendingUserSignUp;
+  const { mutate: resendConfirmationMutate, isPending: isResending } =
+    useResendConfirmation();
+  const { mutate: signInWithPassword, isPending: isSigningIn } =
+    useSignInWithPassword();
 
   const onBack = useCallback(() => {
     clearPendingSignUp();
@@ -60,21 +58,36 @@ export function useConfirmSignUpScreen() {
   const onSubmit = useCallback(
     (code: string) => {
       if (!contactEmail?.trim()) {
-        toast.info("Unable to verify", {
-          description: "Email address is missing.",
+        toast.info(tApi("missingEmailTitle"), {
+          description: tApi("missingEmailDescription"),
         });
         return;
       }
 
+      const email = contactEmail.trim();
+      const password = isAgencyConfirm
+        ? pendingAgencySignUp?.password
+        : pendingSignUp?.password;
+
       confirmSignUpMutate(
         {
-          email: contactEmail.trim(),
+          email,
           code,
         },
         {
           onSuccess: () => {
             clearPendingSignUp();
             clearPendingAgencySignUp();
+
+            if (password) {
+              signInWithPassword({
+                username: email,
+                password,
+                rememberMe: true,
+              });
+              return;
+            }
+
             navigate(signInViewFromSignUp);
           },
         },
@@ -85,48 +98,27 @@ export function useConfirmSignUpScreen() {
       clearPendingSignUp,
       confirmSignUpMutate,
       contactEmail,
+      isAgencyConfirm,
       navigate,
+      pendingAgencySignUp?.password,
+      pendingSignUp?.password,
       signInViewFromSignUp,
+      signInWithPassword,
+      tApi,
       toast,
     ],
   );
 
   const onResend = useCallback(() => {
-    if (isAgencyConfirm) {
-      if (!pendingAgencySignUp) {
-        toast.info("Unable to resend", {
-          description: "Registration details are missing.",
-        });
-        return;
-      }
-
-      resendAgencySignUp({
-        agency_name: pendingAgencySignUp.agencyName,
-        agency_trade_name: pendingAgencySignUp.tradeName,
-        email: pendingAgencySignUp.email,
-        phone_number: pendingAgencySignUp.phone,
-        password: pendingAgencySignUp.password,
-        legal_document: pendingAgencySignUp.legalDocument,
+    if (!contactEmail?.trim()) {
+      toast.info(tApi("missingEmailTitle"), {
+        description: tApi("missingEmailDescription"),
       });
       return;
     }
 
-    if (!pendingSignUp) {
-      toast.info("Unable to resend", {
-        description: "Email address is missing.",
-      });
-      return;
-    }
-
-    resendUserSignUp(pendingSignUp);
-  }, [
-    isAgencyConfirm,
-    pendingAgencySignUp,
-    pendingSignUp,
-    resendAgencySignUp,
-    resendUserSignUp,
-    toast,
-  ]);
+    resendConfirmationMutate({ email: contactEmail.trim() });
+  }, [contactEmail, resendConfirmationMutate, tApi, toast]);
 
   const onSignInClick = useCallback(() => {
     navigate(signInViewFromSignUp);
@@ -139,7 +131,7 @@ export function useConfirmSignUpScreen() {
     contactPhone,
     onSubmit,
     onResend,
-    isLoading: isVerifying,
+    isLoading: isVerifying || isSigningIn,
     isResending,
     showBack: canGoBack,
     onBack,

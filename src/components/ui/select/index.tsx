@@ -122,6 +122,7 @@ export function Select({
         <div className="relative isolate z-[1]">
           <ListboxButton
             suppressHydrationWarning
+            type="button"
             id={selectId}
             autoFocus={autoFocus}
             aria-invalid={hasError || undefined}
@@ -156,9 +157,11 @@ export function Select({
 
           <ListboxOptions
             anchor="bottom start"
+            modal={false}
             transition
             className={cn(
               "z-50 mt-1 max-h-60 w-(--button-width) overflow-auto rounded-xl border border-secondary/20 bg-surface py-1 shadow-lg [--anchor-gap:0.25rem] focus:outline-none",
+              "origin-top transition duration-100 ease-out data-closed:pointer-events-none data-closed:scale-95 data-closed:opacity-0",
             )}
           >
             {options.map((option) => (

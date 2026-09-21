@@ -22,7 +22,6 @@ export function OTPVerificationScreen() {
     contactEmail,
     contactPhone,
     contactPhoneCountry,
-    displayOtp,
     onSubmit,
     onResend,
     isLoading,
@@ -49,7 +48,6 @@ export function OTPVerificationScreen() {
           contactEmail={contactEmail}
           contactPhone={contactPhone}
           contactPhoneCountry={contactPhoneCountry}
-          displayOtp={displayOtp}
         />
         <div className="px-4 pb-4 sm:px-6 sm:pb-6">
           <OTPVerificationForm

@@ -16,6 +16,7 @@ import type {
   AgentInvitationPreviewResponse,
   AgentInvitationSubmitRequest,
   AgentInvitationSubmitResponse,
+  AgentOnboardingSubmitValues,
   AgentListParams,
   AgentListResponse,
   AgentPasswordSetupRequest,
@@ -116,6 +117,55 @@ export async function inviteAgentByEmail(
   };
 }
 
+function pickRecordString(
+  record: Record<string, unknown>,
+  ...keys: string[]
+): string | null {
+  for (const key of keys) {
+    const value = record[key];
+    if (typeof value === "string" && value.trim()) {
+      return value;
+    }
+  }
+
+  return null;
+}
+
+function asRecord(value: unknown): Record<string, unknown> {
+  if (value && typeof value === "object") {
+    return value as Record<string, unknown>;
+  }
+
+  return {};
+}
+
+function normalizeAgentInvitationPreview(data: unknown): AgentInvitationPreview {
+  const record = asRecord(data);
+  const email = pickRecordString(record, "email");
+  const fullName = pickRecordString(record, "fullName", "full_name");
+  const passwordSetupLink = pickRecordString(
+    record,
+    "passwordSetupLink",
+    "password_setup_link",
+  );
+
+  return {
+    id: pickRecordString(record, "id") ?? "",
+    email,
+    phone: pickRecordString(record, "phone", "phone_number"),
+    fullName: resolveInvitationFullName(fullName, email),
+    whatsappNumber: pickRecordString(record, "whatsappNumber", "whatsapp_number"),
+    serviceArea: pickRecordString(record, "serviceArea", "service_area"),
+    position: pickRecordString(record, "position"),
+    status: pickRecordString(record, "status") ?? "",
+    expiresAt: pickRecordString(record, "expiresAt", "expires_at") ?? "",
+    formSubmittedAt: pickRecordString(record, "formSubmittedAt", "form_submitted_at"),
+    passwordSetupLink: passwordSetupLink
+      ? parseAgentInviteLink(passwordSetupLink)
+      : null,
+  };
+}
+
 export async function validateAgentInvitation(
   token: string,
 ): Promise<AgentInvitationPreview> {
@@ -129,32 +179,45 @@ export async function validateAgentInvitation(
     throw new Error(response.message ?? "Invitation link is invalid");
   }
 
-  return {
-    ...response.data,
-    fullName: resolveInvitationFullName(response.data.fullName, response.data.email),
-    passwordSetupLink: response.data.passwordSetupLink
-      ? parseAgentInviteLink(response.data.passwordSetupLink)
-      : response.data.passwordSetupLink,
-  };
+  return normalizeAgentInvitationPreview(response.data);
 }
 
 export async function submitAgentInvitation(
-  body: AgentInvitationSubmitRequest,
+  body: { token: string } & AgentOnboardingSubmitValues,
 ): Promise<AgentInvitationSubmitResponse["data"]> {
+  const payload: AgentInvitationSubmitRequest = {
+    token: body.token,
+    full_name: body.fullName,
+    phone: body.phone,
+    service_area: body.serviceArea,
+    ...(body.whatsappNumber ? { whatsapp_number: body.whatsappNumber } : {}),
+    ...(body.serviceAreaIds.length > 0
+      ? { service_area_ids: body.serviceAreaIds }
+      : {}),
+    ...(body.position ? { position: body.position } : {}),
+    ...(body.identityDocument
+      ? { identity_document_url: body.identityDocument }
+      : {}),
+  };
+
   const response = await apiClient.request<AgentInvitationSubmitResponse>({
     endpoint: agentEndpoints.SUBMIT_INVITATION,
     method: "POST",
     auth: false,
-    body,
+    body: payload,
   });
 
   if (!response.success || !response.data) {
     throw new Error(response.message ?? "Failed to submit agent profile");
   }
 
+  const record = asRecord(response.data);
+  const passwordSetupLink =
+    pickRecordString(record, "passwordSetupLink", "password_setup_link") ?? "";
+
   return {
-    ...response.data,
-    passwordSetupLink: parseAgentInviteLink(response.data.passwordSetupLink),
+    status: pickRecordString(record, "status") ?? response.data.status,
+    passwordSetupLink: parseAgentInviteLink(passwordSetupLink),
   };
 }
 

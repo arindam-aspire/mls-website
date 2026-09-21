@@ -25,7 +25,7 @@ Falls back to zeroed summary when `data` is null.
 
 ## `inviteAgentByEmail`
 
-`POST /agents/invite` with auth. Body: `{ email?: string; phone?: string }` (one contact required).
+`POST /agents/invite` with auth. Body: `{ email?: string; phone_number?: string; full_name?: string; service_area?: string }` (email or phone required).
 
 Returns `{ invite: AgentInviteData, message: string }`. Resolves the invitation URL via `resolveAgentInviteLinkFromPayload` (`invitation_url`, `inviteLink`, snake_case aliases) then `parseAgentInviteLink` (rewrites the host onto `window.location.origin`).
 
@@ -33,7 +33,7 @@ Returns `{ invite: AgentInviteData, message: string }`. Resolves the invitation 
 
 `GET /agents/invitations/validate?token=` without auth.
 
-Returns `AgentInvitationPreview` including `status`, `formSubmittedAt`, and `passwordSetupLink` rewritten onto `window.location.origin`.
+Returns `AgentInvitationPreview` including `status`, `formSubmittedAt`, and `passwordSetupLink` rewritten onto `window.location.origin`. Accepts camelCase or snake_case API fields (`full_name`, `password_setup_link`, `phone_number`, …).
 
 `fullName` is passed through `resolveInvitationFullName` so an email-seeded backend name never populates the Full Name field.
 
@@ -41,7 +41,7 @@ Returns `AgentInvitationPreview` including `status`, `formSubmittedAt`, and `pas
 
 `POST /agents/onboarding` without auth (deployed path; local backends may also expose `/agents/invitations/submit` as an alias).
 
-Body: profile payload (`token`, `fullName`, `email`, `phone`, optional `whatsappNumber`, `serviceArea`, optional `position`, optional `identityDocument`).
+Body: FastAPI snake_case (`token`, `full_name`, `phone`, optional `whatsapp_number`, `service_area_ids`, `service_area`, optional `position`, optional `identity_document_url`). Mapped from the onboarding form’s camelCase values.
 
 Returns `{ status, passwordSetupLink, … }` with the setup link rewritten onto `window.location.origin`. Backend ignores client `email` and binds identity to the invitation record.
 
