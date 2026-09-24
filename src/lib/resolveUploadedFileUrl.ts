@@ -1,3 +1,42 @@
+const persistReferenceByDisplayUrl = new Map<string, string>();
+
+/**
+ * True when a browser `<img>` / `<video>` can load `uri` as a network or blob URL.
+ * Object keys and `dev://` storage refs are persistable but not displayable.
+ */
+export function isBrowserDisplayableFileUrl(uri: string | null | undefined): boolean {
+  const value = uri?.trim() ?? "";
+  return (
+    value.startsWith("https://") ||
+    value.startsWith("http://") ||
+    value.startsWith("blob:") ||
+    value.startsWith("data:")
+  );
+}
+
+/**
+ * Remember that `displayUrl` (signed preview) maps to `persistRef` (`file_url` / `object_key`).
+ * Draft save uses the persist ref so expiring signed URLs are not stored.
+ */
+export function rememberPersistedUploadReference(
+  displayUrl: string,
+  persistRef: string,
+): void {
+  const display = displayUrl.trim();
+  const persist = persistRef.trim();
+  if (!display || !persist || display === persist) {
+    return;
+  }
+
+  persistReferenceByDisplayUrl.set(display, persist);
+}
+
+/** Prefer the stable storage reference when the form still holds a signed preview URL. */
+export function resolvePersistableFileUri(uri: string): string {
+  const trimmed = uri.trim();
+  return persistReferenceByDisplayUrl.get(trimmed) ?? trimmed;
+}
+
 /**
  * Resolve a readable file URL from a presigned upload response.
  *

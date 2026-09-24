@@ -1,18 +1,21 @@
 # File Overview
 
-Presentational cascading DLS selects inserted into the library-owned Create Property Location form.
+Presentational DLS Location fields inserted into the library-owned Create Property Location form.
 
 **Source:** `src/features/property/components/PropertyLocationDlsFields.tsx`
 
 # Responsibilities
 
-- Render Government → Department → Village → HOD → Section using the shared `Select`.
-- Mount the fields into the active `PropertyForm` Location form through a React portal because `@abdoun/abdoun-library` does not expose a DLS slot.
-- Remain presentational: options, values, loading/empty/error copy, retry, and change callbacks come from `usePropertyLocationDls` via `usePropertyCreateScreen`.
+- Render the host-owned **DLS** block by property category (order assembled in `usePropertyCreateScreen`):
+  - **Residential / Commercial:** Governate → Directorate → Village → Parcel Name → Parcel Number → Section → Land Type → Plot Number → Building → Floor → Apartment
+  - **Land:** Governate → Directorate → Village → Parcel Name → Parcel Number → Section (dropdown) → Plot Number
+- Mount into `PropertyForm` Location via React portal (library has no DLS slot).
+- Insert the portal **before** the Show Location switch.
+- Remain presentational: options/values/errors/retry from hooks. Selects use `Select`; text fields use `Input`.
 
 # Imports
 
-- `Button`, `Select` from `@/src/components/ui`
+- `Button`, `Input`, `Select` from `@/src/components/ui`
 - `PropertyLocationDlsFieldModel` from `usePropertyLocationDls`
 - `Landmark` from `lucide-react`
 - `createPortal` from `react-dom`
@@ -22,35 +25,30 @@ Presentational cascading DLS selects inserted into the library-owned Create Prop
 | Prop | Purpose |
 | --- | --- |
 | `sectionTitle` | Localized DLS heading |
-| `fields` | Five dependent select models (label, options, value, hint/error, retry, onChange) |
+| `fields` | Cascading selects, Land Type (Properties), and free-text identification models |
 
 # Actions / Inputs
 
-- The user picks a DLS code at each level. Child fields stay disabled until the parent code is set.
-- Retry re-fetches the failing level without changing unrelated location fields.
+- Cascading DLS selects; child levels disabled until parent is set; Retry re-fetches a failing level.
+- Parcel Number / Plot Number / Building / Floor / Apartment (Properties) and Parcel Number / Plot Number (Land) write into `location_insert`.
 
 # UI Details
 
-- Uses semantic colors, `rounded-lg` selects, and the Location form’s 2-column grid (`contents` so each select is a grid cell).
-- Heading spans both columns with a token-based divider, matching the Show Location row.
-- Loading, empty, and API-error copy use the Agency-field hint/error/retry pattern.
-- Supports light/dark themes and RTL through shared UI primitives.
+- Semantic colors, `rounded-lg` selects, Location form 2-column grid via `contents`.
+- Library identification inputs stay hidden by DOM patches so this block is the only editor.
 
 # Flow Description
 
-1. `PropertyCreateScreen` renders this component only on the Location step, before the Show Location switch.
-2. The component locates the active library form inside the screen-owned wrapper.
-3. A portal appends the DLS heading and five selects after the existing location inputs.
-4. Changes update host-owned property form state; create/update mappers send DLS codes and names on `payload.location` and `payload.property_details`.
+1. Location step renders this before Show Location.
+2. Portal hosts DLS heading + fields from `/dls-locations` (Land Type from form-options for Properties).
+3. Outbound `payload.location` is lat/lng + DLS codes/names + identification (+ `show_location`); `land_type_id` on `property_details`.
 
 # Dependencies
 
 - [../hooks/usePropertyLocationDls.md](../hooks/usePropertyLocationDls.md)
 - [../hooks/usePropertyCreateScreen.md](../hooks/usePropertyCreateScreen.md)
-- [../screens/PropertyCreateScreen.md](../screens/PropertyCreateScreen.md)
+- [../constants/propertyIdentification.constants.md](../constants/propertyIdentification.constants.md)
 
 # Notes
 
-- The portal is a scoped app-boundary integration and does not modify or copy library source.
-- Options come from `GET /dls-locations`; the Excel master file is never loaded in the browser.
-- Host DLS API field errors (for example `hod_code`) render on these selects, not on library `PropertyForm` `fieldErrors`, so they cannot trap the **Next** button.
+- Preferred long-term fix: library Location DLS slot.

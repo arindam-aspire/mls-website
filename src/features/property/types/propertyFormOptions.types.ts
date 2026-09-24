@@ -14,6 +14,8 @@ export type PropertyFormOptionItem = {
   floor_id?: string | number;
   floor_level_id?: string | number;
   nationality_id?: string | number;
+  land_type_id?: string | number;
+  landTypeId?: string | number;
 };
 
 export type PropertyFormOptionList =
@@ -27,12 +29,15 @@ export type PropertyFormOptionList =
 export type PropertyFormOptionsData = {
   listing_purposes?: PropertyFormOptionList;
   listingPurposes?: PropertyFormOptionList;
+  listing_purpose?: PropertyFormOptionList;
+  listingPurpose?: PropertyFormOptionList;
   furnishing_statuses?: PropertyFormOptionList;
   furnishingStatuses?: PropertyFormOptionList;
   furniture_statuses?: PropertyFormOptionList;
   furnitureStatuses?: PropertyFormOptionList;
   furniture_status?: PropertyFormOptionList;
   furnitureStatus?: PropertyFormOptionList;
+  furnishing_status?: PropertyFormOptionList;
   floor_levels?: PropertyFormOptionList;
   floorLevels?: PropertyFormOptionList;
   floors?: PropertyFormOptionList;
@@ -43,9 +48,19 @@ export type PropertyFormOptionsData = {
   floorOptions?: PropertyFormOptionList;
   completion_statuses?: PropertyFormOptionList;
   completionStatuses?: PropertyFormOptionList;
+  completion_status?: PropertyFormOptionList;
   orientations?: PropertyFormOptionList;
+  direction?: PropertyFormOptionList;
   nationalities?: PropertyFormOptionList;
   nationality?: PropertyFormOptionList;
+  land_types?: PropertyFormOptionList;
+  landTypes?: PropertyFormOptionList;
+  land_type?: PropertyFormOptionList;
+  landType?: PropertyFormOptionList;
+  /** Grouped master rows from `GET /property-form-options` (`data.groups`). */
+  groups?: Record<string, PropertyFormOptionList>;
+  items?: PropertyFormOptionItem[];
+  total?: number;
 };
 
 export type PropertyFormOptionsResponse = {
@@ -63,4 +78,6 @@ export type PropertyFormOptionsCatalog = {
   completionStatusOptions: PropertyFormOption[];
   orientationOptions: PropertyFormOption[];
   nationalityOptions: PropertyFormOption[];
+  /** DLS Land Type master options (Arabic `name` labels; id values). */
+  landTypeOptions: PropertyFormOption[];
 };

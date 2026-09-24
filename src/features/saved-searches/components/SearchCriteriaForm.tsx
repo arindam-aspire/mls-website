@@ -7,8 +7,9 @@ import {
   Input,
   SelectDropdown,
 } from "@/src/components/ui";
+import { PropertyArrangementToggle } from "@/src/features/property/components/PropertyArrangementToggle";
 import { cn } from "@/src/lib/cn";
-import { checkboxLabelClasses } from "@/src/lib/typography";
+import { checkboxLabelClasses, fieldLabelSizeClasses } from "@/src/lib/typography";
 import { Bookmark, MapPin, RotateCcw, Save } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
@@ -85,9 +86,13 @@ export function SearchCriteriaForm({
     status,
     statusOptions,
     onStatusChange,
+    arrangement,
+    arrangementOptions,
+    onArrangementChange,
     category,
     categoryOptions,
     onCategoryChange,
+    showCategorySelect = true,
     type,
     typeOptions,
     onTypeChange,
@@ -263,16 +268,31 @@ export function SearchCriteriaForm({
           variant="outline"
         />
 
-        <SelectDropdown
-          label={tLabels("category")}
-          aria-label={tLabels("category")}
-          placeholder={tCriteria("categoryPlaceholder")}
-          value={category}
-          options={categoryOptions}
-          onChange={onCategoryChange}
-          disabled={disabled || categoryOptions.length === 0}
-          variant="outline"
-        />
+        <div className="flex min-w-0 flex-col gap-1.5">
+          <span className={cn(fieldLabelSizeClasses, "text-text")}>
+            {tLabels("arrangement")}
+          </span>
+          <PropertyArrangementToggle
+            value={arrangement}
+            onChange={onArrangementChange}
+            items={arrangementOptions}
+            ariaLabel={tCriteria("arrangementAriaLabel")}
+            disabled={disabled}
+          />
+        </div>
+
+        {showCategorySelect ? (
+          <SelectDropdown
+            label={tLabels("category")}
+            aria-label={tLabels("category")}
+            placeholder={tCriteria("categoryPlaceholder")}
+            value={category}
+            options={categoryOptions}
+            onChange={onCategoryChange}
+            disabled={disabled || categoryOptions.length === 0}
+            variant="outline"
+          />
+        ) : null}
 
         <SelectDropdown
           label={tLabels("type")}

@@ -28,7 +28,7 @@
 
 | Package | Version | Purpose |
 | --- | --- | --- |
-| @abdoun/abdoun-library | 0.1.91 | Shared MLS property UI components (cards, detail view, property form, draft list, agent list, owner list) |
+| @abdoun/abdoun-library | 0.1.92 | Shared MLS property UI components (cards, detail view, property form, draft list, agent list, owner list); installed from the Abdoun CodeArtifact registry |
 
 ## Maps
 

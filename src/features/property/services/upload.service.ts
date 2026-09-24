@@ -8,6 +8,8 @@ import type {
 import { resolveOwnerDocumentContentType } from "@/src/lib/resolveOwnerDocumentContentType";
 import { resolvePropertyMediaContentType } from "@/src/lib/validatePropertyMediaImageFile";
 import {
+  isBrowserDisplayableFileUrl,
+  rememberPersistedUploadReference,
   resolvePersistedUploadReference,
   resolveUploadedFileUrl,
 } from "@/src/lib/resolveUploadedFileUrl";
@@ -51,18 +53,26 @@ async function uploadWithPresignedUrl(
     );
   }
 
-  if (persistReference) {
-    return resolvePersistedUploadReference({
-      file_url: presignResponse.data?.file_url,
-      object_key: presignResponse.data?.object_key,
-      upload_url: uploadUrl,
-    });
-  }
-
-  return resolveUploadedFileUrl(uploadUrl, {
+  const displayUrl = resolveUploadedFileUrl(uploadUrl, {
     signedReadUrl: presignResponse.data?.signed_read_url,
     fileUrl: presignResponse.data?.file_url,
   });
+
+  if (!persistReference) {
+    return displayUrl;
+  }
+
+  const persistRef = resolvePersistedUploadReference({
+    file_url: presignResponse.data?.file_url,
+    object_key: presignResponse.data?.object_key,
+    upload_url: uploadUrl,
+  });
+
+  // Form `uri` must be loadable in Review & Submit (`<img src={uri}>`).
+  // Keep the stable key for draft/submit via rememberPersistedUploadReference.
+  const formUri = isBrowserDisplayableFileUrl(displayUrl) ? displayUrl : persistRef;
+  rememberPersistedUploadReference(formUri, persistRef);
+  return formUri;
 }
 
 async function uploadSubmissionFile(
@@ -93,7 +103,7 @@ export async function uploadOwnerDocument(
 ): Promise<string> {
   const contentType = resolveOwnerDocumentContentType(file);
 
-  // Persist stable file_url/object_key — never store expiring signed_read_url in drafts.
+  // Form URI is a signed preview when available; drafts persist file_url/object_key.
   return uploadWithPresignedUrl(
     file,
     {

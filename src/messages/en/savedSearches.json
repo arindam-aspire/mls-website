@@ -32,6 +32,9 @@
     "statusBuy": "Buy",
     "statusRent": "Rent",
     "categoryPlaceholder": "Select category",
+    "arrangementAriaLabel": "Property arrangement",
+    "arrangementProperties": "Properties",
+    "arrangementLand": "Land",
     "typePlaceholder": "Select property type",
     "locationPlaceholder": "Search location",
     "locationEmptyMessage": "No locations found",
@@ -43,6 +46,7 @@
   "filterLabels": {
     "lookingFor": "Looking For",
     "status": "Status",
+    "arrangement": "Arrangement",
     "category": "Category",
     "type": "Property type",
     "location": "Location",

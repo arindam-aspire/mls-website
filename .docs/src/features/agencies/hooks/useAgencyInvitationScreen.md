@@ -13,6 +13,7 @@ Agency invitation accept-form logic.
 # Imports
 
 - `validateAgencyInvitation`, `uploadAgencyInvitationLegalDocument`, `acceptAgencyInvitation`
+- `rewriteAgencyPasswordSetupLink`
 - `useSearchParams`, `useRouter`, `useToast`, `useTranslations`
 
 # Exports
@@ -33,7 +34,7 @@ Local React state for invitation, step, and upload/submit flags.
 
 # Navigation
 
-Password-setup URLs rewritten onto the current origin as `/[locale]/agency-password-setup?token=`.
+Password-setup URLs rewritten onto `getPublicAppOrigin()` as `/[locale]/agency-password-setup?token=`.
 
 # Props / Parameters
 
@@ -57,6 +58,7 @@ N/A.
 # Dependencies
 
 - `AgencyInvitationScreen`
+- `src/features/agencies/utils/normalizeAgencyInvitationLink.ts`
 
 # Notes
 

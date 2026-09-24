@@ -1,12 +1,13 @@
 "use client";
 
+import { ConfirmModal } from "@/src/components/common/ConfirmModal";
 import { Button } from "@/src/components/ui";
 import { SelectAgencyModal } from "@/src/features/profile/modals/SelectAgencyModal";
 import { PropertyDraftList } from "@/src/features/property/components/PropertyDraftList";
 import { useDraftListingsScreen } from "@/src/features/property/hooks/useDraftListingsScreen";
 import { cn } from "@/src/lib/cn";
 import { bodyLargeTextClasses, headingPageClasses } from "@/src/lib/typography";
-import { Plus } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 export default function DraftListingsScreen() {
@@ -17,6 +18,8 @@ export default function DraftListingsScreen() {
     pagination,
     onCreateNew,
     onDelete,
+    getDeleteLoading,
+    deleteConfirmModal,
     onResume,
     resumeLabel,
     createLabel,
@@ -53,6 +56,7 @@ export default function DraftListingsScreen() {
           isLoading={isLoading}
           onCreateNew={onCreateNew}
           onDelete={onDelete}
+          getDeleteLoading={getDeleteLoading}
           onResume={onResume}
           pagination={pagination}
           resumeLabel={resumeLabel}
@@ -63,6 +67,24 @@ export default function DraftListingsScreen() {
       </div>
 
       <SelectAgencyModal isOpen={isSelectAgencyOpen} setIsOpen={setIsSelectAgencyOpen} />
+
+      {deleteConfirmModal ? (
+        <ConfirmModal
+          open={deleteConfirmModal.open}
+          onClose={deleteConfirmModal.onClose}
+          onConfirm={deleteConfirmModal.onConfirm}
+          onCancel={deleteConfirmModal.onClose}
+          variant="danger"
+          title={deleteConfirmModal.title}
+          description={deleteConfirmModal.description}
+          confirmLabel={deleteConfirmModal.confirmLabel}
+          cancelLabel={deleteConfirmModal.cancelLabel}
+          cancelColor="inherit"
+          confirmIcon={<Trash2 className="size-4" aria-hidden />}
+          isLoading={deleteConfirmModal.isLoading}
+          loadingLabel={deleteConfirmModal.deletingLabel}
+        />
+      ) : null}
     </>
   );
 }

@@ -37,3 +37,26 @@ export const API_BASE_URL = envConfig.baseUrl;
 export const GOOGLE_MAPS_API_KEY =
   process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? '';
 
+function trimTrailingSlash(value: string): string {
+  return value.replace(/\/+$/, '');
+}
+
+/** Public frontend origin (`NEXT_PUBLIC_APP_URL`). Empty when unset — never a hardcoded host. */
+export const APP_URL = trimTrailingSlash(process.env.NEXT_PUBLIC_APP_URL ?? '');
+
+/**
+ * Origin used in invitation emails and rewritten agency deep links.
+ * Prefers `NEXT_PUBLIC_APP_URL`; otherwise the current browser origin.
+ */
+export function getPublicAppOrigin(): string {
+  if (APP_URL) {
+    return APP_URL;
+  }
+
+  if (typeof window !== 'undefined' && window.location?.origin) {
+    return window.location.origin;
+  }
+
+  return '';
+}
+

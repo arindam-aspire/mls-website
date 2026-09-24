@@ -32,6 +32,9 @@
     "statusBuy": "Comprar",
     "statusRent": "Alquilar",
     "categoryPlaceholder": "Seleccionar categoría",
+    "arrangementAriaLabel": "Disposición del inmueble",
+    "arrangementProperties": "Propiedades",
+    "arrangementLand": "Terreno",
     "typePlaceholder": "Seleccionar tipo de propiedad",
     "locationPlaceholder": "Buscar ubicación",
     "locationEmptyMessage": "No se encontraron ubicaciones",
@@ -43,6 +46,7 @@
   "filterLabels": {
     "lookingFor": "Busco",
     "status": "Estado",
+    "arrangement": "Disposición",
     "category": "Categoría",
     "type": "Tipo de propiedad",
     "location": "Ubicación",

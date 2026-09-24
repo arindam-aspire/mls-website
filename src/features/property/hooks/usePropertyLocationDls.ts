@@ -17,8 +17,9 @@ import type {
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useMemo } from "react";
 
-export type PropertyLocationDlsFieldModel = {
-  id: DlsLevel;
+export type PropertyLocationDlsSelectFieldModel = {
+  kind?: "select";
+  id: DlsLevel | "land_type";
   name: string;
   label: string;
   placeholder: string;
@@ -31,6 +32,24 @@ export type PropertyLocationDlsFieldModel = {
   onRetry?: () => void;
   onChange: (value: string) => void;
 };
+
+export type PropertyLocationDlsTextFieldModel = {
+  kind: "text";
+  id: string;
+  name: string;
+  label: string;
+  placeholder?: string;
+  value: string;
+  disabled: boolean;
+  error?: string;
+  inputType?: "text" | "number";
+  inputMode?: "text" | "numeric" | "decimal";
+  onChange: (value: string) => void;
+};
+
+export type PropertyLocationDlsFieldModel =
+  | PropertyLocationDlsSelectFieldModel
+  | PropertyLocationDlsTextFieldModel;
 
 export type UsePropertyLocationDlsParams = {
   selection: PropertyLocationDlsSelection;
@@ -286,7 +305,7 @@ export function usePropertyLocationDls({
       isPending: deptQuery.isPending,
       isError: deptQuery.isError,
       isEnabled: Boolean(selection.gov_code),
-      waitingHint: labels.selectGovernmentFirst,
+      waitingHint: labels.selectGovernentFirst,
       labels,
       refetch: deptQuery.refetch,
     });
@@ -295,7 +314,7 @@ export function usePropertyLocationDls({
       isPending: villQuery.isPending,
       isError: villQuery.isError,
       isEnabled: Boolean(selection.gov_code && selection.dept_code),
-      waitingHint: labels.selectDepartmentFirst,
+      waitingHint: labels.selectDirectorateFirst,
       labels,
       refetch: villQuery.refetch,
     });
@@ -320,7 +339,7 @@ export function usePropertyLocationDls({
           selection.vill_code &&
           selection.hod_code,
       ),
-      waitingHint: labels.selectHodFirst,
+      waitingHint: labels.selectParcelFirst,
       labels,
       refetch: sectQuery.refetch,
     });
@@ -329,8 +348,8 @@ export function usePropertyLocationDls({
       {
         id: "gov",
         name: "gov_code",
-        label: labels.government,
-        placeholder: labels.governmentPlaceholder,
+        label: labels.governent,
+        placeholder: labels.governentPlaceholder,
         options: govOptions,
         value: selection.gov_code,
         onChange: (value) => onLevelChange("gov", value, govItems),
@@ -340,8 +359,8 @@ export function usePropertyLocationDls({
       {
         id: "dept",
         name: "dept_code",
-        label: labels.department,
-        placeholder: labels.departmentPlaceholder,
+        label: labels.directorate,
+        placeholder: labels.directoratePlaceholder,
         options: deptOptions,
         value: selection.dept_code,
         onChange: (value) => onLevelChange("dept", value, deptItems),
@@ -362,8 +381,8 @@ export function usePropertyLocationDls({
       {
         id: "hod",
         name: "hod_code",
-        label: labels.hod,
-        placeholder: labels.hodPlaceholder,
+        label: labels.parcel,
+        placeholder: labels.parcelPlaceholder,
         options: hodOptions,
         value: selection.hod_code,
         onChange: (value) => onLevelChange("hod", value, hodItems),

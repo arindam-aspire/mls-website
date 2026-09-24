@@ -10,7 +10,7 @@ UI building blocks for property feature screens.
 | [PropertyListingCardList.md](./PropertyListingCardList.md) | MLS wrapper for library Grid/List property cards (hide owners, show agency/agent) |
 | [PropertyListingStatusBadge.md](./PropertyListingStatusBadge.md) | Listing table status pill with MLS color mapping |
 | [PropertyCreateAgencyField.md](./PropertyCreateAgencyField.md) | Step 8 Agency Routing: Super Admin checkbox, Owner Verify through Agency switch, conditional agency dropdown |
-| [PropertyLocationDlsFields.md](./PropertyLocationDlsFields.md) | Step 2 DLS cascading selects (Government → Department → Village → HOD → Section) |
+| [PropertyLocationDlsFields.md](./PropertyLocationDlsFields.md) | Step 2 DLS block (Governate → … → Parcel Number / Section / Land Type / plot-building-floor-apartment by arrangement) |
 | [PropertyLocationMap.md](./PropertyLocationMap.md) | Google Map + draggable pin, zoom, and Map/Satellite for Add Property Step 2 |
 | [PropertyLocationVisibilityField.md](./PropertyLocationVisibilityField.md) | Localized Show Location switch integrated into the create-property Location step |
 | [PropertyCreateUnsavedChangesModal.md](./PropertyCreateUnsavedChangesModal.md) | Unsaved create-property guard modal (Save / Discard / Cancel) |

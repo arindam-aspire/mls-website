@@ -28,14 +28,26 @@ import {
 import { usePropertyStore } from "@/src/features/property/store/property.store";
 import type { SearchCriteriaParams } from "../types/savedSearch.types";
 import { pruneAdvancedParamsForContext } from "../utils/searchCriteriaFieldVisibility";
+import type { PropertyArrangementId } from "@/src/features/property/constants/propertyArrangement.constants";
+import type { ToggleButtonItem } from "@/src/components/ui";
+import {
+  defaultCategorySlugForArrangement,
+  filterCategoriesByArrangement,
+  resolvePropertyArrangementFromCategorySlug,
+} from "@/src/features/property/utils/propertyArrangement";
+import { useTranslations } from "next-intl";
 
 export type SearchCriteriaFieldsProps = {
   status: string;
   statusOptions: SelectDropdownOption[];
   onStatusChange: (value: string) => void;
+  arrangement: PropertyArrangementId;
+  arrangementOptions: ToggleButtonItem[];
+  onArrangementChange: (value: PropertyArrangementId) => void;
   category: string;
   categoryOptions: SelectDropdownOption[];
   onCategoryChange: (value: string) => void;
+  showCategorySelect?: boolean;
   type: string;
   typeOptions: SelectDropdownOption[];
   onTypeChange: (value: string) => void;
@@ -108,6 +120,9 @@ export function useSearchCriteriaFilters({
   updateFilterParams,
   disabled: disabledOption,
 }: UseSearchCriteriaFiltersOptions): SearchCriteriaFieldsProps {
+  // 2. UI utilities
+  const tCriteria = useTranslations("savedSearches.criteria");
+
   // 3. Global state (Zustand)
   const { propertyTaxonomy, locationTaxonomy } = usePropertyStore();
 
@@ -248,22 +263,59 @@ export function useSearchCriteriaFilters({
     [propertyTaxonomy],
   );
 
+  const activeArrangement = useMemo(
+    () => resolvePropertyArrangementFromCategorySlug(filterParams.category),
+    [filterParams.category],
+  );
+
+  const arrangementCategories = useMemo(
+    () => filterCategoriesByArrangement(categories, activeArrangement),
+    [activeArrangement, categories],
+  );
+
   const categoryOptions = useMemo(
     () =>
-      categories.map((category) => ({
+      arrangementCategories.map((category) => ({
         value: category.slug,
         label: category.name,
       })),
-    [categories],
+    [arrangementCategories],
+  );
+
+  const arrangementOptions = useMemo(
+    () => [
+      {
+        value: "properties",
+        label: tCriteria("arrangementProperties"),
+      },
+      {
+        value: "land",
+        label: tCriteria("arrangementLand"),
+      },
+    ],
+    [tCriteria],
   );
 
   const activeCategorySlug = useMemo(() => {
-    if (categories.some((category) => category.slug === filterParams.category)) {
+    if (
+      arrangementCategories.some(
+        (category) => category.slug === filterParams.category,
+      )
+    ) {
       return filterParams.category;
     }
 
-    return categories[0]?.slug ?? "";
-  }, [categories, filterParams.category]);
+    return (
+      defaultCategorySlugForArrangement(categories, activeArrangement) ||
+      categories[0]?.slug ||
+      ""
+    );
+  }, [
+    activeArrangement,
+    arrangementCategories,
+    categories,
+    filterParams.category,
+  ]);
 
   const selectedCategory = useMemo(
     () => categories.find((category) => category.slug === activeCategorySlug),
@@ -376,6 +428,26 @@ export function useSearchCriteriaFilters({
       });
     },
     [filterParams, updateFilterParams],
+  );
+
+  const onArrangementChange = useCallback(
+    (arrangement: PropertyArrangementId) => {
+      const nextCategory = defaultCategorySlugForArrangement(
+        categories,
+        arrangement,
+      );
+
+      if (!nextCategory) {
+        return;
+      }
+
+      updateFilterParams({
+        category: nextCategory,
+        type: "",
+        ...pruneAdvancedParamsForContext(filterParams, nextCategory, undefined),
+      });
+    },
+    [categories, filterParams, updateFilterParams],
   );
 
   const onTypeChange = useCallback(
@@ -713,9 +785,13 @@ export function useSearchCriteriaFilters({
         ...option,
       })),
       onStatusChange,
+      arrangement: activeArrangement,
+      arrangementOptions,
+      onArrangementChange,
       category: activeCategorySlug,
       categoryOptions,
       onCategoryChange,
+      showCategorySelect: activeArrangement === "properties",
       type: activeTypeValue,
       typeOptions,
       onTypeChange,
@@ -776,6 +852,7 @@ export function useSearchCriteriaFilters({
       disabled: isDisabled,
     }),
     [
+      activeArrangement,
       activeBedroomsValue,
       activeBathroomsValue,
       activeCategorySlug,
@@ -785,6 +862,7 @@ export function useSearchCriteriaFilters({
       activePropertyAgeValue,
       activeRoomsValue,
       activeTypeValue,
+      arrangementOptions,
       budgetMaxDraft,
       budgetMinDraft,
       categoryOptions,
@@ -799,6 +877,7 @@ export function useSearchCriteriaFilters({
       minAreaDraft,
       minPlotAreaDraft,
       onAmenityChange,
+      onArrangementChange,
       onBathroomsChange,
       onBedroomsChange,
       onBudgetCommit,

@@ -1,4 +1,8 @@
 import { isApiError, type ApiError } from "@/src/apis/core/error.normalizer";
+import {
+  PROPERTY_IDENTIFICATION_BUILT_IN_KEYS,
+  PROPERTY_IDENTIFICATION_CUSTOM_KEYS,
+} from "@/src/features/property/constants/propertyIdentification.constants";
 import { PROPERTY_LOCATION_DLS_FIELD_KEYS } from "@/src/features/property/constants/propertyLocationDls.constants";
 
 export type PropertySubmissionUiError = {
@@ -238,7 +242,13 @@ export function parsePropertySubmissionError(
 
 const HOST_LOCATION_FIELD_KEYS = new Set<string>([
   ...PROPERTY_LOCATION_DLS_FIELD_KEYS,
+  ...PROPERTY_IDENTIFICATION_BUILT_IN_KEYS,
+  ...PROPERTY_IDENTIFICATION_CUSTOM_KEYS,
   "show_location",
+  "land_type_id",
+  "land_type",
+  "landType",
+  "landTypeId",
 ]);
 
 function getFieldPathLeaf(path: string): string {

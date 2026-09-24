@@ -1,6 +1,7 @@
 import { apiClient, authClient } from "@/src/apis/clients/api.client";
 import { agencyEndpoints } from "@/src/apis/endpoints/agencyEndpoints";
 import { profileEndpoints } from "@/src/apis/endpoints/profileEndpoints";
+import { buildAgencyInvitationCreateBody } from "@/src/features/agencies/utils/buildAgencyInvitationCreateBody";
 import { getLoggedInUser } from "@/src/features/auth/services/auth.service";
 import type { LoggedInUser } from "@/src/features/auth/types/auth.types";
 import { requestUploadPresignedUrl } from "@/src/features/property/services/upload.service";
@@ -172,7 +173,7 @@ export async function createAgencyInvitation(
   return apiClient.request<AgencyInvitationResponse>({
     endpoint: agencyEndpoints.INVITATIONS,
     method: "POST",
-    body,
+    body: buildAgencyInvitationCreateBody(body),
     auth: true,
   });
 }

@@ -40,7 +40,7 @@ _N/A._ Locale-prefixed routing is configured in `src/i18n/routing.ts`, not here.
 
 | Option | Purpose |
 | --- | --- |
-| `transpilePackages` | Compile `@abdoun/abdoun-library` with Next.js (required for the local ESM package). |
+| `transpilePackages` | Compile `@abdoun/abdoun-library` with Next.js (required for the published ESM `dist`). |
 | `outputFileTracingRoot` | This app directory (`mls_website/`), so Next does not infer the parent `azure/` workspace. |
 | `turbopack.root` | Same app directory. Required so `/en` and other `app/[locale]` routes are discovered. |
 | `webpack` | Sets `resolve.symlinks = false` for webpack-based `next build`. |
@@ -84,5 +84,5 @@ _N/A — not a UI module._ Image `remotePatterns` affect which listing/profile i
 # Notes
 
 - Do not set `turbopack.root` to the parent `azure/` folder. That directory also contains `abdoun_website` and other apps; Next then fails to register `app/[locale]/(landing)/page.tsx` and `GET /en` returns 404.
-- `@abdoun/abdoun-library` is installed from the private registry into `node_modules`. Do not edit it from this repo. If you temporarily switch to `"file:../abdoun-library"`, keep `turbopack.root` on this app and rely on `transpilePackages`.
+- `@abdoun/abdoun-library` **0.1.92** is installed from the Abdoun CodeArtifact registry (see root `package.json`). Keep `turbopack.root` on this app and rely on `transpilePackages`. Do not edit files under `node_modules/@abdoun/abdoun-library`; bump the published version instead.
 - `scripts/clean-next-build-cache.mjs` (npm `prebuild`) always deletes `.next/dev/types` before `next build`. Stale or truncated `validator.ts` there is type-checked via `tsconfig.json` include and fails with `Cannot find name 'AppRoutes'`. If the rest of `.next` is locked by `npm run dev`, the script still drops those types and warns; stop the dev server for a fully clean cache.

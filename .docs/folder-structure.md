@@ -113,11 +113,16 @@ mls_website/
 │       │   │   ├── README.md
 │       │   │   ├── components/
 │       │   │   │   └── AgencyInvitationForm.md
+│       │   │   ├── constants/
+│       │   │   │   └── agencyInvitationEmail.constants.md
 │       │   │   ├── hooks/
 │       │   │   │   └── useAgencyInvitationScreen.md
-│       │   │   └── screens/
-│       │   │       ├── AgenciesScreen.md
-│       │   │       └── AgencyInvitationScreen.md
+│       │   │   ├── screens/
+│       │   │   │   ├── AgenciesScreen.md
+│       │   │   │   └── AgencyInvitationScreen.md
+│       │   │   └── utils/
+│       │   │       ├── buildAgencyInvitationCreateBody.md
+│       │   │       └── normalizeAgencyInvitationLink.md
 │       │   ├── auth/
 │       │   │   ├── README.md
 │       │   │   ├── components/
@@ -360,6 +365,7 @@ mls_website/
 │       │       │   ├── RejectSubmissionModal.md
 │       │       │   ├── PropertyListAdvancedFilters.md
 │       │       │   ├── PropertyListFilters.md
+│       │       │   ├── PropertyArrangementToggle.md
 │       │       │   ├── PropertyListingCardList.md
 │       │       │   ├── PropertyLocationMap.md
 │       │       │   ├── PropertyLocationDlsFields.md
@@ -367,6 +373,8 @@ mls_website/
 │       │       │   └── MyListingFilters.md
 │       │       ├── constants/
 │       │       │   ├── myListingStatusFilters.constants.md
+│       │       │   ├── propertyArrangement.constants.md
+│       │       │   ├── propertyIdentification.constants.md
 │       │       │   ├── propertyListAdvancedFilters.constants.md
 │       │       │   ├── propertyLocationDls.constants.md
 │       │       │   └── propertyLocationMap.constants.md
@@ -416,7 +424,9 @@ mls_website/
 │       │       └── utils/
 │       │           ├── mapListingForPropertyCard.md
 │       │           ├── propertyAdvancedFieldVisibility.md
+│       │           ├── propertyArrangement.md
 │       │           ├── propertyCreateFormDom.utils.md
+│       │           ├── propertyIdentificationFields.utils.md
 │       │           ├── propertyOwnerPhone.utils.md
 │       │           ├── propertySearchLocations.utils.md
 │       │           └── propertySubmissionError.utils.md
@@ -723,11 +733,16 @@ mls_website/
 │   │   ├── agencies/
 │   │   │   ├── components/
 │   │   │   │   └── AgencyInvitationForm.tsx
+│   │   │   ├── constants/
+│   │   │   │   └── agencyInvitationEmail.constants.ts
 │   │   │   ├── hooks/
 │   │   │   │   └── useAgencyInvitationScreen.ts
-│   │   │   └── screens/
-│   │   │       ├── AgenciesScreen.tsx
-│   │   │       └── AgencyInvitationScreen.tsx
+│   │   │   ├── screens/
+│   │   │   │   ├── AgenciesScreen.tsx
+│   │   │   │   └── AgencyInvitationScreen.tsx
+│   │   │   └── utils/
+│   │   │       ├── buildAgencyInvitationCreateBody.ts
+│   │   │       └── normalizeAgencyInvitationLink.ts
 │   │   ├── auth/
 │   │   │   ├── authViews.ts
 │   │   │   ├── maskContact.ts
@@ -1109,6 +1124,7 @@ mls_website/
 │   │       │   ├── PropertyListingCardList.tsx
 │   │       │   ├── PropertyListingStatusBadge.tsx
 │   │       │   ├── PropertyCreateAgencyField.tsx
+│   │       │   ├── PropertyArrangementToggle.tsx
 │   │       │   ├── PropertyLocationDlsFields.tsx
 │   │       │   ├── PropertyLocationMap.tsx
 │   │       │   ├── PropertyLocationVisibilityField.tsx
@@ -1126,6 +1142,8 @@ mls_website/
 │   │       │   ├── myListingStatusFilters.constants.ts
 │   │       │   ├── myListingTableColumns.constants.ts
 │   │       │   ├── propertyCreate.constants.ts
+│   │       │   ├── propertyArrangement.constants.ts
+│   │       │   ├── propertyIdentification.constants.ts
 │   │       │   ├── propertyLocationDls.constants.ts
 │   │       │   ├── propertyDetailsTabs.constants.ts
 │   │       │   ├── propertyForm.constants.ts
@@ -1208,6 +1226,8 @@ mls_website/
 │   │           ├── applyFavoriteFlagsToListings.ts
 │   │           ├── propertyCreateDirtyState.utils.ts
 │   │           ├── propertyCreateFormDom.utils.ts
+│   │           ├── propertyIdentificationFields.utils.ts
+│   │           ├── propertyArrangement.ts
 │   │           ├── propertyCreateOwnerInfo.utils.ts
 │   │           ├── propertyOwnerPhone.utils.ts
 │   │           ├── propertySearchLocations.utils.ts

@@ -3,6 +3,12 @@ import {
   type PropertyFormValues,
 } from "@abdoun/abdoun-library";
 
+/**
+ * Placeholder until the backend mints `reference_number` on first draft save.
+ * Satisfies library Step 3 validation (server-owned field) and is never sent in payloads.
+ */
+export const PENDING_PROPERTY_REFERENCE_NUMBER = "__pending_reference__";
+
 export const INITIAL_PROPERTY_FORM_VALUES: PropertyFormValues = {
   location_insert: {
     city_id: null,
@@ -33,7 +39,7 @@ export const INITIAL_PROPERTY_FORM_VALUES: PropertyFormValues = {
     total_floor: "",
     occupancy: null,
     ownership_type: null,
-    reference_number: "",
+    reference_number: PENDING_PROPERTY_REFERENCE_NUMBER,
     orientation: null,
     guard_name: "",
     guard_country_code: "+962",
@@ -71,9 +77,17 @@ export const INITIAL_PROPERTY_FORM_VALUES: PropertyFormValues = {
 /** Default `PropertyForm` / API step index (1-based; matches `@abdoun/abdoun-library`). */
 export const INITIAL_PROPERTY_FORM_ACTIVE_STEP = 1;
 
+/** 1-based Setup / basic info step index from the library-owned form step catalog. */
+export const PROPERTY_FORM_SETUP_STEP =
+  propertyFormSteps.findIndex((step) => step.value === "setup") + 1;
+
 /** 1-based Location step index from the library-owned form step catalog. */
 export const PROPERTY_FORM_LOCATION_STEP =
   propertyFormSteps.findIndex((step) => step.value === "location") + 1;
+
+/** 1-based Details step index from the library-owned form step catalog. */
+export const PROPERTY_FORM_DETAILS_STEP =
+  propertyFormSteps.findIndex((step) => step.value === "details") + 1;
 
 /** 1-based Review & Submit step index from the library-owned form step catalog. */
 export const PROPERTY_FORM_FINALIZE_STEP =

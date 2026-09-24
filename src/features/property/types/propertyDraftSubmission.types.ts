@@ -17,16 +17,19 @@ export type PropertyDraftSubmissionBasicInformation = {
 };
 
 export type PropertyDraftSubmissionLocation = {
+  /** @deprecated Not sent on create/update; hydrate may still see legacy drafts. */
   city_id?: number | null;
-  /** Selected area for Add Property (single-select). */
+  /** @deprecated Not sent on create/update. */
   area_id?: number | null;
-  /** Legacy multi-area drafts; first item hydrates `area_id`. */
+  /** @deprecated Legacy multi-area drafts. */
   area_ids?: number[];
+  /** @deprecated Not sent on create/update. */
   address?: string;
   latitude?: number | null;
   longitude?: number | null;
   apartment_number?: string;
   plot_number?: string;
+  /** @deprecated Not shown; cleared on hydrate/prune. */
   basin_number?: string;
   parcel_number?: string;
   building_number?: string;
@@ -64,6 +67,8 @@ export type PropertyDraftSubmissionLocation = {
 export type PropertyDraftSubmissionOwnerDocument = {
   file_name?: string;
   url?: string;
+  signed_read_url?: string;
+  object_key?: string;
 };
 
 export type PropertyDraftSubmissionOwner = {
@@ -121,6 +126,12 @@ export type PropertyDraftSubmissionPropertyDetails = {
   floor?: PropertyDraftMasterOptionValue;
   floor_id?: PropertyDraftMasterOptionValue;
   floor_level_id?: PropertyDraftMasterOptionValue;
+  /** Master-table id from DLS Land Type select (`GET /property-form-options?group=land_type`). */
+  land_type_id?: PropertyDraftMasterOptionValue;
+  /** Alternate GET keys for land type; hydrate-only. */
+  land_type?: PropertyDraftMasterOptionValue;
+  landType?: PropertyDraftMasterOptionValue;
+  landTypeId?: PropertyDraftMasterOptionValue;
   /** From `PropertyForm` `property_details.total_floor`. */
   total_floors?: number | null;
   completion_status?: string | null;
@@ -170,6 +181,10 @@ export type PropertyDraftSubmissionAmenities = {
 export type PropertyDraftSubmissionMediaImage = {
   file_name?: string;
   url?: string;
+  /** Time-limited preview URL from GET draft (not persisted on save). */
+  signed_read_url?: string;
+  thumb_url?: string;
+  object_key?: string;
   /** First image in the list. */
   is_primary?: boolean;
   display_order?: number;
@@ -178,12 +193,17 @@ export type PropertyDraftSubmissionMediaImage = {
 export type PropertyDraftSubmissionMediaVideo = {
   file_name?: string;
   url?: string;
+  signed_read_url?: string;
+  thumb_url?: string;
+  object_key?: string;
   display_order?: number;
 };
 
 export type PropertyDraftSubmissionMediaDocument = {
   file_name?: string;
   url?: string;
+  signed_read_url?: string;
+  object_key?: string;
   display_order?: number;
 };
 

@@ -20,71 +20,11 @@ import type {
   AgencyListItem,
   AgencyOfflineRegistrationRequest,
 } from "@/src/features/profile/types/profile.types";
+import { normalizeAgencyInvitationLink } from "@/src/features/agencies/utils/normalizeAgencyInvitationLink";
 import { useToast } from "@/src/hooks/useToast";
 import { cn } from "@/src/lib/cn";
 import { bodyLargeTextClasses, headingPageClasses } from "@/src/lib/typography";
 import { validateLicenseDocumentFile } from "@/src/lib/validateLicenseDocumentFile";
-
-/**
- * Rewrites API-returned invitation / password-setup URLs onto the current FE origin.
- * Backend payloads may hardcode a host such as `http://localhost:3000`.
- */
-function normalizeInvitationLink(link: string): string {
-  try {
-    const trimmed = link.trim();
-    if (!trimmed) return trimmed;
-
-    const segments = trimmed.includes(",")
-      ? trimmed
-          .split(",")
-          .map((segment) => segment.trim())
-          .filter(Boolean)
-      : [trimmed];
-
-    const locale =
-      window.location.pathname.match(/^\/(en|ar|es|fr)(?:\/|$)/)?.[1] ?? "en";
-
-    const candidate =
-      segments.find(
-        (segment) =>
-          segment.includes("agency-password-setup") ||
-          segment.includes("token=") ||
-          segment.toLowerCase().includes("invitation"),
-      ) ?? segments[segments.length - 1]!;
-
-    const url = new URL(candidate, window.location.origin);
-
-    const lastSegment = url.pathname.split("/").filter(Boolean).pop() ?? "";
-    const tokenFromPath =
-      lastSegment &&
-      lastSegment !== "agency-password-setup" &&
-      lastSegment !== "agency-invitation"
-        ? lastSegment
-        : "";
-
-    const token =
-      url.searchParams.get("token") ??
-      url.searchParams.get("invitation_token") ??
-      url.searchParams.get("invitation") ??
-      tokenFromPath;
-
-    const isPasswordSetup =
-      candidate.includes("agency-password-setup") ||
-      candidate.includes("password-setup");
-
-    if (!token) {
-      return `${window.location.origin}${url.pathname}${url.search}${url.hash}`;
-    }
-
-    const path = isPasswordSetup ? "agency-password-setup" : "agency-invitation";
-
-    return `${window.location.origin}/${locale}/${path}?token=${encodeURIComponent(
-      token,
-    )}`;
-  } catch {
-    return link;
-  }
-}
 
 const AGENCY_LIST_QUERY_KEY = ["agency", "super-admin-list"] as const;
 const AGENCY_LIST_PAGE_SIZE = 10;
@@ -275,7 +215,7 @@ export function AgenciesScreen() {
       if (rawLink) {
         setLatestLink({
           label: "Password creation link",
-          value: normalizeInvitationLink(rawLink),
+          value: normalizeAgencyInvitationLink(rawLink),
         });
       }
       toast.success("Agency created", {
@@ -296,7 +236,7 @@ export function AgenciesScreen() {
       invalidateAgencies();
       const rawLink = response.data.invitation_link;
       if (rawLink) {
-        const invitationLink = normalizeInvitationLink(rawLink);
+        const invitationLink = normalizeAgencyInvitationLink(rawLink);
         setLatestLink({ label: "Invitation link", value: invitationLink });
       }
       toast.success("Invitation created", {
@@ -317,7 +257,7 @@ export function AgenciesScreen() {
       if (rawLink) {
         setLatestLink({
           label: "Password creation link",
-          value: normalizeInvitationLink(rawLink),
+          value: normalizeAgencyInvitationLink(rawLink),
         });
       }
       toast.success("Agency review updated", {
@@ -335,7 +275,7 @@ export function AgenciesScreen() {
     onSuccess: (response, { pendingTab }) => {
       const rawLink = response.data.password_setup_link;
       if (rawLink) {
-        const link = normalizeInvitationLink(rawLink);
+        const link = normalizeAgencyInvitationLink(rawLink);
         setLatestLink({ label: "Password creation link", value: link });
         if (pendingTab && !pendingTab.closed) {
           pendingTab.location.assign(link);

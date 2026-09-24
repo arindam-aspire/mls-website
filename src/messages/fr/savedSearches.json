@@ -32,6 +32,9 @@
     "statusBuy": "Acheter",
     "statusRent": "Louer",
     "categoryPlaceholder": "Sélectionner une catégorie",
+    "arrangementAriaLabel": "Disposition du bien",
+    "arrangementProperties": "Propriétés",
+    "arrangementLand": "Terrain",
     "typePlaceholder": "Sélectionner un type de bien",
     "locationPlaceholder": "Rechercher un emplacement",
     "locationEmptyMessage": "Aucun emplacement trouvé",
@@ -43,6 +46,7 @@
   "filterLabels": {
     "lookingFor": "Je recherche",
     "status": "Statut",
+    "arrangement": "Disposition",
     "category": "Catégorie",
     "type": "Type de bien",
     "location": "Emplacement",
