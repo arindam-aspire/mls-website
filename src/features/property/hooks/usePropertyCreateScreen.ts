@@ -29,7 +29,13 @@ import {
 import {
   INITIAL_PROPERTY_FORM_ACTIVE_STEP,
   INITIAL_PROPERTY_FORM_VALUES,
+  PENDING_PROPERTY_REFERENCE_NUMBER,
 } from "@/src/features/property/constants/propertyForm.constants";
+import {
+  DEFAULT_PROPERTY_ARRANGEMENT,
+  type PropertyArrangementId,
+} from "@/src/features/property/constants/propertyArrangement.constants";
+import { resolvePropertyArrangementFromCategorySlug } from "@/src/features/property/utils/propertyArrangement";
 import {
   DEFAULT_AGENCY_CURRENCY,
   type AgencyCurrency,
@@ -52,10 +58,14 @@ import {
   toPropertyDraftSubmissionCurrency,
   withPropertyFormHostLocationFields,
   withPropertyFormShowLocation,
-  getDraftFloorValue,
 } from "@/src/features/property/mappers/propertyDraftSubmission.mapper";
 import { buildPropertyLocationDlsLabels } from "@/src/features/property/i18n/propertyLocationDls.i18n";
-import { usePropertyLocationDls } from "@/src/features/property/hooks/usePropertyLocationDls";
+import {
+  usePropertyLocationDls,
+  type PropertyLocationDlsFieldModel,
+  type PropertyLocationDlsSelectFieldModel,
+  type PropertyLocationDlsTextFieldModel,
+} from "@/src/features/property/hooks/usePropertyLocationDls";
 import type { PropertyLocationDlsSelection } from "@/src/features/property/types/dls.types";
 import {
   mapFeatureCatalogForPropertyForm,
@@ -81,12 +91,20 @@ import {
   EMPTY_PROPERTY_FORM_OPTIONS_CATALOG,
   mapPropertyFormOptionsCatalog,
   withPropertyFormOptionFallbacks,
-  withEnsuredFloorOption,
+  withEnsuredLandTypeOption,
 } from "@/src/features/property/mappers/propertyFormOptions.mapper";
 import type { FeatureCatalogItem } from "@/src/features/property/types/property.types";
 import type { PropertyFormOptionsCatalog } from "@/src/features/property/types/propertyFormOptions.types";
 import type { PropertyDraftSubmissionData } from "@/src/features/property/types/propertyDraftSubmission.types";
 import { applyPropertyCreateFormDomPatches } from "@/src/features/property/utils/propertyCreateFormDom.utils";
+import {
+  prunePropertyFormIdentificationForArrangement,
+  validateLocationIdentificationForArrangement,
+  getLocationIdentificationValue,
+  withLocationIdentificationValue,
+  extractPropertyFormIdentification,
+} from "@/src/features/property/utils/propertyIdentificationFields.utils";
+import type { PropertyIdentificationFieldKey } from "@/src/features/property/constants/propertyIdentification.constants";
 import {
   getHostLocationFieldError,
   omitHostLocationFieldErrors,
@@ -134,6 +152,77 @@ function shouldShowPropertyCreateAgencyField(
   user: LoggedInUser | null | undefined,
 ): boolean {
   return isSuperAdminUser(user) || isOwnerUser(user);
+}
+
+type PropertyDetailsWithLandType = NonNullable<
+  PropertyFormValues["property_details"]
+> & {
+  land_type_id?: string | number | null;
+  land_type?: string | number | null;
+  landType?: string | number | null;
+};
+
+function getPropertyFormLandTypeId(
+  propertyDetails: PropertyFormValues,
+): string {
+  const details = propertyDetails.property_details as
+    | PropertyDetailsWithLandType
+    | undefined;
+  const raw = details?.land_type_id ?? details?.land_type ?? details?.landType;
+  return raw == null ? "" : String(raw).trim();
+}
+
+function getDraftLandTypeValue(
+  data: PropertyDraftSubmissionData,
+): unknown {
+  const details = data.payload.property_details;
+  if (!details) {
+    return null;
+  }
+
+  return (
+    details.land_type_id ??
+    details.landTypeId ??
+    details.land_type ??
+    details.landType ??
+    null
+  );
+}
+
+function withPropertyFormLandTypeId(
+  propertyDetails: PropertyFormValues,
+  landTypeId: string,
+): PropertyFormValues {
+  const nextValue = landTypeId.trim();
+
+  // Host-owned master ids — not yet on library `PropertyDetailsFormValues`.
+  const nextDetails: PropertyDetailsWithLandType = {
+    bedrooms: null,
+    bathrooms: null,
+    built_up_area: "",
+    built_up_area_unit: "SQM",
+    parking_spaces: null,
+    property_age: null,
+    furnishing_status: null,
+    floor_level: null,
+    year_built: null,
+    completion_status: null,
+    total_floor: "",
+    occupancy: null,
+    ownership_type: null,
+    orientation: null,
+    guard_name: "",
+    guard_country_code: "+962",
+    guard_phone_number: "",
+    ...propertyDetails.property_details,
+    land_type_id: nextValue || null,
+    land_type: nextValue || null,
+  };
+
+  return {
+    ...propertyDetails,
+    property_details: nextDetails,
+  };
 }
 
 function resolveSubmitSuccessDescription(
@@ -360,6 +449,9 @@ export function usePropertyCreateScreen() {
   const propertyFormContainerElRef = useRef<HTMLDivElement | null>(null);
   const propertyDetailsRef = useRef(propertyDetails);
   propertyDetailsRef.current = propertyDetails;
+  const identificationSnapshotRef = useRef(
+    extractPropertyFormIdentification(propertyDetails),
+  );
   const submissionIdRef = useRef(submissionId);
   submissionIdRef.current = submissionId;
   const ensureSubmissionIdRef = useRef<() => Promise<string | null>>(async () => null);
@@ -406,6 +498,11 @@ export function usePropertyCreateScreen() {
     enabled: resolvedAgencyIdForQuery.length > 0,
   });
 
+  const locationDlsLabels = useMemo(
+    () => buildPropertyLocationDlsLabels(t),
+    [t],
+  );
+
   const locationDls = usePropertyLocationDls({
     selection: extractPropertyFormDls(propertyDetails),
     onChange: (dls: PropertyLocationDlsSelection) => {
@@ -419,8 +516,28 @@ export function usePropertyCreateScreen() {
       );
     },
     disabled: !canEditSubmission || isDraftSaving || isSubmitting,
-    labels: buildPropertyLocationDlsLabels(t),
+    labels: locationDlsLabels,
   });
+
+  const onLandTypeChange = useCallback((value: string) => {
+    setFieldErrors((previous) => omitHostLocationFieldErrors(previous));
+    setSubmitError(null);
+    setPropertyDetails((previous) => withPropertyFormLandTypeId(previous, value));
+  }, []);
+
+  const onLocationIdentificationChange = useCallback(
+    (key: PropertyIdentificationFieldKey, value: string) => {
+      setFieldErrors((previous) => omitHostLocationFieldErrors(previous));
+      setSubmitError(null);
+      setPropertyDetails((previous) => {
+        const next = withLocationIdentificationValue(previous, key, value);
+        identificationSnapshotRef.current =
+          extractPropertyFormIdentification(next);
+        return next;
+      });
+    },
+    [],
+  );
 
   // 6. Derived / memoized values
   const breadcrumbItems = useMemo((): BreadcrumbItem[] => {
@@ -454,6 +571,35 @@ export function usePropertyCreateScreen() {
     [propertyTaxonomy],
   );
 
+  const propertyCategoriesRef = useRef(propertyCategories);
+  propertyCategoriesRef.current = propertyCategories;
+
+  const resolveArrangementFromCategoryId = useCallback(
+    (categoryId: string | number | null | undefined): PropertyArrangementId => {
+      if (categoryId == null || categoryId === "") {
+        return DEFAULT_PROPERTY_ARRANGEMENT;
+      }
+      const category = propertyCategoriesRef.current.find(
+        (item) => String(item.id) === String(categoryId),
+      );
+      if (!category) {
+        return DEFAULT_PROPERTY_ARRANGEMENT;
+      }
+      return resolvePropertyArrangementFromCategorySlug(category.slug);
+    },
+    [],
+  );
+
+  /** Derived from selected Category (Residential / Commercial / Land) — no separate toggle. */
+  const arrangement = useMemo(
+    () =>
+      resolveArrangementFromCategoryId(propertyDetails.basic_info?.category_id),
+    [propertyDetails.basic_info?.category_id, resolveArrangementFromCategoryId],
+  );
+  const arrangementRef = useRef(arrangement);
+  arrangementRef.current = arrangement;
+  const previousArrangementRef = useRef(arrangement);
+
   const locationCities = useMemo(
     () => getLocationCities(locationTaxonomy ?? undefined),
     [locationTaxonomy],
@@ -481,7 +627,14 @@ export function usePropertyCreateScreen() {
   const minStepIndex = INITIAL_PROPERTY_FORM_ACTIVE_STEP;
   const maxStepIndex = propertyFormSteps.length;
   const hasReferenceNumber = Boolean(
-    propertyDetails.property_details?.reference_number?.trim(),
+    (() => {
+      const referenceNumber =
+        propertyDetails.property_details?.reference_number?.trim() ?? "";
+      return (
+        referenceNumber &&
+        referenceNumber !== PENDING_PROPERTY_REFERENCE_NUMBER
+      );
+    })(),
   );
   const hasReferenceNumberRef = useRef(hasReferenceNumber);
   hasReferenceNumberRef.current = hasReferenceNumber;
@@ -492,6 +645,11 @@ export function usePropertyCreateScreen() {
   );
   const dlsSelectionRef = useRef(dlsSelection);
   dlsSelectionRef.current = dlsSelection;
+  const identificationSnapshot = useMemo(
+    () => extractPropertyFormIdentification(propertyDetails),
+    [propertyDetails],
+  );
+  identificationSnapshotRef.current = identificationSnapshot;
 
   const resolvedAgencyId = resolvedAgencyIdForQuery;
 
@@ -589,8 +747,9 @@ export function usePropertyCreateScreen() {
       buildPropertyFormConfig(
         tForm as Parameters<typeof buildPropertyFormConfig>[0],
         formOptionsCatalog,
+        arrangement,
       ),
-    [formOptionsCatalog, tForm],
+    [arrangement, formOptionsCatalog, tForm],
   );
 
   const libraryFieldErrors = useMemo(
@@ -598,15 +757,169 @@ export function usePropertyCreateScreen() {
     [fieldErrors],
   );
 
-  const locationDlsFields = useMemo(
-    () =>
-      locationDls.fields.map((field) => ({
+  const landTypeField = useMemo((): PropertyLocationDlsSelectFieldModel | null => {
+    if (arrangement !== "properties") {
+      return null;
+    }
+
+    const options: SelectOption[] = formOptionsCatalog.landTypeOptions.map(
+      (option) => ({
+        value: option.value,
+        label: option.label,
+      }),
+    );
+    const value = getPropertyFormLandTypeId(propertyDetails);
+    const baseDisabled = !canEditSubmission || isDraftSaving || isSubmitting;
+
+    if (options.length === 0) {
+      return {
+        id: "land_type",
+        name: "land_type_id",
+        label: locationDlsLabels.landType,
+        placeholder: locationDlsLabels.landTypePlaceholder,
+        options: [],
+        value,
+        onChange: onLandTypeChange,
+        disabled: true,
+        hint: locationDlsLabels.empty,
+      };
+    }
+
+    return {
+      id: "land_type",
+      name: "land_type_id",
+      label: locationDlsLabels.landType,
+      placeholder: locationDlsLabels.landTypePlaceholder,
+      options,
+      value,
+      onChange: onLandTypeChange,
+      disabled: baseDisabled,
+    };
+  }, [
+    arrangement,
+    canEditSubmission,
+    formOptionsCatalog.landTypeOptions,
+    isDraftSaving,
+    isSubmitting,
+    locationDlsLabels.empty,
+    locationDlsLabels.landType,
+    locationDlsLabels.landTypePlaceholder,
+    onLandTypeChange,
+    propertyDetails,
+  ]);
+
+  const locationDlsFields = useMemo((): PropertyLocationDlsFieldModel[] => {
+    const dlsById = new Map(
+      locationDls.fields.map((field) => [field.id, field] as const),
+    );
+    const fieldsDisabled =
+      !canEditSubmission || isDraftSaving || isSubmitting;
+
+    const withSelectError = (
+      field: PropertyLocationDlsSelectFieldModel | undefined,
+    ): PropertyLocationDlsSelectFieldModel | null => {
+      if (!field) {
+        return null;
+      }
+
+      return {
         ...field,
         error:
           field.error ?? getHostLocationFieldError(fieldErrors, field.name),
-      })),
-    [fieldErrors, locationDls.fields],
-  );
+      };
+    };
+
+    const textField = (
+      key: PropertyIdentificationFieldKey,
+      label: string,
+      extras?: Pick<
+        PropertyLocationDlsTextFieldModel,
+        "inputType" | "inputMode"
+      >,
+    ): PropertyLocationDlsTextFieldModel => ({
+      kind: "text",
+      id: key,
+      name: key,
+      label,
+      value: getLocationIdentificationValue(
+        propertyDetails.location_insert,
+        key,
+      ),
+      disabled: fieldsDisabled,
+      error: getHostLocationFieldError(fieldErrors, key),
+      onChange: (value) => onLocationIdentificationChange(key, value),
+      ...extras,
+    });
+
+    const cascadeFields = [
+      withSelectError(
+        dlsById.get("gov") as PropertyLocationDlsSelectFieldModel | undefined,
+      ),
+      withSelectError(
+        dlsById.get("dept") as PropertyLocationDlsSelectFieldModel | undefined,
+      ),
+      withSelectError(
+        dlsById.get("vill") as PropertyLocationDlsSelectFieldModel | undefined,
+      ),
+      withSelectError(
+        dlsById.get("hod") as PropertyLocationDlsSelectFieldModel | undefined,
+      ),
+    ].filter((field): field is PropertyLocationDlsSelectFieldModel =>
+      Boolean(field),
+    );
+
+    const parcelNumberField = textField(
+      "parcel_number",
+      tForm("identification.parcelNumber"),
+    );
+    const sectionSelect = withSelectError(
+      dlsById.get("sect") as PropertyLocationDlsSelectFieldModel | undefined,
+    );
+
+    if (arrangement !== "properties") {
+      return [
+        ...cascadeFields,
+        parcelNumberField,
+        ...(sectionSelect ? [sectionSelect] : []),
+        textField("plot_number", tForm("identification.plotNumber")),
+      ];
+    }
+
+    return [
+      ...cascadeFields,
+      parcelNumberField,
+      ...(sectionSelect ? [sectionSelect] : []),
+      ...(landTypeField
+        ? [
+            {
+              ...landTypeField,
+              error:
+                landTypeField.error ??
+                getHostLocationFieldError(fieldErrors, "land_type_id") ??
+                getHostLocationFieldError(fieldErrors, "land_type"),
+            },
+          ]
+        : []),
+      textField("plot_number", tForm("identification.plotNumber")),
+      textField("building_number", tForm("identification.building")),
+      textField("floor_number", tForm("identification.floor"), {
+        inputType: "number",
+        inputMode: "numeric",
+      }),
+      textField("apartment_number", tForm("identification.apartmentNumber")),
+    ];
+  }, [
+    arrangement,
+    canEditSubmission,
+    fieldErrors,
+    isDraftSaving,
+    isSubmitting,
+    landTypeField,
+    locationDls.fields,
+    onLocationIdentificationChange,
+    propertyDetails.location_insert,
+    tForm,
+  ]);
 
   const syncSubmissionIdInUrl = useCallback(
     (nextSubmissionId: string) => {
@@ -634,18 +947,25 @@ export function usePropertyCreateScreen() {
 
       if (draftResponse.success && draftResponse.data) {
         const featuresForForm = mapFeatureCatalogForPropertyForm(catalogItems);
-        const catalogWithFloor = withEnsuredFloorOption(
+        const catalogWithMasters = withEnsuredLandTypeOption(
           formOptions,
-          getDraftFloorValue(draftResponse.data),
+          getDraftLandTypeValue(draftResponse.data),
         );
         const hydratedDetails = mapPropertyDraftSubmissionToPropertyFormValues(
           draftResponse.data,
           featuresForForm,
-          catalogWithFloor,
+          catalogWithMasters,
+        );
+        const arrangementForDraft = resolveArrangementFromCategoryId(
+          hydratedDetails.basic_info?.category_id,
+        );
+        const prunedDetails = prunePropertyFormIdentificationForArrangement(
+          hydratedDetails,
+          arrangementForDraft,
         );
 
-        setFormOptionsCatalog(catalogWithFloor);
-        setPropertyDetails(hydratedDetails);
+        setFormOptionsCatalog(catalogWithMasters);
+        setPropertyDetails(prunedDetails);
         setActiveStep(draftResponse.data.current_step);
         setMaxReachedStep(
           Math.max(
@@ -664,12 +984,12 @@ export function usePropertyCreateScreen() {
         const formAccess = resolveSubmissionFormAccess(draftResponse.data, user);
         setCanEditSubmission(formAccess.canEdit);
         setRejectionReason(formAccess.rejectionReason);
-        return hydratedDetails;
+        return prunedDetails;
       }
 
       return null;
     },
-    [fetchPropertyDraftSubmission, user],
+    [fetchPropertyDraftSubmission, resolveArrangementFromCategoryId, user],
   );
 
   // 7. Callbacks
@@ -686,6 +1006,8 @@ export function usePropertyCreateScreen() {
       applyPropertyCreateFormDomPatches(container, {
         ownerDocumentsLabel: tForm("ownerDocumentsLabel"),
         hasReferenceNumber: hasReferenceNumberRef.current,
+        // Host DLS owns Location fields; hide library free-text identification.
+        visibleIdentificationKeys: [],
       });
     };
 
@@ -718,11 +1040,14 @@ export function usePropertyCreateScreen() {
             furnished: tAdvanced("furnitureOptions.furnished"),
             unfurnished: tAdvanced("furnitureOptions.unfurnished"),
             semiFurnished: tAdvanced("furnitureOptions.semiFurnished"),
-            ground: tAdvanced("floorOptions.ground"),
-            penthouse: tAdvanced("floorOptions.penthouse"),
           },
         );
 
+        // Sync categories into the ref before hydrate so arrangement prune
+        // can resolve Land vs Properties from the fresh taxonomy response.
+        propertyCategoriesRef.current = getPropertyCategories(
+          propertyTaxonomyResponse,
+        );
         setPropertyTaxonomy(propertyTaxonomyResponse);
         setLocationTaxonomy(locationTaxonomyResponse);
         setFormOptionsCatalog(formOptionsCatalog);
@@ -758,22 +1083,72 @@ export function usePropertyCreateScreen() {
     setOwnerDuplicateError(null);
   }, []);
 
+  const applyArrangementIdentification = useCallback(
+    (
+      nextPropertyDetails: PropertyFormValues,
+      hostShowLocation: boolean = showLocation,
+    ) => {
+      const nextArrangement = resolveArrangementFromCategoryId(
+        nextPropertyDetails.basic_info?.category_id,
+      );
+      const withHost = withPropertyFormHostLocationFields(nextPropertyDetails, {
+        showLocation: hostShowLocation,
+        dls: dlsSelectionRef.current,
+        identification: identificationSnapshotRef.current,
+      });
+      const details = prunePropertyFormIdentificationForArrangement(
+        withHost,
+        nextArrangement,
+      );
+      const identificationErrors = validateLocationIdentificationForArrangement(
+        details.location_insert,
+        nextArrangement,
+        {
+          floorNumberInvalid: tForm("identification.floorNumberInvalid"),
+        },
+      );
+
+      return { details, identificationErrors };
+    },
+    [resolveArrangementFromCategoryId, showLocation, tForm],
+  );
+
   const onNext = useCallback(
     (nextPropertyDetails: PropertyFormValues) => {
       clearSubmissionErrors();
-      setPropertyDetails(
-        withPropertyFormHostLocationFields(nextPropertyDetails, {
-          showLocation,
-          dls: dlsSelectionRef.current,
-        }),
+      const { details, identificationErrors } = applyArrangementIdentification(
+        nextPropertyDetails,
+        showLocation,
       );
+
+      if (Object.keys(identificationErrors).length > 0) {
+        setFieldErrors(identificationErrors);
+        setPropertyDetails(details);
+        const firstError = Object.values(identificationErrors)[0];
+        if (firstError) {
+          toast.error(firstError);
+        }
+        const firstPath = Object.keys(identificationErrors)[0];
+        if (firstPath) {
+          propertyFormRef.current?.goToField(firstPath);
+        }
+        return;
+      }
+
+      setPropertyDetails(details);
       setActiveStep((previous) => {
         const nextStep = Math.min(previous + 1, maxStepIndex);
         setMaxReachedStep((maxPrevious) => Math.max(maxPrevious, nextStep));
         return nextStep;
       });
     },
-    [clearSubmissionErrors, maxStepIndex, showLocation],
+    [
+      applyArrangementIdentification,
+      clearSubmissionErrors,
+      maxStepIndex,
+      showLocation,
+      toast,
+    ],
   );
 
   const onPrevious = useCallback(() => {
@@ -798,17 +1173,27 @@ export function usePropertyCreateScreen() {
   const onStepClick = useCallback(
     (step: number, _step: PropertyFormStep, nextPropertyDetails: PropertyFormValues) => {
       clearSubmissionErrors();
-      setPropertyDetails(
-        withPropertyFormHostLocationFields(nextPropertyDetails, {
-          showLocation,
-          dls: dlsSelectionRef.current,
-        }),
+      const { details, identificationErrors } = applyArrangementIdentification(
+        nextPropertyDetails,
+        showLocation,
       );
+
+      if (Object.keys(identificationErrors).length > 0) {
+        setFieldErrors(identificationErrors);
+        setPropertyDetails(details);
+        const firstError = Object.values(identificationErrors)[0];
+        if (firstError) {
+          toast.error(firstError);
+        }
+        return;
+      }
+
+      setPropertyDetails(details);
       setActiveStep(step);
       const nextMaxReachedStep = nextPropertyDetails.max_reached_step ?? step;
       setMaxReachedStep((maxPrevious) => Math.max(maxPrevious, nextMaxReachedStep));
     },
-    [clearSubmissionErrors, showLocation],
+    [applyArrangementIdentification, clearSubmissionErrors, showLocation, toast],
   );
 
   const onShowLocationChange = useCallback((checked: boolean) => {
@@ -854,14 +1239,31 @@ export function usePropertyCreateScreen() {
       propertyDetails.max_reached_step ?? maxReachedStep,
       currentStep,
     );
-    const detailsForSubmit: PropertyFormValues = {
-      ...propertyDetails,
-      active_step: currentStep,
-      max_reached_step: lastCompletedStep,
-    };
+    const { details: prunedDetails, identificationErrors } =
+      applyArrangementIdentification(
+        {
+          ...propertyDetails,
+          active_step: currentStep,
+          max_reached_step: lastCompletedStep,
+        },
+        showLocation,
+      );
+
+    if (Object.keys(identificationErrors).length > 0) {
+      setFieldErrors(identificationErrors);
+      setPropertyDetails(prunedDetails);
+      const firstError = Object.values(identificationErrors)[0];
+      if (firstError) {
+        toast.error(firstError);
+      }
+      return;
+    }
+
+    const detailsForSubmit: PropertyFormValues = prunedDetails;
     const submitPayloadOptions = {
       forSubmit: true as const,
       currency: toPropertyDraftSubmissionCurrency(pricingCurrency),
+      arrangement,
     };
     const shouldRouteThroughAgency = showAgencyField && routeThroughAgency;
     const agencyId = shouldRouteThroughAgency
@@ -966,7 +1368,9 @@ export function usePropertyCreateScreen() {
     }
   }, [
     activeStep,
+    applyArrangementIdentification,
     applySubmissionError,
+    arrangement,
     clearSubmissionErrors,
     featuresAndAmenities,
     isOwner,
@@ -978,6 +1382,7 @@ export function usePropertyCreateScreen() {
     searchParams,
     selectedAgencyId,
     showAgencyField,
+    showLocation,
     submissionId,
     submitDraftSubmission,
     submitPropertySubmissionDirect,
@@ -989,13 +1394,22 @@ export function usePropertyCreateScreen() {
 
   const onDraft = useCallback(
     async (nextPropertyDetails: PropertyFormValues): Promise<boolean> => {
-      const detailsWithLocationVisibility = withPropertyFormHostLocationFields(
+      const { details, identificationErrors } = applyArrangementIdentification(
         nextPropertyDetails,
-        {
-          showLocation,
-          dls: dlsSelectionRef.current,
-        },
+        showLocation,
       );
+
+      if (Object.keys(identificationErrors).length > 0) {
+        setFieldErrors(identificationErrors);
+        setPropertyDetails(details);
+        const firstError = Object.values(identificationErrors)[0];
+        if (firstError) {
+          toast.error(firstError);
+        }
+        return false;
+      }
+
+      const detailsWithLocationVisibility = details;
       setPropertyDetails(detailsWithLocationVisibility);
 
       const currentStep =
@@ -1024,6 +1438,7 @@ export function usePropertyCreateScreen() {
           agencyId,
           routeThroughAgency: shouldRouteThroughAgency,
           currency: toPropertyDraftSubmissionCurrency(pricingCurrency),
+          arrangement,
         };
         const response = submissionId
           ? await updateDraftSubmission({
@@ -1074,7 +1489,9 @@ export function usePropertyCreateScreen() {
     },
     [
       activeStep,
+      applyArrangementIdentification,
       applySubmissionError,
+      arrangement,
       clearSubmissionErrors,
       featuresAndAmenities,
       maxReachedStep,
@@ -1200,8 +1617,23 @@ export function usePropertyCreateScreen() {
     applyPropertyCreateFormDomPatches(container, {
       ownerDocumentsLabel: tForm("ownerDocumentsLabel"),
       hasReferenceNumber,
+      // Host DLS section owns free-text identification; hide library duplicates.
+      visibleIdentificationKeys: [],
     });
-  }, [hasReferenceNumber, tForm]);
+  }, [arrangement, hasReferenceNumber, tForm]);
+
+  // Drop free-text identification values that do not apply when Category
+  // switches between Properties and Land (Basin Number never applies).
+  useEffect(() => {
+    if (previousArrangementRef.current === arrangement) {
+      return;
+    }
+
+    previousArrangementRef.current = arrangement;
+    setPropertyDetails((previous) =>
+      prunePropertyFormIdentificationForArrangement(previous, arrangement),
+    );
+  }, [arrangement]);
 
   // 10. Return values
   return {

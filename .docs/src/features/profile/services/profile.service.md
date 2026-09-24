@@ -18,7 +18,7 @@ Profile and agency HTTP helpers. Super-admin offline agency creation lives here:
 - `putFileToPresignedUrl`, `resolvePersistedUploadReference`, `resolveUploadedFileUrl`
 - `isUsableNextImageSrc`
 - Local helper `putFileUnlessDevPlaceholder` — skips the storage PUT when `upload_url` is a `dev://` placeholder; honors `upload_http_method`
-- `resolveDisplayUrlAfterUpload` — prefers a usable stored URL, then `signed_read_url` / `file_url` from the upload payload
+- `buildAgencyInvitationCreateBody` — public origin + invitation email copy for `POST /agency/invitations`
 
 # Exports
 
@@ -28,7 +28,7 @@ Profile and agency HTTP helpers. Super-admin offline agency creation lives here:
 | `updateAgency` | `PUT /agency/{id}` |
 | `createOfflineAgency` | Super-admin `POST /agency/offline-registration` |
 | `uploadOfflineAgencyLegalDocument` | Presign + PUT + persistable URL |
-| `createAgencyInvitation` | Super-admin invitations |
+| `createAgencyInvitation` | Super-admin invitations (`frontend_url` + email copy from `buildAgencyInvitationCreateBody`) |
 | `validateAgencyInvitation` | Public `GET /agency/invitations/validate` |
 | `uploadAgencyInvitationLegalDocument` | Public invitation license presign + PUT |
 | `acceptAgencyInvitation` | Public `POST /agency/invitations/accept` |
@@ -122,4 +122,5 @@ Not a UI module.
 
 - `dev://` upload URLs skip the storage PUT (local/dev mode). Profile picture, agency logo, and agency legal-document uploads share `putFileUnlessDevPlaceholder`.
 - Existing-agency `uploadAgencyLegalDocument` uses `POST /agency/{id}/legal-document` then the same PUT helper.
-- `sendAgencyPasswordLink` (`POST /agency/{id}/password-link`) returns `password_setup_link` (often with a backend-configured host). On **Password Link** in `AgenciesScreen`, that URL is rewritten onto `window.location.origin` while keeping `/[locale]/agency-password-setup?token=…`. A blank tab is then navigated to the rewritten URL. The same URL is stored on the screen’s copy bar.
+- `sendAgencyPasswordLink` (`POST /agency/{id}/password-link`) returns `password_setup_link` (often with a backend-configured host). On **Password Link** in `AgenciesScreen`, that URL is rewritten onto `getPublicAppOrigin()` while keeping `/[locale]/agency-password-setup?token=…`. A blank tab is then navigated to the rewritten URL. The same URL is stored on the screen’s copy bar.
+- `createAgencyInvitation` (`POST /agency/invitations`) sends `frontend_url` from `NEXT_PUBLIC_APP_URL` and the invitation email copy so SES does not embed localhost.

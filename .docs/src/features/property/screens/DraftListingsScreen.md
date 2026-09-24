@@ -7,19 +7,22 @@ Draft listings screen using **`PropertyDraftList`** (per-row actions from API `c
 # Responsibilities
 
 - Page heading from `propertyList.draftListings`.
-- **Add Property** primary button in page header (always visible, same layout as My Listings) — uses `onCreateNew` from `useAddPropertyEntry({ restrictForOwnerOnly: true })` and navigates to `/property-create`.
-- Render `PropertyDraftList` with API-backed items, pagination, and per-row actions.
+- **Add Property** primary button in page header — `onCreateNew` from `useAddPropertyEntry({ restrictForOwnerOnly: true })`.
+- Render `PropertyDraftList` with API-backed items, pagination, resume/delete, and per-row delete loading.
+- **Delete confirm** via shared `ConfirmModal` (danger) wired from `deleteConfirmModal` in the screen hook.
 
 # Imports
 
-- `PropertyDraftList` from property components
-- `SelectAgencyModal` from profile modals
-- `useDraftListingsScreen`
+- `ConfirmModal`, `PropertyDraftList`, `SelectAgencyModal`, `useDraftListingsScreen`
 
 # Navigation
 
 - Mounted at `/en/draft-listings` (`useAuthorize("DRAFT_LISTINGS")`).
 - Resume → `/en/property-create?submission_id=…`
+
+# Actions / Inputs
+
+- Delete (when `can_delete`): opens confirm → `DELETE /property-submissions/{submission_id}` → toast → refresh.
 
 # Dependencies
 

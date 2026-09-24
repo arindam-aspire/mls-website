@@ -7,7 +7,7 @@ Presigned upload helpers for property create (owner documents, media images, pro
 # Responsibilities
 
 - `requestUploadPresignedUrl` — authenticated `POST /uploads/presigned-url`.
-- `uploadOwnerDocument` — `context: "owner_document"` with `draft_client_id` (works before a submission id exists). Returns a **stable** persistence reference via `resolvePersistedUploadReference` (same as media/docs — never store expiring `signed_read_url` in drafts).
+- `uploadOwnerDocument` — `context: "owner_document"` with `draft_client_id` (works before a submission id exists). Returns a **browser-displayable** URI (`signed_read_url` / `file_url` when it is `http(s)`) so form previews work, and remembers the stable `file_url` / `object_key` for draft save via `rememberPersistedUploadReference`.
 - `uploadPropertyMediaImage` — `context: "property_media_image"` (`media_files`) with image/video content-type resolution for JPG, PNG, WebP, GIF, MP4, and MOV.
 - `uploadPropertyDocument` — `context: "property_document"` (`documents`).
 - Each helper: presign → **PUT** or **POST** bytes to `upload_url` (per `upload_http_method`).
@@ -49,7 +49,7 @@ Property media (`media_files` / `documents`):
 }
 ```
 
-Response `data.upload_url` → **PUT**/**POST** file (no `apiClient`). Create Property callbacks return `data.file_url`, `data.object_key`, or the stripped upload URL for stable draft persistence.
+Response `data.upload_url` → **PUT**/**POST** file (no `apiClient`). Create Property callbacks return a **preview** URI (`signed_read_url` preferred) for `PropertyForm` `uri`. Draft/submit mapping uses `resolvePersistableFileUri` so the API still receives `file_url` / `object_key`, not the expiring signed URL.
 
 # Dependencies
 

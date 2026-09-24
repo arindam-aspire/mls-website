@@ -58,7 +58,7 @@ _No explicit show/hide controls detected._
 - **Theme:** semantic tokens (`bg-page`, `bg-surface`, `text-text`, `text-muted`, `bg-primary`, `border-secondary/15`).
 - **Light/dark:** via `ThemeProvider` / `html.light` | `html.dark`.
 - **Radius:** outer shell `rounded-lg` (or `rounded-full` when `isRounded`); sliding indicator `rounded-md` / `rounded-full`.
-- **Layout:** two-layer shell — outer border/background (`toggleShellSizeClasses`) + inner padded track (`toggleTrackInsetClasses`; `toggleBorderedTrackInsetClasses` for `solid` / `outline`). Slide indicator positions against the inner track ref. Container uses `overflow-hidden`; segments are `bg-transparent` without their own corner radius (only the slide is rounded).
+- **Layout:** two-layer shell — outer border/background (`toggleShellSizeClasses`) + inner padded track (`toggleTrackInsetClasses`; `toggleBorderedTrackInsetClasses` for `solid` / `outline`). Slide indicator positions against the inner track ref. Container uses `overflow-hidden`; segments are `bg-transparent` without their own corner radius (only the slide is rounded). Indicator `setState` is skipped when rounded pixel metrics are unchanged so ResizeObserver cannot loop.
 - **Responsive:** mobile-first sizing via `responsiveSizes.ts` (`sm:`, `lg:`).
 - **Headless UI** primitives where applicable.
 

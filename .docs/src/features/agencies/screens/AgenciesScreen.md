@@ -25,6 +25,7 @@ Super-admin agency management screen (create, invite, review, activate).
   - `PhoneInput`, `Input`, `Button`, `CopyLinkBar`, `LicenseDocumentUpload`
 - Utilities:
   - `validateLicenseDocumentFile`
+  - `normalizeAgencyInvitationLink` (rewrites API hosts onto `getPublicAppOrigin()`)
   - `cn` (className helper)
 
 # Exports
@@ -55,10 +56,10 @@ Super-admin agency management screen (create, invite, review, activate).
 | Action | Service function | HTTP method | Notes |
 | --- | --- | --- | --- |
 | Offline agency registration | `createOfflineAgency` | `POST /agency/offline-registration` | Uploads legal document via `uploadOfflineAgencyLegalDocument` first. |
-| Generate invitation link | `createAgencyInvitation` | `POST /agency/invitations` | Stores the invitation URL in the copy bar after rewriting it onto `window.location.origin`. |
+| Generate invitation link | `createAgencyInvitation` | `POST /agency/invitations` | Body includes `frontend_url` from `NEXT_PUBLIC_APP_URL`. Copy bar uses `normalizeAgencyInvitationLink`. |
 | Review agency | `reviewAgency` | `POST /agency/{id}/review` | Used for approve/reject. Returned `password_setup_link` is origin-rewritten before display. |
 | Activate/deactivate | `updateAgencyActivation` | `POST /agency/{id}/activation` | Toggles `is_active`. |
-| Generate password setup link | `sendAgencyPasswordLink` | `POST /agency/{id}/password-link` | Rewrites `password_setup_link` onto `window.location.origin`, stores it in the copy bar, and opens it in a new tab. |
+| Generate password setup link | `sendAgencyPasswordLink` | `POST /agency/{id}/password-link` | Rewrites `password_setup_link` onto `getPublicAppOrigin()`, stores it in the copy bar, and opens it in a new tab. |
 
 # Navigation
 
@@ -123,7 +124,7 @@ Super-admin agency management screen (create, invite, review, activate).
    - Submit calls `createAgencyInvitation`.
    - On success:
      - refreshes the agency list
-     - normalizes the returned invitation URL (if the backend returns a non-localized or token-only URL)
+     - normalizes the returned invitation URL onto `NEXT_PUBLIC_APP_URL` / the current origin
      - shows the link in the copy bar.
 4. **Agency Review**:
    - Pending agencies can be approved or rejected via `reviewAgency`.
@@ -133,7 +134,7 @@ Super-admin agency management screen (create, invite, review, activate).
    - On success: list is refreshed.
 6. **Password Setup Link**:
    - The “Password Link” action is shown only for agencies with status `APPROVED` (hidden once the status becomes `ACTIVE`).
-   - On success: `password_setup_link` is passed through `normalizeInvitationLink`, which keeps the existing `/[locale]/agency-password-setup?token=…` route and query token but replaces the host with `window.location.origin`. That rewritten URL is copied into the copy bar and assigned to the pending tab.
+   - On success: `password_setup_link` is passed through `normalizeAgencyInvitationLink`, which keeps `/[locale]/agency-password-setup?token=…` and uses `getPublicAppOrigin()` as the host. That rewritten URL is copied into the copy bar and assigned to the pending tab.
 
 # Dependencies
 
@@ -144,6 +145,7 @@ Super-admin agency management screen (create, invite, review, activate).
 
 # Notes
 
-- Invitation and password-setup URL normalization is handled locally in `normalizeInvitationLink`. The API may return a hardcoded origin such as `http://localhost:3000`; the helper always rebuilds the existing `/[locale]/agency-password-setup?token=…` route from `window.location.origin` so local and deployed frontends use their own host.
+- Invitation and password-setup URL normalization lives in `normalizeAgencyInvitationLink`. The API may return a backend-configured host; the helper rebuilds `/[locale]/agency-invitation|agency-password-setup?token=…` on `getPublicAppOrigin()` (`NEXT_PUBLIC_APP_URL`, else the browser origin).
+- Create invitation also sends `frontend_url` so SES mail uses the same public origin instead of localhost.
 - This screen intentionally reuses existing service functions and UI primitives; no new backend endpoints were introduced.
 

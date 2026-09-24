@@ -11,38 +11,10 @@ import {
   uploadAgencyInvitationLegalDocument,
   validateAgencyInvitation,
 } from "@/src/features/profile/services/profile.service";
+import { rewriteAgencyPasswordSetupLink } from "../utils/normalizeAgencyInvitationLink";
 import type { AgencyInvitationFormValues } from "../components/AgencyInvitationForm";
 
 type AgencyInvitationStep = "loading" | "error" | "form" | "success";
-
-function rewritePasswordSetupLink(link: string | null | undefined): string | null {
-  const trimmed = link?.trim();
-  if (!trimmed) {
-    return null;
-  }
-
-  if (typeof window === "undefined") {
-    return trimmed;
-  }
-
-  try {
-    const url = new URL(trimmed, window.location.origin);
-    const locale =
-      window.location.pathname.match(/^\/(en|ar|es|fr)(?:\/|$)/)?.[1] ?? "en";
-    const token =
-      url.searchParams.get("token") ??
-      url.searchParams.get("invitation_token") ??
-      "";
-
-    if (!token) {
-      return `${window.location.origin}${url.pathname}${url.search}${url.hash}`;
-    }
-
-    return `${window.location.origin}/${locale}/agency-password-setup?token=${encodeURIComponent(token)}`;
-  } catch {
-    return trimmed;
-  }
-}
 
 export function useAgencyInvitationScreen() {
   const searchParams = useSearchParams();
@@ -93,7 +65,7 @@ export function useAgencyInvitationScreen() {
         }
 
         setInvitation(preview);
-        const setupLink = rewritePasswordSetupLink(preview.password_setup_link);
+        const setupLink = rewriteAgencyPasswordSetupLink(preview.password_setup_link);
         if (setupLink && preview.status?.toUpperCase().includes("PASSWORD")) {
           setPasswordSetupLink(setupLink);
         }
@@ -154,7 +126,7 @@ export function useAgencyInvitationScreen() {
           legal_document_s3_link: legalDocumentUrl,
         });
 
-        const setupLink = rewritePasswordSetupLink(
+        const setupLink = rewriteAgencyPasswordSetupLink(
           response.data?.invitation_link ??
             (response.data as { password_setup_link?: string | null } | null)
               ?.password_setup_link,

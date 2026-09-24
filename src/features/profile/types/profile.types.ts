@@ -316,6 +316,16 @@ export type AgencyInvitationCreateRequest = {
   agency_name?: string | null;
   agency_trade_name?: string | null;
   phone?: string | null;
+  /** Public frontend origin for the invitation email CTA (`NEXT_PUBLIC_APP_URL`). */
+  frontend_url?: string;
+  email_subject?: string;
+  email_cta_label?: string;
+  email_greeting?: string;
+  email_body?: string;
+  email_expiry_notice?: string;
+  email_ignore_notice?: string;
+  email_regards?: string;
+  email_sign_off?: string;
 };
 
 export type AgencyReviewRequest = {

@@ -14,7 +14,7 @@ Hook for property media step uploads on the property create form.
   - videos: `MP4`, `MOV` up to `50 MB`
 - Validate documents via `validateOwnerDocumentFile` (`PDF`, `DOC`, `DOCX`; max `10 MB`).
 - Delegate uploads to `uploadPropertyMediaImage` / `uploadPropertyDocument` (presign + PUT/POST).
-- Return remote URI string or `null` on failure; toast localized errors (no hardcoded English fallbacks).
+- Return a **preview** remote URI (`signed_read_url` when present) or `null` on failure; toast localized errors (no hardcoded English fallbacks). Draft save remaps that URI to the persist key.
 
 # API Usage
 

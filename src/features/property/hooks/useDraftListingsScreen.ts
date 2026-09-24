@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/src/i18n/navigation";
 import type { AppLocale } from "@/src/i18n/routing";
+import { useToast } from "@/src/hooks/useToast";
 import { formatNotificationRelativeTime } from "@/src/features/notifications/utils/formatNotificationRelativeTime";
 import type { MappedDraftListItem } from "../mappers/agentPropertyDraftsList.mapper";
 import { useAddPropertyEntry } from "./useAddPropertyEntry";
@@ -12,7 +13,10 @@ import {
   mapAgentPropertyDraftListItems,
   type MapAgentPropertyDraftLabels,
 } from "../mappers/agentPropertyDraftsList.mapper";
-import { useGetAgentPropertyDrafts } from "../mutations/property.mutation";
+import {
+  useDeletePropertySubmission,
+  useGetAgentPropertyDrafts,
+} from "../mutations/property.mutation";
 import type {
   AgentPropertyDraftListItem,
   AgentPropertyDraftsListParams,
@@ -30,6 +34,7 @@ export function useDraftListingsScreen() {
   // 2. UI utilities
   const t = useTranslations("propertyList.draftListings");
   const locale = useLocale() as AppLocale;
+  const toast = useToast();
   const {
     onAddProperty: onCreateNew,
     isSelectAgencyOpen,
@@ -47,10 +52,17 @@ export function useDraftListingsScreen() {
       pageSize: DEFAULT_PAGE_SIZE,
     }),
   );
+  const [pendingDeleteItem, setPendingDeleteItem] =
+    useState<MappedDraftListItem | null>(null);
+  const [deletingSubmissionId, setDeletingSubmissionId] = useState<string | null>(
+    null,
+  );
 
   // 5. Data fetching / queries
   const { mutate: getAgentPropertyDrafts, isPending: isLoadingDraftListings } =
     useGetAgentPropertyDrafts();
+  const { mutate: deletePropertySubmission, isPending: isDeletingSubmission } =
+    useDeletePropertySubmission("draftListings");
 
   const fetchDraftListings = useCallback(
     (params: AgentPropertyDraftsListParams) => {
@@ -132,6 +144,14 @@ export function useDraftListingsScreen() {
     [t],
   );
 
+  const resolveDraftTitle = useCallback(
+    (item: MappedDraftListItem) => {
+      const title = item.title?.trim();
+      return title || t("untitledDraft");
+    },
+    [t],
+  );
+
   // 7. Callbacks
   const onResume = useCallback(
     (item: MappedDraftListItem) => {
@@ -143,9 +163,80 @@ export function useDraftListingsScreen() {
     [router],
   );
 
-  const onDelete = useCallback((_item: MappedDraftListItem) => {
-    // Delete draft API not wired yet.
+  const onDelete = useCallback((item: MappedDraftListItem) => {
+    setPendingDeleteItem(item);
   }, []);
+
+  const closeDeleteConfirm = useCallback(() => {
+    if (isDeletingSubmission) {
+      return;
+    }
+
+    setPendingDeleteItem(null);
+  }, [isDeletingSubmission]);
+
+  const confirmDeleteDraft = useCallback(() => {
+    if (!pendingDeleteItem || isDeletingSubmission) {
+      return;
+    }
+
+    const submissionId = String(pendingDeleteItem.id);
+    setDeletingSubmissionId(submissionId);
+
+    deletePropertySubmission(submissionId, {
+      onSuccess: (response) => {
+        toast.success(t("deleteSuccessTitle"), {
+          description: response.message ?? t("deleteSuccessDescription"),
+        });
+        setDeletingSubmissionId(null);
+        setPendingDeleteItem(null);
+        fetchDraftListings(requestParams);
+      },
+      onError: () => {
+        setDeletingSubmissionId(null);
+      },
+    });
+  }, [
+    deletePropertySubmission,
+    fetchDraftListings,
+    isDeletingSubmission,
+    pendingDeleteItem,
+    requestParams,
+    t,
+    toast,
+  ]);
+
+  const getDeleteLoading = useCallback(
+    (item: MappedDraftListItem) => deletingSubmissionId === String(item.id),
+    [deletingSubmissionId],
+  );
+
+  const deleteConfirmModal = useMemo(() => {
+    if (!pendingDeleteItem) {
+      return null;
+    }
+
+    return {
+      open: true,
+      title: t("deleteConfirmTitle"),
+      description: t("deleteConfirmDescription", {
+        title: resolveDraftTitle(pendingDeleteItem),
+      }),
+      confirmLabel: t("delete"),
+      cancelLabel: t("cancelLabel"),
+      deletingLabel: t("deletingLabel"),
+      isLoading: isDeletingSubmission,
+      onClose: closeDeleteConfirm,
+      onConfirm: confirmDeleteDraft,
+    };
+  }, [
+    closeDeleteConfirm,
+    confirmDeleteDraft,
+    isDeletingSubmission,
+    pendingDeleteItem,
+    resolveDraftTitle,
+    t,
+  ]);
 
   // 9. Effects
   useEffect(() => {
@@ -168,6 +259,8 @@ export function useDraftListingsScreen() {
     onCreateNew,
     onResume,
     onDelete,
+    getDeleteLoading,
+    deleteConfirmModal,
     resumeLabel,
     createLabel,
     addPropertyLabel,

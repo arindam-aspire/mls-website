@@ -79,7 +79,10 @@ export default function PropertyCreateScreen() {
         />
       </div>
 
-      <div ref={propertyFormContainerRef} className="min-w-0">
+      <div
+        ref={propertyFormContainerRef}
+        className="min-w-0 [&_[role=group]]:overflow-hidden"
+      >
         <PropertyForm
           ref={propertyFormRef}
           activeStep={activeStep}

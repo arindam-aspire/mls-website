@@ -1,8 +1,5 @@
 import type { PropertyFormOption } from "@abdoun/abdoun-library";
-import {
-  FLOOR_OPTIONS,
-  FURNITURE_STATUS_OPTIONS,
-} from "../constants/propertyListAdvancedFilters.constants";
+import { FURNITURE_STATUS_OPTIONS } from "../constants/propertyListAdvancedFilters.constants";
 import type {
   PropertyFormOptionItem,
   PropertyFormOptionList,
@@ -33,14 +30,16 @@ const OPTION_LIST_KEYS = [
   "orientations",
   "nationalities",
   "nationality",
+  "land_types",
+  "landTypes",
+  "land_type",
+  "landType",
 ] as const;
 
 export type PropertyFormMasterOptionFallbackLabels = {
   furnished: string;
   unfurnished: string;
   semiFurnished: string;
-  ground: string;
-  penthouse: string;
 };
 
 function asRecord(value: unknown): Record<string, unknown> | null {
@@ -90,11 +89,50 @@ function isNationalityKey(key: string): boolean {
   );
 }
 
+function isLandTypeKey(key: string): boolean {
+  const normalized = normalizeKey(key);
+  return (
+    normalized === "landtype" ||
+    normalized === "landtypes" ||
+    normalized.includes("landtypeoption")
+  );
+}
+
 function hasOptionListKeys(value: Record<string, unknown>): boolean {
+  const groups = asRecord(value.groups);
+  if (groups && Object.keys(groups).length > 0) {
+    return true;
+  }
+
+  if (Array.isArray(value.items) && value.items.length > 0) {
+    return true;
+  }
+
   return OPTION_LIST_KEYS.some((key) => value[key] != null) ||
     Object.keys(value).some(
-      (key) => isFurnishingKey(key) || isFloorKey(key) || isNationalityKey(key),
+      (key) =>
+        isFurnishingKey(key) ||
+        isFloorKey(key) ||
+        isNationalityKey(key) ||
+        isLandTypeKey(key),
     );
+}
+
+/** Flatten `data.groups.{group}` onto the options object for list matching. */
+function mergeGroupedOptions(
+  data: PropertyFormOptionsData,
+): PropertyFormOptionsData {
+  const groups = asRecord(
+    (data as PropertyFormOptionsData & { groups?: unknown }).groups,
+  );
+  if (!groups) {
+    return data;
+  }
+
+  return {
+    ...data,
+    ...groups,
+  };
 }
 
 function unwrapFormOptionsData(
@@ -111,11 +149,11 @@ function unwrapFormOptionsData(
 
   for (const candidate of candidates) {
     if (candidate && hasOptionListKeys(candidate)) {
-      return candidate as PropertyFormOptionsData;
+      return mergeGroupedOptions(candidate as PropertyFormOptionsData);
     }
   }
 
-  return (nestedData ?? root) as PropertyFormOptionsData;
+  return mergeGroupedOptions((nestedData ?? root) as PropertyFormOptionsData);
 }
 
 function asOptionItems(value: PropertyFormOptionList | unknown): PropertyFormOptionItem[] {
@@ -205,7 +243,9 @@ function toFormOption(
     toOptionalTrimmedString(item.furnishing_status_id) ||
     toOptionalTrimmedString(item.floor_id) ||
     toOptionalTrimmedString(item.floor_level_id) ||
-    toOptionalTrimmedString(item.nationality_id);
+    toOptionalTrimmedString(item.nationality_id) ||
+    toOptionalTrimmedString(item.land_type_id) ||
+    toOptionalTrimmedString(item.landTypeId);
   const slugValue =
     toOptionalTrimmedString(item.value) ||
     toOptionalTrimmedString(item.slug) ||
@@ -288,7 +328,9 @@ function parseSavedMasterOption(
     record.floor ??
     record.floor_level ??
     record.furnishing_status ??
-    record.furniture_status;
+    record.furniture_status ??
+    record.land_type ??
+    record.landType;
   if (nested != null && typeof nested === "object") {
     return parseSavedMasterOption(nested);
   }
@@ -298,7 +340,9 @@ function parseSavedMasterOption(
     record.floor_id ??
     record.floor_level_id ??
     record.furnishing_status_id ??
-    record.furniture_status_id;
+    record.furniture_status_id ??
+    record.land_type_id ??
+    record.landTypeId;
   const value =
     toOptionalTrimmedString(id as string | number | undefined) ||
     toOptionalTrimmedString(record.value as string | number | undefined) ||
@@ -411,15 +455,15 @@ export function ensureSavedMasterOption(
   ];
 }
 
-export function withEnsuredFloorOption(
+export function withEnsuredLandTypeOption(
   catalog: PropertyFormOptionsCatalog,
-  savedFloor: unknown,
+  savedLandType: unknown,
 ): PropertyFormOptionsCatalog {
   return {
     ...catalog,
-    floorLevelOptions: ensureSavedMasterOption(
-      catalog.floorLevelOptions,
-      savedFloor,
+    landTypeOptions: ensureSavedMasterOption(
+      catalog.landTypeOptions,
+      savedLandType,
     ),
   };
 }
@@ -444,20 +488,8 @@ export function withPropertyFormOptionFallbacks(
             value: option.value,
             label: furnitureLabels[option.value] ?? option.label,
           })),
-    floorLevelOptions:
-      catalog.floorLevelOptions.length > 0
-        ? catalog.floorLevelOptions
-        : FLOOR_OPTIONS.map((option) => {
-            if (option.value === "ground") {
-              return { value: option.value, label: labels.ground };
-            }
-
-            if (option.value === "penthouse") {
-              return { value: option.value, label: labels.penthouse };
-            }
-
-            return { value: option.value, label: option.label };
-          }),
+    // Floor is removed from Property Information; never fill dropdown options.
+    floorLevelOptions: [],
   };
 }
 
@@ -474,6 +506,8 @@ export function mapPropertyFormOptionsCatalog(
     listingPurposeOptions: mapOptionList([
       optionsData?.listing_purposes,
       optionsData?.listingPurposes,
+      optionsData?.listing_purpose,
+      optionsData?.listingPurpose,
     ]),
     furnishingStatusOptions: mapOptionList(
       listsMatching(
@@ -485,41 +519,43 @@ export function mapPropertyFormOptionsCatalog(
           optionsData?.furnitureStatuses,
           optionsData?.furniture_status,
           optionsData?.furnitureStatus,
+          optionsData?.furnishing_status,
         ],
         isFurnishingKey,
       ),
       true,
     ),
-    floorLevelOptions: mapOptionList(
-      listsMatching(
-        optionsData,
-        [
-          optionsData?.floor_levels,
-          optionsData?.floorLevels,
-          optionsData?.floors,
-          optionsData?.floor,
-          optionsData?.floor_level,
-          optionsData?.floorLevel,
-          optionsData?.floor_options,
-          optionsData?.floorOptions,
-        ],
-        isFloorKey,
-      ),
-      true,
-    ),
+    floorLevelOptions: [],
     completionStatusOptions: withoutUnderConstructionCompletionOptions(
       mapOptionList([
         optionsData?.completion_statuses,
         optionsData?.completionStatuses,
+        optionsData?.completion_status,
       ]),
     ),
-    orientationOptions: mapOptionList([optionsData?.orientations]),
+    orientationOptions: mapOptionList([
+      optionsData?.orientations,
+      optionsData?.direction,
+    ]),
     nationalityOptions: mapOptionList(
       listsMatching(
         optionsData,
         [optionsData?.nationalities, optionsData?.nationality],
         isNationalityKey,
       ),
+    ),
+    landTypeOptions: mapOptionList(
+      listsMatching(
+        optionsData,
+        [
+          optionsData?.land_types,
+          optionsData?.landTypes,
+          optionsData?.land_type,
+          optionsData?.landType,
+        ],
+        isLandTypeKey,
+      ),
+      true,
     ),
   };
 }
@@ -531,4 +567,5 @@ export const EMPTY_PROPERTY_FORM_OPTIONS_CATALOG: PropertyFormOptionsCatalog = {
   completionStatusOptions: [],
   orientationOptions: [],
   nationalityOptions: [],
+  landTypeOptions: [],
 };

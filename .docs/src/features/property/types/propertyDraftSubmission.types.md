@@ -39,7 +39,7 @@ TypeScript request-body shapes for property **draft submission** (create / save 
 - Draft payloads retain the entered Built-up Area value and always persist `"SQM"`. Legacy `"SQFT"` values are converted with `1 sq. ft. = 0.09290304 sq. m.`
 - `route_through_agency` is a top-level boolean on create/update/direct-submit requests and defaults to `false`; `agency_id` is `null` when routing is off and required by the UI when routing is on.
 - Optional GET flags `can_edit` / `can_edit_submission` override client editability rules when present (`false` locks; `true` unlocks; omitted → status/role rules).
-- `media_documents.images` carries uploaded property images; `media_documents.videos` carries uploaded property videos.
+- `media_documents.images` carries uploaded property images; `media_documents.videos` carries uploaded property videos. GET payloads may include `signed_read_url` / `thumb_url` / `object_key` for preview vs persist; outbound save sends only the persist `url`.
 - `review_submit` booleans default to `false` on draft unless the UI sets them explicitly.
 - Mapper from `PropertyFormValues` is not in this file; add under `src/features/property/mappers/` when wiring the API.
 

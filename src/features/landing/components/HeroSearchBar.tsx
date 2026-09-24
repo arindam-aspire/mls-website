@@ -20,6 +20,15 @@ import {
   filterLocationSuggestions,
   parseLocationOptionValue,
 } from "@/src/features/landing/utils/locationTaxonomy.utils";
+import {
+  DEFAULT_PROPERTY_ARRANGEMENT,
+  type PropertyArrangementId,
+} from "@/src/features/property/constants/propertyArrangement.constants";
+import {
+  defaultCategorySlugForArrangement,
+  filterCategoriesByArrangement,
+  resolvePropertyArrangementFromCategorySlug,
+} from "@/src/features/property/utils/propertyArrangement";
 import { useRouter } from "@/src/i18n/navigation";
 import { cn } from "@/src/lib/cn";
 import { bodyTextClasses } from "@/src/lib/typography";
@@ -27,7 +36,6 @@ import { MapPin, Search } from "lucide-react";
 import { useMemo, useState } from "react";
 
 const LISTING_TYPES = ["buy", "rent"] as const;
-const DEFAULT_CATEGORY_SLUG = "residential";
 
 const searchBarWrapperClass =
   "flex w-full min-w-0 max-w-4xl flex-col items-stretch text-start md:items-start";
@@ -41,6 +49,11 @@ const searchCardClass = cn(
 const searchGridClass = cn(
   "grid w-full min-w-0 grid-cols-1 items-center gap-3",
   "md:grid-cols-4 md:gap-4",
+);
+
+const searchGridWithCategoryClass = cn(
+  "grid w-full min-w-0 grid-cols-1 items-center gap-3",
+  "md:grid-cols-5 md:gap-4",
 );
 
 const tabRowClass =
@@ -106,6 +119,9 @@ export function HeroSearchBar({
     [locationTaxonomy],
   );
 
+  const [arrangement, setArrangement] = useState<PropertyArrangementId>(
+    DEFAULT_PROPERTY_ARRANGEMENT,
+  );
   const [propertyType, setPropertyType] = useState("");
   const [subtype, setSubtype] = useState(SELECT_DROPDOWN_EMPTY_VALUE);
   const [listingType, setListingType] = useState<(typeof LISTING_TYPES)[number]>(
@@ -125,26 +141,40 @@ export function HeroSearchBar({
     );
   }, [locationQuery, locationSuggestions]);
 
-  const defaultPropertyType = useMemo(() => {
-    return (
-      categories.find((category) => category.slug === DEFAULT_CATEGORY_SLUG)
-        ?.slug ??
-      categories[0]?.slug ??
-      ""
-    );
-  }, [categories]);
+  const arrangementCategories = useMemo(
+    () => filterCategoriesByArrangement(categories, arrangement),
+    [arrangement, categories],
+  );
+
+  const defaultPropertyType = useMemo(
+    () => defaultCategorySlugForArrangement(categories, arrangement),
+    [arrangement, categories],
+  );
 
   const activePropertyType = useMemo(() => {
-    if (categories.some((category) => category.slug === propertyType)) {
+    if (
+      arrangementCategories.some((category) => category.slug === propertyType)
+    ) {
       return propertyType;
     }
     return defaultPropertyType;
-  }, [categories, defaultPropertyType, propertyType]);
+  }, [arrangementCategories, defaultPropertyType, propertyType]);
 
   const selectedCategory = useMemo(
     () => categories.find((category) => category.slug === activePropertyType),
-    [categories, activePropertyType],
+    [activePropertyType, categories],
   );
+
+  const categoryOptions = useMemo(
+    () =>
+      arrangementCategories.map((category) => ({
+        value: category.slug,
+        label: category.name,
+      })),
+    [arrangementCategories],
+  );
+
+  const showCategorySelect = arrangement === "properties";
 
   const subtypeOptions = useMemo(
     () =>
@@ -155,8 +185,21 @@ export function HeroSearchBar({
     [selectedCategory],
   );
 
+  const handleArrangementChange = (nextArrangement: string) => {
+    if (nextArrangement !== "properties" && nextArrangement !== "land") {
+      return;
+    }
+
+    setArrangement(nextArrangement);
+    setPropertyType(
+      defaultCategorySlugForArrangement(categories, nextArrangement),
+    );
+    setSubtype(SELECT_DROPDOWN_EMPTY_VALUE);
+  };
+
   const handlePropertyTypeChange = (nextType: string) => {
     setPropertyType(nextType);
+    setArrangement(resolvePropertyArrangementFromCategorySlug(nextType));
     setSubtype(SELECT_DROPDOWN_EMPTY_VALUE);
   };
 
@@ -207,9 +250,7 @@ export function HeroSearchBar({
 
   if (isLoading) {
     return (
-      <HeroSearchBarSkeleton
-        propertyTypeLabel={t("heroPropertyTypeLabel")}
-      />
+      <HeroSearchBarSkeleton propertyTypeLabel={t("heroPropertyTypeLabel")} />
     );
   }
 
@@ -234,21 +275,31 @@ export function HeroSearchBar({
     <div className={searchBarWrapperClass}>
       <ButtonGroup
         aria-label={t("heroPropertyTypeLabel")}
-        value={activePropertyType}
-        onChange={handlePropertyTypeChange}
+        value={arrangement}
+        onChange={handleArrangementChange}
         size="sm"
         fullWidth
-        items={categories.map((category) => ({
-          value: category.slug,
-          label: category.name,
-        }))}
+        items={[
+          {
+            value: "properties",
+            label: t("heroArrangementProperties"),
+          },
+          {
+            value: "land",
+            label: t("heroArrangementLand"),
+          },
+        ]}
         rounded="top-only"
         className={cn(tabRowClass, "!border-0 bg-transparent")}
         selectedClassName={selectedTabClass}
         unselectedClassName={unselectedTabClass}
       />
       <Card className={searchCardClass}>
-        <div className={searchGridClass}>
+        <div
+          className={
+            showCategorySelect ? searchGridWithCategoryClass : searchGridClass
+          }
+        >
           <SelectDropdown
             className="min-w-0"
             aria-label={t("heroListingPlaceholder")}
@@ -261,6 +312,17 @@ export function HeroSearchBar({
             }))}
             variant="ghost"
           />
+          {showCategorySelect ? (
+            <SelectDropdown
+              className="min-w-0"
+              aria-label={t("heroCategoryAriaLabel")}
+              placeholder={t("heroCategoryPlaceholder")}
+              value={activePropertyType}
+              onChange={handlePropertyTypeChange}
+              options={categoryOptions}
+              variant="ghost"
+            />
+          ) : null}
           <SelectDropdown
             className="min-w-0"
             aria-label={t("heroSelectTypePlaceholder")}

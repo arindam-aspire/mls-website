@@ -1,20 +1,22 @@
 type PropertyLocationDlsTranslation = (
   key:
     | "dls.sectionTitle"
-    | "dls.government"
-    | "dls.department"
+    | "dls.governent"
+    | "dls.directorate"
     | "dls.village"
-    | "dls.hod"
+    | "dls.parcel"
     | "dls.section"
-    | "dls.governmentPlaceholder"
-    | "dls.departmentPlaceholder"
+    | "dls.landType"
+    | "dls.governentPlaceholder"
+    | "dls.directoratePlaceholder"
     | "dls.villagePlaceholder"
-    | "dls.hodPlaceholder"
+    | "dls.parcelPlaceholder"
     | "dls.sectionPlaceholder"
-    | "dls.selectGovernmentFirst"
-    | "dls.selectDepartmentFirst"
+    | "dls.landTypePlaceholder"
+    | "dls.selectGovernentFirst"
+    | "dls.selectDirectorateFirst"
     | "dls.selectVillageFirst"
-    | "dls.selectHodFirst"
+    | "dls.selectParcelFirst"
     | "dls.loading"
     | "dls.empty"
     | "dls.loadError"
@@ -23,20 +25,22 @@ type PropertyLocationDlsTranslation = (
 
 export type PropertyLocationDlsLabels = {
   sectionTitle: string;
-  government: string;
-  department: string;
+  governent: string;
+  directorate: string;
   village: string;
-  hod: string;
+  parcel: string;
   section: string;
-  governmentPlaceholder: string;
-  departmentPlaceholder: string;
+  landType: string;
+  governentPlaceholder: string;
+  directoratePlaceholder: string;
   villagePlaceholder: string;
-  hodPlaceholder: string;
+  parcelPlaceholder: string;
   sectionPlaceholder: string;
-  selectGovernmentFirst: string;
-  selectDepartmentFirst: string;
+  landTypePlaceholder: string;
+  selectGovernentFirst: string;
+  selectDirectorateFirst: string;
   selectVillageFirst: string;
-  selectHodFirst: string;
+  selectParcelFirst: string;
   loading: string;
   empty: string;
   loadError: string;
@@ -48,20 +52,22 @@ export function buildPropertyLocationDlsLabels(
 ): PropertyLocationDlsLabels {
   return {
     sectionTitle: t("dls.sectionTitle"),
-    government: t("dls.government"),
-    department: t("dls.department"),
+    governent: t("dls.governent"),
+    directorate: t("dls.directorate"),
     village: t("dls.village"),
-    hod: t("dls.hod"),
+    parcel: t("dls.parcel"),
     section: t("dls.section"),
-    governmentPlaceholder: t("dls.governmentPlaceholder"),
-    departmentPlaceholder: t("dls.departmentPlaceholder"),
+    landType: t("dls.landType"),
+    governentPlaceholder: t("dls.governentPlaceholder"),
+    directoratePlaceholder: t("dls.directoratePlaceholder"),
     villagePlaceholder: t("dls.villagePlaceholder"),
-    hodPlaceholder: t("dls.hodPlaceholder"),
+    parcelPlaceholder: t("dls.parcelPlaceholder"),
     sectionPlaceholder: t("dls.sectionPlaceholder"),
-    selectGovernmentFirst: t("dls.selectGovernmentFirst"),
-    selectDepartmentFirst: t("dls.selectDepartmentFirst"),
+    landTypePlaceholder: t("dls.landTypePlaceholder"),
+    selectGovernentFirst: t("dls.selectGovernentFirst"),
+    selectDirectorateFirst: t("dls.selectDirectorateFirst"),
     selectVillageFirst: t("dls.selectVillageFirst"),
-    selectHodFirst: t("dls.selectHodFirst"),
+    selectParcelFirst: t("dls.selectParcelFirst"),
     loading: t("dls.loading"),
     empty: t("dls.empty"),
     loadError: t("dls.loadError"),

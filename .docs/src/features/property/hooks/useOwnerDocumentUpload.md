@@ -8,7 +8,7 @@ Hook for owner document uploads on the property create form. Generates a stable 
 
 - Create `draft_client_id` once per mount via `createDraftClientId` (separate UUID from media uploads).
 - Validate file type/size (PDF, DOC, DOCX; max 10 MB).
-- Delegate upload to `uploadOwnerDocument` (presign + PUT/POST); returns a **stable** persistence URI (`file_url` / `object_key`), never an expiring signed read URL.
+- Delegate upload to `uploadOwnerDocument` (presign + PUT/POST); returns a **preview** URI when `signed_read_url` is `http(s)`, while draft save remaps to the stable `file_url` / `object_key`.
 - Toast localized errors on validation or upload failure (backend message as description when present).
 - Stable `onUploadOwnerDocument` callback (`toastRef`) — pairs with `@abdoun/abdoun-library` **0.1.57+** upload state fixes (`handleOwnerDocumentUploadingChange`, `DocInput` / `MediaInput` `onUploadingChange`).
 

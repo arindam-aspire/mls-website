@@ -38,7 +38,10 @@ import type {
   PropertySubmissionDirectSubmitRequestBody,
 } from "../types/propertyDraftSubmission.types";
 
-export type PropertyListingsNamespace = "myListings" | "manageListings";
+export type PropertyListingsNamespace =
+  | "myListings"
+  | "manageListings"
+  | "draftListings";
 
 export const FAVORITES_ALL_QUERY_KEY = ["property", "favorites", "all"] as const;
 

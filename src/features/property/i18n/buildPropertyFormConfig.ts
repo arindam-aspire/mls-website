@@ -4,6 +4,12 @@ import type {
   PropertyIdentificationFieldDefinition,
   PropertyPricingFieldDefinition,
 } from "@abdoun/abdoun-library";
+import type { PropertyArrangementId } from "../constants/propertyArrangement.constants";
+import {
+  PROPERTY_IDENTIFICATION_FIELDS_BY_ARRANGEMENT,
+  PROPERTY_LAND_IDENTIFICATION_PLACEHOLDER_KEY,
+  type PropertyIdentificationFieldKey,
+} from "../constants/propertyIdentification.constants";
 import { withoutUnderConstructionCompletionOptions } from "../mappers/propertyFormOptions.mapper";
 import type { PropertyFormOptionsCatalog } from "../types/propertyFormOptions.types";
 
@@ -14,7 +20,6 @@ type PropertyFormConfigTranslation = {
   (key: "areaPlaceholder"): string;
   (key: "yearBuiltLabel"): string;
   (key: "yearBuiltPlaceholder"): string;
-  (key: "floorLevelLabel"): string;
   (key: "furnishingStatusLabel"): string;
   (key: "setAsPrimaryImage"): string;
   (key: "listingPurposes.sale"): string;
@@ -38,6 +43,10 @@ type PropertyFormConfigTranslation = {
   (key: "identification.basinNumber"): string;
   (key: "identification.parcelNumber"): string;
   (key: "identification.buildingNumber"): string;
+  (key: "identification.building"): string;
+  (key: "identification.floorNumber"): string;
+  (key: "identification.floor"): string;
+  (key: "identification.landType"): string;
   (key: "completionStatuses.ready"): string;
   (key: "completionStatuses.offPlan"): string;
   (key: "completionStatuses.secondary"): string;
@@ -109,9 +118,59 @@ function findFurnishingValue(
   return kind;
 }
 
+function identificationFieldLabel(
+  t: PropertyFormConfigTranslation,
+  key: PropertyIdentificationFieldKey,
+): string {
+  switch (key) {
+    case "apartment_number":
+      return t("identification.apartmentNumber");
+    case "plot_number":
+      return t("identification.plotNumber");
+    case "basin_number":
+      return t("identification.basinNumber");
+    case "parcel_number":
+      return t("identification.parcelNumber");
+    case "building_number":
+      return t("identification.building");
+    case "floor_number":
+      return t("identification.floor");
+    case "land_type":
+      return t("identification.landType");
+    default: {
+      const _exhaustive: never = key;
+      return _exhaustive;
+    }
+  }
+}
+
+function buildIdentificationFields(
+  t: PropertyFormConfigTranslation,
+  arrangement: PropertyArrangementId,
+): PropertyIdentificationFieldDefinition[] {
+  const keys = PROPERTY_IDENTIFICATION_FIELDS_BY_ARRANGEMENT[arrangement];
+
+  // Empty array falls back to library defaults (includes Basin Number).
+  if (keys.length === 0) {
+    return [
+      {
+        key: PROPERTY_LAND_IDENTIFICATION_PLACEHOLDER_KEY,
+        label: "\u200b",
+        placeholder: "\u200b",
+      },
+    ];
+  }
+
+  return keys.map((key) => ({
+    key,
+    label: identificationFieldLabel(t, key),
+  }));
+}
+
 export function buildPropertyFormConfig(
   t: PropertyFormConfigTranslation,
   catalog: PropertyFormOptionsCatalog,
+  arrangement: PropertyArrangementId = "properties",
 ): PropertyFormConfig {
   const listingPurposeFallback: PropertyFormOption[] = [
     { value: "sale", label: t("listingPurposes.sale") },
@@ -131,13 +190,7 @@ export function buildPropertyFormConfig(
     "semi",
   );
 
-  const identificationFields: PropertyIdentificationFieldDefinition[] = [
-    { key: "apartment_number", label: t("identification.apartmentNumber") },
-    { key: "plot_number", label: t("identification.plotNumber") },
-    { key: "basin_number", label: t("identification.basinNumber") },
-    { key: "parcel_number", label: t("identification.parcelNumber") },
-    { key: "building_number", label: t("identification.buildingNumber") },
-  ];
+  const identificationFields = buildIdentificationFields(t, arrangement);
 
   const completionStatusFallback: PropertyFormOption[] = [
     { value: "ready", label: t("completionStatuses.ready") },
@@ -184,7 +237,9 @@ export function buildPropertyFormConfig(
       listingPurposeFallback,
     ),
     furnishingStatusOptions: mergeOptions(catalog.furnishingStatusOptions, []),
-    floorLevelOptions: mergeOptions(catalog.floorLevelOptions, []),
+    // Explicit empty array hides Floor on Property Information. `undefined`
+    // would restore the library’s deprecated Ground–Penthouse defaults.
+    floorLevelOptions: [],
     completionStatusOptions: mergeOptions(
       withoutUnderConstructionCompletionOptions(catalog.completionStatusOptions),
       completionStatusFallback,
@@ -213,9 +268,8 @@ export function buildPropertyFormConfig(
     identificationFieldLabels: {
       apartmentNumber: t("identification.apartmentNumber"),
       plotNumber: t("identification.plotNumber"),
-      basinNumber: t("identification.basinNumber"),
       parcelNumber: t("identification.parcelNumber"),
-      buildingNumber: t("identification.buildingNumber"),
+      buildingNumber: t("identification.building"),
     },
     identificationFields,
     mapLocationLabels: {
@@ -228,7 +282,6 @@ export function buildPropertyFormConfig(
     setAsPrimaryImageLabel: t("setAsPrimaryImage"),
     yearBuiltLabel: t("yearBuiltLabel"),
     yearBuiltPlaceholder: t("yearBuiltPlaceholder"),
-    floorLevelLabel: t("floorLevelLabel"),
     furnishingStatusLabel: t("furnishingStatusLabel"),
     listingPurposeLabel: t("listingPurposeLabel"),
     listingPurposePlaceholder: t("listingPurposePlaceholder"),

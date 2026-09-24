@@ -71,16 +71,15 @@ See [packages.md](./packages.md) for the full dependency table.
 
 ## Getting started
 
-**Private package:** `@abdoun/abdoun-library` **0.1.91** is installed from AWS CodeArtifact (see root [`.npmrc`](../.npmrc)). [next.config.ts](../next.config.ts) pins `turbopack.root` and `outputFileTracingRoot` to this app so sibling Next.js projects under `azure/` cannot steal App Router discovery (`GET /en` 404). Webpack builds set `resolve.symlinks = false`.
+**Abdoun UI library:** `@abdoun/abdoun-library` **0.1.92** is installed from the Abdoun AWS CodeArtifact registry (`@abdoun:registry` in the local [`.npmrc`](../.npmrc)). Public packages still use `registry.npmjs.org`. [next.config.ts](../next.config.ts) transpiles the package, pins `turbopack.root` / `outputFileTracingRoot` to this app (so sibling Next apps under `azure/` cannot break `/en`), and sets webpack `resolve.symlinks = false`. Do not edit files under `node_modules/@abdoun/abdoun-library`; publish a new library version and bump this dependency instead.
 
-CI can still install the package from the Coderlook Git (Gitea) npm registry (see root [`.npmrc`](../.npmrc)). Public packages still use `registry.npmjs.org`. CI injects a Gitea package-read token (`GITEA_NPM_TOKEN`) in `azure-pipelines.yml`.
+CI injects a CodeArtifact (or Gitea) package-read token as needed (`azure-pipelines.yml`). For local installs, refresh CodeArtifact auth when `npm install` returns `E401` (`aws codeartifact login --tool npm --repository abdoun-library --domain abdoun --domain-owner 951138415440 --region us-west-2 --namespace "@abdoun"`).
 
 **If `npm install` fails with `E401`:** credentials are missing or expired in your **user** npmrc, not in the repo.
 
 1. Remove any old Azure Artifacts / Verdaccio lines from `%USERPROFILE%\.npmrc` (e.g. `coderlook.pkgs.visualstudio.com`, `registry=http://localhost:4873/`, or related tokens).
-2. Coderlook Git (Gitea) → **Settings** → **Applications** → **Generate New Token** with **package read** scope.
-3. Add auth to `%USERPROFILE%\.npmrc` using the template in [`.npmrc.user.example`](../.npmrc.user.example):
-   `//git.coderlook.com/api/packages/abetal/npm/:_authToken=YOUR_TOKEN`
+2. Refresh CodeArtifact npm login for the `@abdoun` scope (token lasts 12 hours).
+3. Gitea package-read tokens (optional fallback) use the template in [`.npmrc.user.example`](../.npmrc.user.example).
 
 Then run `npm install` again.
 
@@ -99,6 +98,7 @@ Stop `npm run dev` before `npm run build`. Stale `.next/dev/types/validator.ts` 
 | Variable | Purpose |
 | --- | --- |
 | `NEXT_PUBLIC_API_BASE_URL` | Backend API base URL (defaults to dev API in `environment.config.ts`) |
+| `NEXT_PUBLIC_APP_URL` | Public frontend origin for invitation emails and rewritten agency deep links (no trailing slash). Empty falls back to the current browser origin. Never hardcode localhost or production hosts in source. |
 | `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | Google Maps JavaScript API key for the Add Property location map |
 
 ---
@@ -599,7 +599,7 @@ From `src/configs/environment.config.ts` → `API_BASE_URL` (env: `NEXT_PUBLIC_A
 | --- | --- |
 | `PROPERTY_LIST` | `/properties` — query may include `city`, `locations` (single area name or comma-joined `city\|area` values), plus existing filters |
 | `FEATURE_CATALOG()` | `/features?is_active=true` |
-| `PROPERTY_FORM_OPTIONS()` | `/property-form-options` — Add Property master-data options including `nationalities` (auth when credentials exist) |
+| `PROPERTY_FORM_OPTIONS()` | `/property-form-options` — Add Property master-data options (`furnishing_status`, `floor`, `listing_purpose`, `completion_status`, `direction`, `land_type`, `nationalities`; auth when credentials exist). Optional `?group=` filter. |
 | `FAVORITE_LIST` | `/favorites` — `page`, `pageSize` (auth required) |
 | `FAVORITE_REMOVE` | `/favorites/:propertyHash` — DELETE (auth required) |
 
@@ -735,6 +735,7 @@ All use `ComingSoonCard` with custom `title` / `description`:
 | --- | --- |
 | `getEnvironmentConfig()` | Returns `baseUrl` + `environment` |
 | `API_BASE_URL` | Used by Axios factory |
+| `APP_URL` / `getPublicAppOrigin()` | Public frontend origin (`NEXT_PUBLIC_APP_URL`; else browser origin) |
 | `GOOGLE_MAPS_API_KEY` | Google Maps JS API key (`NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`) |
 
 Default API: `https://dev-api-abdn.wpsitedesigner.com/api/v1`

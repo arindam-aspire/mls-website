@@ -32,6 +32,9 @@
     "statusBuy": "شراء",
     "statusRent": "إيجار",
     "categoryPlaceholder": "اختر الفئة",
+    "arrangementAriaLabel": "تصنيف العقار",
+    "arrangementProperties": "عقارات",
+    "arrangementLand": "أراضي",
     "typePlaceholder": "اختر نوع العقار",
     "locationPlaceholder": "ابحث عن موقع",
     "locationEmptyMessage": "لم يتم العثور على مواقع",
@@ -43,6 +46,7 @@
   "filterLabels": {
     "lookingFor": "أبحث عن",
     "status": "الحالة",
+    "arrangement": "التصنيف",
     "category": "الفئة",
     "type": "نوع العقار",
     "location": "الموقع",

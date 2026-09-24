@@ -8,7 +8,7 @@ This directory is the **single source of truth** for application flow, module be
 | --- | --- |
 | [application.md](./application.md) | Whole-app architecture, routes, auth, APIs |
 | [folder-structure.md](./folder-structure.md) | Repository tree diagram |
-| [next.config.md](./next.config.md) | Next.js config (i18n plugin, linked `@abdoun/abdoun-library`, images) |
+| [next.config.md](./next.config.md) | Next.js config (i18n plugin, `@abdoun/abdoun-library` 0.1.92, images) |
 | [packages.md](./packages.md) | npm dependencies |
 
 ## Mirrored documentation

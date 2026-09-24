@@ -8,7 +8,7 @@ Maps official DLS API rows and payload aliases into Add Property select options 
 
 - Unwrap `GET /dls-locations` `data.items` (or a bare array).
 - Map `{ code, name }` to `SelectOption` values/labels. Duplicate names append the code.
-- Extract `gov_code` / `gov_name` / `dept_*` / `vill_*` / `hod_*` / `sect_*` from location, property details, or `identification_fields`, including Excel-style aliases (`GOV_CODE`, `governorate`, …).
+- Extract `gov_code` / `gov_name` / `dept_*` / `vill_*` / `hod_*` / `sect_*` from location, property details, or `identification_fields`, including Excel-style aliases (`GOV_CODE`, `governent`, `governorate`, `government`, `directorate`, `parcel`, …). User-facing copy uses **Governent** / **Directorate** / **Parcel**; persisted API keys remain `gov_code` / `gov_name`, `dept_*`, and `hod_*`.
 - Apply a DLS selection onto a location or details object, omitting empty keys so unsaved-change snapshots stay clean.
 
 # Exports

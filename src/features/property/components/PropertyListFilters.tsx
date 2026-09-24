@@ -11,6 +11,8 @@ import {
   type ToggleButtonItem,
 } from "@/src/components/ui";
 import { isRtlLocale } from "@/src/i18n/routing";
+import { PropertyArrangementToggle } from "@/src/features/property/components/PropertyArrangementToggle";
+import type { PropertyArrangementId } from "@/src/features/property/constants/propertyArrangement.constants";
 import { Bookmark, MapPin, Minus, RotateCcw, SlidersHorizontal } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
@@ -43,9 +45,13 @@ export type PropertyListFiltersProps = {
   status: string;
   statusOptions: ToggleButtonItem[];
   onStatusChange: (value: string) => void;
+  arrangement: PropertyArrangementId;
+  arrangementOptions: ToggleButtonItem[];
+  onArrangementChange: (value: PropertyArrangementId) => void;
   category: string;
   categoryOptions: SelectDropdownOption[];
   onCategoryChange: (value: string) => void;
+  showCategorySelect?: boolean;
   type: string;
   typeOptions: SelectDropdownOption[];
   onTypeChange: (value: string) => void;
@@ -125,9 +131,13 @@ export function PropertyListFilters({
   status,
   statusOptions,
   onStatusChange,
+  arrangement,
+  arrangementOptions,
+  onArrangementChange,
   category,
   categoryOptions,
   onCategoryChange,
+  showCategorySelect = true,
   type,
   typeOptions,
   onTypeChange,
@@ -190,8 +200,8 @@ export function PropertyListFilters({
   onSaveSearch,
   savedSearchId,
   statusAriaLabel = "Listing status",
-  categoryAriaLabel = "Property category",
-  categoryPlaceholder = "Select category",
+  categoryAriaLabel,
+  categoryPlaceholder,
   typeAriaLabel = "Property type",
   typePlaceholder = "Select type",
   locationAriaLabel = "Location",
@@ -206,6 +216,10 @@ export function PropertyListFilters({
   const tPropertyList = useTranslations("propertyList.filters");
   const tPropertyListAmenities = useTranslations("propertyList.advanced.amenities");
   const tSavedSearch = useTranslations("savedSearches");
+  const resolvedCategoryAriaLabel =
+    categoryAriaLabel ?? tPropertyList("categoryAriaLabel");
+  const resolvedCategoryPlaceholder =
+    categoryPlaceholder ?? tPropertyList("categoryPlaceholder");
   const isUpdateMode = Boolean(savedSearchId);
   const saveSearchActionLabel = isUpdateMode
     ? tSavedSearch("updateSearch")
@@ -318,16 +332,27 @@ export function PropertyListFilters({
             disabled={disabled}
           />
 
-          <SelectDropdown
-            className={cn(mobileScrollItemClassName, "md:col-span-1")}
-            aria-label={categoryAriaLabel}
-            placeholder={categoryPlaceholder}
-            value={category}
-            options={categoryOptions}
-            onChange={onCategoryChange}
-            disabled={disabled || categoryOptions.length === 0}
-            variant="outline"
+          <PropertyArrangementToggle
+            className={cn(mobileToggleScrollItemClassName, "md:col-span-1")}
+            value={arrangement}
+            onChange={onArrangementChange}
+            items={arrangementOptions}
+            ariaLabel={tPropertyList("arrangementAriaLabel")}
+            disabled={disabled}
           />
+
+          {showCategorySelect ? (
+            <SelectDropdown
+              className={cn(mobileScrollItemClassName, "md:col-span-1")}
+              aria-label={resolvedCategoryAriaLabel}
+              placeholder={resolvedCategoryPlaceholder}
+              value={category}
+              options={categoryOptions}
+              onChange={onCategoryChange}
+              disabled={disabled || categoryOptions.length === 0}
+              variant="outline"
+            />
+          ) : null}
 
           <SelectDropdown
             className={cn(mobileScrollItemClassName, "md:col-span-1")}
