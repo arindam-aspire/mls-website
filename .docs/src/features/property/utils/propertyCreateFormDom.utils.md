@@ -9,6 +9,7 @@ Host DOM patches for `@abdoun/abdoun-library` `PropertyForm` on Add Property. Th
 - Keep the library-owned `reference_number` input native `readOnly` so a backend value cannot be typed or pasted.
 - Hide the Reference Number field while empty **or** while it still holds the host pending sentinel (`PENDING_PROPERTY_REFERENCE_NUMBER`). Show the read-only field once draft save or hydration returns a real backend value.
 - Hide the Built-up Area **Unit** select (`name="built_up_area_unit"`) so the form accepts square metres only.
+- Mark `input[name="built_up_area"]` with `data-property-form-field="property_details.built_up_area"` and render API 400 text under that input. The library input does not read external field errors for Built-up Area.
 - Replace hardcoded library copy `Owner Document` / `Owner Documents` with the host i18n label **Owner ID or Passport**.
 - Promote any still-visible Floor Number identification input (`name="floor_number"`) to `type="number"` (host DLS Floor field sets this directly).
 - Sync identification field visibility: Create Property passes an **empty** visible list so **library** free-text identification is hidden. Host DLS inputs (`[data-dls-field-id]` / `[data-property-location-dls-portal]`) reuse those `name`s and stay visible (Parcel Number, Plot Number, Building, Floor, Apartment). Still clears Basin Number and the empty-array placeholder when present.

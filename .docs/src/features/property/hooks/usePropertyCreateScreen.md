@@ -64,7 +64,8 @@ Screen hook for `PropertyCreateScreen`: page copy, breadcrumb, create-form catal
 - `propertyFormRef` (`PropertyFormHandle`) for jumping to the first BE field error.
 - Reads `submission_id` from `useSearchParams` on load; `router.replace` updates query after first successful draft save.
 - `useGetPropertyTaxonomy` / `useGetLocationTaxonomy` also update `property.store` on success.
-- Host owns `propertyDetails` and `maxReachedStep`; library returns merged values on `onNext` and forward `onStepClick` for persistence. Built-up Area is always stored and submitted as `"SQM"`. Legacy `"SQFT"` draft values are converted on hydrate.
+- Host owns `propertyDetails` and `maxReachedStep`; library returns merged values on `onNext` and forward `onStepClick` for persistence. Built-up Area is one number with unit `sqm` or `sqft`. API 400 `details[0].field` / `details[0].message` for that field is shown on the Built-up Area input.
+- The form Save action redirects to `/draft-listings` after a successful draft. A draft is not a public listing (`GET /properties` only returns `active`). Unsaved-changes save and media upload do not redirect.
 
 # Exports
 

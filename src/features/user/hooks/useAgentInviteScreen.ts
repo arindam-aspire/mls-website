@@ -1,5 +1,6 @@
 "use client";
 
+import { parseStoredPhoneNumber } from "@/src/features/profile/utils/parseStoredPhoneNumber";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useToast } from "@/src/hooks/useToast";
@@ -25,10 +26,14 @@ type AgentInviteStep = "loading" | "error" | "form" | "passwordInstruction" | "a
 function buildInitialFormValues(
   invitation: AgentInvitationPreview,
 ): Partial<ReturnType<typeof useAgentOnboardingForm>["formState"]> {
+  const phone = parseStoredPhoneNumber(invitation.phone ?? "");
+
   return {
     fullName: resolveInvitationFullName(invitation.fullName, invitation.email),
     email: invitation.email ?? "",
     position: invitation.position ?? "",
+    phoneCountryCode: phone.countryCode,
+    phoneNationalNumber: phone.nationalNumber,
     serviceAreaValues:
       invitation.serviceArea?.trim().length
         ? invitation.serviceArea.split(",").map((value) => value.trim()).filter(Boolean)

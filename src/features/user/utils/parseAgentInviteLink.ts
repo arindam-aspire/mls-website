@@ -1,7 +1,7 @@
 /**
- * API may return comma-separated URLs; prefer the segment that contains the invite path/token.
- * Absolute URLs from the API may hardcode a host such as `http://localhost:3000`;
- * rewrite onto `window.location.origin` while keeping path, query, and token.
+ * API may return comma-separated URLs. Prefer the segment that contains the
+ * invite path. Backend links are already absolute (`/agent-invite?token=` or
+ * `/agent-password-setup?token=`). Keep that host; do not rebuild the URL.
  */
 export function parseAgentInviteLink(rawLink: string): string {
   const trimmed = rawLink.trim();
@@ -17,33 +17,39 @@ export function parseAgentInviteLink(rawLink: string): string {
         .filter(Boolean)
     : [trimmed];
 
-  const inviteSegment = segments.find(
-    (segment) =>
-      segment.includes("agent-invite") ||
-      segment.includes("agent-password-setup") ||
-      segment.includes("token="),
-  );
-
-  const link = inviteSegment ?? segments[segments.length - 1] ?? trimmed;
-
-  if (typeof window === "undefined") {
-    return link;
-  }
+  const inviteSegment =
+    segments.find(
+      (segment) =>
+        segment.includes("agent-invite") ||
+        segment.includes("agent-password-setup") ||
+        segment.includes("token="),
+    ) ??
+    segments[segments.length - 1] ??
+    trimmed;
 
   try {
-    const url = new URL(link, window.location.origin);
-    const locale =
-      window.location.pathname.match(/^\/(en|ar|es|fr)(?:\/|$)/)?.[1] ?? "en";
+    const url = new URL(inviteSegment);
+    if (url.protocol !== "http:" && url.protocol !== "https:") {
+      return inviteSegment;
+    }
 
-    const pathname = /^\/(en|ar|es|fr)(?:\/|$)/.test(url.pathname)
-      ? url.pathname.replace(/^\/(en|ar|es|fr)(?=\/|$)/, `/${locale}`)
-      : url.pathname.startsWith("/")
-        ? `/${locale}${url.pathname}`
-        : `/${locale}/${url.pathname}`;
+    const token =
+      url.searchParams.get("token") ??
+      url.searchParams.get("invitation_token") ??
+      "";
 
-    return `${window.location.origin}${pathname}${url.search}${url.hash}`;
+    if (!token) {
+      return url.toString();
+    }
+
+    const isPasswordSetup = url.pathname.includes("agent-password-setup");
+    const path = isPasswordSetup ? "agent-password-setup" : "agent-invite";
+    const locale = url.pathname.match(/^\/(en|ar|es|fr)(?=\/|$)/)?.[1];
+    const prefix = locale ? `/${locale}` : "";
+
+    return `${url.origin}${prefix}/${path}?token=${encodeURIComponent(token)}`;
   } catch {
-    return link;
+    return inviteSegment;
   }
 }
 

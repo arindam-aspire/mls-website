@@ -13,6 +13,7 @@ import {
 } from "../constants/selectAgency.constants";
 import { getAgencyList } from "../services/profile.service";
 import type { AgencyListItem } from "../types/profile.types";
+import { isSelectableAgency } from "../utils/agencyApi.utils";
 import { filterAgenciesBySearch } from "../utils/selectAgency.utils";
 
 type UseSelectAgencyModalParams = {
@@ -44,7 +45,10 @@ export function useSelectAgencyModal({ isOpen, setIsOpen }: UseSelectAgencyModal
     enabled: isOpen,
   });
 
-  const agencies = agencyList?.items ?? [];
+  const agencies = useMemo(
+    () => (agencyList?.items ?? []).filter(isSelectableAgency),
+    [agencyList?.items],
+  );
 
   const filteredAgencies = useMemo(
     () => filterAgenciesBySearch(agencies, searchQuery),
@@ -52,7 +56,7 @@ export function useSelectAgencyModal({ isOpen, setIsOpen }: UseSelectAgencyModal
   );
 
   const selectedAgency = useMemo(
-    () => agencies.find((agency) => agency.id === selectedAgencyId) ?? null,
+    () => agencies.find((agency) => agency.agency_id === selectedAgencyId) ?? null,
     [agencies, selectedAgencyId],
   );
 
@@ -60,12 +64,13 @@ export function useSelectAgencyModal({ isOpen, setIsOpen }: UseSelectAgencyModal
     setIsOpen(false);
   }, [setIsOpen]);
 
-  const onSelectAgency = useCallback(
-    (agency: AgencyListItem) => {
-      setSelectedAgencyId(agency.id);
-    },
-    [],
-  );
+  const onSelectAgency = useCallback((agency: AgencyListItem) => {
+    if (!isSelectableAgency(agency) || !agency.agency_id) {
+      return;
+    }
+
+    setSelectedAgencyId(agency.agency_id);
+  }, []);
 
   const onSearchChange = useCallback(
     (value: string) => {

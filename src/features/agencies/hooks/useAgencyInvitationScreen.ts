@@ -8,7 +8,7 @@ import { useRouter } from "@/src/i18n/navigation";
 import type { AgencyInvitationPreview } from "@/src/features/profile/types/profile.types";
 import {
   acceptAgencyInvitation,
-  uploadAgencyInvitationLegalDocument,
+  uploadAgencyLegalDocumentFile,
   validateAgencyInvitation,
 } from "@/src/features/profile/services/profile.service";
 import { rewriteAgencyPasswordSetupLink } from "../utils/normalizeAgencyInvitationLink";
@@ -96,13 +96,13 @@ export function useAgencyInvitationScreen() {
       agencyName: invitation?.agency_name ?? "",
       tradeName: invitation?.agency_trade_name ?? "",
       email: invitation?.email ?? "",
-      phone: invitation?.phone ?? "",
+      phone: invitation?.phone?.trim() ?? "",
     }),
     [invitation],
   );
 
   const onSubmit = useCallback(
-    async (values: AgencyInvitationFormValues & { legalDocument: File }) => {
+    async (values: AgencyInvitationFormValues & { legalDocument: File | null }) => {
       if (!token) {
         return;
       }
@@ -110,12 +110,22 @@ export function useAgencyInvitationScreen() {
       setSubmitError(null);
 
       try {
-        setIsUploading(true);
-        const legalDocumentUrl = await uploadAgencyInvitationLegalDocument(
-          values.legalDocument,
-          token,
-        );
-        setIsUploading(false);
+        const existingLegalDocumentUrl = invitation?.legal_document_s3_link?.trim() ?? "";
+        let legalDocumentUrl = existingLegalDocumentUrl;
+
+        if (values.legalDocument) {
+          setIsUploading(true);
+          legalDocumentUrl = await uploadAgencyLegalDocumentFile(values.legalDocument, {
+            auth: false,
+          });
+          setIsUploading(false);
+        }
+
+        if (!legalDocumentUrl || legalDocumentUrl.startsWith("dev://")) {
+          setSubmitError(t("uploadFailed"));
+          return;
+        }
+
         setIsSubmitting(true);
 
         const response = await acceptAgencyInvitation({
@@ -123,6 +133,7 @@ export function useAgencyInvitationScreen() {
           agency_name: values.agencyName.trim(),
           agency_trade_name: values.tradeName.trim(),
           phone: values.phone.trim(),
+          phone_number: values.phone.trim(),
           legal_document_s3_link: legalDocumentUrl,
         });
 
@@ -146,7 +157,7 @@ export function useAgencyInvitationScreen() {
         setIsSubmitting(false);
       }
     },
-    [t, toast, token],
+    [invitation?.legal_document_s3_link, t, toast, token],
   );
 
   const onGoToSignIn = useCallback(() => {
@@ -188,6 +199,7 @@ export function useAgencyInvitationScreen() {
     isUploading,
     passwordSetupLink,
     initialValues,
+    existingLegalDocumentUrl: invitation?.legal_document_s3_link ?? null,
     formKey: invitation?.email ?? token,
     labels: {
       title: t("title"),

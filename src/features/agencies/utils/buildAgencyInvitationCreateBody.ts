@@ -1,19 +1,16 @@
-import { getPublicAppOrigin } from "@/src/configs/environment.config";
 import { AGENCY_INVITATION_EMAIL } from "@/src/features/agencies/constants/agencyInvitationEmail.constants";
 import type { AgencyInvitationCreateRequest } from "@/src/features/profile/types/profile.types";
 
 /**
- * Adds the public frontend origin and invitation email copy so the API can
- * build the SES message without a hardcoded localhost host.
+ * Adds invitation email copy for the API. The backend builds absolute links
+ * (`/agency-invitation?token=` and `/agency-password-setup?token=`) and owns
+ * the From address. Do not attach a frontend origin here.
  */
 export function buildAgencyInvitationCreateBody(
   body: AgencyInvitationCreateRequest,
 ): AgencyInvitationCreateRequest {
-  const frontendUrl = getPublicAppOrigin();
-
   return {
     ...body,
-    ...(frontendUrl ? { frontend_url: frontendUrl } : {}),
     email_subject: AGENCY_INVITATION_EMAIL.subject,
     email_greeting: AGENCY_INVITATION_EMAIL.greeting,
     email_body: AGENCY_INVITATION_EMAIL.body,

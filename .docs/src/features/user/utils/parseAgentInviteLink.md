@@ -11,7 +11,7 @@ Normalizes agent invitation and password-setup URLs returned by the API so copy/
 ## Responsibilities
 
 - Split comma-separated API payloads and prefer the segment that contains `agent-invite`, `agent-password-setup`, or `token=`.
-- Rewrite the host onto `window.location.origin` so a backend-hardcoded origin such as `http://localhost:3000` is not opened in local or deployed environments.
+- Keep the absolute URL returned by the API. Paths stay `/agent-invite` or `/agent-password-setup` with `token` in the query string. Do not rebuild the host, including localhost.
 - Keep the existing route, query string (including `token`), and hash.
 - Prefix or replace the locale segment (`en` | `ar` | `es` | `fr`) from the current page path so links stay on the existing locale-prefixed FE routes.
 - Leave the raw string unchanged when `window` is unavailable (SSR) or URL parsing fails.

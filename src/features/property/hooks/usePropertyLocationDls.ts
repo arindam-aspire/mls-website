@@ -68,7 +68,7 @@ function buildFieldState(params: {
   refetch: () => void;
 }): Partial<
   Pick<
-    PropertyLocationDlsFieldModel,
+    PropertyLocationDlsSelectFieldModel,
     "disabled" | "hint" | "error" | "retryLabel" | "onRetry"
   >
 > {

@@ -104,10 +104,16 @@ export type PropertyDraftMasterOptionValue =
 export type PropertyDraftSubmissionPropertyDetails = {
   bedrooms?: number | null;
   bathrooms?: number | null;
-  /** Parsed from `PropertyForm` `property_details.built_up_area` string. */
+  /**
+   * One positive number. Commas in the form string (`"1,200"`) are stripped.
+   * Arrays and min/max ranges are not sent. The API stores the value in sqm.
+   */
   built_up_area?: number | null;
-  /** Always persisted and submitted as square metres (`SQM`). */
-  built_up_area_unit?: BuiltUpAreaUnit;
+  /**
+   * `sqm` or `sqft` on create/update. The API also accepts `m2`, `m²`,
+   * `square meters`, and `square feet`, and returns `built_up_area_unit` `"sqm"`.
+   */
+  built_up_area_unit?: BuiltUpAreaUnit | "sqm" | "sqft";
   parking_spaces?: number | null;
   year_built?: number | null;
   /** Legacy bucket or year; preserved on hydrate, omitted from new payloads. */

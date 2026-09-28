@@ -7,6 +7,7 @@ import type { Owner, OwnerWorkflowActionsConfig, SortConfig } from "@abdoun/abdo
 import type { ApiError } from "@/src/apis/core/error.normalizer";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import { getAgencyList } from "@/src/features/profile/services/profile.service";
+import { isSelectableAgency } from "@/src/features/profile/utils/agencyApi.utils";
 import { useToast } from "@/src/hooks/useToast";
 import { hasPermission } from "@/src/lib/auth/hasPermission";
 import { UserRole } from "@/src/lib/auth/roles";
@@ -108,9 +109,10 @@ export function useOwnersScreen() {
   const agencyOptions = useMemo(
     () =>
       (agencyListData?.items ?? [])
+        .filter(isSelectableAgency)
         .filter((agency) => agency.is_active && agency.is_verified)
         .map((agency) => ({
-          value: agency.id,
+          value: agency.agency_id,
           label: agency.agency_name,
         })),
     [agencyListData?.items],

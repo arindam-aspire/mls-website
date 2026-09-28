@@ -97,7 +97,9 @@ export default function PropertyCreateScreen() {
           onPrevious={onPrevious}
           onNext={onNext}
           onSubmit={onSubmit}
-          onDraft={onDraft}
+          onDraft={(values) => {
+            void onDraft(values, { redirectToDraftList: true });
+          }}
           isDraftLoading={isDraftSaving}
           isSubmitting={isSubmitting}
           onStepClick={onStepClick}

@@ -6,6 +6,7 @@ import { useMemo, useState } from "react";
 import { LicenseDocumentUpload } from "@/src/components/common/LicenseDocumentUpload";
 import { Button, CopyLinkBar, Input, PhoneInput } from "@/src/components/ui";
 import type { PhoneInputCountry } from "@/src/components/ui/phone-input";
+import { formatPhoneNumberE164 } from "@/src/features/profile/utils/formatPhoneNumberE164";
 import {
   createAgencyInvitation,
   createOfflineAgency,
@@ -13,7 +14,7 @@ import {
   reviewAgency,
   sendAgencyPasswordLink,
   updateAgencyActivation,
-  uploadOfflineAgencyLegalDocument,
+  uploadAgencyLegalDocumentFile,
 } from "@/src/features/profile/services/profile.service";
 import type {
   AgencyInvitationCreateRequest,
@@ -100,6 +101,10 @@ function StatusBadge({ agency }: { agency: AgencyListItem }) {
 }
 
 function VerificationBadge({ agency }: { agency: AgencyListItem }) {
+  if (agency.is_invited) {
+    return <span className="text-xs text-muted">—</span>;
+  }
+
   const label =
     agency.verification_status ||
     (agency.is_verified
@@ -133,6 +138,8 @@ export function AgenciesScreen() {
   const [offlineLegalDocument, setOfflineLegalDocument] = useState<File | null>(null);
   const [offlineLegalDocumentError, setOfflineLegalDocumentError] = useState<string>();
   const [invitationForm, setInvitationForm] = useState<InvitationForm>(emptyInvitationForm);
+  const [invitationLegalDocument, setInvitationLegalDocument] = useState<File | null>(null);
+  const [invitationLegalDocumentError, setInvitationLegalDocumentError] = useState<string>();
   const [latestLink, setLatestLink] = useState<{ label: string; value: string } | null>(null);
   const [offlinePhoneCountry, setOfflinePhoneCountry] = useState("JO");
   const [offlinePhoneNational, setOfflinePhoneNational] = useState("");
@@ -194,12 +201,20 @@ export function AgenciesScreen() {
       legalDocument,
     }: {
       body: AgencyOfflineRegistrationRequest;
-      legalDocument: File;
+      legalDocument: File | null;
     }) => {
-      const legalDocumentUrl = await uploadOfflineAgencyLegalDocument(legalDocument);
+      if (!legalDocument) {
+        return createOfflineAgency({
+          ...body,
+          ...(body.phone ? { phone_number: body.phone } : {}),
+        });
+      }
+
+      const legalDocumentUrl = await uploadAgencyLegalDocumentFile(legalDocument);
 
       return createOfflineAgency({
         ...body,
+        ...(body.phone ? { phone_number: body.phone } : {}),
         legal_document_s3_link: legalDocumentUrl,
       });
     },
@@ -211,15 +226,10 @@ export function AgenciesScreen() {
       setOfflineLegalDocumentError(undefined);
       setOfflinePhoneCountry("JO");
       setOfflinePhoneNational("");
-      const rawLink = response.data.password_setup_link;
-      if (rawLink) {
-        setLatestLink({
-          label: "Password creation link",
-          value: normalizeAgencyInvitationLink(rawLink),
-        });
-      }
       toast.success("Agency created", {
-        description: response.message ?? "Offline agency registration was created.",
+        description:
+          response.message ??
+          "Offline registration was saved. The password email is sent when a super admin approves the agency.",
       });
     },
     onError: (error: Error) => {
@@ -228,9 +238,25 @@ export function AgenciesScreen() {
   });
 
   const invitationMutation = useMutation({
-    mutationFn: (body: AgencyInvitationCreateRequest) => createAgencyInvitation(body),
+    mutationFn: async ({
+      body,
+      legalDocument,
+    }: {
+      body: AgencyInvitationCreateRequest;
+      legalDocument: File;
+    }) => {
+      const legalDocumentUrl = await uploadAgencyLegalDocumentFile(legalDocument);
+
+      return createAgencyInvitation({
+        ...body,
+        ...(body.phone ? { phone_number: body.phone } : {}),
+        legal_document_s3_link: legalDocumentUrl,
+      });
+    },
     onSuccess: (response) => {
       setInvitationForm(emptyInvitationForm);
+      setInvitationLegalDocument(null);
+      setInvitationLegalDocumentError(undefined);
       setInvitePhoneCountry("JO");
       setInvitePhoneNational("");
       invalidateAgencies();
@@ -356,19 +382,16 @@ export function AgenciesScreen() {
           className="rounded-lg border border-secondary/15 bg-surface p-5 shadow-sm"
           onSubmit={(event) => {
             event.preventDefault();
-            if (!offlineLegalDocument) {
-              setOfflineLegalDocumentError("Legal document is required.");
-              return;
-            }
+            if (offlineLegalDocument) {
+              const fileError = validateLicenseDocumentFile(offlineLegalDocument, {
+                invalidType: "Upload a PDF, JPG, JPEG, or PNG document.",
+                tooLarge: "Legal document must be 10 MB or smaller.",
+              });
 
-            const fileError = validateLicenseDocumentFile(offlineLegalDocument, {
-              invalidType: "Upload a PDF, JPG, JPEG, or PNG document.",
-              tooLarge: "Legal document must be 10 MB or smaller.",
-            });
-
-            if (fileError) {
-              setOfflineLegalDocumentError(fileError);
-              return;
+              if (fileError) {
+                setOfflineLegalDocumentError(fileError);
+                return;
+              }
             }
 
             createOfflineMutation.mutate({
@@ -393,10 +416,13 @@ export function AgenciesScreen() {
               onChange={(payload: { country: PhoneInputCountry; nationalNumber: string }) => {
                 setOfflinePhoneCountry(payload.country.iso2);
                 setOfflinePhoneNational(payload.nationalNumber);
-                const phone = payload.nationalNumber
-                  ? `${payload.country.dialCode}${payload.nationalNumber}`
-                  : "";
-                setOfflineForm((prev) => ({ ...prev, phone }));
+                setOfflineForm((prev) => ({
+                  ...prev,
+                  phone: formatPhoneNumberE164(
+                    payload.country.dialCode,
+                    payload.nationalNumber,
+                  ),
+                }));
               }}
               placeholder=""
               showPhoneIcon={false}
@@ -408,7 +434,6 @@ export function AgenciesScreen() {
               uploadHint="PDF, JPG, JPEG, or PNG up to 10 MB"
               selectedFileName={offlineLegalDocument?.name ?? null}
               error={offlineLegalDocumentError}
-              isRequired
               isUploading={createOfflineMutation.isPending}
               uploadingLabel="Creating agency..."
               variant="compact"
@@ -437,7 +462,25 @@ export function AgenciesScreen() {
           className="rounded-lg border border-secondary/15 bg-surface p-5 shadow-sm"
           onSubmit={(event) => {
             event.preventDefault();
-            invitationMutation.mutate(compactInvitationForm(invitationForm));
+            if (!invitationLegalDocument) {
+              setInvitationLegalDocumentError("Document & Licence is required.");
+              return;
+            }
+
+            const fileError = validateLicenseDocumentFile(invitationLegalDocument, {
+              invalidType: "Upload a PDF, JPG, JPEG, or PNG document.",
+              tooLarge: "Legal document must be 10 MB or smaller.",
+            });
+
+            if (fileError) {
+              setInvitationLegalDocumentError(fileError);
+              return;
+            }
+
+            invitationMutation.mutate({
+              body: compactInvitationForm(invitationForm),
+              legalDocument: invitationLegalDocument,
+            });
           }}
         >
           <div className="mb-4 flex items-center gap-2">
@@ -455,13 +498,37 @@ export function AgenciesScreen() {
               onChange={(payload: { country: PhoneInputCountry; nationalNumber: string }) => {
                 setInvitePhoneCountry(payload.country.iso2);
                 setInvitePhoneNational(payload.nationalNumber);
-                const phone = payload.nationalNumber
-                  ? `${payload.country.dialCode}${payload.nationalNumber}`
-                  : "";
-                setInvitationForm((prev) => ({ ...prev, phone }));
+                setInvitationForm((prev) => ({
+                  ...prev,
+                  phone: formatPhoneNumberE164(
+                    payload.country.dialCode,
+                    payload.nationalNumber,
+                  ),
+                }));
               }}
               placeholder=""
               showPhoneIcon={false}
+            />
+            <LicenseDocumentUpload
+              className="sm:col-span-2"
+              label="Document & Licence"
+              uploadPrompt="Upload legal document"
+              uploadHint="PDF, JPG, JPEG, or PNG up to 10 MB"
+              selectedFileName={invitationLegalDocument?.name ?? null}
+              error={invitationLegalDocumentError}
+              isRequired
+              isUploading={invitationMutation.isPending}
+              uploadingLabel="Uploading document..."
+              variant="compact"
+              onFileSelect={(file) => {
+                const fileError = validateLicenseDocumentFile(file, {
+                  invalidType: "Upload a PDF, JPG, JPEG, or PNG document.",
+                  tooLarge: "Legal document must be 10 MB or smaller.",
+                });
+
+                setInvitationLegalDocument(file);
+                setInvitationLegalDocumentError(fileError ?? undefined);
+              }}
             />
           </div>
           <div className="mt-4 flex justify-end">
@@ -515,6 +582,9 @@ export function AgenciesScreen() {
               <option value="">All</option>
               <option value="active">Active</option>
               <option value="inactive">Inactive</option>
+              <option value="pending">Pending</option>
+              <option value="pending_approval">Pending approval</option>
+              <option value="invited">Invited</option>
             </select>
           </label>
           <label className="flex flex-col gap-1 text-sm font-medium text-text">
@@ -589,8 +659,12 @@ export function AgenciesScreen() {
                 agencies.map((agency) => (
                   <tr key={agency.id}>
                     <td className="px-5 py-4">
-                      <p className="font-semibold text-text">{agency.agency_name}</p>
-                      <p className="text-xs text-muted">{agency.id}</p>
+                      <p className="font-semibold text-text">{agency.agency_name || agency.email}</p>
+                      <p className="text-xs text-muted">
+                        {agency.is_invited
+                          ? agency.invitation_id || agency.id
+                          : agency.agency_id}
+                      </p>
                     </td>
                     <td className="px-5 py-4">
                       <p className="text-text">{agency.email}</p>
@@ -600,17 +674,17 @@ export function AgenciesScreen() {
                     <td className="px-5 py-4"><StatusBadge agency={agency} /></td>
                     <td className="px-5 py-4">
                       <div className="flex justify-end gap-2">
-                        {agency.status === "PENDING_APPROVAL" ? (
+                        {agency.agency_id && !agency.is_invited && agency.status === "PENDING_APPROVAL" ? (
                           <>
-                            <Button type="button" size="sm" color="success" iconStart={<CheckCircle2 className="size-4" />} onClick={() => reviewMutation.mutate({ agencyId: agency.id, action: "approve" })}>
+                            <Button type="button" size="sm" color="success" iconStart={<CheckCircle2 className="size-4" />} onClick={() => reviewMutation.mutate({ agencyId: agency.agency_id!, action: "approve" })}>
                               Verify
                             </Button>
-                            <Button type="button" size="sm" color="danger" variant="outline" iconStart={<XCircle className="size-4" />} onClick={() => reviewMutation.mutate({ agencyId: agency.id, action: "reject" })}>
+                            <Button type="button" size="sm" color="danger" variant="outline" iconStart={<XCircle className="size-4" />} onClick={() => reviewMutation.mutate({ agencyId: agency.agency_id!, action: "reject" })}>
                               Reject
                             </Button>
                           </>
                         ) : null}
-                        {agency.status === "APPROVED" ? (
+                        {agency.agency_id && !agency.is_invited && agency.status === "APPROVED" ? (
                           <Button
                             type="button"
                             size="sm"
@@ -619,7 +693,7 @@ export function AgenciesScreen() {
                             iconStart={<Copy className="size-4" />}
                             onClick={() =>
                               passwordLinkMutation.mutate({
-                                agencyId: agency.id,
+                                agencyId: agency.agency_id!,
                                 pendingTab: window.open("about:blank", "_blank"),
                               })
                             }
@@ -627,7 +701,7 @@ export function AgenciesScreen() {
                             Password Link
                           </Button>
                         ) : null}
-                        {agency.is_verified ? (
+                        {agency.agency_id && !agency.is_invited && agency.is_verified ? (
                           <Button
                             type="button"
                             size="sm"
@@ -635,7 +709,7 @@ export function AgenciesScreen() {
                             color={agency.is_active ? "danger" : "success"}
                             iconStart={agency.is_active ? <PowerOff className="size-4" /> : <Power className="size-4" />}
                             isLoading={activationMutation.isPending}
-                            onClick={() => activationMutation.mutate({ agencyId: agency.id, isActive: !agency.is_active })}
+                            onClick={() => activationMutation.mutate({ agencyId: agency.agency_id!, isActive: !agency.is_active })}
                           >
                             {agency.is_active ? "Deactivate" : "Activate"}
                           </Button>

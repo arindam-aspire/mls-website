@@ -7,12 +7,13 @@ Agency invitation accept-form logic.
 # Responsibilities
 
 - `GET /agency/invitations/validate?token=`
-- Upload legal document via `POST /agency/invitations/document-upload` then PUT to the presigned URL
-- `POST /agency/invitations/accept` with E.164 `phone` and `legal_document_s3_link`
+- Prefill email, names, phone (`data.phone`, else `data.phone_number`), and `legal_document_s3_link`
+- If the user picks a new licence, upload it with `POST /uploads/presigned-url` (`context: agency_legal_document`), PUT the bytes, and send `data.file_url`. Otherwise send the URL from validate
+- `POST /agency/invitations/accept` with E.164 `phone` / `phone_number` and `legal_document_s3_link`
 
 # Imports
 
-- `validateAgencyInvitation`, `uploadAgencyInvitationLegalDocument`, `acceptAgencyInvitation`
+- `validateAgencyInvitation`, `uploadAgencyLegalDocumentFile`, `acceptAgencyInvitation`
 - `rewriteAgencyPasswordSetupLink`
 - `useSearchParams`, `useRouter`, `useToast`, `useTranslations`
 
@@ -29,12 +30,12 @@ Local React state for invitation, step, and upload/submit flags.
 | Step | Endpoint | Auth |
 | --- | --- | --- |
 | Validate | `GET /agency/invitations/validate?token=` | No |
-| Upload | `POST /agency/invitations/document-upload` | No |
+| Upload (only when a new file is selected) | `POST /uploads/presigned-url` then PUT `data.upload_url` | No |
 | Accept | `POST /agency/invitations/accept` | No |
 
 # Navigation
 
-Password-setup URLs rewritten onto `getPublicAppOrigin()` as `/[locale]/agency-password-setup?token=`.
+Password-setup URLs keep the backend origin and path `/agency-password-setup?token=`. The token is read from the query string. The host is not replaced with localhost.
 
 # Props / Parameters
 

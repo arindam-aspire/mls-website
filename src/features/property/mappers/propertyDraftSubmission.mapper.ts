@@ -174,12 +174,7 @@ export function withPropertyFormHostLocationFields(
         address: "",
         latitude: null,
         longitude: null,
-        apartment_number: "",
-        plot_number: "",
         basin_number: "",
-        parcel_number: "",
-        building_number: "",
-        identification_fields: {},
         ...location,
         apartment_number:
           identification?.apartment_number || location.apartment_number || "",
@@ -282,36 +277,78 @@ function readDraftMasterOptionField(
   return null;
 }
 
-const SQUARE_FEET_TO_SQUARE_METERS = 0.09290304;
+const BUILT_UP_AREA_VALUE_KEYS = [
+  "built_up_area",
+  "builtUpArea",
+  "buildingArea",
+  "property_area",
+  "area",
+] as const;
 
-function normalizeBuiltUpAreaToSquareMeters(
-  value: string,
-  unit: BuiltUpAreaUnit,
-): number | null {
-  const parsed = parseOptionalNumber(value);
-
-  if (parsed == null || unit === "SQM") {
-    return parsed;
+/**
+ * One finite number. Commas are stripped (`"1,200"` → `1200`).
+ * Arrays and `{ min, max }` ranges return null so they are not submitted.
+ */
+function parseBuiltUpAreaNumber(value: unknown): number | null {
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? value : null;
   }
 
-  return Number((parsed * SQUARE_FEET_TO_SQUARE_METERS).toFixed(8));
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return null;
+  }
+
+  const parsed = Number(trimmed.replace(/,/g, ""));
+  return Number.isFinite(parsed) ? parsed : null;
 }
 
-function formatBuiltUpAreaField(
-  value: number | null | undefined,
-  unit: BuiltUpAreaUnit | undefined,
-): string {
-  if (value == null) {
+function readBuiltUpAreaNumber(source: object): number | null {
+  const record = source as Record<string, unknown>;
+
+  for (const key of BUILT_UP_AREA_VALUE_KEYS) {
+    if (!(key in record)) {
+      continue;
+    }
+
+    const parsed = parseBuiltUpAreaNumber(record[key]);
+    if (parsed != null) {
+      return parsed;
+    }
+  }
+
+  return null;
+}
+
+/** API unit. Square metres are stored by the API; `sqft` is converted server-side. */
+function toApiBuiltUpAreaUnit(unit: unknown): "sqm" | "sqft" {
+  const normalized = typeof unit === "string" ? unit.trim().toLowerCase() : "";
+
+  if (
+    normalized === "sqft" ||
+    normalized === "square feet" ||
+    normalized === "square foot"
+  ) {
+    return "sqft";
+  }
+
+  return "sqm";
+}
+
+function toLibraryBuiltUpAreaUnit(unit: unknown): BuiltUpAreaUnit {
+  return toApiBuiltUpAreaUnit(unit) === "sqft" ? "SQFT" : "SQM";
+}
+
+function formatBuiltUpAreaField(value: number | null | undefined): string {
+  if (value == null || !Number.isFinite(value)) {
     return "";
   }
 
-  if (unit === "SQFT") {
-    return formatNumberField(
-      Number((value * SQUARE_FEET_TO_SQUARE_METERS).toFixed(4)),
-    );
-  }
-
-  return formatNumberField(value);
+  return String(value);
 }
 
 function parsePrice(value: string | undefined): number {
@@ -575,18 +612,18 @@ export function buildPropertyDraftSubmissionPayload(
   }
 
   if (details != null) {
-    const builtUpAreaUnit = details.built_up_area_unit ?? "SQM";
-
+    const builtUpArea = readBuiltUpAreaNumber(details);
     const referenceNumber = toOutboundReferenceNumber(details.reference_number);
 
     const propertyDetailsPayload: PropertyDraftSubmissionPropertyDetails = {
       bedrooms: details.bedrooms,
       bathrooms: details.bathrooms,
-      built_up_area: normalizeBuiltUpAreaToSquareMeters(
-        details.built_up_area ?? "",
-        builtUpAreaUnit,
-      ),
-      built_up_area_unit: "SQM",
+      ...(builtUpArea == null
+        ? {}
+        : {
+            built_up_area: builtUpArea,
+            built_up_area_unit: toApiBuiltUpAreaUnit(details.built_up_area_unit),
+          }),
       parking_spaces: details.parking_spaces,
       year_built: details.year_built ?? null,
       furnishing_status: toDraftMasterOptionValue(details.furnishing_status),
@@ -955,11 +992,8 @@ export function mapPropertyDraftSubmissionToPropertyFormValues(
     propertyDetails.property_details = {
       bedrooms: details.bedrooms ?? null,
       bathrooms: details.bathrooms ?? null,
-      built_up_area: formatBuiltUpAreaField(
-        details.built_up_area,
-        details.built_up_area_unit,
-      ),
-      built_up_area_unit: "SQM",
+      built_up_area: formatBuiltUpAreaField(readBuiltUpAreaNumber(details)),
+      built_up_area_unit: toLibraryBuiltUpAreaUnit(details.built_up_area_unit),
       parking_spaces: details.parking_spaces ?? null,
       year_built: yearBuilt,
       property_age:

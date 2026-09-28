@@ -358,6 +358,7 @@
     "arrangementProperties": "عقارات",
     "arrangementLand": "أراضي",
     "draftSaveSuccess": "تم حفظ المسودة",
+    "draftSaveSuccessDescription": "المسودة موجودة في قائمة المسودات. لن تظهر كإعلان عام إلا بعد الإرسال.",
     "draftSaveError": "تعذر حفظ المسودة",
     "draftLoadError": "تعذر تحميل المسودة",
     "ownerDocumentUploadError": "تعذر رفع مستند المالك",

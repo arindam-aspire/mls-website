@@ -6,13 +6,13 @@ Builds the `POST /agency/invitations` body with public origin and email copy.
 
 # Responsibilities
 
-- Merge form fields with `frontend_url` from `getPublicAppOrigin()` (`NEXT_PUBLIC_APP_URL`, else current origin).
+- Merge form fields with invitation email copy. Does not send `frontend_url` or a From address. The backend builds absolute invitation links.
 - Attach invitation email subject, body lines, and CTA label from `AGENCY_INVITATION_EMAIL`.
-- Omit `frontend_url` when no origin can be resolved.
+- `legal_document_s3_link` is the S3 `file_url` from the presigned upload, when the caller already uploaded a licence.
 
 # Imports
 
-- `getPublicAppOrigin` from `src/configs/environment.config.ts`
+- `AGENCY_INVITATION_EMAIL`
 - `AGENCY_INVITATION_EMAIL` from agency invitation email constants
 - `AgencyInvitationCreateRequest` from profile types
 
@@ -32,7 +32,7 @@ Used only by `createAgencyInvitation` → `POST /agency/invitations`.
 
 # Navigation
 
-Does not navigate. `frontend_url` is the public origin the backend uses in the invitation CTA.
+Does not navigate. The backend builds the absolute invitation URL. This helper does not send a frontend origin or a From address.
 
 # Props / Parameters
 
@@ -50,10 +50,8 @@ N/A.
 
 # Flow Description
 
-1. Read public origin via `getPublicAppOrigin()`.
-2. Spread the original form body.
-3. Set `frontend_url` when origin is non-empty.
-4. Set `email_subject`, `email_greeting`, `email_body`, `email_cta_label`, `email_expiry_notice`, `email_ignore_notice`, `email_regards`, `email_sign_off`.
+1. Spread the original form body (`email`, names, E.164 phone, `legal_document_s3_link`).
+2. Set `email_subject`, `email_greeting`, `email_body`, `email_cta_label`, `email_expiry_notice`, `email_ignore_notice`, `email_regards`, `email_sign_off`.
 
 # Dependencies
 

@@ -28,7 +28,8 @@ Profile and agency HTTP helpers. Super-admin offline agency creation lives here:
 | `updateAgency` | `PUT /agency/{id}` |
 | `createOfflineAgency` | Super-admin `POST /agency/offline-registration` |
 | `uploadOfflineAgencyLegalDocument` | Presign + PUT + persistable URL |
-| `createAgencyInvitation` | Super-admin invitations (`frontend_url` + email copy from `buildAgencyInvitationCreateBody`) |
+| `createAgencyInvitation` | Super-admin invitations (JSON body + email copy from `buildAgencyInvitationCreateBody`; licence URL is `legal_document_s3_link`) |
+| `uploadAgencyLegalDocumentFile` | `POST /uploads/presigned-url` (`agency_legal_document`), PUT bytes, return `data.file_url`. Rejects `dev://`. |
 | `validateAgencyInvitation` | Public `GET /agency/invitations/validate` |
 | `uploadAgencyInvitationLegalDocument` | Public invitation license presign + PUT |
 | `acceptAgencyInvitation` | Public `POST /agency/invitations/accept` |
@@ -120,7 +121,8 @@ Not a UI module.
 
 # Notes
 
-- `dev://` upload URLs skip the storage PUT (local/dev mode). Profile picture, agency logo, and agency legal-document uploads share `putFileUnlessDevPlaceholder`.
+- `dev://` upload URLs skip the storage PUT for profile pictures and agency logos (`putFileUnlessDevPlaceholder`). Licence uploads for invitations, accept, and offline registration use `uploadAgencyLegalDocumentFile`, which requires an HTTP(S) `file_url` and does not submit `dev://`.
 - Existing-agency `uploadAgencyLegalDocument` uses `POST /agency/{id}/legal-document` then the same PUT helper.
 - `sendAgencyPasswordLink` (`POST /agency/{id}/password-link`) returns `password_setup_link` (often with a backend-configured host). On **Password Link** in `AgenciesScreen`, that URL is rewritten onto `getPublicAppOrigin()` while keeping `/[locale]/agency-password-setup?token=…`. A blank tab is then navigated to the rewritten URL. The same URL is stored on the screen’s copy bar.
-- `createAgencyInvitation` (`POST /agency/invitations`) sends `frontend_url` from `NEXT_PUBLIC_APP_URL` and the invitation email copy so SES does not embed localhost.
+- `createAgencyInvitation` (`POST /agency/invitations`) sends JSON (`email`, `agency_name`, `agency_trade_name`, E.164 `phone` / `phone_number`, `legal_document_s3_link`) plus email copy. It does not send `frontend_url`. Licence bytes are uploaded first via `uploadAgencyLegalDocumentFile`. `dev://` URLs are not submitted.
+- `GET /agency/list` must not default `agencyStatus=active`. Invited rows (`agency_id` null, `invitation_id` set, `agency_status` `Invited`) are normalized with `is_invited` and are not passed to `GET /agency/{id}`.

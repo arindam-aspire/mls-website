@@ -1,13 +1,3 @@
-import { getPublicAppOrigin } from "@/src/configs/environment.config";
-
-function resolveLocale(): string {
-  if (typeof window === "undefined") {
-    return "en";
-  }
-
-  return window.location.pathname.match(/^\/(en|ar|es|fr)(?:\/|$)/)?.[1] ?? "en";
-}
-
 function pickInvitationCandidate(trimmed: string): string {
   const segments = trimmed.includes(",")
     ? trimmed
@@ -20,62 +10,57 @@ function pickInvitationCandidate(trimmed: string): string {
     segments.find(
       (segment) =>
         segment.includes("agency-password-setup") ||
-        segment.includes("token=") ||
-        segment.toLowerCase().includes("invitation"),
+        segment.includes("agency-invitation") ||
+        segment.includes("token="),
     ) ??
     segments[segments.length - 1] ??
     trimmed
   );
 }
 
+function readToken(url: URL): string {
+  return (
+    url.searchParams.get("token") ??
+    url.searchParams.get("invitation_token") ??
+    url.searchParams.get("invitation") ??
+    ""
+  );
+}
+
 /**
- * Rewrites API-returned invitation / password-setup URLs onto the public FE origin.
- * Backend payloads may use a host from server env; emails and copy actions must use
- * `NEXT_PUBLIC_APP_URL` (via `getPublicAppOrigin`) instead of a hardcoded localhost.
+ * Keeps the backend's absolute invitation URL. Does not replace the host
+ * with the browser origin or any other frontend base URL.
+ * Path stays `/agency-invitation` or `/agency-password-setup`, with `token`.
  */
 export function normalizeAgencyInvitationLink(link: string): string {
+  const trimmed = link.trim();
+  if (!trimmed) {
+    return trimmed;
+  }
+
+  const candidate = pickInvitationCandidate(trimmed);
+
   try {
-    const trimmed = link.trim();
-    if (!trimmed) {
-      return trimmed;
+    const url = new URL(candidate);
+    if (url.protocol !== "http:" && url.protocol !== "https:") {
+      return candidate;
     }
 
-    const origin = getPublicAppOrigin();
-    if (!origin) {
-      return trimmed;
+    const token = readToken(url);
+    if (!token) {
+      return url.toString();
     }
-
-    const locale = resolveLocale();
-    const candidate = pickInvitationCandidate(trimmed);
-    const url = new URL(candidate, origin);
-
-    const lastSegment = url.pathname.split("/").filter(Boolean).pop() ?? "";
-    const tokenFromPath =
-      lastSegment &&
-      lastSegment !== "agency-password-setup" &&
-      lastSegment !== "agency-invitation"
-        ? lastSegment
-        : "";
-
-    const token =
-      url.searchParams.get("token") ??
-      url.searchParams.get("invitation_token") ??
-      url.searchParams.get("invitation") ??
-      tokenFromPath;
 
     const isPasswordSetup =
-      candidate.includes("agency-password-setup") ||
-      candidate.includes("password-setup");
-
-    if (!token) {
-      return `${origin}${url.pathname}${url.search}${url.hash}`;
-    }
-
+      url.pathname.includes("agency-password-setup") ||
+      url.pathname.includes("password-setup");
     const path = isPasswordSetup ? "agency-password-setup" : "agency-invitation";
+    const locale = url.pathname.match(/^\/(en|ar|es|fr)(?=\/|$)/)?.[1];
+    const prefix = locale ? `/${locale}` : "";
 
-    return `${origin}/${locale}/${path}?token=${encodeURIComponent(token)}`;
+    return `${url.origin}${prefix}/${path}?token=${encodeURIComponent(token)}`;
   } catch {
-    return link;
+    return candidate;
   }
 }
 
@@ -88,23 +73,20 @@ export function rewriteAgencyPasswordSetupLink(
   }
 
   try {
-    const origin = getPublicAppOrigin();
-    if (!origin) {
+    const url = new URL(trimmed);
+    if (url.protocol !== "http:" && url.protocol !== "https:") {
       return trimmed;
     }
 
-    const url = new URL(trimmed, origin);
-    const locale = resolveLocale();
-    const token =
-      url.searchParams.get("token") ??
-      url.searchParams.get("invitation_token") ??
-      "";
-
+    const token = readToken(url);
     if (!token) {
-      return `${origin}${url.pathname}${url.search}${url.hash}`;
+      return url.toString();
     }
 
-    return `${origin}/${locale}/agency-password-setup?token=${encodeURIComponent(token)}`;
+    const locale = url.pathname.match(/^\/(en|ar|es|fr)(?=\/|$)/)?.[1];
+    const prefix = locale ? `/${locale}` : "";
+
+    return `${url.origin}${prefix}/agency-password-setup?token=${encodeURIComponent(token)}`;
   } catch {
     return trimmed;
   }

@@ -47,6 +47,7 @@ import {
 import {
   normalizeAgencyCurrency,
 } from "@/src/features/profile/utils/agencyPreferences.utils";
+import { isSelectableAgency, isUsableAgencyId } from "@/src/features/profile/utils/agencyApi.utils";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
 import {
   buildPropertyDraftSubmissionRequestBody,
@@ -96,7 +97,10 @@ import {
 import type { FeatureCatalogItem } from "@/src/features/property/types/property.types";
 import type { PropertyFormOptionsCatalog } from "@/src/features/property/types/propertyFormOptions.types";
 import type { PropertyDraftSubmissionData } from "@/src/features/property/types/propertyDraftSubmission.types";
-import { applyPropertyCreateFormDomPatches } from "@/src/features/property/utils/propertyCreateFormDom.utils";
+import {
+  applyBuiltUpAreaApiError,
+  applyPropertyCreateFormDomPatches,
+} from "@/src/features/property/utils/propertyCreateFormDom.utils";
 import {
   prunePropertyFormIdentificationForArrangement,
   validateLocationIdentificationForArrangement,
@@ -109,6 +113,7 @@ import {
   getHostLocationFieldError,
   omitHostLocationFieldErrors,
   parsePropertySubmissionError,
+  resolveBuiltUpAreaApiError,
 } from "@/src/features/property/utils/propertySubmissionError.utils";
 import {
   buildLoggedInOwnerInfoItem,
@@ -495,7 +500,7 @@ export function usePropertyCreateScreen() {
   const { data: agencyResponse } = useQuery({
     queryKey: ["agency", resolvedAgencyIdForQuery],
     queryFn: () => getAgencyById(resolvedAgencyIdForQuery),
-    enabled: resolvedAgencyIdForQuery.length > 0,
+    enabled: isUsableAgencyId(resolvedAgencyIdForQuery),
   });
 
   const locationDlsLabels = useMemo(
@@ -665,10 +670,12 @@ export function usePropertyCreateScreen() {
     showAgencyField && routeThroughAgency && isAgencyListPending;
 
   const agencyOptions = useMemo((): SelectOption[] => {
-    const options = (agencyListData?.items ?? []).map((agency) => ({
-      value: agency.id,
-      label: agency.agency_name || agency.email,
-    }));
+    const options = (agencyListData?.items ?? [])
+      .filter(isSelectableAgency)
+      .map((agency) => ({
+        value: agency.agency_id,
+        label: agency.agency_name || agency.email,
+      }));
 
     const selectedId = normalizePropertyCreateAgencyId(selectedAgencyId);
     if (selectedId && !options.some((option) => option.value === selectedId)) {
@@ -754,6 +761,10 @@ export function usePropertyCreateScreen() {
 
   const libraryFieldErrors = useMemo(
     () => omitHostLocationFieldErrors(fieldErrors),
+    [fieldErrors],
+  );
+  const builtUpAreaApiError = useMemo(
+    () => resolveBuiltUpAreaApiError(fieldErrors) ?? null,
     [fieldErrors],
   );
 
@@ -1393,7 +1404,10 @@ export function usePropertyCreateScreen() {
   ]);
 
   const onDraft = useCallback(
-    async (nextPropertyDetails: PropertyFormValues): Promise<boolean> => {
+    async (
+      nextPropertyDetails: PropertyFormValues,
+      options?: { redirectToDraftList?: boolean },
+    ): Promise<boolean> => {
       const { details, identificationErrors } = applyArrangementIdentification(
         nextPropertyDetails,
         showLocation,
@@ -1475,8 +1489,11 @@ export function usePropertyCreateScreen() {
           commitSavedSnapshotRef.current(savedPropertyDetails);
 
           toast.success(t("draftSaveSuccess"), {
-            description: response.message ?? undefined,
+            description: t("draftSaveSuccessDescription"),
           });
+          if (options?.redirectToDraftList) {
+            router.push("/draft-listings");
+          }
           return true;
         }
 
@@ -1497,6 +1514,7 @@ export function usePropertyCreateScreen() {
       maxReachedStep,
       pricingCurrency,
       routeThroughAgency,
+      router,
       saveDraftSubmission,
       searchParams,
       selectedAgencyId,
@@ -1614,13 +1632,39 @@ export function usePropertyCreateScreen() {
       return;
     }
 
-    applyPropertyCreateFormDomPatches(container, {
-      ownerDocumentsLabel: tForm("ownerDocumentsLabel"),
-      hasReferenceNumber,
-      // Host DLS section owns free-text identification; hide library duplicates.
-      visibleIdentificationKeys: [],
+    const applyDom = () => {
+      applyPropertyCreateFormDomPatches(container, {
+        ownerDocumentsLabel: tForm("ownerDocumentsLabel"),
+        hasReferenceNumber,
+        // Host DLS section owns free-text identification; hide library duplicates.
+        visibleIdentificationKeys: [],
+      });
+      applyBuiltUpAreaApiError(container, builtUpAreaApiError);
+    };
+
+    applyDom();
+
+    const observer = new MutationObserver(() => {
+      const input = container.querySelector('input[name="built_up_area"]');
+      const shown = container.querySelector("[data-built-up-area-api-error]");
+      const marked = input?.getAttribute("data-property-form-field");
+
+      if (!input) {
+        return;
+      }
+
+      const shouldShowError = Boolean(builtUpAreaApiError);
+      if (marked !== "property_details.built_up_area" || shouldShowError !== Boolean(shown)) {
+        applyBuiltUpAreaApiError(container, builtUpAreaApiError);
+      }
     });
-  }, [arrangement, hasReferenceNumber, tForm]);
+
+    observer.observe(container, { childList: true, subtree: true });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [activeStep, arrangement, builtUpAreaApiError, hasReferenceNumber, tForm]);
 
   // Drop free-text identification values that do not apply when Category
   // switches between Properties and Land (Basin Number never applies).

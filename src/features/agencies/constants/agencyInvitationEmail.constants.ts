@@ -1,7 +1,6 @@
 /**
- * Backend SES / invitation email contract.
- * The frontend does not send this mail; it supplies `frontend_url` (`NEXT_PUBLIC_APP_URL`)
- * so the Accept Agency Invitation CTA is built on the public origin, not localhost.
+ * Invitation email copy sent with `POST /agency/invitations`.
+ * The backend owns the From address and builds absolute links.
  *
  * Placeholders: `{{agency_admin_name}}`, `[Platform Name]`.
  */

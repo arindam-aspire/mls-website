@@ -299,7 +299,9 @@ export type AgencyOfflineRegistrationRequest = {
   agency_name: string;
   agency_trade_name: string;
   email: string;
+  /** E.164. The API also accepts `phone_number`. */
   phone: string;
+  phone_number?: string;
   legal_document_s3_link?: string | null;
   website?: string | null;
   address?: string | null;
@@ -315,9 +317,11 @@ export type AgencyInvitationCreateRequest = {
   email: string;
   agency_name?: string | null;
   agency_trade_name?: string | null;
+  /** E.164 phone. The API also accepts `phone_number` and `phoneNumber`. */
   phone?: string | null;
-  /** Public frontend origin for the invitation email CTA (`NEXT_PUBLIC_APP_URL`). */
-  frontend_url?: string;
+  phone_number?: string | null;
+  /** S3 `file_url` from `POST /uploads/presigned-url` (`context: agency_legal_document`). */
+  legal_document_s3_link?: string | null;
   email_subject?: string;
   email_cta_label?: string;
   email_greeting?: string;
@@ -383,7 +387,10 @@ export type AgencyInvitationPreview = {
   email: string;
   agency_name: string | null;
   agency_trade_name: string | null;
+  /** E.164 phone from `data.phone`, falling back to `data.phone_number`. Null leaves the field empty. */
   phone: string | null;
+  /** Licence already attached to the invite (`legal_document_s3_link`, `document_url`, or `licence_url`). */
+  legal_document_s3_link: string | null;
   status: string;
   expires_at: string | null;
   password_setup_link?: string | null;
@@ -402,6 +409,7 @@ export type AgencyInvitationAcceptRequest = {
   agency_name: string;
   agency_trade_name: string;
   phone: string;
+  phone_number?: string;
   legal_document_s3_link?: string;
 };
 
@@ -432,36 +440,48 @@ export type AgencyListParams = {
   sortOrder?: "asc" | "desc";
 };
 
-/** Single row from `GET /agency/list` (`data[]`). */
+/**
+ * Single row from `GET /agency/list` (`data[]`).
+ * Invited rows have `agency_id` null, `invitation_id` set, `status` `PENDING`,
+ * and `agency_status` `Invited`. Real agencies use `agency_id` or legacy `id`.
+ */
 export type AgencyListItemRaw = {
-  id: string;
-  agency_name: string;
-  agency_trade_name: string;
-  legal_document_s3_link: string | null;
-  logo_url: string | null;
-  email: string;
-  phone: string;
-  profile_picture_url: string | null;
-  website: string | null;
-  address: string | null;
-  city: string | null;
-  state: string | null;
-  country: string | null;
-  zip_code: string | null;
-  currency: string;
-  measurement_unit: string;
-  is_active: boolean;
-  is_verified: boolean;
-  status?: string;
-  agency_status?: string;
-  verification_status?: string;
-  created_at: string;
-  updated_at: string;
+  id?: string | null;
+  agency_id?: string | null;
+  invitation_id?: string | null;
+  agency_name?: string | null;
+  agency_trade_name?: string | null;
+  legal_document_s3_link?: string | null;
+  logo_url?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  phone_number?: string | null;
+  profile_picture_url?: string | null;
+  website?: string | null;
+  address?: string | null;
+  city?: string | null;
+  state?: string | null;
+  country?: string | null;
+  zip_code?: string | null;
+  currency?: string | null;
+  measurement_unit?: string | null;
+  is_active?: boolean | null;
+  is_verified?: boolean | null;
+  status?: string | null;
+  agency_status?: string | null;
+  verification_status?: string | null;
+  created_at?: string | null;
+  updated_at?: string | null;
 };
 
-/** Normalized row for select-agency UI. */
+/** Normalized row for agency registry and select-agency UI. */
 export type AgencyListItem = {
+  /** Stable row key: `invitation_id` for invites, otherwise `agency_id`. */
   id: string;
+  /** Null for invited rows. Never pass this to agency-detail APIs when null. */
+  agency_id: string | null;
+  invitation_id: string | null;
+  is_invited: boolean;
   agency_name: string;
   logo_url: string | null;
   email: string;
