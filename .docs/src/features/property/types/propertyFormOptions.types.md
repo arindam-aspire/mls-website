@@ -8,8 +8,9 @@ TypeScript shapes for `GET /property-form-options` and the mapped catalog used b
 
 - Accept either snake_case or camelCase arrays from the backend (`listing_purposes` / `listingPurposes`, furnishing, floors, completion, orientations, `nationalities` / `nationality`, `land_type` / `land_types`).
 - Accept grouped master rows via `data.groups` (filterable with `?group=land_type`).
+- Accept a flat `data.items` list where each row has `group` (for example `land_type`), plus `is_active` and `display_order`.
 - Accept wrapped lists (`items` / `data` / `results`) and nested `data` envelopes.
-- Describe option items with `id`, `value`/`slug`/`code`, and `label`/`name`.
+- Describe option items with `id`, `value`/`slug`/`code`, `label`/`name`, and optional `group`.
 - Describe `PropertyFormOptionsResponse` (`success`, `message`, `data`, `error`, `meta`).
 - Describe `PropertyFormOptionsCatalog` as library `PropertyFormOption[]` groups including `landTypeOptions`.
 

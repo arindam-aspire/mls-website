@@ -11,39 +11,6 @@ export type PropertyLocationDlsFieldsProps = {
   fields: PropertyLocationDlsFieldModel[];
 };
 
-const SHOW_LOCATION_CONTROL_ID = "show-location";
-
-/** Walk up to the Location form’s direct child that wraps this control. */
-function getFormChildAnchor(
-  control: HTMLElement,
-  form: HTMLFormElement,
-): HTMLElement {
-  let anchor: HTMLElement = control;
-  let current: HTMLElement | null = control;
-
-  while (current && current !== form) {
-    const parent: HTMLElement | null = current.parentElement;
-    if (!parent || parent === form) {
-      break;
-    }
-
-    anchor = parent;
-    current = parent;
-  }
-
-  return anchor;
-}
-
-function findShowLocationAnchor(form: HTMLFormElement): HTMLElement | null {
-  const control = form.querySelector(`#${SHOW_LOCATION_CONTROL_ID}`);
-  if (!(control instanceof HTMLElement) || !form.contains(control)) {
-    return null;
-  }
-
-  const anchor = getFormChildAnchor(control, form);
-  return anchor !== form ? anchor : null;
-}
-
 export function PropertyLocationDlsFields({
   sectionTitle,
   fields,
@@ -66,27 +33,14 @@ export function PropertyLocationDlsFields({
         return;
       }
 
-      const insertBeforeNode = findShowLocationAnchor(form);
-      const parent = insertBeforeNode?.parentElement ?? form;
-
       if (!target?.isConnected || !form.contains(target)) {
         target?.remove();
         target = document.createElement("div");
         target.className = "contents";
         target.dataset.propertyLocationDlsPortal = "true";
-        if (insertBeforeNode && parent.contains(insertBeforeNode)) {
-          parent.insertBefore(target, insertBeforeNode);
-        } else {
-          parent.appendChild(target);
-        }
+        form.appendChild(target);
         setPortalTarget(target);
-      } else if (
-        insertBeforeNode &&
-        target.nextElementSibling !== insertBeforeNode &&
-        parent.contains(insertBeforeNode)
-      ) {
-        parent.insertBefore(target, insertBeforeNode);
-      } else if (!insertBeforeNode && target.parentElement !== form) {
+      } else if (target.parentElement !== form || form.lastElementChild !== target) {
         form.appendChild(target);
       }
     };

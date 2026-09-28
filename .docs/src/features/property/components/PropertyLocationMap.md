@@ -15,6 +15,7 @@ Host map slot for Add Property Step 2. Renders Google Maps with a draggable pin,
 - Load the Maps script on the `weekly` channel so vector tiles are available.
 - Show a layout-matched skeleton until the map is idle; show a localized unavailable panel when the API key is missing or the script fails.
 - Show localized pin hint and coordinate readout from library `labels`.
+- Mark the root with `data-property-location-map` so the Show Location switch can portal directly under this map without changing map behavior.
 
 # Imports
 

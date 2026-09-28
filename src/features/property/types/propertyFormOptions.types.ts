@@ -16,6 +16,10 @@ export type PropertyFormOptionItem = {
   nationality_id?: string | number;
   land_type_id?: string | number;
   landTypeId?: string | number;
+  /** Master-data group on flat `GET /property-form-options` `data.items` rows. */
+  group?: string;
+  is_active?: boolean;
+  display_order?: number;
 };
 
 export type PropertyFormOptionList =

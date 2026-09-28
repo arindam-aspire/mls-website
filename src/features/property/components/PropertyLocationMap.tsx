@@ -69,7 +69,7 @@ export function PropertyLocationMap(props: PropertyLocationMapRenderProps) {
   const showUnavailable = !hasApiKey || hasLoadError;
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2" data-property-location-map="">
       <p className="text-sm text-muted">{labels.selectPinHint}</p>
       {showUnavailable ? (
         <div

@@ -900,6 +900,7 @@ export function usePropertyCreateScreen() {
       ...cascadeFields,
       parcelNumberField,
       ...(sectionSelect ? [sectionSelect] : []),
+      textField("plot_number", tForm("identification.plotNumber")),
       ...(landTypeField
         ? [
             {
@@ -911,7 +912,6 @@ export function usePropertyCreateScreen() {
             },
           ]
         : []),
-      textField("plot_number", tForm("identification.plotNumber")),
       textField("building_number", tForm("identification.building")),
       textField("floor_number", tForm("identification.floor"), {
         inputType: "number",

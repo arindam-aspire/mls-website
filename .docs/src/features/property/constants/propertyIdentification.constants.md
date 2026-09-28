@@ -15,7 +15,7 @@ Location identification field catalogs for property create. Host DLS renders fre
 
 ## Properties (Residential / Commercial)
 
-DLS UI order: Governate → Directorate → Village → Parcel Name → Parcel Number → Section → Land Type → Plot Number → Building → Floor → Apartment.
+DLS UI order: Governate → Directorate → Village → Parcel Name → Parcel Number → Section → Plot Number → Land Type → Building → Floor → Apartment.
 
 Free-text keys: `parcel_number`, `plot_number`, `building_number`, `floor_number`, `apartment_number`.
 

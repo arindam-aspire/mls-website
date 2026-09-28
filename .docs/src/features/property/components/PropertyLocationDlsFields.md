@@ -7,10 +7,10 @@ Presentational DLS Location fields inserted into the library-owned Create Proper
 # Responsibilities
 
 - Render the host-owned **DLS** block by property category (order assembled in `usePropertyCreateScreen`):
-  - **Residential / Commercial:** Governate → Directorate → Village → Parcel Name → Parcel Number → Section → Land Type → Plot Number → Building → Floor → Apartment
+  - **Residential / Commercial:** Governate → Directorate → Village → Parcel Name → Parcel Number → Section → Plot Number → Land Type → Building → Floor → Apartment
   - **Land:** Governate → Directorate → Village → Parcel Name → Parcel Number → Section (dropdown) → Plot Number
 - Mount into `PropertyForm` Location via React portal (library has no DLS slot).
-- Insert the portal **before** the Show Location switch.
+- Append the portal at the end of the Location form (after latitude/longitude). Show Location is a separate portal directly under the map and is not an anchor for this block.
 - Remain presentational: options/values/errors/retry from hooks. Selects use `Select`; text fields use `Input`.
 
 # Imports
@@ -39,7 +39,7 @@ Presentational DLS Location fields inserted into the library-owned Create Proper
 
 # Flow Description
 
-1. Location step renders this before Show Location.
+1. Location step renders this at the end of the location form. Show Location sits directly under the map, above latitude/longitude and this block.
 2. Portal hosts DLS heading + fields from `/dls-locations` (Land Type from form-options for Properties).
 3. Outbound `payload.location` is lat/lng + DLS codes/names + identification (+ `show_location`); `land_type_id` on `property_details`.
 

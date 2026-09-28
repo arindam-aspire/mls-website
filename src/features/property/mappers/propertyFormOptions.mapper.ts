@@ -198,6 +198,32 @@ function asOptionItems(value: PropertyFormOptionList | unknown): PropertyFormOpt
   return [];
 }
 
+/**
+ * Flat master rows (`data.items[]` with `group`) used by
+ * `GET /property-form-options`. Grouped arrays (`land_type`, `groups.land_type`)
+ * stay on the existing list matchers.
+ */
+function masterItemsForGroups(
+  data: PropertyFormOptionsData | null,
+  groups: readonly string[],
+): PropertyFormOptionItem[] {
+  const items = data?.items;
+  if (!Array.isArray(items)) {
+    return [];
+  }
+
+  const wanted = new Set(groups.map((group) => normalizeKey(group)));
+
+  return items.filter((item) => {
+    if (item.is_active === false) {
+      return false;
+    }
+
+    const group = toOptionalTrimmedString(item.group);
+    return group.length > 0 && wanted.has(normalizeKey(group));
+  });
+}
+
 function listsMatching(
   data: PropertyFormOptionsData | null,
   explicitLists: Array<PropertyFormOptionList | undefined>,
@@ -545,16 +571,19 @@ export function mapPropertyFormOptionsCatalog(
       ),
     ),
     landTypeOptions: mapOptionList(
-      listsMatching(
-        optionsData,
-        [
-          optionsData?.land_types,
-          optionsData?.landTypes,
-          optionsData?.land_type,
-          optionsData?.landType,
-        ],
-        isLandTypeKey,
-      ),
+      [
+        ...listsMatching(
+          optionsData,
+          [
+            optionsData?.land_types,
+            optionsData?.landTypes,
+            optionsData?.land_type,
+            optionsData?.landType,
+          ],
+          isLandTypeKey,
+        ),
+        masterItemsForGroups(optionsData, ["land_type", "land_types", "landType"]),
+      ],
       true,
     ),
   };

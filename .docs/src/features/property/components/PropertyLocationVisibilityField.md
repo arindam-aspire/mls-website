@@ -7,7 +7,7 @@ App-owned `Show Location` switch inserted into the library-owned Create Property
 # Responsibilities
 
 - Render the localized location-visibility setting with the shared `SwitchField`.
-- Mount the field at the end of the active `PropertyForm` Location form through a React portal because `@abdoun/abdoun-library` does not expose a Location-step slot.
+- Mount the field through a React portal immediately after the map block (`[data-property-location-map]`) because `@abdoun/abdoun-library` does not expose a Location-step slot. Latitude, longitude, and the DLS block stay below it.
 - Remain presentational: checked state, disabled state, labels, and the change callback come from `usePropertyCreateScreen`.
 
 # Imports
@@ -41,7 +41,7 @@ App-owned `Show Location` switch inserted into the library-owned Create Property
 
 1. `PropertyCreateScreen` renders this component only on the Location step.
 2. The component locates the active library form inside the screen-owned wrapper.
-3. A portal appends the switch row after the existing location inputs.
+3. A portal inserts the switch row as the next sibling of the map section (the form child that wraps `[data-property-location-map]`).
 4. Changes update host-owned property form state; create/update mappers send `payload.location.show_location`.
 
 # Dependencies

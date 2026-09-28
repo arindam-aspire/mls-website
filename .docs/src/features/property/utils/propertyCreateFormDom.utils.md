@@ -36,10 +36,11 @@ Host DOM patches for `@abdoun/abdoun-library` `PropertyForm` on Add Property. Th
 # Flow Description
 
 1. New create seeds `reference_number` with `PENDING_PROPERTY_REFERENCE_NUMBER` so library Step 3 validation can pass (server owns the real value).
-2. DOM patches keep the pending/empty field hidden.
-3. After draft save or hydration, host merges the server reference; patches show it read-only.
-4. Outbound mappers omit the pending sentinel so PATCH does not send a fake reference.
-5. On Location, library identification inputs stay hidden; host DLS Inputs are excluded from that hide so Parcel Number / Plot Number / Building / Floor / Apartment remain visible. Review still uses `config.identificationFields` labels with hydrated values.
+2. If the library input is still empty (hidden required field, so Next returns before `onNext`), the patch writes that same sentinel and dispatches `input` once so React state matches. A real backend value is left unchanged.
+3. DOM patches keep the pending/empty field hidden.
+4. After draft save or hydration, host merges the server reference; patches show it read-only.
+5. Outbound mappers omit the pending sentinel so PATCH does not send a fake reference.
+6. On Location, library identification inputs stay hidden; host DLS Inputs are excluded from that hide so Parcel Number / Plot Number / Building / Floor / Apartment remain visible. Review still uses `config.identificationFields` labels with hydrated values.
 
 # Notes
 

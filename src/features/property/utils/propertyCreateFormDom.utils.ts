@@ -120,6 +120,32 @@ function findNamedFieldWrapper(
   return wrapper;
 }
 
+/**
+ * Library Step 3 requires a non-empty `reference_number`, but the field stays
+ * hidden until the API mints one. An empty controlled value fails validation
+ * with the message on the hidden input, so Next never calls the host.
+ * Push the pending sentinel into React state once when the input is empty.
+ */
+function ensurePendingReferenceNumber(input: HTMLInputElement) {
+  const current = input.value.trim();
+  if (current.length > 0) {
+    delete input.dataset.pendingReferenceSyncAttempts;
+    return;
+  }
+
+  if (input.dataset.pendingReferenceSyncAttempts === "1") {
+    return;
+  }
+
+  input.dataset.pendingReferenceSyncAttempts = "1";
+  const valueSetter = Object.getOwnPropertyDescriptor(
+    HTMLInputElement.prototype,
+    "value",
+  )?.set;
+  valueSetter?.call(input, PENDING_PROPERTY_REFERENCE_NUMBER);
+  input.dispatchEvent(new Event("input", { bubbles: true }));
+}
+
 function syncReferenceNumberField(
   container: HTMLElement,
   hasReferenceNumber: boolean,
@@ -131,6 +157,8 @@ function syncReferenceNumberField(
   if (!referenceNumberInput) {
     return;
   }
+
+  ensurePendingReferenceNumber(referenceNumberInput);
 
   referenceNumberInput.readOnly = true;
   referenceNumberInput.setAttribute("aria-readonly", "true");
