@@ -98,7 +98,7 @@ Stop `npm run dev` before `npm run build`. Stale `.next/dev/types/validator.ts` 
 | Variable | Purpose |
 | --- | --- |
 | `NEXT_PUBLIC_API_BASE_URL` | Backend API base URL (defaults to dev API in `environment.config.ts`) |
-| `NEXT_PUBLIC_APP_URL` | Public frontend origin for invitation emails and rewritten agency deep links (no trailing slash). Empty falls back to the current browser origin. Never hardcode localhost or production hosts in source. |
+| `NEXT_PUBLIC_APP_URL` | Public frontend origin when the app needs a site URL (no trailing slash). Empty falls back to the current browser origin via `getPublicAppOrigin()`. Invitation and password-setup links are the absolute URLs returned by the API (`/agency-invitation`, `/agency-password-setup`, `/agent-invite`, `/agent-password-setup`). Do not rebuild those links with localhost. |
 | `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | Google Maps JavaScript API key for the Add Property location map |
 
 ---

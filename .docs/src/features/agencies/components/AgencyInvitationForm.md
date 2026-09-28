@@ -36,7 +36,8 @@ None.
 | Prop | Purpose |
 | --- | --- |
 | `initialValues` | Prefill from validate payload |
-| `onSubmit` | Values + `legalDocument` file |
+| `onSubmit` | Values plus `legalDocument` (`File` or `null` when validate already returned a licence URL) |
+| `existingLegalDocumentUrl` | Prefills the licence name. A new file is optional when this URL is set |
 | `isLoading` / `isUploading` | Disable controls |
 
 # Actions / Inputs

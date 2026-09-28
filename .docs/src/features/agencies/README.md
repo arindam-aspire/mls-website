@@ -23,7 +23,7 @@ agencies/
 ## Invitation flow
 
 1. Admin submits invitation registration.
-2. `createAgencyInvitation` sends `POST /agency/invitations` with form fields, `frontend_url` (`NEXT_PUBLIC_APP_URL` / current origin), and the invitation email copy (`AGENCY_INVITATION_EMAIL`).
+2. Upload the licence with `POST /uploads/presigned-url` (`context: agency_legal_document`), PUT the bytes, then `createAgencyInvitation` sends JSON `POST /agency/invitations` with `email`, names, E.164 `phone`, `legal_document_s3_link` (`data.file_url`), and invitation email copy. The backend owns the From address and the absolute link.
 3. Backend emails the invitee. CTA: **Accept Agency Invitation**, href on the public origin + `/[locale]/agency-invitation?token=`.
 4. Invitee validates, uploads legal document, accepts.
 5. Password setup uses `/agency-password-setup?token=`.

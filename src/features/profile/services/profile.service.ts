@@ -1,16 +1,16 @@
 import { apiClient, authClient } from "@/src/apis/clients/api.client";
 import { agencyEndpoints } from "@/src/apis/endpoints/agencyEndpoints";
 import { profileEndpoints } from "@/src/apis/endpoints/profileEndpoints";
+import { uploadEndpoints } from "@/src/apis/endpoints/uploadEndpoints";
 import { buildAgencyInvitationCreateBody } from "@/src/features/agencies/utils/buildAgencyInvitationCreateBody";
 import { getLoggedInUser } from "@/src/features/auth/services/auth.service";
 import type { LoggedInUser } from "@/src/features/auth/types/auth.types";
-import { requestUploadPresignedUrl } from "@/src/features/property/services/upload.service";
 import type { UploadPresignedUrlResponse } from "@/src/features/property/types/upload.types";
 import {
   assignUserAgency,
   assignUserAgencyAndRefreshUser,
 } from "@/src/features/user/services/user.service";
-import { resolvePersistedUploadReference, resolveUploadedFileUrl } from "@/src/lib/resolveUploadedFileUrl";
+import { resolveUploadedFileUrl } from "@/src/lib/resolveUploadedFileUrl";
 import {
   cacheProfilePictureFile,
   clearCachedProfilePicture,
@@ -48,6 +48,7 @@ import type {
   UpdateAgencyResponse,
 } from "../types/profile.types";
 import {
+  isUsableAgencyId,
   normalizeAgencyListResponse,
   normalizeGetAgencyResponse,
   unwrapAgencyFromResponseData,
@@ -70,6 +71,10 @@ import type {
 } from "../types/profile.types";
 
 export async function getAgencyById(agencyId: string): Promise<NormalizedGetAgencyResponse> {
+  if (!isUsableAgencyId(agencyId)) {
+    throw new Error("Agency id is required");
+  }
+
   const response = await apiClient.request<GetAgencyResponse>({
     endpoint: agencyEndpoints.byId(agencyId),
     method: "GET",
@@ -129,42 +134,59 @@ export async function createOfflineAgency(
   });
 }
 
-export async function uploadOfflineAgencyLegalDocument(file: File): Promise<string> {
+function isPersistableS3FileUrl(value: string): boolean {
+  return /^https?:\/\//i.test(value) && !value.startsWith("dev://");
+}
+
+/**
+ * Uploads an agency licence before invitation, accept, or offline registration.
+ * 1. `POST /uploads/presigned-url` with `context: "agency_legal_document"`.
+ * 2. PUT the file bytes to `data.upload_url`.
+ * 3. Return `data.file_url` for `legal_document_s3_link`.
+ * `dev://` placeholders are rejected and never submitted.
+ */
+export async function uploadAgencyLegalDocumentFile(
+  file: File,
+  options?: { auth?: boolean },
+): Promise<string> {
   const contentType = resolveLicenseDocumentContentType(file);
-  const response = await requestUploadPresignedUrl({
-    context: "agency_legal_document",
-    file_name: file.name,
-    content_type: contentType,
-    file_size: file.size,
+  const useAuth = options?.auth !== false;
+  const response = await apiClient.request<UploadPresignedUrlResponse>({
+    endpoint: uploadEndpoints.PRESIGNED_URL,
+    method: "POST",
+    auth: useAuth,
+    body: {
+      file_name: file.name,
+      content_type: contentType,
+      file_size: file.size,
+      context: "agency_legal_document",
+    },
   });
 
-  const uploadUrl = response.data?.upload_url;
+  const uploadUrl = response.data?.upload_url?.trim() ?? "";
+  const fileUrl = response.data?.file_url?.trim() ?? "";
 
-  if (!response.success || !uploadUrl) {
-    throw new Error(response.message ?? "Legal document upload failed");
+  if (!response.success || !isPersistableS3FileUrl(uploadUrl)) {
+    throw new Error(response.message?.trim() || "Legal document upload failed");
   }
 
-  if (!uploadUrl.startsWith("dev://")) {
-    await putFileToPresignedUrl(
-      uploadUrl,
-      file,
-      contentType,
-      undefined,
-      response.data?.upload_http_method === "POST" ? "POST" : "PUT",
-    );
+  await putFileToPresignedUrl(
+    uploadUrl,
+    file,
+    contentType,
+    undefined,
+    response.data?.upload_http_method === "POST" ? "POST" : "PUT",
+  );
+
+  if (!isPersistableS3FileUrl(fileUrl)) {
+    throw new Error(response.message?.trim() || "Legal document upload failed");
   }
 
-  const persistedUrl = resolvePersistedUploadReference({
-    file_url: response.data?.file_url,
-    object_key: response.data?.object_key,
-    upload_url: uploadUrl,
-  });
+  return fileUrl;
+}
 
-  if (!persistedUrl) {
-    throw new Error(response.message ?? "Legal document upload failed");
-  }
-
-  return persistedUrl;
+export async function uploadOfflineAgencyLegalDocument(file: File): Promise<string> {
+  return uploadAgencyLegalDocumentFile(file, { auth: true });
 }
 
 export async function createAgencyInvitation(
@@ -204,7 +226,13 @@ function normalizeAgencyInvitationPreview(data: unknown): AgencyInvitationPrevie
       "agency_trade_name",
       "agencyTradeName",
     ),
-    phone: pickRecordString(record, "phone", "phone_number"),
+    phone: pickRecordString(record, "phone", "phone_number", "phoneNumber"),
+    legal_document_s3_link: pickRecordString(
+      record,
+      "legal_document_s3_link",
+      "document_url",
+      "licence_url",
+    ),
     status: pickRecordString(record, "status") ?? "",
     expires_at: pickRecordString(record, "expires_at", "expiresAt"),
     password_setup_link: pickRecordString(
@@ -242,50 +270,8 @@ export async function acceptAgencyInvitation(
   });
 }
 
-export async function uploadAgencyInvitationLegalDocument(
-  file: File,
-  token: string,
-): Promise<string> {
-  const contentType = resolveLicenseDocumentContentType(file);
-  const response = await authClient.request<UploadPresignedUrlResponse>({
-    endpoint: agencyEndpoints.INVITATION_DOCUMENT_UPLOAD,
-    method: "POST",
-    auth: false,
-    body: {
-      token,
-      file_name: file.name,
-      content_type: contentType,
-      file_size: file.size,
-    },
-  });
-
-  const uploadUrl = response.data?.upload_url;
-
-  if (!response.success || !uploadUrl) {
-    throw new Error(response.message ?? "Legal document upload failed");
-  }
-
-  if (!uploadUrl.startsWith("dev://")) {
-    await putFileToPresignedUrl(
-      uploadUrl,
-      file,
-      contentType,
-      undefined,
-      response.data?.upload_http_method === "POST" ? "POST" : "PUT",
-    );
-  }
-
-  const persistedUrl = resolvePersistedUploadReference({
-    file_url: response.data?.file_url,
-    object_key: response.data?.object_key,
-    upload_url: uploadUrl,
-  });
-
-  if (!persistedUrl) {
-    throw new Error(response.message ?? "Legal document upload failed");
-  }
-
-  return persistedUrl;
+export async function uploadAgencyInvitationLegalDocument(file: File): Promise<string> {
+  return uploadAgencyLegalDocumentFile(file, { auth: false });
 }
 
 export async function reviewAgency(

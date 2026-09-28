@@ -26,11 +26,11 @@ None.
 
 # API Usage
 
-Consumed by `buildAgencyInvitationCreateBody` and sent on `POST /agency/invitations` as `email_*` fields plus `frontend_url`.
+Consumed by `buildAgencyInvitationCreateBody` and sent on `POST /agency/invitations` as `email_*` fields. The From address and the absolute link are backend environment variables.
 
 # Navigation
 
-CTA href is not stored here. The backend concatenates `frontend_url` + locale path + `token`.
+CTA href is not stored here. The backend returns an absolute URL such as `/agency-invitation?token=`.
 
 # Props / Parameters
 

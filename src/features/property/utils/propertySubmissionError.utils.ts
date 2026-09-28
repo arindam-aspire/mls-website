@@ -232,6 +232,12 @@ export function parsePropertySubmissionError(
     ownerDuplicateError = message;
   }
 
+  for (const [path, itemMessage] of Object.entries(fieldErrors)) {
+    if (isBuiltUpAreaApiField(path) && itemMessage.trim()) {
+      fieldErrors["property_details.built_up_area"] = itemMessage;
+    }
+  }
+
   return {
     message,
     fieldErrors,
@@ -250,6 +256,43 @@ const HOST_LOCATION_FIELD_KEYS = new Set<string>([
   "landType",
   "landTypeId",
 ]);
+
+const BUILT_UP_AREA_API_FIELDS = new Set([
+  "built_up_area",
+  "builtuparea",
+  "buildingarea",
+  "property_area",
+  "area",
+  "built_up_area_unit",
+  "builtupareaunit",
+]);
+
+/** API field names that belong on the Built-up Area input. */
+export function isBuiltUpAreaApiField(path: string): boolean {
+  const leaf = getFieldPathLeaf(path).replace(/_/g, "").toLowerCase();
+  const compact = path.replace(/[._]/g, "").toLowerCase();
+
+  return (
+    BUILT_UP_AREA_API_FIELDS.has(getFieldPathLeaf(path)) ||
+    BUILT_UP_AREA_API_FIELDS.has(leaf) ||
+    compact.endsWith("builtuparea") ||
+    compact.endsWith("buildingarea") ||
+    compact.endsWith("propertyarea") ||
+    compact.endsWith("builtupareaunit")
+  );
+}
+
+export function resolveBuiltUpAreaApiError(
+  fieldErrors: Record<string, string>,
+): string | undefined {
+  for (const [path, message] of Object.entries(fieldErrors)) {
+    if (isBuiltUpAreaApiField(path) && message.trim()) {
+      return message.trim();
+    }
+  }
+
+  return undefined;
+}
 
 function getFieldPathLeaf(path: string): string {
   const segments = path.split(".").filter(Boolean);

@@ -6,6 +6,8 @@ import { useState } from "react";
 import { LicenseDocumentUpload } from "@/src/components/common/LicenseDocumentUpload";
 import { Button, Input, PhoneInput } from "@/src/components/ui";
 import { formatPhoneNumberE164 } from "@/src/features/profile/utils/formatPhoneNumberE164";
+import { licenseDocumentDisplayName } from "@/src/features/profile/utils/licenseDocumentDisplay";
+import { parseStoredPhoneNumber } from "@/src/features/profile/utils/parseStoredPhoneNumber";
 import { useForm } from "@/src/hooks/useForm";
 import { validateLicenseDocumentFile } from "@/src/lib/validateLicenseDocumentFile";
 
@@ -18,23 +20,32 @@ export type AgencyInvitationFormValues = {
 
 type AgencyInvitationFormProps = {
   initialValues: AgencyInvitationFormValues;
-  onSubmit: (values: AgencyInvitationFormValues & { legalDocument: File }) => void;
+  existingLegalDocumentUrl?: string | null;
+  onSubmit: (values: AgencyInvitationFormValues & { legalDocument: File | null }) => void;
   isLoading: boolean;
   isUploading?: boolean;
 };
 
 export function AgencyInvitationForm({
   initialValues,
+  existingLegalDocumentUrl = null,
   onSubmit,
   isLoading,
   isUploading = false,
 }: AgencyInvitationFormProps) {
   const t = useTranslations("auth");
   const tInvite = useTranslations("auth.agencyInvitation");
+  const parsedPhone = parseStoredPhoneNumber(initialValues.phone);
+  const existingLicenseName = licenseDocumentDisplayName(
+    existingLegalDocumentUrl,
+    tInvite("existingLicense"),
+  );
   const [licenseFile, setLicenseFile] = useState<File | null>(null);
   const [licenseError, setLicenseError] = useState<string | undefined>();
-  const [phoneCountryCode, setPhoneCountryCode] = useState("JO");
-  const [phoneNationalNumber, setPhoneNationalNumber] = useState("");
+  const [phoneCountryCode, setPhoneCountryCode] = useState(parsedPhone.countryCode);
+  const [phoneNationalNumber, setPhoneNationalNumber] = useState(
+    parsedPhone.nationalNumber,
+  );
 
   const {
     values,
@@ -81,7 +92,9 @@ export function AgencyInvitationForm({
 
   const validateLicenseFile = (file: File | null): string | undefined => {
     if (file == null) {
-      return t("agencySignUpLicenseRequired");
+      return existingLegalDocumentUrl?.trim()
+        ? undefined
+        : t("agencySignUpLicenseRequired");
     }
     return (
       validateLicenseDocumentFile(file, {
@@ -128,7 +141,11 @@ export function AgencyInvitationForm({
     const nextLicenseError = validateLicenseFile(licenseFile);
     setLicenseError(nextLicenseError);
 
-    if (nextLicenseError || licenseFile == null) {
+    if (nextLicenseError) {
+      return;
+    }
+
+    if (licenseFile == null && !existingLegalDocumentUrl?.trim()) {
       return;
     }
 
@@ -201,11 +218,15 @@ export function AgencyInvitationForm({
         <LicenseDocumentUpload
           label={t("agencySignUpLicenseLabel")}
           uploadPrompt={t("agencySignUpUploadPrompt")}
-          uploadHint={t("agencySignUpUploadHint")}
-          selectedFileName={licenseFile?.name ?? null}
+          uploadHint={
+            existingLicenseName
+              ? tInvite("existingLicenseHint", { fileName: existingLicenseName })
+              : t("agencySignUpUploadHint")
+          }
+          selectedFileName={licenseFile?.name ?? existingLicenseName}
           onFileSelect={applyLicenseFile}
           error={licenseError}
-          isRequired
+          isRequired={!existingLegalDocumentUrl?.trim()}
           isUploading={isUploading}
           uploadingLabel={tInvite("uploadingLicense")}
           disabled={disabled}

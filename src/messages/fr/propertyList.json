@@ -358,6 +358,7 @@
     "arrangementProperties": "Propriétés",
     "arrangementLand": "Terrain",
     "draftSaveSuccess": "Brouillon enregistré",
+    "draftSaveSuccessDescription": "Le brouillon est dans votre liste de brouillons. Ce n'est pas une annonce publique tant que vous ne l'avez pas soumis.",
     "draftSaveError": "Impossible d'enregistrer le brouillon",
     "draftLoadError": "Impossible de charger le brouillon",
     "ownerDocumentUploadError": "Impossible de téléverser le document du propriétaire",

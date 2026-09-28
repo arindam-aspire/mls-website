@@ -25,7 +25,7 @@ Super-admin agency management screen (create, invite, review, activate).
   - `PhoneInput`, `Input`, `Button`, `CopyLinkBar`, `LicenseDocumentUpload`
 - Utilities:
   - `validateLicenseDocumentFile`
-  - `normalizeAgencyInvitationLink` (rewrites API hosts onto `getPublicAppOrigin()`)
+  - `normalizeAgencyInvitationLink` (keeps the API host; does not rewrite to localhost)
   - `cn` (className helper)
 
 # Exports
@@ -56,7 +56,7 @@ Super-admin agency management screen (create, invite, review, activate).
 | Action | Service function | HTTP method | Notes |
 | --- | --- | --- | --- |
 | Offline agency registration | `createOfflineAgency` | `POST /agency/offline-registration` | Uploads legal document via `uploadOfflineAgencyLegalDocument` first. |
-| Generate invitation link | `createAgencyInvitation` | `POST /agency/invitations` | Body includes `frontend_url` from `NEXT_PUBLIC_APP_URL`. Copy bar uses `normalizeAgencyInvitationLink`. |
+| Generate invitation link | `uploadAgencyLegalDocumentFile` then `createAgencyInvitation` | `POST /uploads/presigned-url` then `POST /agency/invitations` | JSON body: email, names, E.164 phone, `legal_document_s3_link` = S3 `file_url`. Copy bar keeps the API URL. |
 | Review agency | `reviewAgency` | `POST /agency/{id}/review` | Used for approve/reject. Returned `password_setup_link` is origin-rewritten before display. |
 | Activate/deactivate | `updateAgencyActivation` | `POST /agency/{id}/activation` | Toggles `is_active`. |
 | Generate password setup link | `sendAgencyPasswordLink` | `POST /agency/{id}/password-link` | Rewrites `password_setup_link` onto `getPublicAppOrigin()`, stores it in the copy bar, and opens it in a new tab. |
@@ -146,6 +146,7 @@ Super-admin agency management screen (create, invite, review, activate).
 # Notes
 
 - Invitation and password-setup URL normalization lives in `normalizeAgencyInvitationLink`. The API may return a backend-configured host; the helper rebuilds `/[locale]/agency-invitation|agency-password-setup?token=…` on `getPublicAppOrigin()` (`NEXT_PUBLIC_APP_URL`, else the browser origin).
-- Create invitation also sends `frontend_url` so SES mail uses the same public origin instead of localhost.
+- Agency list requests omit `agencyStatus` unless the user picks a filter. Invited rows (`status` `PENDING`, `agency_status` `Invited`, `agency_id` null) render as invited and do not call agency-detail APIs.
+- Offline registration sends E.164 phone. A licence is uploaded only when a file is selected. This endpoint does not send the password email; that link is emailed when a super admin approves the agency and opens `/agency-password-setup?token=`.
 - This screen intentionally reuses existing service functions and UI primitives; no new backend endpoints were introduced.
 

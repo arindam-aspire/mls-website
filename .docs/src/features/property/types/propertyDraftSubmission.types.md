@@ -36,7 +36,7 @@ TypeScript request-body shapes for property **draft submission** (create / save 
 - Request shape: `{ "payload": { … }, "current_step": 1, "last_completed_step": 1 }` on the first form step — `current_step` matches `activeStep`; `last_completed_step` matches `max_reached_step` (1-based, same as the library).
 - Draft `payload`: omit any section or field the user has not filled yet; nested objects and array items also use optional keys.
 - `payload.location.show_location` is sent on create/update. New and legacy drafts default it to `false`; saved drafts hydrate the stored value.
-- Draft payloads retain the entered Built-up Area value and always persist `"SQM"`. Legacy `"SQFT"` values are converted with `1 sq. ft. = 0.09290304 sq. m.`
+- Create and update send one number in `built_up_area` and `built_up_area_unit` `"sqm"` or `"sqft"`. The API stores sqm and returns `"sqm"`.
 - `route_through_agency` is a top-level boolean on create/update/direct-submit requests and defaults to `false`; `agency_id` is `null` when routing is off and required by the UI when routing is on.
 - Optional GET flags `can_edit` / `can_edit_submission` override client editability rules when present (`false` locks; `true` unlocks; omitted → status/role rules).
 - `media_documents.images` carries uploaded property images; `media_documents.videos` carries uploaded property videos. GET payloads may include `signed_read_url` / `thumb_url` / `object_key` for preview vs persist; outbound save sends only the persist `url`.

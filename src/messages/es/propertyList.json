@@ -358,6 +358,7 @@
     "arrangementProperties": "Propiedades",
     "arrangementLand": "Terreno",
     "draftSaveSuccess": "Borrador guardado",
+    "draftSaveSuccessDescription": "El borrador está en tu lista de borradores. No es un anuncio público hasta que lo envíes.",
     "draftSaveError": "No se pudo guardar el borrador",
     "draftLoadError": "No se pudo cargar el borrador",
     "ownerDocumentUploadError": "No se pudo subir el documento del propietario",

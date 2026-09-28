@@ -358,6 +358,7 @@
     "arrangementProperties": "Properties",
     "arrangementLand": "Land",
     "draftSaveSuccess": "Draft saved",
+    "draftSaveSuccessDescription": "The draft is in your draft list. It is not a public listing until you submit it.",
     "draftSaveError": "Could not save draft",
     "draftLoadError": "Could not load draft",
     "ownerDocumentUploadError": "Could not upload owner document",

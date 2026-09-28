@@ -15,6 +15,7 @@ export function AgencyInvitationScreen() {
     isUploading,
     passwordSetupLink,
     initialValues,
+    existingLegalDocumentUrl,
     formKey,
     labels,
     handlers,
@@ -84,6 +85,7 @@ export function AgencyInvitationScreen() {
             <AgencyInvitationForm
               key={formKey}
               initialValues={initialValues}
+              existingLegalDocumentUrl={existingLegalDocumentUrl}
               onSubmit={handlers.onSubmit}
               isLoading={isSubmitting}
               isUploading={isUploading}

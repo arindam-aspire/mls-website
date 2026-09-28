@@ -68,7 +68,7 @@ _N/A — hook only._
 1. Governate options load from the DLS API.
 2. Choosing a governate stores `gov_code` / `gov_name` and clears lower levels.
 3. Each next query uses the selected parent codes only — the Excel catalog is never downloaded.
-4. Loading uses the shared hint; empty lists use the empty hint; failures show `loadError` plus Retry.
+4. Loading uses the shared hint; empty lists use the empty hint; failures show `loadError` plus Retry. That loading/error/retry state is typed on `PropertyLocationDlsSelectFieldModel` (`hint`, `retryLabel`, `onRetry` are select-only).
 
 # Dependencies
 

@@ -1,19 +1,19 @@
 # File Overview
 
-Rewrites agency invitation and password-setup URLs onto the public frontend origin.
+Keeps the backend's absolute agency invitation and password-setup URLs.
 
 **Source:** `src/features/agencies/utils/normalizeAgencyInvitationLink.ts`
 
 # Responsibilities
 
 - Split comma-separated API payloads and prefer invitation / password-setup / token segments.
-- Replace the API host with `getPublicAppOrigin()` (`NEXT_PUBLIC_APP_URL` or the current origin).
-- Rebuild locale-prefixed routes: `/[locale]/agency-invitation?token=` and `/[locale]/agency-password-setup?token=`.
-- Token may come from `token`, `invitation_token`, `invitation`, or a path segment.
+- Keep the URL origin from the API. Do not replace it with the browser origin or localhost.
+- Normalize the path to `/agency-invitation` or `/agency-password-setup` and keep `token` in the query string.
+- Preserve a leading locale segment when the API URL already has one.
 
 # Imports
 
-- `getPublicAppOrigin` from `src/configs/environment.config.ts`
+None. The helper only parses the absolute URL the API returned.
 
 # Exports
 
@@ -37,7 +37,7 @@ Produces:
 - `/[locale]/agency-invitation?token=…`
 - `/[locale]/agency-password-setup?token=…`
 
-Origin comes from env, not a hardcoded localhost or production URL.
+Origin comes from the API URL. The helper does not build a localhost link.
 
 # Props / Parameters
 
@@ -57,9 +57,9 @@ N/A.
 # Flow Description
 
 1. Trim; return empty strings unchanged.
-2. Resolve origin via `getPublicAppOrigin()`. If empty, return the original string.
-3. Parse the candidate URL against that origin.
-4. If a token is present, rebuild the locale-prefixed invitation or password-setup path.
+2. Prefer the comma-separated segment that contains the invitation path or `token`.
+3. Parse it as an absolute URL and keep that origin.
+4. If a token is present, keep `/agency-invitation` or `/agency-password-setup` and `?token=`.
 5. On parse failure, return the original string.
 
 # Dependencies
@@ -69,4 +69,4 @@ N/A.
 
 # Notes
 
-Backend invitation emails should use the same origin (`frontend_url` on create). This helper keeps the in-app copy bar consistent with that public host.
+Backend invitation links are already absolute. This helper does not replace the host with localhost or `NEXT_PUBLIC_APP_URL`.

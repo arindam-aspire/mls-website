@@ -13,6 +13,9 @@ const KNOWN_IDENTIFICATION_FIELD_NAMES = new Set<string>([
   PROPERTY_LAND_IDENTIFICATION_PLACEHOLDER_KEY,
 ]);
 
+const BUILT_UP_AREA_FIELD_PATH = "property_details.built_up_area";
+const BUILT_UP_AREA_ERROR_ATTR = "data-built-up-area-api-error";
+
 function hideBuiltUpAreaUnitControl(container: HTMLElement) {
   const unitControl = container.querySelector('[name="built_up_area_unit"]');
   if (!(unitControl instanceof HTMLElement)) {
@@ -39,6 +42,47 @@ function hideBuiltUpAreaUnitControl(container: HTMLElement) {
 
   unitControl.hidden = true;
   unitControl.setAttribute("aria-hidden", "true");
+}
+
+/**
+ * The library Built-up Area input does not read external `fieldErrors`.
+ * Mark the input so `goToField` can focus it, and render the API message under it.
+ */
+export function applyBuiltUpAreaApiError(
+  container: HTMLElement,
+  message: string | null | undefined,
+) {
+  const input = container.querySelector<HTMLInputElement>('input[name="built_up_area"]');
+  const existing = container.querySelector<HTMLElement>(`[${BUILT_UP_AREA_ERROR_ATTR}]`);
+
+  if (!input) {
+    existing?.remove();
+    return;
+  }
+
+  input.setAttribute("data-property-form-field", BUILT_UP_AREA_FIELD_PATH);
+
+  const trimmed = message?.trim() ?? "";
+  if (!trimmed) {
+    existing?.remove();
+    input.removeAttribute("aria-invalid");
+    input.removeAttribute("aria-describedby");
+    return;
+  }
+
+  const errorId = "built-up-area-api-error";
+  input.setAttribute("aria-invalid", "true");
+  input.setAttribute("aria-describedby", errorId);
+
+  const node = existing ?? document.createElement("p");
+  node.id = errorId;
+  node.setAttribute(BUILT_UP_AREA_ERROR_ATTR, "");
+  node.className = "col-span-1 mt-1 text-sm text-danger sm:col-span-2";
+  node.textContent = trimmed;
+
+  if (input.nextElementSibling !== node) {
+    input.insertAdjacentElement("afterend", node);
+  }
 }
 
 function setElementHidden(element: HTMLElement, hidden: boolean) {

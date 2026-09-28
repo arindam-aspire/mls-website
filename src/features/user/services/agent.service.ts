@@ -189,6 +189,7 @@ export async function submitAgentInvitation(
     token: body.token,
     full_name: body.fullName,
     phone: body.phone,
+    phone_number: body.phone,
     service_area: body.serviceArea,
     ...(body.whatsappNumber ? { whatsapp_number: body.whatsappNumber } : {}),
     ...(body.serviceAreaIds.length > 0

@@ -133,7 +133,7 @@ export function SelectAgencyModal({ isOpen, setIsOpen }: SelectAgencyModalProps)
                       <SelectAgencyListItem
                         key={agency.id}
                         agency={agency}
-                        selected={selectedAgencyId === agency.id}
+                        selected={selectedAgencyId === agency.agency_id}
                         disabled={isContinuePending}
                         onSelect={() => onSelectAgency(agency)}
                         ariaLabel={buildAgencyAriaLabel(agency)}

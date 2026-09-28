@@ -162,7 +162,9 @@ export type AgentOnboardingSubmitValues = {
 export type AgentInvitationSubmitRequest = {
   token: string;
   full_name: string;
+  /** E.164. The API also accepts `phone_number`. */
   phone: string;
+  phone_number?: string;
   whatsapp_number?: string;
   service_area_ids?: number[];
   service_area: string;
