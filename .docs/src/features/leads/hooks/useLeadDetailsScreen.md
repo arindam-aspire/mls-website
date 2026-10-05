@@ -14,6 +14,7 @@ Logic hook for lead details: queries, role permissions, modals, and mutations.
 - Use the static canonical list as fallback because the current API contract has no available-statuses endpoint.
 - Keep Update Status available for non-terminal leads, including while an administrator reviews a pending close request.
 - Validate reply/note required fields before mutate.
+- For an SMS reply, disable Send SMS unless the signed-in user from `GET /auth/me` has a non-empty `phone_number` and `is_phone_verified === true`. Refresh that profile when the SMS channel is selected. The messages mutation repeats the check and does not call `POST /leads/{id}/messages` when the number is missing or unverified. Unverified and missing-number states link to `/my-profile`, which already verifies a phone with `PATCH /auth/me/profile/request` and `POST /auth/me/profile/verify`.
 - Confirm request-close and approve-close via modal open state.
 - Route `REQUEST_FOR_CLOSE` through the dedicated request-close mutation and keep final won/lost outcomes disabled so status updates cannot bypass admin approval.
 - Treat `request_close_at` without `closed_at` as pending admin approval, while preserving the current lead status.

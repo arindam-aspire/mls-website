@@ -25,6 +25,7 @@ import type {
   ProfileUpdateRequestBody,
   ProfileUpdateVerifyBody,
 } from "../types/profile.types";
+import { sanitizeSmsErrorMessage } from "../utils/registeredMobileSms.utils";
 
 function useProfileUpdateMutation(
   successTitleKey: "updateEmailSuccessTitle" | "updatePhoneSuccessTitle" | "updateProfileSuccessTitle",
@@ -70,7 +71,10 @@ export function useRequestProfileUpdate() {
     mutationFn: (body: ProfileUpdateRequestBody) => requestProfileUpdate(body),
     onError: (error: ApiError) => {
       toast.error(t("requestProfileUpdateErrorTitle"), {
-        description: error.message,
+        description: sanitizeSmsErrorMessage(
+          error.message,
+          t("verificationErrorDescription"),
+        ),
       });
     },
   });
@@ -101,7 +105,10 @@ export function useVerifyProfileUpdate(field: "email" | "phone") {
     },
     onError: (error: ApiError) => {
       toast.error(t(errorTitleKey), {
-        description: error.message,
+        description: sanitizeSmsErrorMessage(
+          error.message,
+          t("verificationErrorDescription"),
+        ),
       });
     },
   });

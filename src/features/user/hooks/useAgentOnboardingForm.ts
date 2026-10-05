@@ -3,7 +3,10 @@
 import { useGetLocationTaxonomy } from "@/src/features/landing/mutations/landing.mutation";
 import { formatPhoneNumberE164 } from "@/src/features/profile/utils/formatPhoneNumberE164";
 import { usePropertyStore } from "@/src/features/property/store/property.store";
-import { getPhoneInputCountryByCode } from "@/src/components/ui/phone-input/countries";
+import {
+  DEFAULT_PHONE_INPUT_COUNTRY_CODE,
+  getPhoneInputCountryByCode,
+} from "@/src/components/ui/phone-input/countries";
 import { useToast } from "@/src/hooks/useToast";
 import { validateIdentityDocumentFile } from "@/src/lib/validateIdentityDocumentFile";
 import { useTranslations } from "next-intl";
@@ -52,9 +55,9 @@ export function createEmptyAgentOnboardingFormState(): AgentOnboardingFormState 
   return {
     fullName: "",
     email: "",
-    phoneCountryCode: "JO",
+    phoneCountryCode: DEFAULT_PHONE_INPUT_COUNTRY_CODE,
     phoneNationalNumber: "",
-    whatsappCountryCode: "JO",
+    whatsappCountryCode: DEFAULT_PHONE_INPUT_COUNTRY_CODE,
     whatsappNationalNumber: "",
     serviceAreaValues: [],
     position: "",

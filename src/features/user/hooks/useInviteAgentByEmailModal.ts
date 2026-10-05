@@ -1,7 +1,10 @@
 "use client";
 
 import { formatPhoneNumberE164 } from "@/src/features/profile/utils/formatPhoneNumberE164";
-import { getPhoneInputCountryByCode } from "@/src/components/ui/phone-input/countries";
+import {
+  DEFAULT_PHONE_INPUT_COUNTRY_CODE,
+  getPhoneInputCountryByCode,
+} from "@/src/components/ui/phone-input/countries";
 import { useToast } from "@/src/hooks/useToast";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -34,7 +37,9 @@ export function useInviteAgentByEmailModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [contactMethod, setContactMethod] = useState<InviteAgentContactMethod>("email");
   const [email, setEmail] = useState("");
-  const [phoneCountryCode, setPhoneCountryCode] = useState("JO");
+  const [phoneCountryCode, setPhoneCountryCode] = useState(
+    DEFAULT_PHONE_INPUT_COUNTRY_CODE,
+  );
   const [phoneNationalNumber, setPhoneNationalNumber] = useState("");
   const [errors, setErrors] = useState<InviteFormErrors>(EMPTY_INVITE_FORM_ERRORS);
   const [inviteResult, setInviteResult] = useState<AgentInviteResult | null>(null);
@@ -248,7 +253,7 @@ export function useInviteAgentByEmailModal() {
     if (wasOpenRef.current && !isOpen) {
       setContactMethod("email");
       setEmail("");
-      setPhoneCountryCode("JO");
+      setPhoneCountryCode(DEFAULT_PHONE_INPUT_COUNTRY_CODE);
       setPhoneNationalNumber("");
       setErrors(EMPTY_INVITE_FORM_ERRORS);
       setInviteResult(null);

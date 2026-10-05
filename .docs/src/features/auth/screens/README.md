@@ -19,6 +19,7 @@ One screen component per **auth view** (`AUTH_VIEW` in `authViews.ts`). Rendered
 | [SignInWithOTPScreen.md](./SignInWithOTPScreen.md) | `signin-otp` |
 | [OTPVerificationScreen.md](./OTPVerificationScreen.md) | `otp-verify` |
 | [ConfirmSignUpScreen.md](./ConfirmSignUpScreen.md) | `confirm-sign-up` |
+| [VerifyPhoneScreen.md](./VerifyPhoneScreen.md) | `verify-phone` |
 | [AgencyPasswordSetupScreen](./AgencyPasswordSetupScreen.md) | routed page `/agency-password-setup` (not modal) |
 
 ## Responsibilities

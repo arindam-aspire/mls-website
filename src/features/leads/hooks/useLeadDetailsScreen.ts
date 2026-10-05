@@ -9,7 +9,9 @@ import {
   isAgentUser,
   isSuperAdminUser,
 } from "@/src/features/auth/utils/profileMenuRoleAccess";
+import { getLoggedInUser } from "@/src/features/auth/services/auth.service";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
+import { resolveRegisteredMobileSmsEligibility } from "@/src/features/profile/utils/registeredMobileSms.utils";
 import { getPropertyDetails } from "@/src/features/property/services/property.service";
 import { resolveAgentNameFromCache } from "@/src/features/user/utils/resolveAgentNameFromCache";
 import { useToast } from "@/src/hooks/useToast";
@@ -99,6 +101,8 @@ export function useLeadDetailsScreen({
   const router = useRouter();
   const pathname = usePathname();
   const user = useAuthStore((state) => state.user);
+  const setUser = useAuthStore((state) => state.setUser);
+  const isLoadingUser = useAuthStore((state) => state.isLoadingUser);
 
   const isAdmin = isAgencyUser(user) || isSuperAdminUser(user);
   const isAgent = isAgentUser(user);
@@ -447,28 +451,36 @@ export function useLeadDetailsScreen({
       return;
     }
     setReplyError(null);
-    messageMutation.mutate(
-      {
-        leadId,
-        body: {
-          message: trimmed,
-          channel: replyChannel,
-          recipient_user_id: lead?.user_id ?? null,
-        },
+
+    const payload = {
+      leadId,
+      body: {
+        message: trimmed,
+        channel: replyChannel,
+        recipient_user_id: lead?.user_id ?? null,
       },
-      {
-        onSuccess: () => {
-          setReplyMessage("");
-          setReplyOpen(false);
-        },
+    };
+
+    if (replyChannel === "SMS") {
+      const eligibility = resolveRegisteredMobileSmsEligibility(user);
+      if (!eligibility.allowed || messageMutation.isPending) {
+        return;
+      }
+    }
+
+    messageMutation.mutate(payload, {
+      onSuccess: () => {
+        setReplyMessage("");
+        setReplyOpen(false);
       },
-    );
+    });
   }, [
     replyMessage,
     replyChannel,
     leadId,
     lead?.user_id,
     messageMutation,
+    user,
     t,
     setReplyError,
     setReplyMessage,
@@ -633,6 +645,45 @@ export function useLeadDetailsScreen({
     }
     return lead.source;
   }, [lead?.source, t, tSource]);
+
+  const smsEligibility = useMemo(
+    () => resolveRegisteredMobileSmsEligibility(user),
+    [user],
+  );
+  const isSmsReply = replyChannel === "SMS";
+  const smsBlockReason =
+    isSmsReply && !smsEligibility.allowed && !(isLoadingUser && user == null)
+      ? smsEligibility.reason
+      : null;
+  const smsNotice =
+    smsBlockReason === "missing_phone"
+      ? t("sms.missingPhone")
+      : smsBlockReason === "unverified" || smsBlockReason === "unauthenticated"
+        ? t("sms.notVerified")
+        : null;
+  const smsActionLabel =
+    smsBlockReason === "missing_phone"
+      ? t("sms.addMobileAction")
+      : smsBlockReason === "unverified"
+        ? t("sms.verifyAction")
+        : null;
+
+  useEffect(() => {
+    if (!replyOpen || replyChannel !== "SMS") return;
+
+    let cancelled = false;
+    void getLoggedInUser()
+      .then((response) => {
+        if (!cancelled) setUser(response.data);
+      })
+      .catch(() => {
+        // Submit refreshes the profile again and will not call the SMS API on failure.
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [replyChannel, replyOpen, setUser]);
 
   return {
     labels: {
@@ -865,6 +916,14 @@ export function useLeadDetailsScreen({
       channel: replyChannel,
       error: replyError,
       isSubmitting: messageMutation.isPending,
+      isSubmitDisabled:
+        messageMutation.isPending || (isSmsReply && !smsEligibility.allowed),
+      submitLabel: isSmsReply ? t("sms.submit") : t("modals.reply.submit"),
+      smsNotice,
+      smsActionLabel,
+      onSmsAction: () => {
+        router.push("/my-profile");
+      },
       onOpen: () => {
         setReplyError(null);
         setReplyOpen(true);

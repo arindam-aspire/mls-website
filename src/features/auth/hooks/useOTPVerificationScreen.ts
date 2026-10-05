@@ -9,6 +9,7 @@ import {
   useSignInWithOtpVerify,
 } from "../mutations/auth.mutation";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
+import { resolveSignInOtpUsername } from "../utils/signInOtpUsername";
 import { useAuthModalNavigation } from "./useAuthPortal";
 import { useAuthFlowContext, useAuthScreenLegalFooter } from "./authScreen.utils";
 
@@ -38,6 +39,12 @@ export function useOTPVerificationScreen() {
   const { mutate: verifyOtp, isPending: isVerifying } = useSignInWithOtpVerify();
   const isResendingOtp = otpFlow === "forgot" ? isResending : isResendingSignInOtp;
 
+  const signInUsername = resolveSignInOtpUsername({
+    email: pendingPhone?.trim() ? null : pendingEmail,
+    phoneNationalNumber: pendingPhone,
+    phoneCountryCode: pendingPhoneCountry,
+  });
+
   const onResend = useCallback(() => {
     if (otpFlow === "forgot") {
       if (pendingEmail?.trim()) {
@@ -46,24 +53,23 @@ export function useOTPVerificationScreen() {
       return;
     }
 
-    if (pendingEmail?.trim()) {
-      resendSignInOtp(
-        {
-          username: pendingEmail.trim(),
+    if (!signInUsername) return;
+
+    resendSignInOtp(
+      { username: signInUsername },
+      {
+        onSuccess: (response) => {
+          setOtpSession(response.data.session);
         },
-        {
-          onSuccess: (response) => {
-            setOtpSession(response.data.session);
-          },
-        },
-      );
-    }
+      },
+    );
   }, [
     otpFlow,
     pendingEmail,
     resendOtp,
     resendSignInOtp,
     setOtpSession,
+    signInUsername,
   ]);
 
   const onSubmit = useCallback(
@@ -74,18 +80,18 @@ export function useOTPVerificationScreen() {
         return;
       }
 
-      if (otpSession == null || !pendingEmail?.trim()) {
+      if (otpSession == null || !signInUsername) {
         navigate(AUTH_VIEW.signInOtp);
         return;
       }
 
       verifyOtp({
-        username: pendingEmail.trim(),
+        username: signInUsername,
         code,
         session: otpSession,
       });
     },
-    [otpFlow, otpSession, pendingEmail, navigate, setOtpCode, verifyOtp],
+    [otpFlow, otpSession, signInUsername, navigate, setOtpCode, verifyOtp],
   );
 
   const onCreateAccountClick = useCallback(() => {

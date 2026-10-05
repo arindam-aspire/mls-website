@@ -6,9 +6,9 @@ import { AUTH_VIEW } from "../authViews";
 import type { SignInOtpMethod, SignInWithOTPFormValues } from "../components/SignInWithOTPForm";
 import { useSignInWithOtpRequest } from "../mutations/auth.mutation";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
+import { resolveSignInOtpUsername } from "../utils/signInOtpUsername";
 import { useAuthModalNavigation } from "./useAuthPortal";
 import { useAuthFlowContext, useAuthScreenLegalFooter } from "./authScreen.utils";
-import { useToast } from "@/src/hooks/useToast";
 
 export function useSignInWithOTPScreen() {
   const t = useTranslations("auth");
@@ -17,6 +17,8 @@ export function useSignInWithOTPScreen() {
   const { onBack, canGoBack } = useAuthModalNavigation();
   const setOtpFlow = useAuthStore((state) => state.setOtpFlow);
   const setPendingEmail = useAuthStore((state) => state.setPendingEmail);
+  const setPendingPhone = useAuthStore((state) => state.setPendingPhone);
+  const setPendingPhoneCountry = useAuthStore((state) => state.setPendingPhoneCountry);
   const otpSession = useAuthStore((state) => state.otpSession);
   const {
     isAgency,
@@ -25,26 +27,41 @@ export function useSignInWithOTPScreen() {
   } = useAuthFlowContext();
   const showAgencyCreateAccount = isAgency && !isAgent;
   const showUserCreateAccount = !showAgencyCreateAccount && !isAgency;
-  const toast = useToast();
 
   const { mutate: requestOtp, isPending, isSuccess } = useSignInWithOtpRequest();
-  const lastEmailRef = useRef<string | null>(null);
+  const lastUsernameRef = useRef<string | null>(null);
 
   const onSubmit = useCallback(
     (values: SignInWithOTPFormValues, method: SignInOtpMethod) => {
+      const username =
+        method === "phone"
+          ? resolveSignInOtpUsername({
+              phoneCountryCode: values.phoneCountryCode,
+              phoneNationalNumber: values.phoneNationalNumber,
+            })
+          : values.email.trim();
+
+      if (!username) return;
+
       if (method === "phone") {
-        toast.info("Coming Soon", {
-          description:
-            "Sign in via phone number is not available yet. Please use email instead.",
-        });
-        return;
+        setPendingEmail(null);
+        setPendingPhone(values.phoneNationalNumber);
+        setPendingPhoneCountry(values.phoneCountryCode);
+      } else {
+        setPendingEmail(username);
+        setPendingPhone(null);
+        setPendingPhoneCountry(null);
       }
 
-      lastEmailRef.current = values.email;
-      setPendingEmail(values.email);
-      requestOtp({ username: values.email });
+      lastUsernameRef.current = username;
+      requestOtp({ username });
     },
-    [requestOtp, setPendingEmail, toast],
+    [
+      requestOtp,
+      setPendingEmail,
+      setPendingPhone,
+      setPendingPhoneCountry,
+    ],
   );
 
   const onCreateAccountClick = useCallback(() => {
@@ -52,12 +69,11 @@ export function useSignInWithOTPScreen() {
   }, [navigate, signUpView]);
 
   useEffect(() => {
-    if (isSuccess && lastEmailRef.current && otpSession) {
+    if (isSuccess && lastUsernameRef.current && otpSession) {
       setOtpFlow("signin");
-      setPendingEmail(lastEmailRef.current);
       navigate(AUTH_VIEW.otpVerify);
     }
-  }, [isSuccess, otpSession, navigate, setOtpFlow, setPendingEmail]);
+  }, [isSuccess, otpSession, navigate, setOtpFlow]);
 
   return {
     title: t("chooseAccountSignInTitle"),

@@ -409,6 +409,22 @@ export function LeadDetailsScreen({
                 ]}
                 fullWidth
               />
+              {screen.reply.smsNotice ? (
+                <div className="space-y-3">
+                  <p className="text-sm text-muted">{screen.reply.smsNotice}</p>
+                  {screen.reply.smsActionLabel ? (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      color="secondary"
+                      className="min-h-11"
+                      onClick={screen.reply.onSmsAction}
+                    >
+                      {screen.reply.smsActionLabel}
+                    </Button>
+                  ) : null}
+                </div>
+              ) : null}
               <Textarea
                 label={labels.modals.reply.messageLabel}
                 placeholder={labels.modals.reply.messagePlaceholder}
@@ -433,10 +449,11 @@ export function LeadDetailsScreen({
               <Button
                 type="button"
                 className="min-h-11"
+                disabled={screen.reply.isSubmitDisabled}
                 isLoading={screen.reply.isSubmitting}
                 onClick={screen.reply.onSubmit}
               >
-                {labels.modals.reply.submit}
+                {screen.reply.submitLabel}
               </Button>
             </ModalFooter>
           </ModalPanel>

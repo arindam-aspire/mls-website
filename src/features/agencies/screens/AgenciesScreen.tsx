@@ -6,6 +6,7 @@ import { useMemo, useState } from "react";
 import { LicenseDocumentUpload } from "@/src/components/common/LicenseDocumentUpload";
 import { Button, CopyLinkBar, Input, PhoneInput } from "@/src/components/ui";
 import type { PhoneInputCountry } from "@/src/components/ui/phone-input";
+import { DEFAULT_PHONE_INPUT_COUNTRY_CODE } from "@/src/components/ui/phone-input/countries";
 import { formatPhoneNumberE164 } from "@/src/features/profile/utils/formatPhoneNumberE164";
 import {
   createAgencyInvitation,
@@ -141,9 +142,13 @@ export function AgenciesScreen() {
   const [invitationLegalDocument, setInvitationLegalDocument] = useState<File | null>(null);
   const [invitationLegalDocumentError, setInvitationLegalDocumentError] = useState<string>();
   const [latestLink, setLatestLink] = useState<{ label: string; value: string } | null>(null);
-  const [offlinePhoneCountry, setOfflinePhoneCountry] = useState("JO");
+  const [offlinePhoneCountry, setOfflinePhoneCountry] = useState(
+    DEFAULT_PHONE_INPUT_COUNTRY_CODE,
+  );
   const [offlinePhoneNational, setOfflinePhoneNational] = useState("");
-  const [invitePhoneCountry, setInvitePhoneCountry] = useState("JO");
+  const [invitePhoneCountry, setInvitePhoneCountry] = useState(
+    DEFAULT_PHONE_INPUT_COUNTRY_CODE,
+  );
   const [invitePhoneNational, setInvitePhoneNational] = useState("");
   const [agencyPage, setAgencyPage] = useState(1);
   const [agencyPageSize, setAgencyPageSize] =
@@ -224,7 +229,7 @@ export function AgenciesScreen() {
       setOfflineForm(emptyOfflineForm);
       setOfflineLegalDocument(null);
       setOfflineLegalDocumentError(undefined);
-      setOfflinePhoneCountry("JO");
+      setOfflinePhoneCountry(DEFAULT_PHONE_INPUT_COUNTRY_CODE);
       setOfflinePhoneNational("");
       toast.success("Agency created", {
         description:
@@ -257,7 +262,7 @@ export function AgenciesScreen() {
       setInvitationForm(emptyInvitationForm);
       setInvitationLegalDocument(null);
       setInvitationLegalDocumentError(undefined);
-      setInvitePhoneCountry("JO");
+      setInvitePhoneCountry(DEFAULT_PHONE_INPUT_COUNTRY_CODE);
       setInvitePhoneNational("");
       invalidateAgencies();
       const rawLink = response.data.invitation_link;

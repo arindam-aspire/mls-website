@@ -141,6 +141,7 @@
   "requestVerificationCode": "إرسال رمز التحقق",
   "requestVerificationCodeLoading": "جارٍ إرسال الرمز…",
   "requestProfileUpdateErrorTitle": "تعذّر إرسال رمز التحقق",
+  "verificationErrorDescription": "تعذّر إرسال رمز التحقق. يرجى المحاولة مرة أخرى.",
   "otpVerifyTitle": "تحقق من هويتك",
   "otpVerifySubtitle": "تم إرسال رمز مكوّن من 6 أرقام للتحقق من هويتك",
   "otpVerifySubtitleEmail": "تم إرسال رمز مكوّن من 6 أرقام إلى بريدك الإلكتروني",

@@ -22,6 +22,7 @@ import { SocialRegistrationScreen } from "../screens/SocialRegistrationScreen";
 import { SocialSignInScreen } from "../screens/SocialSignInScreen";
 import { UserRegistrationScreen } from "../screens/UserRegistrationScreen";
 import { ConfirmSignUpScreen } from "../screens/ConfirmSignUpScreen";
+import { VerifyPhoneScreen } from "../screens/VerifyPhoneScreen";
 
 export { AUTH_VIEW, type AuthView } from "../authViews";
 export {
@@ -67,6 +68,8 @@ function renderAuthView(screen: AuthView) {
       return <OTPVerificationScreen />;
     case AUTH_VIEW.confirmSignUp:
       return <ConfirmSignUpScreen />;
+    case AUTH_VIEW.verifyPhone:
+      return <VerifyPhoneScreen />;
     default:
       return null;
   }

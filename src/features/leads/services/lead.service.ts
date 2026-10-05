@@ -1,5 +1,9 @@
 import { apiClient } from "@/src/apis/clients/api.client";
 import { leadEndpoints } from "@/src/apis/endpoints/leadEndpoints";
+import {
+  createSmsApiFailure,
+  stripSensitiveSmsFields,
+} from "@/src/features/profile/utils/registeredMobileSms.utils";
 import { ownerEndpoints } from "@/src/apis/endpoints/ownerEndpoints";
 import {
   DEFAULT_LEAD_LIST_PAGE,
@@ -310,14 +314,20 @@ export async function addLeadMessage(
   });
 
   if (!response.success) {
-    throw new Error(response.message ?? "Failed to send message");
+    throw createSmsApiFailure({
+      code: response.code,
+      message: response.message,
+      error: response.error,
+      details: response,
+    });
   }
 
-  return response.data;
+  return stripSensitiveSmsFields(response.data);
 }
 
 type LeadApiSuccessResponse = {
   success: boolean;
+  code?: string | null;
   message: string | null;
   data: unknown;
   error: unknown;

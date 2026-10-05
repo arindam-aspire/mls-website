@@ -29,12 +29,12 @@ TanStack Query mutation hooks for lead lifecycle actions and for creating a lead
 | `useRequestCloseLead` | `requestCloseLead` | yes |
 | `useCloseLead` | `closeLead` | yes |
 | `useAddLeadNote` | `addLeadNote` | yes |
-| `useAddLeadMessage` | `addLeadMessage` | yes |
+| `useAddLeadMessage` | `addLeadMessage` | yes. SMS reloads `GET /auth/me` and calls the messages API only when `phone_number` is non-empty and `is_phone_verified === true`. `retry` is always false. `MOBILE_NOT_VERIFIED` and `MOBILE_MISSING` use the `leads.sms` copy and are not retried. |
 | `useRejectCloseLead` | `updateLeadStatus` → `IN_PROGRESS` | yes |
 
 ### State Management
 
-React Query mutations only; no Zustand store.
+React Query mutations. `useAddLeadMessage` writes the refreshed `GET /auth/me` user into the auth store before an SMS send.
 
 ### API Usage
 

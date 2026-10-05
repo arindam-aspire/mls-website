@@ -637,6 +637,7 @@ mls_website/
 │   │       ├── responsiveSizes.ts
 │   │       ├── otp-verification/
 │   │       │   ├── index.ts
+│   │       │   ├── otpPolicy.ts
 │   │       │   ├── OtpVerificationForm.tsx
 │   │       │   ├── OtpVerificationTitle.tsx
 │   │       │   ├── types.ts
@@ -778,7 +779,8 @@ mls_website/
 │   │   │   │   ├── useSignInWithOTPScreen.ts
 │   │   │   │   ├── useSocialRegistrationScreen.ts
 │   │   │   │   ├── useSocialSignInScreen.ts
-│   │   │   │   └── useUserRegistrationScreen.ts
+│   │   │   │   ├── useUserRegistrationScreen.ts
+│   │   │   │   └── useVerifyPhoneScreen.ts
 │   │   │   ├── mutations/
 │   │   │   │   └── auth.mutation.ts
 │   │   │   ├── screens/
@@ -795,7 +797,8 @@ mls_website/
 │   │   │   │   ├── SignInWithOTPScreen.tsx
 │   │   │   │   ├── SocialRegistrationScreen.tsx
 │   │   │   │   ├── SocialSignInScreen.tsx
-│   │   │   │   └── UserRegistrationScreen.tsx
+│   │   │   │   ├── UserRegistrationScreen.tsx
+│   │   │   │   └── VerifyPhoneScreen.tsx
 │   │   │   ├── services/
 │   │   │   │   └── auth.service.ts
 │   │   │   ├── store/
@@ -807,6 +810,10 @@ mls_website/
 │   │   │   │   ├── normalizeLoggedInUser.ts
 │   │   │   │   ├── postSignInRedirect.ts
 │   │   │   │   ├── resolveProfileRoleLabel.ts
+│   │   │   │   ├── signInOtpUsername.ts
+│   │   │   │   ├── signupPhoneVerification.ts
+│   │   │   │   ├── signupPhoneVerification.test.ts
+│   │   │   │   ├── finishAuthenticatedSession.ts
 │   │   │   │   └── profileMenuRoleAccess.ts
 │   │   │   └── types/
 │   │   │       ├── auth.types.ts
@@ -1017,7 +1024,8 @@ mls_website/
 │   │   │       ├── formatPhoneNumberE164.ts
 │   │   │       ├── licenseDocumentDisplay.ts
 │   │   │       ├── parseStoredPhoneNumber.ts
-│   │   │       ├── profileOtp.utils.ts
+│   │   │       ├── registeredMobileSms.utils.ts
+│   │   │       ├── registeredMobileSms.utils.test.ts
 │   │   │       └── validateProfileImageFile.ts
 │   │   ├── user/
 │   │   │   ├── components/

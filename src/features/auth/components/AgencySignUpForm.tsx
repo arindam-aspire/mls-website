@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { LicenseDocumentUpload } from "@/src/components/common/LicenseDocumentUpload";
 import { Button, Input, PhoneInput } from "@/src/components/ui";
+import { DEFAULT_PHONE_INPUT_COUNTRY_CODE } from "@/src/components/ui/phone-input/countries";
 import { PasswordStrengthIndicator } from "@/src/components/common/PasswordStrengthIndicator";
 import { cn } from "@/src/lib/cn";
 import { bodyTextClasses } from "@/src/lib/typography";
@@ -34,7 +35,9 @@ export function AgencySignUpForm({ onSubmit, isLoading }: AgencySignUpFormProps)
   const [showPassword, setShowPassword] = useState(false);
   const [licenseFile, setLicenseFile] = useState<File | null>(null);
   const [licenseError, setLicenseError] = useState<string | undefined>();
-  const [phoneCountryCode, setPhoneCountryCode] = useState("JO");
+  const [phoneCountryCode, setPhoneCountryCode] = useState(
+    DEFAULT_PHONE_INPUT_COUNTRY_CODE,
+  );
   const [phoneNationalNumber, setPhoneNationalNumber] = useState("");
 
   const {

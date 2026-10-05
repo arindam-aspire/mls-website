@@ -224,7 +224,7 @@ All paths below are **without** locale; prepend `/<locale>` (e.g. `/en/my-listin
 | `/owners` | `(main)/owners/page.tsx` | `OwnersScreen` — guarded by `useAuthorize("OWNERS")` (Super Admin + Agency Admin); list, activate, view/edit, linked properties/leads; `OWNER_DEACTIVATE` restricts Owner deactivation to Super Admin |
 | `/agents` | `(main)/agents/page.tsx` | `AgentsScreen` (placeholder) — guarded by `useAuthorize("AGENTS")` (admin only) |
 | `/leads` | `(main)/leads/page.tsx` | `LeadsScreen` — guarded by `useAuthorize("LEADS")` (super_admin, agency admin, agent) |
-| `/leads/[leadId]` | `(main)/leads/[leadId]/page.tsx` | `LeadDetailsScreen` — conversation / notes / timeline / close tabs; assigned agents request closure and agency/super administrators approve or reject before `CLOSED` |
+| `/leads/[leadId]` | `(main)/leads/[leadId]/page.tsx` | `LeadDetailsScreen` — conversation / notes / timeline / close tabs; SMS replies call `POST /leads/{id}/messages` only after `GET /auth/me` shows a non-empty `phone_number` and `is_phone_verified === true`; assigned agents request closure and agency/super administrators approve or reject before `CLOSED` |
 | `/property-list` | `(property)/property-list/page.tsx` | `PropertyListScreen` (`PropertyCardList`) |
 | `/propert-details/:id` | `(property)/propert-details/[id]/page.tsx` | `PropertyDetailsScreen` (`PropertyView`) |
 | `/inquiries` | `(property)/inquiries/page.tsx` | Owner `InquiriesScreen` reuses Lead List with `GET /agency/owners/{loggedInUser.id}/leads`; other authenticated roles retain Coming Soon |
@@ -534,13 +534,13 @@ Session persistence helpers: `src/features/auth/store/authModalStorage.ts`.
 | --- | --- |
 | `useSignInWithPassword` | Login + fetch user |
 | `useLogout` | Logout + clear + redirect home |
-| `useSignUp` | Register (`POST /auth/signup`); 409 existing email → login |
-| `useConfirmSignUp` | Verify signup OTP (`POST /auth/confirm-signup`) |
-| `useResendConfirmation` | Resend signup OTP (`POST /auth/resend-confirmation`) |
-| `useAgencySignUp` | Agency self-register (`POST /agency/register` multipart) |
-| `useSignInWithOtpRequest` | Request login OTP (stores `data.session` only; never shows OTP) |
+| `useSignUp` | Register (`POST /auth/signup`); 409 existing email → login. Success copy says the code was sent to the registered email and mobile. |
+| `useConfirmSignUp` | Verify signup email OTP (`POST /auth/confirm-signup`). Does not set `is_phone_verified`. When the signup stored a phone and password sign-in succeeds, the modal stays open for phone OTP. |
+| `useResendConfirmation` | Resend signup OTP (`POST /auth/resend-confirmation`). Success copy says the new code was sent to the registered email and mobile. |
+| `useAgencySignUp` | Agency self-register (`POST /agency/register` multipart). Success copy says the code was sent to the registered email and mobile. |
+| `useSignInWithOtpRequest` | Request login OTP (stores `data.session` only; never shows OTP). Success copy says the code was sent to the registered email and mobile. |
 | `useSignInWithOtpVerify` | Verify login OTP |
-| `useForgotPassword` | Forgot password request (generic success copy) |
+| `useForgotPassword` | Forgot password request. Success copy says the code was sent to the registered email and mobile. SMS is backend-owned. |
 | `useResetPassword` | Confirm forgot password (`POST /auth/forgot-password/confirm`) |
 | `useChangePassword` | Authenticated password change (`/auth/change-password`) |
 
@@ -571,8 +571,8 @@ From `src/configs/environment.config.ts` → `API_BASE_URL` (env: `NEXT_PUBLIC_A
 | Constant | Method | Path |
 | --- | --- | --- |
 | `SIGN_IN_WITH_PASSWORD` | POST | `/auth/login/password` |
-| `SIGN_IN_WITH_OTP` | POST | `/auth/login/otp/request` |
-| `SIGN_IN_WITH_OTP_VERIFY` | POST | `/auth/login/otp/verify` |
+| `SIGN_IN_WITH_OTP` | POST | `/auth/login/otp/request` — `{ username }` is the email or the E.164 phone from the Phone Number tab |
+| `SIGN_IN_WITH_OTP_VERIFY` | POST | `/auth/login/otp/verify` — `{ username, code, session }` uses the same email or E.164 phone |
 | `LOGGED_IN_USER` | GET | `/auth/me` |
 | `FORGOT_PASSWORD` | POST | `/auth/forgot-password/request` |
 | `FORGOT_PASSWORD_CONFIRM` | POST | `/auth/forgot-password/confirm` — `{ email, code, new_password }` |

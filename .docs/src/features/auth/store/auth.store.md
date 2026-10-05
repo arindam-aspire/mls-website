@@ -37,7 +37,8 @@ Zustand client store for **logged-in session** and **auth modal** state (screen 
 | `agentPortal` | `boolean` | Agent portal on agency sign-in |
 | `otpFlow` | `AuthOtpFlow \| null` | `signin` \| `forgot` \| `signup` |
 | `pendingEmail` | `string \| null` | OTP / forgot contact |
-| `pendingPhone` | `string \| null` | OTP phone |
+| `pendingPhone` | `string \| null` | OTP phone, or the registered signup phone held for phone verification |
+| `signupPhoneVerificationPending` | `boolean` | After email confirmation, keep the modal open for phone OTP. Does not store a code. |
 | `pendingPhoneCountry` | `string \| null` | Phone country code |
 | `otpSession` | `string \| null` | OTP session id |
 | `otpCode` | `string \| null` | Verified OTP code (reset password) |

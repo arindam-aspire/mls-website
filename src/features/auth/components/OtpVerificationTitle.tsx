@@ -1,30 +1,39 @@
 "use client";
 
+import { DEFAULT_PHONE_INPUT_COUNTRY_CODE } from "@/src/components/ui/phone-input/countries";
 import {
   OtpVerificationTitle as OtpVerificationTitleUi,
   useOtpVerificationTitleLabels,
 } from "@/src/components/ui/otp-verification";
 import { cn } from "@/src/lib/cn";
-import { maskEmail, maskPhone } from "../maskContact";
+import { maskEmail, maskPhone, maskStoredPhoneNumber } from "../maskContact";
 
 type OtpVerificationTitleProps = {
   contactEmail?: string;
   contactPhone?: string;
   contactPhoneCountry?: string;
   displayOtp?: string;
-  titleKey?: "otpVerifyTitle" | "confirmSignUpTitle";
+  titleKey?: "otpVerifyTitle" | "confirmSignUpTitle" | "verifyPhoneTitle";
 };
+
+function maskOtpContactPhone(phone: string, countryCode: string): string {
+  const trimmed = phone.trim();
+  if (trimmed.startsWith("+")) {
+    return maskStoredPhoneNumber(trimmed, countryCode);
+  }
+  return maskPhone(trimmed, countryCode);
+}
 
 export function OtpVerificationTitle({
   contactEmail,
   contactPhone,
-  contactPhoneCountry = "JO",
+  contactPhoneCountry = DEFAULT_PHONE_INPUT_COUNTRY_CODE,
   displayOtp,
   titleKey = "otpVerifyTitle",
 }: OtpVerificationTitleProps) {
   const maskedEmail = contactEmail?.trim() ? maskEmail(contactEmail) : null;
   const maskedPhone = contactPhone?.trim()
-    ? maskPhone(contactPhone, contactPhoneCountry)
+    ? maskOtpContactPhone(contactPhone, contactPhoneCountry)
     : null;
   const hasEmail = maskedEmail != null;
   const hasPhone = maskedPhone != null;
