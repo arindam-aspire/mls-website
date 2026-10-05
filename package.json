@@ -7,8 +7,7 @@
     "prebuild": "node scripts/clean-next-build-cache.mjs",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "test": "node --experimental-strip-types --test src/features/profile/utils/registeredMobileSms.utils.test.ts src/features/auth/utils/signupPhoneVerification.test.ts"
+    "lint": "eslint"
   },
   "dependencies": {
     "@abdoun/abdoun-library": "0.1.92",
