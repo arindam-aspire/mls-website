@@ -20,6 +20,7 @@ export const AUTH_VIEW = {
   agencySignUp: "agency-sign-up",
   agencyEmailSignIn: "agency-email-sign-in",
   confirmSignUp: "confirm-sign-up",
+  verifyPhone: "verify-phone",
 } as const;
 
 export type AuthView = (typeof AUTH_VIEW)[keyof typeof AUTH_VIEW];

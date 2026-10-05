@@ -19,6 +19,7 @@ Feature hooks own **logic and data** for auth screens and forms. Screens under `
 | `useSignInWithOTPScreen` | `SignInWithOTPScreen` |
 | `useOTPVerificationScreen` | `OTPVerificationScreen` |
 | `useConfirmSignUpScreen` | `ConfirmSignUpScreen` |
+| `useVerifyPhoneScreen` | `VerifyPhoneScreen` |
 
 ## Form / utility hooks
 

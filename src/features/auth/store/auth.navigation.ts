@@ -29,6 +29,7 @@ export const SCREEN_NAV_TYPE: Record<AuthView, NavType> = {
   [AUTH_VIEW.forgotPassword]: "child",
   [AUTH_VIEW.resetPassword]: "child",
   [AUTH_VIEW.confirmSignUp]: "child",
+  [AUTH_VIEW.verifyPhone]: "child",
 };
 
 export function resolveScreenNavType(screen: AuthView): NavType {
@@ -67,6 +68,7 @@ export const SCREEN_FLOW: Record<AuthView, AuthFlow> = {
   [AUTH_VIEW.userSignUp]: "user-signup",
   [AUTH_VIEW.ownerSignUp]: "user-signup",
   [AUTH_VIEW.confirmSignUp]: "user-signup",
+  [AUTH_VIEW.verifyPhone]: "user-signup",
 
   [AUTH_VIEW.agencySignUp]: "agency-signup",
 };
@@ -94,6 +96,7 @@ export const FLOW_OWNED_DATA: Record<AuthFlow, FlowOwnedField[]> = {
 export const FLOW_NEUTRAL_SCREENS = new Set<AuthView>([
   AUTH_VIEW.otpVerify,
   AUTH_VIEW.confirmSignUp,
+  AUTH_VIEW.verifyPhone,
 ]);
 
 export function resolveScreenFlow(screen: AuthView): AuthFlow {

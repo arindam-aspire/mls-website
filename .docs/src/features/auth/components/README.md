@@ -14,6 +14,7 @@ Presentational and container components for the auth modal. Screens compose thes
 | [SignUpForm.md](./SignUpForm.md) | Registration fields |
 | [SignInWithOTPForm.md](./SignInWithOTPForm.md) | Request OTP |
 | [OTPVerificationForm.md](./OTPVerificationForm.md) | Enter OTP code |
+| [OtpVerificationTitle.md](./OtpVerificationTitle.md) | Masked email/mobile OTP heading |
 | [ForgotPasswordForm.md](./ForgotPasswordForm.md) | Forgot password |
 | [ResetPasswordForm.md](./ResetPasswordForm.md) | New password |
 | [SocialAuthForm.md](./SocialAuthForm.md) | Social provider buttons (UI) |

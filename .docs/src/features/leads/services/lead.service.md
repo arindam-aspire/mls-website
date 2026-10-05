@@ -26,7 +26,7 @@ API client wrappers for Lead Management and owner-scoped enquiries. Used by the 
 | `requestCloseLead` | POST | `/leads/{id}/request-close` | yes |
 | `closeLead` | POST | `/leads/{id}/close` | yes |
 | `addLeadNote` | POST | `/leads/{id}/notes` | yes |
-| `addLeadMessage` | POST | `/leads/{id}/messages` | yes |
+| `addLeadMessage` | POST | `/leads/{id}/messages` | yes. Body is `{ message, channel, recipient_user_id? }`. SMS does not include a phone number. A `success: false` body becomes an `ApiError` that keeps `code` (including `MOBILE_NOT_VERIFIED`). OTP fields are removed from the returned data. |
 | `getLeadNotes` | GET | `/leads/{id}/notes` | yes (soft-fail) |
 | `getLeadMessages` | GET | `/leads/{id}/messages` | yes (soft-fail) |
 | `getLeadActivity` | GET | `/leads/{id}/activity` | yes (soft-fail) |

@@ -2,6 +2,13 @@ import {
   propertyFormSteps,
   type PropertyFormValues,
 } from "@abdoun/abdoun-library";
+import {
+  DEFAULT_PHONE_INPUT_COUNTRY_CODE,
+  getPhoneInputCountryByCode,
+} from "@/src/components/ui/phone-input/countries";
+
+const DEFAULT_GUARD_DIAL_CODE =
+  getPhoneInputCountryByCode(DEFAULT_PHONE_INPUT_COUNTRY_CODE)?.dialCode ?? "";
 
 /**
  * Placeholder until the backend mints `reference_number` on first draft save.
@@ -42,7 +49,7 @@ export const INITIAL_PROPERTY_FORM_VALUES: PropertyFormValues = {
     reference_number: PENDING_PROPERTY_REFERENCE_NUMBER,
     orientation: null,
     guard_name: "",
-    guard_country_code: "+962",
+    guard_country_code: DEFAULT_GUARD_DIAL_CODE,
     guard_phone_number: "",
   },
   basic_info: {

@@ -16,6 +16,8 @@ export type AuthModalPersistedState = {
   otpCode: string | null;
   pendingSignUp: SignUpRequest | null;
   pendingAgencySignUp: AgencySignUpSubmitValues | null;
+  /** After email confirmation, hold the modal open for phone OTP. Never stores the code. */
+  signupPhoneVerificationPending: boolean;
 };
 
 export const defaultAuthModalPersistedState: AuthModalPersistedState = {
@@ -30,6 +32,7 @@ export const defaultAuthModalPersistedState: AuthModalPersistedState = {
   otpCode: null,
   pendingSignUp: null,
   pendingAgencySignUp: null,
+  signupPhoneVerificationPending: false,
 };
 
 export function readAuthModalSession(): AuthModalPersistedState {

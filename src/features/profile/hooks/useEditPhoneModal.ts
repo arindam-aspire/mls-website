@@ -2,7 +2,10 @@
 
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState, type Dispatch, type FormEvent, type SetStateAction } from "react";
-import { getPhoneInputCountryByCode } from "@/src/components/ui/phone-input/countries";
+import {
+  DEFAULT_PHONE_INPUT_COUNTRY_CODE,
+  getPhoneInputCountryByCode,
+} from "@/src/components/ui/phone-input/countries";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import {
   useRequestProfileUpdate,
@@ -13,7 +16,6 @@ import {
   formatPhoneNumberE164,
 } from "../utils/formatPhoneNumberE164";
 import { parseStoredPhoneNumber } from "../utils/parseStoredPhoneNumber";
-import { getProfileUpdateDevOtp } from "../utils/profileOtp.utils";
 
 type EditStep = "form" | "otp";
 
@@ -32,13 +34,14 @@ export function useEditPhoneModal({ isOpen, setIsOpen }: UseEditPhoneModalParams
 
   // 4. Local state
   const [step, setStep] = useState<EditStep>("form");
-  const [phoneCountryCode, setPhoneCountryCode] = useState("JO");
+  const [phoneCountryCode, setPhoneCountryCode] = useState(
+    DEFAULT_PHONE_INPUT_COUNTRY_CODE,
+  );
   const [phoneNationalNumber, setPhoneNationalNumber] = useState("");
   const [phoneError, setPhoneError] = useState("");
   const [phoneTouched, setPhoneTouched] = useState(false);
   const [pendingPhoneNumber, setPendingPhoneNumber] = useState("");
   const [originalPhoneE164, setOriginalPhoneE164] = useState("");
-  const [displayOtp, setDisplayOtp] = useState<string | undefined>();
 
   // 5. Data fetching / queries
   const { mutate: requestUpdate, isPending: isRequesting } = useRequestProfileUpdate();
@@ -76,7 +79,6 @@ export function useEditPhoneModal({ isOpen, setIsOpen }: UseEditPhoneModalParams
     setStep("form");
     setPhoneError("");
     setPhoneTouched(false);
-    setDisplayOtp(undefined);
     setPendingPhoneNumber("");
 
     if (!user) return;
@@ -135,9 +137,8 @@ export function useEditPhoneModal({ isOpen, setIsOpen }: UseEditPhoneModalParams
       requestUpdate(
         { phone_number: phoneNumber.trim() },
         {
-          onSuccess: (response) => {
+          onSuccess: () => {
             setPendingPhoneNumber(phoneNumber.trim());
-            setDisplayOtp(getProfileUpdateDevOtp(response.data));
             setStep("otp");
           },
         },
@@ -187,7 +188,6 @@ export function useEditPhoneModal({ isOpen, setIsOpen }: UseEditPhoneModalParams
 
   const goBackToForm = useCallback(() => {
     setStep("form");
-    setDisplayOtp(undefined);
   }, []);
 
   const isPhoneUnchanged =
@@ -237,7 +237,6 @@ export function useEditPhoneModal({ isOpen, setIsOpen }: UseEditPhoneModalParams
     otpProps: {
       contactPhone: phoneNationalNumber,
       contactPhoneCountry: phoneCountryCode,
-      displayOtp,
       onSubmit: onOtpSubmit,
       onResend: onResendOtp,
       isLoading: isVerifying,

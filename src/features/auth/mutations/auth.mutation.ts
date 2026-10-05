@@ -33,6 +33,36 @@ import {
 } from "../utils/postSignInRedirect";
 import { navigateTo } from "@/src/utils/navigation.utils";
 import { AppLocale } from "@/src/i18n/routing";
+import { AUTH_VIEW } from "../authViews";
+import {
+  resolveRegisteredPhoneForVerification,
+  shouldOpenSignupPhoneVerification,
+} from "../utils/signupPhoneVerification";
+
+function continueToSignupPhoneVerification(user: LoggedInUser): boolean {
+  const state = useAuthStore.getState();
+  const phoneNumber = resolveRegisteredPhoneForVerification({
+    accountPhone: user.phone_number,
+    signupPhone: state.pendingPhone,
+  });
+
+  if (
+    !shouldOpenSignupPhoneVerification({
+      pending: state.signupPhoneVerificationPending,
+      phoneNumber,
+      isPhoneVerified: user.is_phone_verified,
+    })
+  ) {
+    if (state.signupPhoneVerificationPending) {
+      state.setSignupPhoneVerificationPending(false);
+    }
+    return false;
+  }
+
+  state.setPendingPhone(phoneNumber);
+  state.navigate(AUTH_VIEW.verifyPhone);
+  return true;
+}
 
 async function completeSignInFlow(
   accessToken: string,
@@ -42,6 +72,23 @@ async function completeSignInFlow(
   signInRole?: SignInRole,
 ) {
   await Promise.resolve();
+
+  if (useAuthStore.getState().signupPhoneVerificationPending) {
+    try {
+      const userResponse = await getLoggedInUser();
+      const user = userResponse.data;
+      setUser(user);
+      if (continueToSignupPhoneVerification(user)) {
+        return;
+      }
+    } catch (error: unknown) {
+      useAuthStore.getState().setSignupPhoneVerificationPending(false);
+      const message = error instanceof Error ? error.message : "Failed";
+      onProfileError(message);
+      return;
+    }
+  }
+
 
   const dashboardPath = resolveImmediateDashboardPath(
     accessToken,
@@ -106,6 +153,7 @@ export const useSignInWithPassword = () => {
       );
     },
     onError: (error: ApiError) => {
+      useAuthStore.getState().setSignupPhoneVerificationPending(false);
       toast.error(tApi("signInFailedTitle"), {
         description: error.message,
       });
@@ -142,9 +190,9 @@ export const useSignUp = () => {
 
   return useMutation({
     mutationFn: signUp,
-    onSuccess: (response) => {
+    onSuccess: () => {
       toast.success(tApi("signUpSuccessTitle"), {
-        description: response.message || tApi("signUpSuccessDescription"),
+        description: tApi("signUpSuccessDescription"),
       });
     },
     onError: (error: ApiError) => {
@@ -187,9 +235,9 @@ export const useResendConfirmation = () => {
 
   return useMutation({
     mutationFn: resendConfirmation,
-    onSuccess: (response) => {
+    onSuccess: () => {
       toast.success(tApi("resendSuccessTitle"), {
-        description: response.message || tApi("resendSuccessDescription"),
+        description: tApi("resendSuccessDescription"),
       });
     },
     onError: (error: ApiError) => {
@@ -210,7 +258,7 @@ export const useSignInWithOtpRequest = () => {
     onSuccess: (response: SignInWithOtpResponse) => {
       setOtpSession(response.data.session);
       toast.success(tApi("otpSentTitle"), {
-        description: response.message || tApi("otpSentDescription"),
+        description: tApi("otpSentDescription"),
       });
     },
     onError: (error: ApiError) => {
@@ -259,9 +307,9 @@ export const useAgencySignUp = () => {
 
   return useMutation({
     mutationFn: agencySignUp,
-    onSuccess: (response) => {
+    onSuccess: () => {
       toast.success(tApi("agencySignUpSuccessTitle"), {
-        description: response.message || tApi("agencySignUpSuccessDescription"),
+        description: tApi("agencySignUpSuccessDescription"),
       });
     },
     onError: (error: ApiError) => {
@@ -285,9 +333,9 @@ export const useForgotPassword = () => {
 
   return useMutation({
     mutationFn: forgotPassword,
-    onSuccess: (response) => {
+    onSuccess: () => {
       toast.success(tApi("forgotPasswordSuccessTitle"), {
-        description: response.message || tApi("forgotPasswordSuccessDescription"),
+        description: tApi("forgotPasswordSuccessDescription"),
       });
     },
     onError: (error: ApiError) => {

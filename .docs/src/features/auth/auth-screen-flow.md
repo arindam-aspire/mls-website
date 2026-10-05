@@ -138,6 +138,7 @@ closeAuth();                     // success / dismiss
 | `signInOtp` | `SignInWithOTPScreen` |
 | `otpVerify` | `OTPVerificationScreen` |
 | `confirmSignUp` | `ConfirmSignUpScreen` |
+| `verifyPhone` | `VerifyPhoneScreen` |
 
 ---
 
@@ -181,7 +182,8 @@ Helper: `useAuthModalNavigation()` returns `{ canGoBack, onBack }` from stack le
 | `useResetPasswordScreen` | reads `otpCode` from store; success → `push(signInView)` |
 | `useUserRegistrationScreen` | `setPendingSignUp`, `push(confirmSignUp)` |
 | `useAgencyRegistrationScreen` | `setPendingAgencySignUp`, `push(confirmSignUp)` |
-| `useConfirmSignUpScreen` | success → `push(signInView)`; back → clear pending + `pop()` |
+| `useConfirmSignUpScreen` | success with password → sign in (`rememberMe: true`); if a phone was stored, stay in the modal on `verifyPhone`. No phone → existing sign-in close/redirect. Back → clear pending + `pop()` |
+| `useVerifyPhoneScreen` | `PATCH /auth/me/profile/request` then `POST /auth/me/profile/verify`. Success refreshes `/auth/me` and then runs the deferred sign-in redirect. |
 | Social / agency hooks | `push(...)` for footer links and alternate entry paths |
 
 ---
@@ -247,7 +249,8 @@ flowchart LR
 
 ### OTP verify (`useOTPVerificationScreen`)
 
-- Reads `pendingEmail`, `otpSession`, `otpFlow` from store
+- Reads `pendingEmail`, `pendingPhone`, `pendingPhoneCountry`, `otpSession`, and `otpFlow` from store
+- Phone sign-in sends `POST /auth/login/otp/request` with `username` set to the E.164 number, then verifies and resends with that same username
 - Sign-in OTP success → `closeAuth()`
 - Forgot OTP success → `push(AUTH_VIEW.resetPassword)`
 

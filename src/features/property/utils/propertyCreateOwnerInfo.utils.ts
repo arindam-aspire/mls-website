@@ -1,4 +1,7 @@
-import { getPhoneInputCountryByCode } from "@/src/components/ui/phone-input/countries";
+import {
+  DEFAULT_PHONE_INPUT_COUNTRY_CODE,
+  getPhoneInputCountryByCode,
+} from "@/src/components/ui/phone-input/countries";
 import type { LoggedInUser } from "@/src/features/auth/types/auth.types";
 import type {
   OwnerInfoConfig,
@@ -7,7 +10,7 @@ import type {
 } from "@abdoun/abdoun-library";
 
 export function buildLoggedInOwnerInfoItem(user: LoggedInUser): OwnerInfoItem {
-  const jordan = getPhoneInputCountryByCode("JO");
+  const jordan = getPhoneInputCountryByCode(DEFAULT_PHONE_INPUT_COUNTRY_CODE);
   const rawPhone = user.phone_number?.trim() ?? "";
   const phoneNumber =
     jordan && rawPhone.startsWith(jordan.dialCode)

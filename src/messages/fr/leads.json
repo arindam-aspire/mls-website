@@ -261,5 +261,16 @@
     "messageSuccessTitle": "Réponse envoyée",
     "messageSuccessDescription": "Votre message a été envoyé.",
     "messageErrorTitle": "Impossible d'envoyer la réponse"
+  },
+  "sms": {
+    "submit": "Envoyer le SMS",
+    "notVerified": "Votre numéro de mobile n'est pas vérifié. Veuillez vérifier votre numéro de mobile avant de demander un SMS.",
+    "missingPhone": "Aucun numéro de mobile enregistré n'est disponible. Veuillez d'abord ajouter et vérifier votre numéro de mobile.",
+    "verifyAction": "Vérifier le numéro de mobile",
+    "addMobileAction": "Ajouter un numéro de mobile",
+    "successTitle": "SMS envoyé",
+    "successDescription": "Le SMS a été envoyé avec succès.",
+    "failureTitle": "Impossible d'envoyer le SMS",
+    "failureDescription": "Le SMS n'a pas pu être envoyé. Veuillez réessayer."
   }
 }

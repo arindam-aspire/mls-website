@@ -23,7 +23,7 @@ export function maskEmail(
 
 export function maskPhone(
   nationalNumber: string,
-  countryCode = "JO",
+  countryCode = DEFAULT_PHONE_INPUT_COUNTRY_CODE,
 ): string {
   const country = getPhoneInputCountryByCode(countryCode);
   const dialCode = country?.dialCode ?? "";

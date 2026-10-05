@@ -141,6 +141,7 @@
   "requestVerificationCode": "Enviar código de verificación",
   "requestVerificationCodeLoading": "Enviando código…",
   "requestProfileUpdateErrorTitle": "No se pudo enviar el código de verificación",
+  "verificationErrorDescription": "No se pudo enviar el código de verificación. Inténtalo de nuevo.",
   "otpVerifyTitle": "Verifica tu identidad",
   "otpVerifySubtitle": "Se envió un código de 6 dígitos para verificar tu identidad",
   "otpVerifySubtitleEmail": "Se envió un código de 6 dígitos a tu correo",

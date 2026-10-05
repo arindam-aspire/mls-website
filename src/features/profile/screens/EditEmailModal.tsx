@@ -42,7 +42,6 @@ export function EditEmailModal({ isOpen, setIsOpen }: EditEmailModalProps) {
           ? undefined
           : {
               contactEmail: otpProps.contactEmail,
-              displayOtp: otpProps.displayOtp,
             }
       }
     >

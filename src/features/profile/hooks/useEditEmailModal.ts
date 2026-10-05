@@ -9,7 +9,6 @@ import {
   useVerifyProfileUpdate,
 } from "../mutations/profile.mutation";
 import type { EditEmailFormValues } from "../types/profile.types";
-import { getProfileUpdateDevOtp } from "../utils/profileOtp.utils";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -36,7 +35,6 @@ export function useEditEmailModal({ isOpen, setIsOpen }: UseEditEmailModalParams
   const [step, setStep] = useState<EditStep>("form");
   const [pendingEmail, setPendingEmail] = useState("");
   const [originalEmail, setOriginalEmail] = useState("");
-  const [displayOtp, setDisplayOtp] = useState<string | undefined>();
 
   // 5. Data fetching / queries
   const { mutate: requestUpdate, isPending: isRequesting } = useRequestProfileUpdate();
@@ -100,7 +98,6 @@ export function useEditEmailModal({ isOpen, setIsOpen }: UseEditEmailModalParams
   const resetModalState = useCallback(() => {
     setStep("form");
     setPendingEmail("");
-    setDisplayOtp(undefined);
 
     if (user) {
       setValues({ email: user.email });
@@ -117,9 +114,8 @@ export function useEditEmailModal({ isOpen, setIsOpen }: UseEditEmailModalParams
       requestUpdate(
         { email: email.trim() },
         {
-          onSuccess: (response) => {
+          onSuccess: () => {
             setPendingEmail(email.trim());
-            setDisplayOtp(getProfileUpdateDevOtp(response.data));
             setStep("otp");
           },
         },
@@ -158,7 +154,6 @@ export function useEditEmailModal({ isOpen, setIsOpen }: UseEditEmailModalParams
 
   const goBackToForm = useCallback(() => {
     setStep("form");
-    setDisplayOtp(undefined);
   }, []);
 
   // 9. Effects
@@ -194,7 +189,6 @@ export function useEditEmailModal({ isOpen, setIsOpen }: UseEditEmailModalParams
     },
     otpProps: {
       contactEmail: pendingEmail,
-      displayOtp,
       onSubmit: onOtpSubmit,
       onResend: onResendOtp,
       isLoading: isVerifying,

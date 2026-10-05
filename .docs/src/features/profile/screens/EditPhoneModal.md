@@ -13,10 +13,10 @@ Modal for changing phone number in two steps: request verification code, then co
 
 | Step | Endpoint | Body |
 | --- | --- | --- |
-| Request / resend | `PATCH /auth/me/profile/request` | `{ phone_number }` (E.164, e.g. `+962779875677`) |
+| Request / resend | `PATCH /auth/me/profile/request` | `{ phone_number }` (E.164 from the phone input) |
 | Verify | `POST /auth/me/profile/verify` | `{ phone_number, phone_otp }` |
 
-Request response may include `data.otp`, `dev_phone_otp` for dev display. Resend uses the same request endpoint with the pending number.
+OTP fields on the request response are ignored and never shown. Resend uses the same request endpoint with the pending number. `is_phone_verified` becomes true only after verify refreshes `GET /auth/me`.
 
 # Dependencies
 

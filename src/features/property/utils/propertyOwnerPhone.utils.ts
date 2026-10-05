@@ -1,6 +1,13 @@
-const DEFAULT_OWNER_COUNTRY_CODE = "+962";
+import {
+  DEFAULT_PHONE_INPUT_COUNTRY_CODE,
+  getPhoneInputCountryByCode,
+  PHONE_INPUT_COUNTRIES,
+} from "@/src/components/ui/phone-input/countries";
 
-const OWNER_DIAL_CODES = ["+962", "+966", "+971", "+20", "+1"] as const;
+const DEFAULT_OWNER_COUNTRY_CODE =
+  getPhoneInputCountryByCode(DEFAULT_PHONE_INPUT_COUNTRY_CODE)?.dialCode ?? "";
+
+const OWNER_DIAL_CODES = PHONE_INPUT_COUNTRIES.map((country) => country.dialCode);
 
 export function toOptionalTrimmedString(
   value: string | undefined | null,

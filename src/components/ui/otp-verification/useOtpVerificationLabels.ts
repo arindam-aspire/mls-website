@@ -36,7 +36,7 @@ export function useOtpVerificationTitleLabels(
     | "otpVerifySubtitleEmail"
     | "otpVerifySubtitlePhone"
     | "otpVerifySubtitleBoth",
-  titleKey: "otpVerifyTitle" | "confirmSignUpTitle" = "otpVerifyTitle",
+  titleKey: "otpVerifyTitle" | "confirmSignUpTitle" | "verifyPhoneTitle" = "otpVerifyTitle",
 ): OtpVerificationTitleLabels {
   const t = useTranslations(namespace);
   const tAuth = useTranslations("auth");
@@ -46,7 +46,9 @@ export function useOtpVerificationTitleLabels(
       title:
         titleKey === "confirmSignUpTitle"
           ? tAuth("confirmSignUpTitle")
-          : t("otpVerifyTitle"),
+          : titleKey === "verifyPhoneTitle"
+            ? tAuth("verifyPhoneTitle")
+            : t("otpVerifyTitle"),
       subtitle: t(subtitleKey),
       sentCodeLabel: t("otpVerifySentCodeLabel"),
     }),

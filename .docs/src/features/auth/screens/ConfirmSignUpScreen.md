@@ -1,13 +1,13 @@
 # File Overview
 
-Signup email OTP confirmation screen inside `AuthModal`.
+Signup OTP confirmation screen inside `AuthModal`. The same code is emailed and sent by SMS to the registered mobile; this screen only shows that delivery status.
 
 **Source:** `src/features/auth/screens/ConfirmSignUpScreen.tsx` (Client Component)
 
 # Responsibilities
 
 - Render the 6-digit verification UI after user, owner, or agency registration.
-- Show the masked contact email (and phone when present). Never display an OTP from the API.
+- Show the masked contact email and, when the registration stored a phone, the masked mobile. E.164 values (`+…`) use `maskStoredPhoneNumber`; national digits use `maskPhone`. Never display an OTP from the API.
 
 # Imports
 
@@ -57,7 +57,7 @@ None.
 # Flow Description
 
 1. Registration success navigates here with `pendingEmail` set.
-2. User enters the email OTP and submits.
+2. User enters the same OTP from email or SMS and submits.
 3. Wrong/expired codes stay on this screen (toast from `useConfirmSignUp`).
 4. Resend calls `POST /auth/resend-confirmation`.
 

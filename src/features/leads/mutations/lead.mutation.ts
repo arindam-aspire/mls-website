@@ -1,8 +1,20 @@
 "use client";
 
+import { useRef } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import type { ApiError } from "@/src/apis/core/error.normalizer";
+import { getLoggedInUser } from "@/src/features/auth/services/auth.service";
+import { useAuthStore } from "@/src/features/auth/store/auth.store";
+import {
+  createSmsApiFailure,
+  createSmsRequestLock,
+  extractApiErrorCode,
+  isMobileNotVerifiedApiError,
+  requestRegisteredMobileSms,
+  sanitizeSmsErrorMessage,
+  shouldRetrySmsSend,
+} from "@/src/features/profile/utils/registeredMobileSms.utils";
 import { useToast } from "@/src/hooks/useToast";
 import { LEADS_QUERY_KEY } from "../constants/leadList.constants";
 import {
@@ -191,26 +203,97 @@ export function useAddLeadNote() {
 
 export function useAddLeadMessage() {
   const t = useTranslations("leads.mutations");
+  const tSms = useTranslations("leads");
   const toast = useToast();
   const queryClient = useQueryClient();
+  const setUser = useAuthStore((state) => state.setUser);
+  const smsLockRef = useRef(createSmsRequestLock());
 
   return useMutation({
-    mutationFn: ({
+    retry: (_failureCount, error) => shouldRetrySmsSend(error),
+    mutationFn: async ({
       leadId,
       body,
     }: {
       leadId: string;
       body: AddLeadMessageRequest;
-    }) => addLeadMessage(leadId, body),
+    }) => {
+      if (body.channel.toString().toUpperCase() !== "SMS") {
+        return addLeadMessage(leadId, body);
+      }
+
+      const outcome = await requestRegisteredMobileSms({
+        lock: smsLockRef.current,
+        loadUser: async () => {
+          const currentUser = await getLoggedInUser();
+          setUser(currentUser.data);
+          return currentUser.data;
+        },
+        send: () => addLeadMessage(leadId, body),
+      });
+
+      if (outcome.status === "sent") {
+        return outcome.result;
+      }
+
+      if (outcome.status === "busy") {
+        throw createSmsApiFailure({ code: "SMS_IN_FLIGHT", message: "" });
+      }
+
+      if (outcome.status === "load_failed") {
+        throw outcome.error;
+      }
+
+      const code =
+        outcome.reason === "missing_phone"
+          ? "MOBILE_MISSING"
+          : "MOBILE_NOT_VERIFIED";
+      throw createSmsApiFailure({ code, message: "" });
+    },
     onSuccess: async (_data, variables) => {
       await invalidateLeadQueries(queryClient, variables.leadId);
+      if (variables.body.channel.toString().toUpperCase() === "SMS") {
+        toast.success(tSms("sms.successTitle"), {
+          description: tSms("sms.successDescription"),
+        });
+        return;
+      }
       toast.success(t("messageSuccessTitle"), {
         description: t("messageSuccessDescription"),
       });
     },
-    onError: (error: ApiError) => {
-      toast.error(t("messageErrorTitle"), {
-        description: error.message,
+    onError: (error: Error, variables) => {
+      if (variables.body.channel.toString().toUpperCase() !== "SMS") {
+        toast.error(t("messageErrorTitle"), {
+          description: error.message,
+        });
+        return;
+      }
+
+      const errorCode = extractApiErrorCode(error);
+      if (errorCode === "SMS_IN_FLIGHT") {
+        return;
+      }
+
+      if (errorCode === "MOBILE_MISSING") {
+        toast.error(tSms("sms.failureTitle"), {
+          description: tSms("sms.missingPhone"),
+        });
+        return;
+      }
+
+      if (isMobileNotVerifiedApiError(error)) {
+        toast.error(tSms("sms.failureTitle"), {
+          description: tSms("sms.notVerified"),
+        });
+        return;
+      }
+
+      toast.error(tSms("sms.failureTitle"), {
+        description: sanitizeSmsErrorMessage(
+          error.message,
+          tSms("sms.failureDescription"),
+        ),
       });
     },
   });

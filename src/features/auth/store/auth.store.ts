@@ -45,6 +45,7 @@ interface AuthStore extends AuthModalPersistedState {
   setPendingAgencySignUp: (pendingAgencySignUp: AgencySignUpSubmitValues | null) => void;
   clearPendingSignUp: () => void;
   clearPendingAgencySignUp: () => void;
+  setSignupPhoneVerificationPending: (pending: boolean) => void;
   clearOtpSession: () => void;
   setAuth: (
     access_token: string,
@@ -72,6 +73,7 @@ function pickModalState(state: AuthStore): AuthModalPersistedState {
     otpCode: state.otpCode,
     pendingSignUp: state.pendingSignUp,
     pendingAgencySignUp: state.pendingAgencySignUp,
+    signupPhoneVerificationPending: state.signupPhoneVerificationPending,
   };
 }
 
@@ -317,6 +319,14 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       const next = { ...pickModalState(state), pendingAgencySignUp: null };
       writeAuthModalSession(next);
       return { pendingAgencySignUp: null };
+    });
+  },
+
+  setSignupPhoneVerificationPending: (signupPhoneVerificationPending) => {
+    set((state) => {
+      const next = { ...pickModalState(state), signupPhoneVerificationPending };
+      writeAuthModalSession(next);
+      return { signupPhoneVerificationPending };
     });
   },
 

@@ -16,3 +16,4 @@ Utility helpers for profile feature logic.
 | Path | Role |
 | --- | --- |
 | [index.md](./index.md) | Placeholder barrel for utility exports |
+| [registeredMobileSms.utils.md](./registeredMobileSms.utils.md) | Registered-mobile SMS eligibility and request lock |

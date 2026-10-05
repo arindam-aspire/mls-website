@@ -4,6 +4,7 @@ import {
   OtpVerificationTitle,
   useOtpVerificationTitleLabels,
 } from "@/src/components/ui/otp-verification";
+import { DEFAULT_PHONE_INPUT_COUNTRY_CODE } from "@/src/components/ui/phone-input/countries";
 import { maskEmail, maskPhone } from "@/src/features/auth/maskContact";
 
 type ProfileOtpVerificationTitleProps = {
@@ -17,7 +18,7 @@ type ProfileOtpVerificationTitleProps = {
 export function ProfileOtpVerificationTitle({
   contactEmail,
   contactPhone,
-  contactPhoneCountry = "JO",
+  contactPhoneCountry = DEFAULT_PHONE_INPUT_COUNTRY_CODE,
   displayOtp,
   className,
 }: ProfileOtpVerificationTitleProps) {

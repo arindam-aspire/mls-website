@@ -88,5 +88,5 @@ See source in `src/features/auth/components/SignUpForm.tsx` for step-by-step beh
 
 # Notes
 
-- Phone is submitted as E.164 via `formatPhoneNumberE164` (for example `+9627xxxxxxx`).
+- Phone is submitted as E.164 via `formatPhoneNumberE164`. The initial country is `DEFAULT_PHONE_INPUT_COUNTRY_CODE`.
 - Keep in sync when `src/features/auth/components/SignUpForm.tsx` changes.

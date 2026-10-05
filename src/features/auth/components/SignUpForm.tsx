@@ -4,6 +4,7 @@ import { Eye, EyeOff, Lock, Mail, User, UserPlus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button, Input, PhoneInput } from "@/src/components/ui";
+import { DEFAULT_PHONE_INPUT_COUNTRY_CODE } from "@/src/components/ui/phone-input/countries";
 import { useForm } from "@/src/hooks/useForm";
 import type { SignUpFormValues } from "../types/auth.types";
 import { PasswordStrengthIndicator } from "@/src/components/common/PasswordStrengthIndicator";
@@ -22,7 +23,9 @@ type SignUpFormProps = {
 export function SignUpForm({ onSubmit, isLoading }: SignUpFormProps) {
   const t = useTranslations("auth");
   const [showPassword, setShowPassword] = useState(false);
-  const [phoneCountryCode, setPhoneCountryCode] = useState("JO");
+  const [phoneCountryCode, setPhoneCountryCode] = useState(
+    DEFAULT_PHONE_INPUT_COUNTRY_CODE,
+  );
   const [phoneNationalNumber, setPhoneNationalNumber] = useState("");
 
   const {

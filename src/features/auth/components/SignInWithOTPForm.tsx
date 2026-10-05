@@ -4,6 +4,7 @@ import { Info, Mail, Send } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button, Input, PhoneInput, ToggleButton } from "@/src/components/ui";
+import { DEFAULT_PHONE_INPUT_COUNTRY_CODE } from "@/src/components/ui/phone-input/countries";
 import { useForm } from "@/src/hooks/useForm";
 import { cn } from "@/src/lib/cn";
 import { bodyTextClasses } from "@/src/lib/typography";
@@ -43,7 +44,7 @@ export function SignInWithOTPForm({
   } = useForm<SignInWithOTPFormValues>({
     initialValues: {
       email: "",
-      phoneCountryCode: "JO",
+      phoneCountryCode: DEFAULT_PHONE_INPUT_COUNTRY_CODE,
       phoneNationalNumber: "",
     },
     validate: (formValues) => {

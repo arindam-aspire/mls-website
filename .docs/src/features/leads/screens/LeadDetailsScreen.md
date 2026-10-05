@@ -14,6 +14,7 @@ Lead detail with overview / conversation / notes / timeline / close tabs and age
 - Internal notes use the same timeline card pattern via `LeadNotesPanel` (author, date groups, saved badge).
 - Activity events use `LeadActivityPanel` with type badge, description (lead number/source/agent), actor, and datetime — not date-only rows.
 - Wire reply / note / status / request-close / approve / reject / assign modals.
+- When the reply channel is SMS, show the verification notice and disable **Send SMS** unless the signed-in mobile is explicitly verified. The verify and add-mobile actions go to `/my-profile`.
 - Render one Update Status action; the former Override Status action and its event route are removed.
 - Omit direct email, call, and WhatsApp customer actions and their contact modal from Lead Details.
 

@@ -14,10 +14,12 @@ import { Button } from "@/src/components/ui/button";
 import { Link } from "@/src/components/ui/link";
 import { cn } from "@/src/lib/cn";
 import { bodyTextClasses, otpDigitTextClasses } from "@/src/lib/typography";
+import {
+  canRequestOtpResend,
+  OTP_LENGTH,
+  OTP_RESEND_SECONDS,
+} from "./otpPolicy";
 import type { OtpVerificationFormProps } from "./types";
-
-const OTP_LENGTH = 6;
-const RESEND_SECONDS = 60;
 
 function formatResendTimer(seconds: number): string {
   const minutes = Math.floor(seconds / 60);
@@ -38,7 +40,7 @@ export function OtpVerificationForm({
   const [digits, setDigits] = useState<string[]>(Array(OTP_LENGTH).fill(""));
   const [focusedIndex, setFocusedIndex] = useState(0);
   const [error, setError] = useState<string | undefined>();
-  const [resendSeconds, setResendSeconds] = useState(RESEND_SECONDS);
+  const [resendSeconds, setResendSeconds] = useState(OTP_RESEND_SECONDS);
 
   const code = digits.join("");
   const isComplete = code.length === OTP_LENGTH && digits.every((d) => d !== "");
@@ -116,10 +118,12 @@ export function OtpVerificationForm({
   };
 
   const handleResend = () => {
-    if (resendSeconds > 0 || isResending) return;
+    if (!canRequestOtpResend({ secondsRemaining: resendSeconds, isResending })) {
+      return;
+    }
 
     onResend();
-    setResendSeconds(RESEND_SECONDS);
+    setResendSeconds(OTP_RESEND_SECONDS);
     setDigits(Array(OTP_LENGTH).fill(""));
     setError(undefined);
     focusInput(0);

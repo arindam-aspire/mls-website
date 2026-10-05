@@ -42,8 +42,9 @@ types/                Request/response TypeScript shapes
 | `signin-otp` | `SignInWithOTPScreen` |
 | `otp-verify` | `OTPVerificationScreen` |
 | `confirm-sign-up` | `ConfirmSignUpScreen` |
+| `verify-phone` | `VerifyPhoneScreen` |
 
-Modal transient fields: `agentPortal`, `otpFlow`, `pendingEmail`, `otpSession`, `otpCode`, `pendingSignUp`, `pendingAgencySignUp` — see [store/auth.store.md](./store/auth.store.md).
+Modal transient fields: `agentPortal`, `otpFlow`, `pendingEmail`, `pendingPhone`, `otpSession`, `otpCode`, `pendingSignUp`, `pendingAgencySignUp`, `signupPhoneVerificationPending` — see [store/auth.store.md](./store/auth.store.md). `signupPhoneVerificationPending` does not store an OTP.
 
 ## Subfolders
 

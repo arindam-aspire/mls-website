@@ -10,6 +10,7 @@ import {
 } from "../mutations/auth.mutation";
 import { useToast } from "@/src/hooks/useToast";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
+import { hasSignupPhoneNumber } from "../utils/signupPhoneVerification";
 import { useAuthModalNavigation } from "./useAuthPortal";
 import { useAuthScreenLegalFooter } from "./authScreen.utils";
 
@@ -26,6 +27,10 @@ export function useConfirmSignUpScreen() {
   const pendingEmail = useAuthStore((state) => state.pendingEmail);
   const clearPendingSignUp = useAuthStore((state) => state.clearPendingSignUp);
   const clearPendingAgencySignUp = useAuthStore((state) => state.clearPendingAgencySignUp);
+  const setPendingPhone = useAuthStore((state) => state.setPendingPhone);
+  const setSignupPhoneVerificationPending = useAuthStore(
+    (state) => state.setSignupPhoneVerificationPending,
+  );
   const toast = useToast();
 
   const isAgencyConfirm =
@@ -40,7 +45,9 @@ export function useConfirmSignUpScreen() {
   const contactEmail =
     pendingEmail?.trim() ||
     (isAgencyConfirm ? pendingAgencySignUp?.email : pendingSignUp?.email);
-  const contactPhone = isAgencyConfirm ? undefined : pendingSignUp?.phone_number;
+  const contactPhone = isAgencyConfirm
+    ? pendingAgencySignUp?.phone
+    : pendingSignUp?.phone_number;
 
   const { mutate: confirmSignUpMutate, isPending: isVerifying } =
     useConfirmSignUp();
@@ -76,6 +83,15 @@ export function useConfirmSignUpScreen() {
         },
         {
           onSuccess: () => {
+            const registeredPhone = contactPhone?.trim() ?? "";
+            const openPhoneVerification =
+              Boolean(password) && hasSignupPhoneNumber(registeredPhone);
+
+            if (openPhoneVerification) {
+              setPendingPhone(registeredPhone);
+              setSignupPhoneVerificationPending(true);
+            }
+
             clearPendingSignUp();
             clearPendingAgencySignUp();
 
@@ -98,10 +114,13 @@ export function useConfirmSignUpScreen() {
       clearPendingSignUp,
       confirmSignUpMutate,
       contactEmail,
+      contactPhone,
       isAgencyConfirm,
       navigate,
       pendingAgencySignUp?.password,
       pendingSignUp?.password,
+      setPendingPhone,
+      setSignupPhoneVerificationPending,
       signInViewFromSignUp,
       signInWithPassword,
       tApi,

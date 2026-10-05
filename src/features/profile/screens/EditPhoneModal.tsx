@@ -43,7 +43,6 @@ export function EditPhoneModal({ isOpen, setIsOpen }: EditPhoneModalProps) {
           : {
               contactPhone: otpProps.contactPhone,
               contactPhoneCountry: otpProps.contactPhoneCountry,
-              displayOtp: otpProps.displayOtp,
             }
       }
     >
