@@ -285,6 +285,7 @@ export function usePropertyLocationDls({
       hodItems,
       selection.hod_code,
       selection.hod_name,
+      "parcel",
     );
     const sectOptions = mapDlsLocationItemsToSelectOptions(
       sectItems,

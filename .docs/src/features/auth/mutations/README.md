@@ -6,7 +6,7 @@ TanStack React Query **mutation hooks** wrapping `auth.service` functions. Handl
 
 | File | Hooks |
 | --- | --- |
-| [auth.mutation.md](./auth.mutation.md) | `useSignInWithPassword`, `useLogout`, `useSignUp`, `useConfirmSignUp`, `useSignInWithOtpRequest`, `useSignInWithOtpVerify`, `useForgotPassword` |
+| [auth.mutation.md](./auth.mutation.md) | `useSignInWithPassword`, `useSignInWithSocial`, `useLogout`, `useSignUp`, `useConfirmSignUp`, `useSignInWithOtpRequest`, `useSignInWithOtpVerify`, `useForgotPassword` |
 
 ## Lifecycle pattern
 

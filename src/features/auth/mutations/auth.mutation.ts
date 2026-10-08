@@ -14,8 +14,10 @@ import {
   signInWithOtpRequest,
   signInWithOtpVerify,
   signInWithPassword,
+  signInWithSocial,
   signUp,
 } from "../services/auth.service";
+import { tokenStore } from "@/src/apis/core/token.store";
 import { useToast } from "@/src/hooks/useToast";
 import { clearNotificationQueryCache } from "@/src/features/notifications/utils/clearNotificationQueryCache";
 import { isConflictStatus, type ApiError } from "@/src/apis/core/error.normalizer";
@@ -27,6 +29,15 @@ import type {
   SignInWithOtpVerifyResponse,
 } from "../types/auth.types";
 import type { SignInRole } from "../types/signIn.types";
+import type { SocialLoginRequest } from "../types/socialLogin.types";
+import { resolveSocialAuthErrorMessage } from "../utils/socialAuthError";
+import {
+  buildCognitoLogoutUrl,
+  isSocialOAuthPopup,
+  markCognitoHostedSession,
+  takeCognitoHostedSession,
+} from "../utils/socialOAuth";
+import { readSocialOAuthPublicConfig } from "@/src/configs/environment.config";
 import {
   getPostSignInRedirectPath,
   resolveImmediateDashboardPath,
@@ -70,6 +81,7 @@ async function completeSignInFlow(
   setUser: (user: LoggedInUser) => void,
   onProfileError: (message: string) => void,
   signInRole?: SignInRole,
+  fallbackPath?: string | null,
 ) {
   await Promise.resolve();
 
@@ -115,12 +127,45 @@ async function completeSignInFlow(
     const user = userResponse.data;
     setUser(user);
 
-    const path = getPostSignInRedirectPath(user, locale);
+    const path = getPostSignInRedirectPath(user, locale) ?? fallbackPath ?? null;
     useAuthStore.getState().closeAuth();
     if (path) navigateTo(path);
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Failed";
     onProfileError(message);
+  }
+}
+
+/** Applies a social session that was created in the provider window to this page. */
+export async function resumeSocialSignInFromPopup(input: {
+  locale: AppLocale;
+  role: SignInRole;
+  requiresPasswordSet: boolean;
+  rememberMeCookie: boolean;
+  onProfileError: (message: string) => void;
+}) {
+  const accessToken = tokenStore.getAccessToken();
+  if (!accessToken) return;
+  useAuthStore.getState().setAccessToken(accessToken);
+
+  if (input.requiresPasswordSet) {
+    useAuthStore.getState().closeAuth();
+    navigateTo(`/${input.locale}/set-new-password`);
+    return;
+  }
+
+  await completeSignInFlow(
+    accessToken,
+    input.locale,
+    useAuthStore.getState().setUser,
+    input.onProfileError,
+    input.role,
+    `/${input.locale}`,
+  );
+
+  const email = useAuthStore.getState().user?.email?.trim();
+  if (email) {
+    tokenStore.setAuthPreferences(input.rememberMeCookie, email);
   }
 }
 
@@ -161,6 +206,63 @@ export const useSignInWithPassword = () => {
   });
 };
 
+type SocialSignInVariables = SocialLoginRequest & {
+  username?: string;
+  locale?: AppLocale;
+};
+
+export const useSignInWithSocial = () => {
+  const toast = useToast();
+  const tApi = useTranslations("auth.api");
+  const tSocial = useTranslations("auth.socialOAuth");
+  const locale = useLocale() as AppLocale;
+  const { setAuth, setUser } = useAuthStore();
+
+  return useMutation({
+    mutationFn: (variables: SocialSignInVariables) => signInWithSocial(variables),
+    onSuccess: async (response, variables) => {
+      const { access_token, refresh_token, remember_me_cookie, requires_password_set } = response.data;
+      const sessionLocale = variables.locale ?? locale;
+      const username = variables.username?.trim() ?? "";
+      setAuth(access_token, refresh_token, {
+        rememberMeCookie: remember_me_cookie,
+        username,
+      });
+      markCognitoHostedSession();
+
+      if (isSocialOAuthPopup()) return;
+
+      if (requires_password_set) {
+        useAuthStore.getState().closeAuth();
+        navigateTo(`/${sessionLocale}/set-new-password`);
+        return;
+      }
+
+      await completeSignInFlow(
+        access_token,
+        sessionLocale,
+        setUser,
+        (message) => {
+          toast.error(tApi("profileLoadFailedTitle"), { description: message });
+        },
+        variables.role,
+        `/${sessionLocale}`,
+      );
+
+      const email = useAuthStore.getState().user?.email?.trim();
+      if (email) {
+        tokenStore.setAuthPreferences(remember_me_cookie, email);
+      }
+    },
+    onError: (error: ApiError) => {
+      if (isSocialOAuthPopup()) return;
+      toast.error(tSocial("failedTitle"), {
+        description: resolveSocialAuthErrorMessage(error, tSocial),
+      });
+    },
+  });
+};
+
 export const useLogout = () => {
   const toast = useToast();
   const tApi = useTranslations("auth.api");
@@ -173,7 +275,21 @@ export const useLogout = () => {
     onSettled: (_data, error) => {
       clearNotificationQueryCache(queryClient);
       clearAuth();
-      navigateTo(`/${locale}`);
+
+      const config = readSocialOAuthPublicConfig();
+      const cognitoLogoutUrl = takeCognitoHostedSession()
+        ? buildCognitoLogoutUrl({
+            domain: config.cognitoDomain,
+            clientId: config.cognitoAppClientId,
+            logoutUri: config.logoutUri,
+          })
+        : null;
+
+      if (cognitoLogoutUrl) {
+        window.location.assign(cognitoLogoutUrl);
+      } else {
+        navigateTo(`/${locale}`);
+      }
 
       if (error) {
         toast.error(tApi("logoutFailedTitle"), {

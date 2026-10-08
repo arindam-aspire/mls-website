@@ -97,10 +97,61 @@ export function getDlsLocationItems(
   return data.items ?? [];
 }
 
+const DLS_PARCEL_NUMBER_KEYS = [
+  "dls_parcel_number",
+  "dlsParcelNumber",
+  "parcel_number",
+  "parcelNumber",
+  "hod_number",
+  "hodNumber",
+  "number",
+] as const;
+
+function readDlsItemText(
+  item: DlsLocationItem,
+  keys: readonly string[],
+): string {
+  const record = item as Record<string, unknown>;
+
+  for (const key of keys) {
+    const value = record[key];
+    if (typeof value === "string" || typeof value === "number") {
+      const trimmed = String(value).trim();
+      if (trimmed) {
+        return trimmed;
+      }
+    }
+  }
+
+  return "";
+}
+
+/** DLS parcel identifier from the location row. `code` is the API parcel code. */
+export function resolveDlsParcelNumber(item: DlsLocationItem): string {
+  return readDlsItemText(item, DLS_PARCEL_NUMBER_KEYS) || String(item.code ?? "").trim();
+}
+
+export function formatDlsParcelOptionLabel(
+  name: string,
+  parcelNumber: string,
+): string {
+  const trimmedName = name.trim();
+  const trimmedNumber = parcelNumber.trim();
+
+  if (trimmedName && trimmedNumber) {
+    return `${trimmedName} - ${trimmedNumber}`;
+  }
+
+  return trimmedName || trimmedNumber;
+}
+
+export type DlsSelectOptionLabelMode = "name" | "parcel";
+
 export function mapDlsLocationItemsToSelectOptions(
   items: DlsLocationItem[],
   selectedCode?: string,
   selectedName?: string,
+  labelMode: DlsSelectOptionLabelMode = "name",
 ): SelectOption[] {
   const nameCounts = new Map<string, number>();
 
@@ -112,6 +163,14 @@ export function mapDlsLocationItemsToSelectOptions(
   const options = items.map((item) => {
     const code = String(item.code);
     const name = item.name?.trim() || code;
+
+    if (labelMode === "parcel") {
+      return {
+        value: code,
+        label: formatDlsParcelOptionLabel(name, resolveDlsParcelNumber(item)),
+      };
+    }
+
     return {
       value: code,
       label: (nameCounts.get(name) ?? 0) > 1 ? `${name} (${code})` : name,
@@ -123,9 +182,13 @@ export function mapDlsLocationItemsToSelectOptions(
     trimmedSelectedCode &&
     !options.some((option) => option.value === trimmedSelectedCode)
   ) {
+    const fallbackName = selectedName?.trim() || trimmedSelectedCode;
     options.unshift({
       value: trimmedSelectedCode,
-      label: selectedName?.trim() || trimmedSelectedCode,
+      label:
+        labelMode === "parcel"
+          ? formatDlsParcelOptionLabel(fallbackName, trimmedSelectedCode)
+          : fallbackName,
     });
   }
 

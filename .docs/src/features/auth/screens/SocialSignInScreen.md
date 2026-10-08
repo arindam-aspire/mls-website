@@ -20,13 +20,14 @@ Route-level screen component composing feature UI.
 
 # State Management
 
-- **React** `useState` — `isUpcomingFeatureModalOpen` for social provider coming-soon overlay.
+- **React state lives in `useSocialProviderAuth`.** Apple still opens `UpcomingFeatureModal`. Google and Facebook set `pendingProvider` and leave the page.
 
 # Actions / Inputs
 
 ## Actions
 
-- **Google / Facebook / Apple** — opens portaled `UpcomingFeatureModal`.
+- **Google / Facebook** — opens the Cognito hosted UI in a new window. The current page stays open. The User or Owner toggle is stored with the PKCE state and sent later to `POST /auth/login/social`.
+- **Apple** — opens `UpcomingFeatureModal` (Apple sign-in is not wired).
 - **Create account** footer link — navigates to matching social sign-up view.
 
 ## Show/Hide Controls

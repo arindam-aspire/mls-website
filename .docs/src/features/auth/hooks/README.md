@@ -13,6 +13,8 @@ Feature hooks own **logic and data** for auth screens and forms. Screens under `
 | `useAgencyRegistrationScreen` | `AgencyRegistrationScreen` |
 | `useSocialSignInScreen` | `SocialSignInScreen` |
 | `useSocialRegistrationScreen` | `SocialRegistrationScreen` |
+| `useSocialProviderAuth` | Google/Facebook redirect shared by both social screens |
+| `useSocialOAuthCallback` | `SocialOAuthCallbackScreen` |
 | `useUserRegistrationScreen` | `UserRegistrationScreen` |
 | `useForgotPasswordScreen` | `ForgotPasswordScreen` |
 | `useResetPasswordScreen` | `ResetPasswordScreen` |

@@ -64,11 +64,14 @@ function AppleIcon(props: BrandIconProps) {
 export type SocialAccountType = "user" | "owner";
 export type SocialAuthFlow = "signin" | "signup";
 
+export type SocialAuthProvider = "google" | "facebook" | "apple";
+
 type SocialAuthFormProps = {
   flow: SocialAuthFlow;
   accountType: SocialAccountType;
   className?: string;
-  onSocialProviderClick?: () => void;
+  onSocialProviderClick?: (provider: SocialAuthProvider) => void;
+  pendingProvider?: "google" | "facebook" | null;
 };
 
 export function SocialAuthForm({
@@ -76,6 +79,7 @@ export function SocialAuthForm({
   accountType,
   className,
   onSocialProviderClick,
+  pendingProvider = null,
 }: SocialAuthFormProps) {
   const t = useTranslations("auth");
   const navigate = useAuthStore((state) => state.navigate);
@@ -121,7 +125,10 @@ export function SocialAuthForm({
           fullWidth
           className="font-semibold"
           iconStart={<GoogleIcon className="size-5" />}
-          onClick={onSocialProviderClick}
+          onClick={() => onSocialProviderClick?.("google")}
+          disabled={pendingProvider != null}
+          isLoading={pendingProvider === "google"}
+          loadingLabel={t("socialOAuth.continuing")}
         >
           {t("continueWithGoogle")}
         </Button>
@@ -133,7 +140,10 @@ export function SocialAuthForm({
           fullWidth
           className="font-semibold"
           iconStart={<FacebookIcon className="size-5" />}
-          onClick={onSocialProviderClick}
+          onClick={() => onSocialProviderClick?.("facebook")}
+          disabled={pendingProvider != null}
+          isLoading={pendingProvider === "facebook"}
+          loadingLabel={t("socialOAuth.continuing")}
         >
           {facebookLabel}
         </Button>
@@ -145,7 +155,8 @@ export function SocialAuthForm({
           fullWidth
           className="font-semibold"
           iconStart={<AppleIcon className="size-5" />}
-          onClick={onSocialProviderClick}
+          onClick={() => onSocialProviderClick?.("apple")}
+          disabled={pendingProvider != null}
         >
           {appleLabel}
         </Button>

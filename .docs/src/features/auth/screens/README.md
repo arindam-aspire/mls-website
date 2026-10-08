@@ -9,6 +9,7 @@ One screen component per **auth view** (`AUTH_VIEW` in `authViews.ts`). Rendered
 | [AccountChooseScreen.md](./AccountChooseScreen.md) | `choose-account` |
 | [SocialSignInScreen.md](./SocialSignInScreen.md) | `user-social-sign-in`, `owner-social-sign-in` |
 | [SocialRegistrationScreen.md](./SocialRegistrationScreen.md) | `user-social-sign-up`, `owner-social-sign-up` |
+| [SocialOAuthCallbackScreen.md](./SocialOAuthCallbackScreen.md) | routed page `/{locale}/auth/social/callback` |
 | [SignInScreen.md](./SignInScreen.md) | `user-sign-in`, `owner-sign-in` |
 | [UserRegistrationScreen.md](./UserRegistrationScreen.md) | `user-sign-up`, `owner-sign-up` |
 | [AgencySignInScreen.md](./AgencySignInScreen.md) | `agency-sign-in` |

@@ -2,6 +2,7 @@ export * from "./chooseAccount.types";
 export * from "./signUp.types";
 export * from "./agencySignUp.types";
 export * from "./signIn.types";
+export * from "./socialLogin.types";
 export * from "./signInOtp.types";
 export * from "./forgotPassword.types";
 export * from "./user.types";

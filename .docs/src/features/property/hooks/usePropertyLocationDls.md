@@ -7,6 +7,7 @@ Logic hook for Add Property Step 2 DLS cascading selects: Governate → Director
 # Responsibilities
 
 - Fetch DLS options from `GET /dls-locations` with `level` plus the required parent codes.
+- Parcel Name (`hod`) option labels are `name - parcel number` from the API row. The stored value remains `hod_code`. Governate, Directorate, Village, and Section keep name labels.
 - Enable each child query only after the previous code is selected.
 - Map API `code` / `name` pairs to `Select` options (name as label; code appended when names collide).
 - Clear descendant codes when a parent changes.

@@ -1,7 +1,23 @@
 import { authClient } from "@/src/apis/clients/api.client";
 import { authEndpoints } from "@/src/apis/endpoints/authEndpoints";
 import { withDisplayableProfilePicture } from "../utils/normalizeLoggedInUser";
-import type { AgencySignUpRequest, AgencySignUpResponse, ChangePasswordRequest, ChangePasswordResponse, ConfirmSignUpRequest, ConfirmSignUpResponse, ForgotPasswordRequest, ForgotPasswordResponse, LoggedInUserResponse, LogoutResponse, ResendConfirmationRequest, ResendConfirmationResponse, ResetPasswordRequest, ResetPasswordResponse, SignInRequest, SignInResponse, SignInWithOtpRequest, SignInWithOtpResponse, SignInWithOtpVerifyRequest, SignInWithOtpVerifyResponse, SignUpRequest, SignUpResponse } from "../types/auth.types";
+import type { AgencySignUpRequest, AgencySignUpResponse, ChangePasswordRequest, ChangePasswordResponse, ConfirmSignUpRequest, ConfirmSignUpResponse, ForgotPasswordRequest, ForgotPasswordResponse, LoggedInUserResponse, LogoutResponse, ResendConfirmationRequest, ResendConfirmationResponse, ResetPasswordRequest, ResetPasswordResponse, SignInRequest, SignInResponse, SignInWithOtpRequest, SignInWithOtpResponse, SignInWithOtpVerifyRequest, SignInWithOtpVerifyResponse, SignUpRequest, SignUpResponse, SocialLoginRequest, SocialLoginResponse } from "../types/auth.types";
+
+export async function signInWithSocial(data: SocialLoginRequest): Promise<SocialLoginResponse> {
+  return authClient.request<SocialLoginResponse>({
+    endpoint: authEndpoints.LOGIN_SOCIAL,
+    method: "POST",
+    body: {
+      provider: data.provider,
+      role: data.role,
+      ...(data.id_token ? { id_token: data.id_token } : {}),
+      ...(data.access_token ? { access_token: data.access_token } : {}),
+      ...(data.code ? { code: data.code } : {}),
+      ...(data.code_verifier ? { code_verifier: data.code_verifier } : {}),
+      ...(data.redirect_uri ? { redirect_uri: data.redirect_uri } : {}),
+    },
+  });
+}
 
 export async function signInWithPassword(data: SignInRequest): Promise<SignInResponse> {
   return authClient.request<SignInResponse>({
