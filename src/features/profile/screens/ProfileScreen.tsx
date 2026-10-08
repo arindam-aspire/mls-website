@@ -8,6 +8,7 @@ import { ChangePasswordModal } from "@/src/features/profile/screens/ChangePasswo
 import { EditEmailModal } from "@/src/features/profile/screens/EditEmailModal";
 import { EditPhoneModal } from "@/src/features/profile/screens/EditPhoneModal";
 import { EditAgencyModal } from "@/src/features/profile/screens/EditAgencyModal";
+import { VerifyContactModal } from "@/src/features/profile/screens/VerifyContactModal";
 import { AgencyProfileCard } from "@/src/features/profile/components/AgencyProfileCard";
 import { MyProfileCardSkeleton } from "@/src/features/profile/components/MyProfileCardSkeleton";
 import { useProfileScreen } from "../hooks/useProfileScreen";
@@ -32,6 +33,7 @@ export default function ProfileScreen() {
     agencySource,
     isEditAgencyOpen,
     setIsEditAgencyOpen,
+    verifyContact,
   } = useProfileScreen();
 
   if (isLoading) {
@@ -88,6 +90,25 @@ export default function ProfileScreen() {
       <EditEmailModal isOpen={isEditEmailOpen} setIsOpen={setIsEditEmailOpen} />
 
       <EditPhoneModal isOpen={isEditPhoneOpen} setIsOpen={setIsEditPhoneOpen} />
+
+      <VerifyContactModal
+        isOpen={verifyContact.isOpen}
+        onClose={verifyContact.closeModal}
+        verificationType={verifyContact.verificationType}
+        contactEmail={verifyContact.contactEmail}
+        contactPhone={verifyContact.contactPhone}
+        contactPhoneCountry={verifyContact.contactPhoneCountry}
+        title={verifyContact.title}
+        subtitle={verifyContact.subtitle}
+        resendLabel={verifyContact.resendLabel}
+        confirmLabel={verifyContact.confirmLabel}
+        emailVisibleLocalChars={verifyContact.emailVisibleLocalChars}
+        otpSessionKey={verifyContact.otpSessionKey}
+        onSubmit={verifyContact.onSubmit}
+        onResend={verifyContact.onResend}
+        isLoading={verifyContact.isConfirming}
+        isResending={verifyContact.isResending}
+      />
 
       <EditAgencyModal
         agencyId={agencyId}

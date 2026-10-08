@@ -223,7 +223,7 @@ All paths below are **without** locale; prepend `/<locale>` (e.g. `/en/my-listin
 | `/dashboard` | `(main)/dashboard/page.tsx` | `DashboardScreen` — guarded by `useAuthorize("DASHBOARD")` |
 | `/manage-listings` | `(main)/(listings)/manage-listings/page.tsx` | `ManageListingsScreen` — guarded by `useAuthorize("MANAGE_LISTINGS")` |
 | `/draft-listings` | `(main)/(listings)/draft-listings/page.tsx` | `DraftListingsScreen` — guarded by `useAuthorize("DRAFT_LISTINGS")` |
-| `/my-profile` | `(main)/(profile)/my-profile/page.tsx` | `ProfileScreen` — guarded by `useAuthorize("PROFILE")` |
+| `/my-profile` | `(main)/(profile)/my-profile/page.tsx` | `ProfileScreen` — guarded by `useAuthorize("PROFILE")`. Unverified email or phone can be verified in place with the signed-in contact from `GET /auth/me`. |
 | `/agency-settings` | `(main)/(profile)/agency-settings/page.tsx` | `AgencySettingsScreen` — currency & measurement display preferences; guarded by `useAuthorize("AGENCY_SETTINGS")` |
 | `/notification-settings` | `(main)/(profile)/notification-settings/page.tsx` | `NotificationSettingsScreen` — guarded by `useAuthorize("NOTIFICATION_SETTINGS")` (owner, user) |
 | `/saved-searches` | `(main)/saved-searches/page.tsx` | `SavedSearchScreen` — guarded by `useAuthorize("SAVED_SEARCHES")` |
@@ -419,8 +419,9 @@ After Create Property submission succeeds, the saved snapshot synchronously clea
 
 | File | Role |
 | --- | --- |
-| `screens/ProfileScreen.tsx` | `ProfileScreen` — toolbar, profile card, change password, separate edit email/phone modals |
-| `services/profile.service.ts` | `PATCH /auth/me/profile/request` + `POST /auth/me/profile/verify` (email/phone OTP); `POST` / `DELETE /auth/me/profile-picture`; `GET /agency/list`; `GET` / `PUT /agency/{id}`; `POST` / `DELETE /agency/{id}/logo`; `POST /agency/{id}/legal-document`; `PATCH /auth/me` (legacy combined update) |
+| `screens/ProfileScreen.tsx` | `ProfileScreen` — toolbar, profile card, change password, separate edit email/phone modals, and verify-current-contact OTP |
+| `screens/VerifyContactModal.tsx` | OTP modal for the signed-in user's current email or phone. Email uses `POST /auth/resend-confirmation` (`channel: "email"`) and `POST /auth/confirm-signup`. Phone uses `POST /auth/send-phone-otp` and `POST /auth/verify-phone-otp`. |
+| `services/profile.service.ts` | `PATCH /auth/me/profile/request` + `POST /auth/me/profile/verify` (edit email/phone OTP); `GET /auth/me` refresh after verify; `POST` / `DELETE /auth/me/profile-picture`; `GET /agency/list`; `GET` / `PUT /agency/{id}`; `POST` / `DELETE /agency/{id}/logo`; `POST /agency/{id}/legal-document`; `PATCH /auth/me` (legacy combined update) |
 | `hooks/useProfileAvatarUpload.ts` | File picker, validation, `useUploadProfilePicture`; IndexedDB cache so the header avatar still shows after login when MLS stores `dev://` |
 | `screens/EditEmailModal.tsx` | Two-step email change: request OTP → confirm |
 | `screens/EditPhoneModal.tsx` | Two-step phone change: request OTP → confirm (E.164 `phone_number`) |

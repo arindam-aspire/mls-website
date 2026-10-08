@@ -226,7 +226,8 @@ mls_website/
 │       │   │   │   ├── ProfileAvatarUpload.md
 │       │   │   │   ├── ProfilePageToolbar.md
 │       │   │   │   ├── ProfilePageToolbarSkeleton.md
-│       │   │   │   └── ProfileScreenSkeleton.md
+│       │   │   │   ├── ProfileScreenSkeleton.md
+│       │   │   │   └── ProfileVerificationStatus.md
 │       │   │   ├── hooks/
 │       │   │   │   ├── README.md
 │       │   │   │   ├── index.md
@@ -238,18 +239,21 @@ mls_website/
 │       │   │   │   ├── useChangePasswordModal.md
 │       │   │   │   ├── useProfileAvatarUpload.md
 │       │   │   │   ├── useProfileScreen.md
-│       │   │   │   └── useSelectAgencyModal.md
+│       │   │   │   ├── useSelectAgencyModal.md
+│       │   │   │   └── useVerifyContactModal.md
 │       │   │   ├── modals/
 │       │   │   │   ├── README.md
 │       │   │   │   └── SelectAgencyModal.md
 │       │   │   ├── mutations/
 │       │   │   │   ├── README.md
-│       │   │   │   └── index.md
+│       │   │   │   ├── index.md
+│       │   │   │   └── profile.mutation.md
 │       │   │   ├── screens/
 │       │   │   │   ├── AgencySettingsScreen.md
 │       │   │   │   ├── ChangePasswordModal.md
 │       │   │   │   ├── NotificationSettingsScreen.md
-│       │   │   │   └── ProfileScreen.md
+│       │   │   │   ├── ProfileScreen.md
+│       │   │   │   └── VerifyContactModal.md
 │       │   │   ├── services/
 │       │   │   │   ├── README.md
 │       │   │   │   └── index.md
@@ -262,6 +266,7 @@ mls_website/
 │       │   │   │   └── profile.types.md
 │       │   │   └── utils/
 │       │   │       ├── README.md
+│       │   │       ├── contactVerification.utils.md
 │       │   │       └── index.md
 │       │   ├── user/
 │       │   │   ├── README.md
@@ -995,7 +1000,8 @@ mls_website/
 │   │   │   │   ├── ProfileOtpVerificationTitle.tsx
 │   │   │   │   ├── ProfilePageToolbar.tsx
 │   │   │   │   ├── ProfilePageToolbarSkeleton.tsx
-│   │   │   │   └── ProfileScreenSkeleton.tsx
+│   │   │   │   ├── ProfileScreenSkeleton.tsx
+│   │   │   │   └── ProfileVerificationStatus.tsx
 │   │   │   ├── hooks/
 │   │   │   │   ├── index.ts
 │   │   │   │   ├── useAgencyCurrencyPreference.ts
@@ -1009,7 +1015,8 @@ mls_website/
 │   │   │   │   ├── useEditPhoneModal.ts
 │   │   │   │   ├── useProfileAvatarUpload.ts
 │   │   │   │   ├── useProfileScreen.ts
-│   │   │   │   └── useSelectAgencyModal.ts
+│   │   │   │   ├── useSelectAgencyModal.ts
+│   │   │   │   └── useVerifyContactModal.ts
 │   │   │   ├── modals/
 │   │   │   │   └── SelectAgencyModal.tsx
 │   │   │   ├── mutations/
@@ -1022,7 +1029,8 @@ mls_website/
 │   │   │   │   ├── EditEmailModal.tsx
 │   │   │   │   ├── EditPhoneModal.tsx
 │   │   │   │   ├── NotificationSettingsScreen.tsx
-│   │   │   │   └── ProfileScreen.tsx
+│   │   │   │   ├── ProfileScreen.tsx
+│   │   │   │   └── VerifyContactModal.tsx
 │   │   │   ├── services/
 │   │   │   │   ├── index.ts
 │   │   │   │   └── profile.service.ts
@@ -1036,6 +1044,8 @@ mls_website/
 │   │   │       ├── agencyApi.utils.ts
 │   │   │       ├── agencyForm.utils.ts
 │   │   │       ├── agencyPreferences.utils.ts
+│   │   │       ├── contactVerification.utils.ts
+│   │   │       ├── contactVerification.utils.test.ts
 │   │   │       ├── selectAgency.utils.ts
 │   │   │       ├── formatPhoneNumberE164.ts
 │   │   │       ├── licenseDocumentDisplay.ts

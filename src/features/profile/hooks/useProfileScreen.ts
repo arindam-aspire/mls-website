@@ -18,6 +18,7 @@ import {
 } from "../constants/agencyPreferences";
 import { useAgencyLogoUpload } from "./useAgencyLogoUpload";
 import { useProfileAvatarUpload } from "./useProfileAvatarUpload";
+import { useVerifyContactModal } from "./useVerifyContactModal";
 
 function isAgencyRole(roleName: string | undefined): boolean {
   if (!roleName) return false;
@@ -77,6 +78,7 @@ export function useProfileScreen() {
   const [isEditEmailOpen, setIsEditEmailOpen] = useState(false);
   const [isEditPhoneOpen, setIsEditPhoneOpen] = useState(false);
   const [isEditAgencyOpen, setIsEditAgencyOpen] = useState(false);
+  const verifyContact = useVerifyContactModal();
 
   const primaryRoleName = user?.roles[0]?.name;
   const isAgency = isAgencyRole(primaryRoleName);
@@ -161,6 +163,28 @@ export function useProfileScreen() {
           onEdit: openEditPhone,
         };
 
+    const emailVerifyProps =
+      isAgency || user.is_email_verified
+        ? {}
+        : {
+            verifyLabel: t("contactVerification.verifyEmail"),
+            verifyLoadingLabel: t("contactVerification.sending"),
+            onVerify: verifyContact.startEmail,
+            isVerifying: verifyContact.sendingType === "email",
+            verifyDisabled: verifyContact.sendingType != null,
+          };
+
+    const phoneVerifyProps =
+      isAgency || !phoneRaw || user.is_phone_verified
+        ? {}
+        : {
+            verifyLabel: t("contactVerification.verifyPhone"),
+            verifyLoadingLabel: t("contactVerification.sending"),
+            onVerify: verifyContact.startPhone,
+            isVerifying: verifyContact.sendingType === "phone",
+            verifyDisabled: verifyContact.sendingType != null,
+          };
+
     return [
       {
         label: t("fullNameLabel"),
@@ -178,6 +202,7 @@ export function useProfileScreen() {
         kind: "email",
         verified: isAgency ? undefined : user.is_email_verified,
         ...contactEditProps,
+        ...emailVerifyProps,
       },
       {
         label: t("phoneLabel"),
@@ -189,9 +214,22 @@ export function useProfileScreen() {
             ? user.is_phone_verified
             : undefined,
         ...phoneEditProps,
+        ...phoneVerifyProps,
       },
     ];
-  }, [isAgency, openEditEmail, openEditPhone, phoneDisplay, phoneRaw, roleLabel, t, user]);
+  }, [
+    isAgency,
+    openEditEmail,
+    openEditPhone,
+    phoneDisplay,
+    phoneRaw,
+    roleLabel,
+    t,
+    user,
+    verifyContact.sendingType,
+    verifyContact.startEmail,
+    verifyContact.startPhone,
+  ]);
 
   const myProfileCard = useMemo(
     () =>
@@ -208,6 +246,7 @@ export function useProfileScreen() {
             fields: profileFields,
             verifiedLabel: t("verified"),
             notVerifiedLabel: t("notVerified"),
+            verifyLoadingLabel: t("contactVerification.sending"),
             uploadPhotoLabel: t("uploadProfilePhoto"),
             photoHint: t("profilePhotoHint"),
             avatarUpload,
@@ -259,6 +298,12 @@ export function useProfileScreen() {
             onEditEmail: openEditEmail,
             onEditPhone: openEditPhone,
             onEditAgency: openEditAgency,
+            verifyEmailLabel: t("contactVerification.verifyEmail"),
+            verifyPhoneLabel: t("contactVerification.verifyPhone"),
+            verifyLoadingLabel: t("contactVerification.sending"),
+            onVerifyEmail: verifyContact.startEmail,
+            onVerifyPhone: verifyContact.startPhone,
+            verifyingChannel: verifyContact.sendingType,
           }
         : null,
     [
@@ -272,6 +317,9 @@ export function useProfileScreen() {
       phoneRaw,
       t,
       user,
+      verifyContact.sendingType,
+      verifyContact.startEmail,
+      verifyContact.startPhone,
     ],
   );
 
@@ -317,5 +365,6 @@ export function useProfileScreen() {
     agencySource,
     isEditAgencyOpen,
     setIsEditAgencyOpen,
+    verifyContact,
   };
 }

@@ -41,7 +41,8 @@ _No significant state; presentational or config module._
 - Endpoints: `authEndpoints`.
 - Base URL: `API_BASE_URL` from `environment.config.ts`.
 - `changePassword` sends authenticated `POST /auth/change-password` with `{ password, previous_password }`.
-- `resendConfirmation` sends unauthenticated `POST /auth/resend-confirmation` with `{ email }`.
+- `resendConfirmation` sends unauthenticated `POST /auth/resend-confirmation` with `{ email }` and optional `channel` (`email` or `phone`). Profile email verification passes `channel: "email"` so the code is emailed and not texted.
+- `sendPhoneOtp` / `resendPhoneOtp` / `verifyPhoneOtp` are authenticated `POST /auth/send-phone-otp`, `POST /auth/resend-phone-otp`, and `POST /auth/verify-phone-otp`. They deliver and confirm an SMS OTP for the registered mobile only.
 - `agencySignUp` sends unauthenticated multipart `POST /agency/register`. Password is omitted when empty.
 
 # Navigation

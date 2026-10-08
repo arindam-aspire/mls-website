@@ -10,6 +10,8 @@ type ProfileOtpVerificationFormProps = {
   onResend: () => void;
   isLoading: boolean;
   isResending: boolean;
+  resendLabel?: string;
+  continueLabel?: string;
 };
 
 export function ProfileOtpVerificationForm({
@@ -17,12 +19,19 @@ export function ProfileOtpVerificationForm({
   onResend,
   isLoading,
   isResending,
+  resendLabel,
+  continueLabel,
 }: ProfileOtpVerificationFormProps) {
   const labels = useOtpVerificationFormLabels("profile");
+  const resolvedLabels = {
+    ...labels,
+    ...(resendLabel ? { resend: resendLabel } : {}),
+    ...(continueLabel ? { continue: continueLabel } : {}),
+  };
 
   return (
     <OtpVerificationForm
-      labels={labels}
+      labels={resolvedLabels}
       onSubmit={onSubmit}
       onResend={onResend}
       isLoading={isLoading}

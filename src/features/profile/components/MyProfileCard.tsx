@@ -1,11 +1,9 @@
 import {
-  CheckCircle,
   Mail,
   Pencil,
   Phone,
   Shield,
   User,
-  XCircle,
   type LucideIcon,
 } from "lucide-react";
 import { Card, CardContent } from "@/src/components/ui";
@@ -18,6 +16,7 @@ import type {
   ProfileInfoFieldKind,
 } from "../types/profile.types";
 import { ProfileAvatarUpload } from "./ProfileAvatarUpload";
+import { ProfileVerificationStatus } from "./ProfileVerificationStatus";
 
 const profileCardClassName = "w-full md:max-w-md sm:max-w-none md:mx-auto lg:mx-0";
 
@@ -31,6 +30,7 @@ const FIELD_ICONS: Record<ProfileInfoFieldKind, LucideIcon> = {
 type ProfileFieldProps = ProfileInfoField & {
   verifiedLabel: string;
   notVerifiedLabel: string;
+  verifyLoadingLabel: string;
 };
 
 function ProfileFieldIcon({
@@ -57,8 +57,13 @@ function ProfileField({
   verified,
   editLabel,
   onEdit,
+  verifyLabel,
+  onVerify,
+  isVerifying,
+  verifyDisabled,
   verifiedLabel,
   notVerifiedLabel,
+  verifyLoadingLabel,
 }: ProfileFieldProps) {
   const Icon = FIELD_ICONS[kind];
   const isVerified = verified ?? false;
@@ -74,19 +79,16 @@ function ProfileField({
         <dd className="mt-1 truncate text-sm font-medium text-text">{value}</dd>
         {showVerification ? (
           <dd className="mt-1">
-            <span
-              className={cn(
-                "inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium",
-                isVerified ? "bg-success/15 text-success" : "bg-danger/10 text-danger",
-              )}
-            >
-              {isVerified ? (
-                <CheckCircle className="size-3.5 shrink-0" aria-hidden />
-              ) : (
-                <XCircle className="size-3.5 shrink-0" aria-hidden />
-              )}
-              {isVerified ? verifiedLabel : notVerifiedLabel}
-            </span>
+            <ProfileVerificationStatus
+              isVerified={isVerified}
+              verifiedLabel={verifiedLabel}
+              notVerifiedLabel={notVerifiedLabel}
+              verifyLabel={verifyLabel}
+              verifyLoadingLabel={verifyLoadingLabel}
+              onVerify={onVerify}
+              isVerifying={isVerifying}
+              verifyDisabled={verifyDisabled}
+            />
           </dd>
         ) : null}
       </div>
@@ -116,6 +118,7 @@ export function MyProfileCard({
   photoHint,
   verifiedLabel,
   notVerifiedLabel,
+  verifyLoadingLabel,
 }: MyProfileCardProps) {
   const hasProfileImage = Boolean(user.profile_picture_url?.trim());
 
@@ -149,6 +152,7 @@ export function MyProfileCard({
               {...field}
               verifiedLabel={verifiedLabel}
               notVerifiedLabel={notVerifiedLabel}
+              verifyLoadingLabel={field.verifyLoadingLabel ?? verifyLoadingLabel}
             />
           ))}
         </dl>

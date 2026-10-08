@@ -7,6 +7,9 @@ type ProfileOtpVerificationContactProps = {
   contactPhone?: string;
   contactPhoneCountry?: string;
   displayOtp?: string;
+  title?: string;
+  subtitle?: string;
+  emailVisibleLocalChars?: number;
   className?: string;
 };
 
@@ -15,6 +18,9 @@ export function ProfileOtpVerificationContact({
   contactPhone,
   contactPhoneCountry,
   displayOtp,
+  title,
+  subtitle,
+  emailVisibleLocalChars,
   className,
 }: ProfileOtpVerificationContactProps) {
   return (
@@ -23,6 +29,9 @@ export function ProfileOtpVerificationContact({
       contactPhone={contactPhone}
       contactPhoneCountry={contactPhoneCountry}
       displayOtp={displayOtp}
+      title={title}
+      subtitle={subtitle}
+      emailVisibleLocalChars={emailVisibleLocalChars}
       className={className}
     />
   );

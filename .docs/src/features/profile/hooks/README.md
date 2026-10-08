@@ -9,7 +9,8 @@ Logic layer for the profile feature.
 
 ## Current status
 
-- `useProfileScreen` — profile page user data and change-password modal state.
+- `useProfileScreen` — profile page user data, change-password modal state, and verify-current-contact actions.
+- `useVerifyContactModal` — OTP for the signed-in user's current email or phone.
 - `useProfileAvatarUpload` — personal profile photo presigned upload/remove, with a same-session `blob:` preview when MLS returns `dev://`.
 - `useAgencyLogoUpload` — agency logo presigned upload/remove (`/agency/{id}/logo`).
 - `useEditAgencyModal` — edit agency form; optional license upload on save (`POST /agency/{id}/legal-document`).
@@ -27,6 +28,7 @@ Logic layer for the profile feature.
 | --- | --- |
 | [index.md](./index.md) | Barrel re-export for profile hooks |
 | [useProfileScreen.md](./useProfileScreen.md) | Profile screen logic — auth store user, labels, modal state |
+| [useVerifyContactModal.md](./useVerifyContactModal.md) | Verify current email or phone with the existing profile OTP APIs |
 | [useSelectAgencyModal.md](./useSelectAgencyModal.md) | Select agency modal — i18n and close handler |
 | [useAgencyLogoUpload.md](./useAgencyLogoUpload.md) | Agency logo upload/remove on profile page |
 | [useProfileAvatarUpload.md](./useProfileAvatarUpload.md) | Personal profile photo upload/remove + blob preview |

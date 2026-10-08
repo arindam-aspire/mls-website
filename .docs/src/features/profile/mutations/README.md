@@ -15,4 +15,5 @@ React Query mutation hooks for profile actions.
 
 | Path | Role |
 | --- | --- |
-| [index.md](./index.md) | Placeholder barrel for mutation exports |
+| [index.md](./index.md) | Barrel for mutation exports |
+| [profile.mutation.md](./profile.mutation.md) | Profile writes and verify-current-contact OTP mutations |

@@ -11,6 +11,7 @@ Profile summary card: avatar, name, role, and read-only personal information fie
 - Render personal information from `fields` prop — **email and phone only** (system contact fields); each row uses `Mail` / `Phone` icons plus verification badge (**Verified** / **Not verified**) when `fields[].verified` is set.
 - Agency users (`admin` / `agency`): no verification badges and no edit on email/phone (`useProfileScreen` omits `verified`, `editLabel`, `onEdit`).
 - Non-agency users: verification from `user.is_email_verified` / `user.is_phone_verified` (phone badge omitted when no number).
+- When a contact is not verified, [ProfileVerificationStatus.md](./ProfileVerificationStatus.md) shows **Verify Email** or **Verify Phone** beside the badge. The button is omitted when the flag from `GET /auth/me` is true. The parent supplies `onVerify` only for the signed-in user's own profile.
 
 # Props / Parameters
 

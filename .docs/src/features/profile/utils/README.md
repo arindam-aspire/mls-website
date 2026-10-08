@@ -17,3 +17,4 @@ Utility helpers for profile feature logic.
 | --- | --- |
 | [index.md](./index.md) | Placeholder barrel for utility exports |
 | [registeredMobileSms.utils.md](./registeredMobileSms.utils.md) | Registered-mobile SMS eligibility and request lock |
+| [contactVerification.utils.md](./contactVerification.utils.md) | Email vs phone OTP request/confirm bodies |

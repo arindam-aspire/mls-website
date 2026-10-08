@@ -31,6 +31,9 @@ type ProfileEditContactModalProps = {
     contactPhone?: string;
     contactPhoneCountry?: string;
     displayOtp?: string;
+    title?: string;
+    subtitle?: string;
+    emailVisibleLocalChars?: number;
   };
   children: ReactNode;
 };
@@ -73,6 +76,9 @@ export function ProfileEditContactModal({
                 contactPhone={otpContact.contactPhone}
                 contactPhoneCountry={otpContact.contactPhoneCountry}
                 displayOtp={otpContact.displayOtp}
+                title={otpContact.title}
+                subtitle={otpContact.subtitle}
+                emailVisibleLocalChars={otpContact.emailVisibleLocalChars}
                 className={titleSectionClassName}
               />
             ) : null}

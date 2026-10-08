@@ -356,6 +356,11 @@ export async function verifyProfileUpdateAndRefreshUser(
   body: ProfileUpdateVerifyBody,
 ): Promise<LoggedInUser> {
   await verifyProfileUpdate(body);
+  return refreshAuthenticatedProfile();
+}
+
+/** Re-read `GET /auth/me` so verification flags come from the backend. */
+export async function refreshAuthenticatedProfile(): Promise<LoggedInUser> {
   const me = await getLoggedInUser();
   return me.data;
 }

@@ -15,6 +15,8 @@ export type EditPhoneFormValues = {
 
 export type ProfileInfoFieldKind = "name" | "role" | "email" | "phone";
 
+export type ContactVerificationChannel = "email" | "phone";
+
 export type ProfileInfoField = {
   label: string;
   value: string;
@@ -23,6 +25,12 @@ export type ProfileInfoField = {
   verified?: boolean;
   editLabel?: string;
   onEdit?: () => void;
+  /** Shown beside "Not verified" for the signed-in user's own contact. */
+  verifyLabel?: string;
+  verifyLoadingLabel?: string;
+  onVerify?: () => void;
+  isVerifying?: boolean;
+  verifyDisabled?: boolean;
 };
 
 export type MyProfileCardUser = {
@@ -54,6 +62,7 @@ export type MyProfileCardProps = {
   removeImageLabel: string;
   verifiedLabel: string;
   notVerifiedLabel: string;
+  verifyLoadingLabel: string;
 };
 
 export type Agency = {
@@ -172,6 +181,13 @@ export type AgencyProfileCardProps = {
   onEditEmail: () => void;
   onEditPhone: () => void;
   onEditAgency: () => void;
+  verifyEmailLabel: string;
+  verifyPhoneLabel: string;
+  verifyLoadingLabel: string;
+  onVerifyEmail: () => void;
+  onVerifyPhone: () => void;
+  /** Channel whose OTP request is in flight. Disables both verify actions. */
+  verifyingChannel: ContactVerificationChannel | null;
 };
 
 export type UpdateProfileRequest = {
