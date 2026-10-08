@@ -9,6 +9,7 @@ Public frontend origin helpers for invitation emails and rewritten agency deep l
 - Export `API_BASE_URL` from `NEXT_PUBLIC_API_BASE_URL`.
 - Export `GOOGLE_MAPS_API_KEY` from `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` (empty when unset). The create-property location map needs the Maps JavaScript API enabled on that key.
 - Export `APP_URL` from `NEXT_PUBLIC_APP_URL` (empty when unset; trailing slashes stripped). Used as the public site origin in agency invitation emails.
+- Export `readSocialOAuthPublicConfig()` for the Cognito hosted UI used by Google and Facebook. The app client secret is not read here. Each `NEXT_PUBLIC_*` value is read with a direct `process.env.NEXT_PUBLIC_*` access so Next.js inlines it into the browser bundle.
 - Export `getPublicAppOrigin()` — `APP_URL` when set, otherwise `window.location.origin` on the client. Does not hardcode localhost or production hosts.
 
 # Imports
@@ -21,6 +22,7 @@ _No notable imports._
 - `API_BASE_URL`
 - `GOOGLE_MAPS_API_KEY` (`NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`, empty string when unset)
 - `APP_URL` (`NEXT_PUBLIC_APP_URL`, empty string when unset)
+- `readSocialOAuthPublicConfig` — `NEXT_PUBLIC_COGNITO_DOMAIN`, `NEXT_PUBLIC_COGNITO_APP_CLIENT_ID`, `NEXT_PUBLIC_COGNITO_GOOGLE_IDENTITY_PROVIDER`, `NEXT_PUBLIC_COGNITO_FACEBOOK_IDENTITY_PROVIDER`, `NEXT_PUBLIC_COGNITO_OAUTH_SCOPES`, `NEXT_PUBLIC_SOCIAL_OAUTH_REDIRECT_URI`, `NEXT_PUBLIC_COGNITO_OAUTH_AUTHORIZE_URL`, `NEXT_PUBLIC_COGNITO_LOGOUT_URI`
 - `getPublicAppOrigin`
 
 # State Management
@@ -76,3 +78,4 @@ Set `NEXT_PUBLIC_APP_URL` per environment (dev / staging / production) to the pu
 
 - Keep in sync when `src/configs/environment.config.ts` changes.
 - Do not put localhost or a production hostname in source as a default `APP_URL`.
+- Do not read public Cognito settings with `process.env[name]`. Next.js leaves that lookup empty in the browser, and Google or Facebook then shows “not configured” before the redirect.

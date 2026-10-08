@@ -1,5 +1,6 @@
 export const authEndpoints = {
   SIGN_IN_WITH_PASSWORD: "/auth/login/password",
+  LOGIN_SOCIAL: "/auth/login/social",
   SIGN_IN_WITH_OTP: "/auth/login/otp/request",
   SIGN_IN_WITH_OTP_VERIFY: "/auth/login/otp/verify",
   LOGGED_IN_USER: "/auth/me",

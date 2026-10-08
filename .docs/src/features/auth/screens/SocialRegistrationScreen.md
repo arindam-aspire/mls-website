@@ -20,7 +20,7 @@ Route-level screen component composing feature UI.
 
 # State Management
 
-- **React** `useState` — `isUpcomingFeatureModalOpen` toggles the coming-soon overlay when a social provider button is clicked.
+- **React state lives in `useSocialProviderAuth`.** Apple still opens `UpcomingFeatureModal`. Google and Facebook set `pendingProvider` and leave the page.
 
 # API Usage
 
@@ -39,9 +39,9 @@ _N/A unless extended._
 
 ## Actions
 
-- **Google / Facebook / Apple** — opens `UpcomingFeatureModal` (social sign-up not yet available).
+- **Google / Facebook** — opens the Cognito hosted UI in a new window for the selected User or Owner role. The callback posts the authorization code to `POST /auth/login/social`.
+- **Apple** — opens `UpcomingFeatureModal`.
 - **Log in** footer link — navigates to the matching social sign-in auth view.
-- **Upcoming feature modal dismiss** — closes the overlay (`Got it` or close button).
 
 ## Show/Hide Controls
 
@@ -53,7 +53,7 @@ _N/A unless extended._
 - **Light/dark:** via `ThemeProvider` / `html.light` | `html.dark`.
 - **Radius:** `rounded-lg` controls; `rounded-xl` cards/modals/popovers; `rounded-full` avatars/pills.
 - **Responsive:** mobile-first (`sm:`, `md:`, `lg:`).
-- Renders auth **`ModalPanel`** plus **`UpcomingFeatureModal`** (portaled at `z-[100]`) for social provider actions.
+- Renders auth **`ModalPanel`**. **`UpcomingFeatureModal`** is only opened for Apple.
 
 # Flow Description
 

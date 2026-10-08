@@ -502,6 +502,12 @@ export type BuildPropertyDraftSubmissionPayloadOptions = {
   currency?: PropertyDraftSubmissionCurrency;
   /** When `land`, parcel number is also persisted on `identification_fields`. */
   arrangement?: PropertyArrangementId;
+  /**
+   * Named price keys that match the selected furnishing status.
+   * `null` keeps every named price. A set zeroes prices for other statuses
+   * so hidden furnishing prices are not submitted.
+   */
+  activePricingFieldKeys?: ReadonlySet<string> | null;
 };
 
 function mapReviewSubmit(
@@ -653,13 +659,31 @@ export function buildPropertyDraftSubmissionPayload(
   }
 
   if (pricing != null) {
-    const namedPrices = {
-      furnished_sale_price: parsePrice(pricing.furnished_sale_price),
-      unfurnished_sale_price: parsePrice(pricing.unfurnished_sale_price),
-      furnished_rent_price: parsePrice(pricing.furnished_rent_price),
-      unfurnished_rent_price: parsePrice(pricing.unfurnished_rent_price),
-      semi_furnished_rent_price: parsePrice(pricing.semi_furnished_rent_price),
+    const namedPriceSources = {
+      furnished_sale_price: pricing.furnished_sale_price,
+      unfurnished_sale_price: pricing.unfurnished_sale_price,
+      furnished_rent_price: pricing.furnished_rent_price,
+      unfurnished_rent_price: pricing.unfurnished_rent_price,
+      semi_furnished_rent_price: pricing.semi_furnished_rent_price,
     };
+    const activePricingFieldKeys = options?.activePricingFieldKeys;
+    const namedPrices = {
+      furnished_sale_price: parsePrice(namedPriceSources.furnished_sale_price),
+      unfurnished_sale_price: parsePrice(namedPriceSources.unfurnished_sale_price),
+      furnished_rent_price: parsePrice(namedPriceSources.furnished_rent_price),
+      unfurnished_rent_price: parsePrice(namedPriceSources.unfurnished_rent_price),
+      semi_furnished_rent_price: parsePrice(
+        namedPriceSources.semi_furnished_rent_price,
+      ),
+    };
+
+    if (activePricingFieldKeys) {
+      for (const key of Object.keys(namedPrices) as Array<keyof typeof namedPrices>) {
+        if (!activePricingFieldKeys.has(key)) {
+          namedPrices[key] = 0;
+        }
+      }
+    }
     const fallbackPrice =
       parsePrice(pricing.price) ||
       namedPrices.furnished_sale_price ||

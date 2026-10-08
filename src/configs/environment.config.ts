@@ -44,6 +44,45 @@ function trimTrailingSlash(value: string): string {
 /** Public frontend origin (`NEXT_PUBLIC_APP_URL`). Empty when unset — never a hardcoded host. */
 export const APP_URL = trimTrailingSlash(process.env.NEXT_PUBLIC_APP_URL ?? '');
 
+export type SocialOAuthPublicConfig = {
+  /** Cognito hosted UI host, with or without a scheme. */
+  cognitoDomain: string;
+  cognitoAppClientId: string;
+  /** Identity provider name configured on the Cognito app client. */
+  googleIdentityProvider: string;
+  facebookIdentityProvider: string;
+  /** Space-separated OAuth scopes. Empty uses the OIDC default in the authorize helper. */
+  oauthScopes: string;
+  /** Exact registered redirect URI. Empty uses the current origin and locale callback path. */
+  redirectUriOverride: string;
+  /** Full authorize URL. Empty derives `https://{domain}/oauth2/authorize`. */
+  authorizeUrlOverride: string;
+  /** Allowed Cognito sign-out URL. Empty skips the hosted-UI logout redirect. */
+  logoutUri: string;
+};
+
+function readPublicEnv(value: string | undefined): string {
+  return (value ?? '').trim();
+}
+
+/**
+ * Public Cognito hosted-UI settings. The app client secret is never read here.
+ * Each `NEXT_PUBLIC_*` name must be a direct property access so Next.js inlines it
+ * into the browser bundle. A dynamic `process.env[name]` lookup stays empty on the client.
+ */
+export function readSocialOAuthPublicConfig(): SocialOAuthPublicConfig {
+  return {
+    cognitoDomain: readPublicEnv(process.env.NEXT_PUBLIC_COGNITO_DOMAIN),
+    cognitoAppClientId: readPublicEnv(process.env.NEXT_PUBLIC_COGNITO_APP_CLIENT_ID),
+    googleIdentityProvider: readPublicEnv(process.env.NEXT_PUBLIC_COGNITO_GOOGLE_IDENTITY_PROVIDER),
+    facebookIdentityProvider: readPublicEnv(process.env.NEXT_PUBLIC_COGNITO_FACEBOOK_IDENTITY_PROVIDER),
+    oauthScopes: readPublicEnv(process.env.NEXT_PUBLIC_COGNITO_OAUTH_SCOPES),
+    redirectUriOverride: readPublicEnv(process.env.NEXT_PUBLIC_SOCIAL_OAUTH_REDIRECT_URI),
+    authorizeUrlOverride: readPublicEnv(process.env.NEXT_PUBLIC_COGNITO_OAUTH_AUTHORIZE_URL),
+    logoutUri: readPublicEnv(process.env.NEXT_PUBLIC_COGNITO_LOGOUT_URI),
+  };
+}
+
 /**
  * Origin used in invitation emails and rewritten agency deep links.
  * Prefers `NEXT_PUBLIC_APP_URL`; otherwise the current browser origin.

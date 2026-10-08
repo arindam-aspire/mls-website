@@ -19,6 +19,7 @@ Feature or shared UI component.
 - `SocialAuthForm`
 - `SocialAccountType`
 - `SocialAuthFlow`
+- `SocialAuthProvider`
 
 # State Management
 
@@ -40,20 +41,22 @@ _N/A unless extended._
 | `flow` | `"signin"` \| `"signup"` | Labels and email/OTP routing |
 | `accountType` | `"user"` \| `"owner"` | Toggle value and auth view resolution |
 | `className` | `string?` | Optional root wrapper classes |
-| `onSocialProviderClick` | `() => void?` | When set, Google/Facebook/Apple buttons call this instead of performing OAuth |
+| `onSocialProviderClick` | `(provider) => void?` | `google`, `facebook`, or `apple` |
+| `pendingProvider` | `"google"` \| `"facebook"` \| `null` | Disables the social buttons and shows the loading label on the active provider |
 
 # Actions / Inputs
 
 ## Actions
 
 - **Account type toggle** — switches user/owner and updates `?auth=` view.
-- **Google / Facebook / Apple** — invokes `onSocialProviderClick` when provided; otherwise no-op.
+- **Google / Facebook** — calls `onSocialProviderClick` with that provider. While `pendingProvider` is set, all three social buttons are disabled.
+- **Apple** — calls `onSocialProviderClick("apple")`. The parent opens the upcoming-feature modal.
 - **Email** — navigates to email sign-in or sign-up view for the active account type.
 - **One-time code** (sign-in only) — navigates to OTP sign-in flow.
 
 # Flow Description
 
-Parent screens pass `onSocialProviderClick` when social OAuth is not yet wired (e.g. `SocialRegistrationScreen` opens `UpcomingFeatureModal`). Email and OTP paths navigate via `authViews` helpers as before.
+Parent screens pass `onSocialProviderClick`. Google and Facebook start OAuth from `useSocialProviderAuth`. Apple still opens `UpcomingFeatureModal`. Email and OTP paths navigate via `authViews` helpers as before.
 
 # Dependencies
 

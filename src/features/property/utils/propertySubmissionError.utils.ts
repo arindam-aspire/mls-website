@@ -118,6 +118,10 @@ function isOwnerDuplicateMessage(message: string, path: string | null): boolean 
   );
 }
 
+function isAxiosStatusMessage(message: string): boolean {
+  return /^request failed with status code \d+$/i.test(message.trim());
+}
+
 function isGenericTransportMessage(message: string): boolean {
   const normalized = message.trim().toLowerCase();
 
@@ -183,16 +187,36 @@ function resolveSubmissionErrorMessage(
   return { apiError, source, message: rawMessage };
 }
 
+function firstValidationItemMessage(items: ValidationErrorItem[]): string | null {
+  for (const item of items) {
+    const message = toTrimmedString(item.message) ?? toTrimmedString(item.msg);
+    if (message && !isAxiosStatusMessage(message) && !isGenericTransportMessage(message)) {
+      return message;
+    }
+  }
+
+  return null;
+}
+
 export function parsePropertySubmissionError(
   error: unknown,
   fallbackMessage: string,
   copy?: PropertySubmissionErrorCopy,
 ): PropertySubmissionUiError {
-  const { source, message } = resolveSubmissionErrorMessage(
+  const { source, message: resolvedMessage } = resolveSubmissionErrorMessage(
     error,
     fallbackMessage,
     copy,
   );
+  const validationItems = collectErrorItems(source);
+  const validationMessage = firstValidationItemMessage(validationItems);
+  const message =
+    validationMessage &&
+    (isAxiosStatusMessage(resolvedMessage) ||
+      isGenericTransportMessage(resolvedMessage) ||
+      resolvedMessage === fallbackMessage)
+      ? validationMessage
+      : resolvedMessage;
   const fieldErrors: Record<string, string> = {};
   const stepErrors: Record<string, string> = {};
   let ownerDuplicateError: string | null = null;
@@ -209,7 +233,7 @@ export function parsePropertySubmissionError(
     fieldErrors[normalizeFieldPath(explicitField)] = message;
   }
 
-  for (const item of collectErrorItems(source)) {
+  for (const item of validationItems) {
     const itemMessage =
       toTrimmedString(item.message) ?? toTrimmedString(item.msg) ?? message;
     const path =

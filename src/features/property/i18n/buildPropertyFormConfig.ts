@@ -167,10 +167,77 @@ function buildIdentificationFields(
   }));
 }
 
+/**
+ * Keep furnishing-specific prices only for the statuses the user selected.
+ * An empty filtered list must not be passed through: the library treats
+ * `pricingFields: []` as “use deprecated defaults” and shows every price.
+ */
+export function filterPricingFieldsForFurnishing(
+  fields: PropertyPricingFieldDefinition[],
+  selectedFurnishingStatuses: readonly string[],
+): PropertyPricingFieldDefinition[] {
+  const selected = new Set(
+    selectedFurnishingStatuses
+      .map((value) => value.trim().toLowerCase())
+      .filter(Boolean),
+  );
+
+  if (selected.size === 0) {
+    return fields;
+  }
+
+  const matching = fields.filter((field) => {
+    const furnishingStatus = field.furnishingStatus?.trim().toLowerCase() ?? "";
+    if (!furnishingStatus) {
+      return true;
+    }
+
+    return selected.has(furnishingStatus);
+  });
+
+  if (matching.length > 0) {
+    return matching;
+  }
+
+  return [
+    {
+      key: "price",
+      label: fields[0]?.label ?? "",
+      purpose: "__unmatched_furnishing__",
+      furnishingStatus: "__unmatched_furnishing__",
+    },
+  ];
+}
+
+export function readSelectedFurnishingStatuses(
+  furnishingStatus: unknown,
+): string[] {
+  if (Array.isArray(furnishingStatus)) {
+    return furnishingStatus
+      .flatMap((value) => readSelectedFurnishingStatuses(value))
+      .filter((value, index, values) => values.indexOf(value) === index);
+  }
+
+  if (furnishingStatus == null) {
+    return [];
+  }
+
+  if (typeof furnishingStatus === "object") {
+    const record = furnishingStatus as Record<string, unknown>;
+    return readSelectedFurnishingStatuses(
+      record.value ?? record.id ?? record.slug ?? record.code ?? null,
+    );
+  }
+
+  const trimmed = String(furnishingStatus).trim();
+  return trimmed ? [trimmed] : [];
+}
+
 export function buildPropertyFormConfig(
   t: PropertyFormConfigTranslation,
   catalog: PropertyFormOptionsCatalog,
   arrangement: PropertyArrangementId = "properties",
+  selectedFurnishingStatuses: readonly string[] = [],
 ): PropertyFormConfig {
   const listingPurposeFallback: PropertyFormOption[] = [
     { value: "sale", label: t("listingPurposes.sale") },
@@ -198,7 +265,7 @@ export function buildPropertyFormConfig(
     { value: "secondary", label: t("completionStatuses.secondary") },
   ];
 
-  const pricingFields: PropertyPricingFieldDefinition[] = [
+  const allPricingFields: PropertyPricingFieldDefinition[] = [
     {
       key: "furnished_sale_price",
       label: t("pricing.furnishedSalePrice"),
@@ -230,6 +297,10 @@ export function buildPropertyFormConfig(
       furnishingStatus: semiFurnishedValue,
     },
   ];
+  const pricingFields = filterPricingFieldsForFurnishing(
+    allPricingFields,
+    selectedFurnishingStatuses,
+  );
 
   return {
     listingPurposeOptions: mergeOptions(

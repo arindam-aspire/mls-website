@@ -29,6 +29,7 @@ export function SocialRegistrationScreen({ type }: SocialRegistrationScreenProps
     subtitle,
     accountType,
     onSocialProviderClick,
+    pendingProvider,
     hasAccountText,
     signInText,
     onSignInClick,
@@ -54,6 +55,7 @@ export function SocialRegistrationScreen({ type }: SocialRegistrationScreenProps
             flow="signup"
             accountType={accountType}
             onSocialProviderClick={onSocialProviderClick}
+            pendingProvider={pendingProvider}
           />
         </ModalContent>
         <ModalFooter className="!block rounded-b-xl border-t-0 bg-primary-light !px-4 !pt-4 !pb-4 dark:bg-page sm:!gap-3 sm:!px-6 sm:!pb-6">

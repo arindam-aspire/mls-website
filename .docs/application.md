@@ -100,6 +100,18 @@ Stop `npm run dev` before `npm run build`. Stale `.next/dev/types/validator.ts` 
 | `NEXT_PUBLIC_API_BASE_URL` | Backend API base URL (defaults to dev API in `environment.config.ts`) |
 | `NEXT_PUBLIC_APP_URL` | Public frontend origin when the app needs a site URL (no trailing slash). Empty falls back to the current browser origin via `getPublicAppOrigin()`. Invitation and password-setup links are the absolute URLs returned by the API (`/agency-invitation`, `/agency-password-setup`, `/agent-invite`, `/agent-password-setup`). Do not rebuild those links with localhost. |
 | `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | Google Maps JavaScript API key for the Add Property location map |
+| `NEXT_PUBLIC_COGNITO_DOMAIN` | Cognito hosted UI domain. Google and Facebook both start at `https://{domain}/oauth2/authorize`. |
+| `NEXT_PUBLIC_COGNITO_APP_CLIENT_ID` | Cognito app client id. Must be the same client the API uses as `COGNITO_APP_CLIENT_ID`. |
+| `NEXT_PUBLIC_COGNITO_GOOGLE_IDENTITY_PROVIDER` | Cognito identity provider name for Google, matching `COGNITO_GOOGLE_PROVIDER_NAMES` on the API. |
+| `NEXT_PUBLIC_COGNITO_FACEBOOK_IDENTITY_PROVIDER` | Cognito identity provider name for Facebook, matching `COGNITO_FACEBOOK_PROVIDER_NAMES` on the API. |
+| `NEXT_PUBLIC_COGNITO_OAUTH_SCOPES` | Optional space-separated scopes. Empty uses `openid email profile`. |
+| `NEXT_PUBLIC_COGNITO_OAUTH_AUTHORIZE_URL` | Optional full authorize URL. Empty derives it from the Cognito domain. |
+| `NEXT_PUBLIC_COGNITO_LOGOUT_URI` | Optional exact Cognito sign-out URL. When set, social logout redirects through the hosted UI logout endpoint. |
+| `NEXT_PUBLIC_SOCIAL_OAUTH_REDIRECT_URI` | Optional exact redirect URI. When empty, the app uses `{origin}/{locale}/auth/social/callback`. |
+| `COGNITO_APP_CLIENT_SECRET` | Server-only. The live social callback does not use it. `POST /api/auth/social/exchange` still reads it. The API (`abdoun_fast_api`) holds the secret that exchanges the code. Never `NEXT_PUBLIC_`. |
+| `COGNITO_DOMAIN` | Optional server override of the hosted UI domain for `POST /api/auth/social/exchange`. The live callback uses the API domain instead. |
+| `COGNITO_APP_CLIENT_ID` | Optional server override of the app client id for `POST /api/auth/social/exchange`. |
+| `COGNITO_OAUTH_TOKEN_URL` | Optional full Cognito token URL for `POST /api/auth/social/exchange`. Empty derives `https://{domain}/oauth2/token`. |
 
 ---
 
@@ -233,6 +245,7 @@ All paths below are **without** locale; prepend `/<locale>` (e.g. `/en/my-listin
 | `/agency-password-setup` | `(landing)/agency-password-setup/page.tsx` | `AgencyPasswordSetupScreen` — public email deep link (`?token=`). Unprefixed `/agency-password-setup` redirects to `/en/agency-password-setup`. |
 | `/agent-invite` | `(landing)/agent-invite/page.tsx` | `AgentInviteScreen` — public email deep link (`?token=`). Unprefixed `/agent-invite` redirects to `/en/agent-invite`. |
 | `/agent-password-setup` | `(landing)/agent-password-setup/page.tsx` | `AgentPasswordSetupScreen` — public email deep link (`?token=`). Unprefixed `/agent-password-setup` redirects to `/en/agent-password-setup`. |
+| `/auth/social/callback` | `(landing)/auth/social/callback/page.tsx` | Cognito hosted UI return for Google or Facebook. Opens in the provider window, posts the authorization code to `POST /auth/login/social`, then closes. The original page stores the same session as password sign-in. |
 
 ### Header navigation
 
@@ -533,7 +546,8 @@ Session persistence helpers: `src/features/auth/store/authModalStorage.ts`.
 | Hook | API |
 | --- | --- |
 | `useSignInWithPassword` | Login + fetch user |
-| `useLogout` | Logout + clear + redirect home |
+| `useSignInWithSocial` | `POST /auth/login/social` with the Cognito authorization code after Google or Facebook hosted UI. The API exchanges the code. Same token cookies, `/auth/me`, and role redirect as password sign-in. User and Owner only. |
+| `useLogout` | Logout + clear. Password sessions go home. A completed social session also redirects through Cognito logout when `NEXT_PUBLIC_COGNITO_LOGOUT_URI` is set. |
 | `useSignUp` | Register (`POST /auth/signup`); 409 existing email → login. Success copy says the code was sent to the registered email and mobile. |
 | `useConfirmSignUp` | Verify signup email OTP (`POST /auth/confirm-signup`). Does not set `is_phone_verified`. When the signup stored a phone and password sign-in succeeds, the modal stays open for phone OTP. |
 | `useResendConfirmation` | Resend signup OTP (`POST /auth/resend-confirmation`). Success copy says the new code was sent to the registered email and mobile. |
@@ -571,6 +585,7 @@ From `src/configs/environment.config.ts` → `API_BASE_URL` (env: `NEXT_PUBLIC_A
 | Constant | Method | Path |
 | --- | --- | --- |
 | `SIGN_IN_WITH_PASSWORD` | POST | `/auth/login/password` |
+| `LOGIN_SOCIAL` | POST | `/auth/login/social` — `{ provider, role, code, code_verifier, redirect_uri }`. `provider` is `google` or `facebook`. `role` is `registered_user` or `owner` and is the role chosen before the redirect. The API exchanges the Cognito code, then keeps an existing account role or creates a User or Owner. |
 | `SIGN_IN_WITH_OTP` | POST | `/auth/login/otp/request` — `{ username }` is the email or the E.164 phone from the Phone Number tab |
 | `SIGN_IN_WITH_OTP_VERIFY` | POST | `/auth/login/otp/verify` — `{ username, code, session }` uses the same email or E.164 phone |
 | `LOGGED_IN_USER` | GET | `/auth/me` |
@@ -737,6 +752,7 @@ All use `ComingSoonCard` with custom `title` / `description`:
 | `API_BASE_URL` | Used by Axios factory |
 | `APP_URL` / `getPublicAppOrigin()` | Public frontend origin (`NEXT_PUBLIC_APP_URL`; else browser origin) |
 | `GOOGLE_MAPS_API_KEY` | Google Maps JS API key (`NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`) |
+| `readSocialOAuthPublicConfig()` | Cognito hosted UI settings for Google and Facebook. The app client secret stays on the API, which exchanges the authorization code. |
 
 Default API: `https://dev-api-abdn.wpsitedesigner.com/api/v1`
 

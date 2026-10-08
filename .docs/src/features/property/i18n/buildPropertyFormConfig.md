@@ -10,7 +10,8 @@ Builds the host `PropertyFormConfig` for `@abdoun/abdoun-library` `PropertyForm`
 - Fall back listing purposes to existing BE values `sale` / `rent` with i18n labels when the catalog is empty.
 - Furnishing Status uses catalog arrays when present. If the Master API omits that list, the host fills the existing search-filter values (`furnished` / `unfurnished` / `semi-furnished`) so the library still renders the dropdown. **Floor** is removed from Property Information: `floorLevelOptions` is always `[]` (an explicit empty array — `undefined` would restore the library’s deprecated Ground–Penthouse defaults).
 - Nationality uses the catalog when `nationalities` is present. There is no host country list; omitting the array lets the library compatibility defaults render until the Master API returns nationalities.
-- Define purpose- and furnishing-aware pricing fields (`furnished_sale_price`, `unfurnished_sale_price`, `furnished_rent_price`, `unfurnished_rent_price`, `semi_furnished_rent_price`). Visible fields follow Listing Purpose + Furnishing Status (Sale+Furnished, Sale+Unfurnished, Rent+Furnished, Rent+Unfurnished, Rent+Semi-Furnished).
+- Define purpose- and furnishing-aware pricing fields (`furnished_sale_price`, `unfurnished_sale_price`, `furnished_rent_price`, `unfurnished_rent_price`, `semi_furnished_rent_price`). `filterPricingFieldsForFurnishing` keeps only fields whose `furnishingStatus` is one of the selected values. The library still filters that list by Listing Purpose. An empty match is not passed as `[]` (the library would restore every deprecated price); a non-matching sentinel field is passed instead so no named price is shown.
+- Furnishing Status in the library `PropertyForm` (0.1.92) is still a single select (`furnishing_status: string | null`). This helper accepts one or more selected values so pricing follows whatever the form has stored.
 - Define **arrangement-aware** identification fields (labels for Review; Location editing is host DLS):
   - **Properties** (Residential / Commercial): Parcel Number, Plot Number, Building, Floor, Apartment (Basin Number removed).
   - **Land:** Parcel Number and Plot Number. Empty arrangements still use a host-only placeholder so the library does not restore default identification fields (including Basin Number).
@@ -27,7 +28,9 @@ Builds the host `PropertyFormConfig` for `@abdoun/abdoun-library` `PropertyForm`
 
 # Exports
 
-- `buildPropertyFormConfig(t, catalog, arrangement = "properties")`
+- `buildPropertyFormConfig(t, catalog, arrangement = "properties", selectedFurnishingStatuses = [])`
+- `filterPricingFieldsForFurnishing(fields, selectedFurnishingStatuses)`
+- `readSelectedFurnishingStatuses(furnishingStatus)`
 
 # Props / Parameters
 

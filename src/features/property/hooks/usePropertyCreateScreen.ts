@@ -73,7 +73,10 @@ import {
   mapLocationTaxonomyForPropertyForm,
   mapPropertyCategoriesForPropertyForm,
 } from "@/src/features/property/mappers/propertyForm.mapper";
-import { buildPropertyFormConfig } from "@/src/features/property/i18n/buildPropertyFormConfig";
+import {
+  buildPropertyFormConfig,
+  readSelectedFurnishingStatuses,
+} from "@/src/features/property/i18n/buildPropertyFormConfig";
 import { useOwnerDocumentUpload } from "@/src/features/property/hooks/useOwnerDocumentUpload";
 import { buildPropertyCreateOwnerInfoValidationMessages } from "@/src/features/property/i18n/propertyCreateOwnerInfo.i18n";
 import { usePropertyCreateUnsavedChanges } from "@/src/features/property/hooks/usePropertyCreateUnsavedChanges";
@@ -625,8 +628,8 @@ export function usePropertyCreateScreen() {
   );
 
   const featuresAndAmenities = useMemo(
-    () => mapFeatureCatalogForPropertyForm(featureCatalogItems),
-    [featureCatalogItems],
+    () => mapFeatureCatalogForPropertyForm(featureCatalogItems, propertyCategories),
+    [featureCatalogItems, propertyCategories],
   );
 
   const minStepIndex = INITIAL_PROPERTY_FORM_ACTIVE_STEP;
@@ -749,15 +752,37 @@ export function usePropertyCreateScreen() {
     user,
   ]);
 
+  const selectedFurnishingStatuses = useMemo(
+    () =>
+      readSelectedFurnishingStatuses(
+        propertyDetails.property_details?.furnishing_status,
+      ),
+    [propertyDetails.property_details?.furnishing_status],
+  );
+
   const formConfig = useMemo(
     () =>
       buildPropertyFormConfig(
         tForm as Parameters<typeof buildPropertyFormConfig>[0],
         formOptionsCatalog,
         arrangement,
+        selectedFurnishingStatuses,
       ),
-    [arrangement, formOptionsCatalog, tForm],
+    [arrangement, formOptionsCatalog, selectedFurnishingStatuses, tForm],
   );
+
+  const activePricingFieldKeys = useMemo(() => {
+    if (selectedFurnishingStatuses.length === 0) {
+      return null;
+    }
+
+    const keys =
+      formConfig.pricingFields
+        ?.map((field) => field.key)
+        .filter((key) => key !== "price") ?? [];
+
+    return new Set(keys);
+  }, [formConfig.pricingFields, selectedFurnishingStatuses.length]);
 
   const libraryFieldErrors = useMemo(
     () => omitHostLocationFieldErrors(fieldErrors),
@@ -957,7 +982,10 @@ export function usePropertyCreateScreen() {
       const draftResponse = await fetchPropertyDraftSubmission(submissionIdToLoad);
 
       if (draftResponse.success && draftResponse.data) {
-        const featuresForForm = mapFeatureCatalogForPropertyForm(catalogItems);
+        const featuresForForm = mapFeatureCatalogForPropertyForm(
+          catalogItems,
+          propertyCategoriesRef.current,
+        );
         const catalogWithMasters = withEnsuredLandTypeOption(
           formOptions,
           getDraftLandTypeValue(draftResponse.data),
@@ -1275,6 +1303,7 @@ export function usePropertyCreateScreen() {
       forSubmit: true as const,
       currency: toPropertyDraftSubmissionCurrency(pricingCurrency),
       arrangement,
+      activePricingFieldKeys,
     };
     const shouldRouteThroughAgency = showAgencyField && routeThroughAgency;
     const agencyId = shouldRouteThroughAgency
@@ -1381,6 +1410,7 @@ export function usePropertyCreateScreen() {
     activeStep,
     applyArrangementIdentification,
     applySubmissionError,
+    activePricingFieldKeys,
     arrangement,
     clearSubmissionErrors,
     featuresAndAmenities,
@@ -1453,6 +1483,7 @@ export function usePropertyCreateScreen() {
           routeThroughAgency: shouldRouteThroughAgency,
           currency: toPropertyDraftSubmissionCurrency(pricingCurrency),
           arrangement,
+          activePricingFieldKeys,
         };
         const response = submissionId
           ? await updateDraftSubmission({
@@ -1505,6 +1536,7 @@ export function usePropertyCreateScreen() {
       }
     },
     [
+      activePricingFieldKeys,
       activeStep,
       applyArrangementIdentification,
       applySubmissionError,

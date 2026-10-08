@@ -510,6 +510,10 @@ mls_website/
 │   │   ├── (landing)/
 │   │   │   ├── layout.tsx
 │   │   │   ├── page.tsx
+│   │   │   ├── auth/
+│   │   │   │   └── social/
+│   │   │   │       └── callback/
+│   │   │   │           └── page.tsx
 │   │   │   ├── agency-invitation/
 │   │   │   │   └── page.tsx
 │   │   │   ├── agency-password-setup/
@@ -570,6 +574,11 @@ mls_website/
 │   ├── layout.tsx
 │   ├── loading.tsx
 │   ├── page.tsx
+│   ├── api/
+│   │   └── auth/
+│   │       └── social/
+│   │           └── exchange/
+│   │               └── route.ts
 │   ├── agency-invitation/
 │   │   └── page.tsx
 │   ├── agency-password-setup/
@@ -777,6 +786,8 @@ mls_website/
 │   │   │   │   ├── useResetPasswordScreen.ts
 │   │   │   │   ├── useSignInScreen.ts
 │   │   │   │   ├── useSignInWithOTPScreen.ts
+│   │   │   │   ├── useSocialOAuthCallback.ts
+│   │   │   │   ├── useSocialProviderAuth.ts
 │   │   │   │   ├── useSocialRegistrationScreen.ts
 │   │   │   │   ├── useSocialSignInScreen.ts
 │   │   │   │   ├── useUserRegistrationScreen.ts
@@ -795,6 +806,7 @@ mls_website/
 │   │   │   │   ├── ResetPasswordScreen.tsx
 │   │   │   │   ├── SignInScreen.tsx
 │   │   │   │   ├── SignInWithOTPScreen.tsx
+│   │   │   │   ├── SocialOAuthCallbackScreen.tsx
 │   │   │   │   ├── SocialRegistrationScreen.tsx
 │   │   │   │   ├── SocialSignInScreen.tsx
 │   │   │   │   ├── UserRegistrationScreen.tsx
@@ -813,6 +825,9 @@ mls_website/
 │   │   │   │   ├── signInOtpUsername.ts
 │   │   │   │   ├── signupPhoneVerification.ts
 │   │   │   │   ├── signupPhoneVerification.test.ts
+│   │   │   │   ├── socialAuthError.ts
+│   │   │   │   ├── socialOAuth.ts
+│   │   │   │   ├── socialOAuth.test.ts
 │   │   │   │   ├── finishAuthenticatedSession.ts
 │   │   │   │   └── profileMenuRoleAccess.ts
 │   │   │   └── types/
@@ -825,6 +840,7 @@ mls_website/
 │   │   │       ├── signIn.types.ts
 │   │   │       ├── signInOtp.types.ts
 │   │   │       ├── signUp.types.ts
+│   │   │       ├── socialLogin.types.ts
 │   │   │       ├── agencySignUp.types.ts
 │   │   │       └── user.types.ts
 │   │   ├── dashboard/

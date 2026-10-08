@@ -7,6 +7,7 @@ Maps backend create/submit errors into `PropertyForm` `fieldErrors`, `stepErrors
 # Responsibilities
 
 - Prefer the exact API `message` (no generic “Could not submit property” as the toast title when BE sent a message).
+- When the thrown message is Axios `Request failed with status code …` (or the generic fallback) and the body has FastAPI `detail[]` / `errors[]` items, use the first item `msg` / `message` as the toast text. Field paths from `loc` are unchanged.
 - Replace generic Axios **Network Error** / canned transport strings with localized unreachable, timeout, or server copy. Do not overwrite a useful BE `message` / `detail` / `error.message`.
 - Collect FastAPI-style `loc` / `field` / `path` validation items into field paths.
 - Strip `body.` / `payload.` / `data.` prefixes so library `goToField` can focus the control.

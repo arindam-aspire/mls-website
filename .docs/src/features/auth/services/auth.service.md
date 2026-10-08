@@ -18,6 +18,7 @@ API service functions calling HTTP clients.
 # Exports
 
 - `signInWithPassword`
+- `signInWithSocial` — `POST /auth/login/social` with `{ provider, role, code, code_verifier, redirect_uri }`. The API exchanges the Cognito authorization code.
 - `getLoggedInUser`
 - `logout`
 - `signInWithOtpRequest`
