@@ -8,7 +8,8 @@ Profile UI props and profile API request/response types.
 
 | Type | Purpose |
 | --- | --- |
-| `ProfileInfoField` | `{ label, value }` for profile field rows |
+| `ProfileInfoField` | Profile field row. Optional `verified`, `onVerify`, and verify-button labels for the signed-in user's email or phone. |
+| `ContactVerificationChannel` | `"email"` or `"phone"` for the current-contact OTP flow |
 | `MyProfileCardUser` | User subset for `MyProfileCard` header |
 | `MyProfileCardProps` | Full props for `MyProfileCard` |
 | `AgencyProfileCardProps` | Props for `AgencyProfileCard` |

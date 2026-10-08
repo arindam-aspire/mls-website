@@ -12,6 +12,7 @@ Route-level profile screen: toolbar, profile card, change-password modal, separa
 - **md/lg (non-agency users):** only `MyProfileCard` — centered horizontally (`justify-center`); no agency column.
 - Open `ChangePasswordModal` on change-password action.
 - Open `EditEmailModal` / `EditPhoneModal` from per-field edit actions on the card.
+- Open `VerifyContactModal` after **Verify Email** or **Verify Phone** sends an OTP for the current contact. Signup, login, and forgot-password OTP screens are unchanged.
 - Render `ProfileAvatarUpload` with upload/remove handlers from `useProfileAvatarUpload`.
 
 # Flow Description
@@ -21,6 +22,7 @@ Route-level profile screen: toolbar, profile card, change-password modal, separa
 3. **Change Password** → `ChangePasswordModal`.
 4. Card email row **Edit** → `EditEmailModal` (request OTP → confirm).
 5. Card phone row **Edit** → `EditPhoneModal` (request OTP → confirm).
+5a. **Verify Email** sends `POST /auth/resend-confirmation` with `{ email, channel: "email" }` so the code goes to the mailbox only. **Verify Phone** sends `POST /auth/send-phone-otp` so the code goes by SMS only. Confirm uses `POST /auth/confirm-signup` or `POST /auth/verify-phone-otp`, then `GET /auth/me` writes the user back into the auth store. The other channel's flag is not changed in the client.
 6. Personal avatar camera → local `blob:` preview on the auth-store user, then `POST /auth/me/profile-picture`; PUT to `upload_url` unless it is `dev://`; keep the blob preview when MLS stores `dev://`; remove → `DELETE /auth/me/profile-picture`.
 7. Agency logo (agency users) → `POST /agency/{agencyId}/logo`; PUT unless `dev://`; remove → `DELETE /agency/{agencyId}/logo`.
 8. **Edit agency** → [EditAgencyModal.md](./EditAgencyModal.md): `PUT /agency/{agencyId}`; optional license file → `POST /agency/{agencyId}/legal-document`.

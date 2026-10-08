@@ -1,7 +1,7 @@
 import { authClient } from "@/src/apis/clients/api.client";
 import { authEndpoints } from "@/src/apis/endpoints/authEndpoints";
 import { withDisplayableProfilePicture } from "../utils/normalizeLoggedInUser";
-import type { AgencySignUpRequest, AgencySignUpResponse, ChangePasswordRequest, ChangePasswordResponse, ConfirmSignUpRequest, ConfirmSignUpResponse, ForgotPasswordRequest, ForgotPasswordResponse, LoggedInUserResponse, LogoutResponse, ResendConfirmationRequest, ResendConfirmationResponse, ResetPasswordRequest, ResetPasswordResponse, SignInRequest, SignInResponse, SignInWithOtpRequest, SignInWithOtpResponse, SignInWithOtpVerifyRequest, SignInWithOtpVerifyResponse, SignUpRequest, SignUpResponse, SocialLoginRequest, SocialLoginResponse } from "../types/auth.types";
+import type { AgencySignUpRequest, AgencySignUpResponse, ChangePasswordRequest, ChangePasswordResponse, ConfirmSignUpRequest, ConfirmSignUpResponse, ForgotPasswordRequest, ForgotPasswordResponse, LoggedInUserResponse, LogoutResponse, PhoneOtpResponse, ResendConfirmationRequest, ResendConfirmationResponse, ResetPasswordRequest, ResetPasswordResponse, SendPhoneOtpRequest, SignInRequest, SignInResponse, SignInWithOtpRequest, SignInWithOtpResponse, SignInWithOtpVerifyRequest, SignInWithOtpVerifyResponse, SignUpRequest, SignUpResponse, SocialLoginRequest, SocialLoginResponse, VerifyPhoneOtpRequest } from "../types/auth.types";
 
 export async function signInWithSocial(data: SocialLoginRequest): Promise<SocialLoginResponse> {
   return authClient.request<SocialLoginResponse>({
@@ -109,6 +109,40 @@ export async function resendConfirmation(
     endpoint: authEndpoints.RESEND_CONFIRMATION,
     method: "POST",
     body: data,
+  });
+}
+
+/** SMS OTP for the signed-in user's registered mobile. Does not email the code. */
+export async function sendPhoneOtp(
+  data: SendPhoneOtpRequest,
+): Promise<PhoneOtpResponse> {
+  return authClient.request<PhoneOtpResponse>({
+    endpoint: authEndpoints.SEND_PHONE_OTP,
+    method: "POST",
+    body: data,
+    auth: true,
+  });
+}
+
+export async function resendPhoneOtp(
+  data: SendPhoneOtpRequest,
+): Promise<PhoneOtpResponse> {
+  return authClient.request<PhoneOtpResponse>({
+    endpoint: authEndpoints.RESEND_PHONE_OTP,
+    method: "POST",
+    body: data,
+    auth: true,
+  });
+}
+
+export async function verifyPhoneOtp(
+  data: VerifyPhoneOtpRequest,
+): Promise<PhoneOtpResponse> {
+  return authClient.request<PhoneOtpResponse>({
+    endpoint: authEndpoints.VERIFY_PHONE_OTP,
+    method: "POST",
+    body: data,
+    auth: true,
   });
 }
 

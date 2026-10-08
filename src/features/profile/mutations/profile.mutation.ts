@@ -3,6 +3,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import type { ApiError } from "@/src/apis/core/error.normalizer";
+import {
+  confirmSignUp,
+  resendConfirmation,
+  resendPhoneOtp,
+  sendPhoneOtp,
+  verifyPhoneOtp,
+} from "@/src/features/auth/services/auth.service";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
 import type { LoggedInUser } from "@/src/features/auth/types/auth.types";
 import { useToast } from "@/src/hooks/useToast";
@@ -10,6 +17,7 @@ import { resolveDisplayableImageSrc } from "@/src/lib/shouldUnoptimizeImageSrc";
 import {
   deleteAgencyLogo,
   deleteProfilePicture,
+  refreshAuthenticatedProfile,
   requestProfileUpdate,
   updateProfile,
   updateAgency,
@@ -25,6 +33,12 @@ import type {
   ProfileUpdateRequestBody,
   ProfileUpdateVerifyBody,
 } from "../types/profile.types";
+import {
+  isContactAlreadyVerifiedError,
+  registeredContactChannel,
+  type RegisteredContactOtpConfirm,
+  type RegisteredContactOtpRequest,
+} from "../utils/contactVerification.utils";
 import { sanitizeSmsErrorMessage } from "../utils/registeredMobileSms.utils";
 
 function useProfileUpdateMutation(
@@ -74,6 +88,132 @@ export function useRequestProfileUpdate() {
         description: sanitizeSmsErrorMessage(
           error.message,
           t("verificationErrorDescription"),
+        ),
+      });
+    },
+  });
+}
+
+type RegisteredContactOtpRequestResult = {
+  alreadyVerified: boolean;
+  user: LoggedInUser | null;
+};
+
+export function useRequestRegisteredContactOtp() {
+  const t = useTranslations("profile.contactVerification");
+  const toast = useToast();
+  const setUser = useAuthStore((state) => state.setUser);
+
+  return useMutation({
+    mutationFn: async (
+      body: RegisteredContactOtpRequest,
+    ): Promise<RegisteredContactOtpRequestResult> => {
+      try {
+        if (body.channel === "email") {
+          await resendConfirmation({ email: body.email, channel: "email" });
+          return { alreadyVerified: false, user: null };
+        }
+
+        const response = body.resend
+          ? await resendPhoneOtp({ phone_number: body.phoneNumber })
+          : await sendPhoneOtp({ phone_number: body.phoneNumber });
+        if (response.data?.phone_verified === true) {
+          const user = await refreshAuthenticatedProfile();
+          return { alreadyVerified: true, user };
+        }
+        return { alreadyVerified: false, user: null };
+      } catch (error) {
+        if (!isContactAlreadyVerifiedError(error)) {
+          throw error;
+        }
+        const user = await refreshAuthenticatedProfile();
+        return { alreadyVerified: true, user };
+      }
+    },
+    onSuccess: (result, variables) => {
+      if (!result.alreadyVerified || !result.user) return;
+
+      setUser(result.user);
+      const channel = registeredContactChannel(variables);
+      toast.success(t("alreadyVerifiedTitle"), {
+        description: t(
+          channel === "email"
+            ? "emailAlreadyVerifiedDescription"
+            : "phoneAlreadyVerifiedDescription",
+        ),
+      });
+    },
+    onError: (error: ApiError) => {
+      toast.error(t("sendErrorTitle"), {
+        description: sanitizeSmsErrorMessage(error.message, t("sendErrorDescription")),
+      });
+    },
+  });
+}
+
+type RegisteredContactOtpConfirmResult = {
+  alreadyVerified: boolean;
+  user: LoggedInUser;
+};
+
+export function useConfirmRegisteredContactOtp() {
+  const t = useTranslations("profile.contactVerification");
+  const toast = useToast();
+  const setUser = useAuthStore((state) => state.setUser);
+
+  return useMutation({
+    mutationFn: async (
+      body: RegisteredContactOtpConfirm,
+    ): Promise<RegisteredContactOtpConfirmResult> => {
+      try {
+        if (body.channel === "email") {
+          await confirmSignUp({ email: body.email, code: body.code });
+        } else {
+          await verifyPhoneOtp({
+            phone_number: body.phoneNumber,
+            phone_otp: body.phoneOtp,
+          });
+        }
+        const user = await refreshAuthenticatedProfile();
+        return { alreadyVerified: false, user };
+      } catch (error) {
+        if (!isContactAlreadyVerifiedError(error)) {
+          throw error;
+        }
+        const user = await refreshAuthenticatedProfile();
+        return { alreadyVerified: true, user };
+      }
+    },
+    onSuccess: (result, variables) => {
+      setUser(result.user);
+      const channel = registeredContactChannel(variables);
+
+      if (result.alreadyVerified) {
+        toast.success(t("alreadyVerifiedTitle"), {
+          description: t(
+            channel === "email"
+              ? "emailAlreadyVerifiedDescription"
+              : "phoneAlreadyVerifiedDescription",
+          ),
+        });
+        return;
+      }
+
+      toast.success(
+        t(channel === "email" ? "emailSuccessTitle" : "phoneSuccessTitle"),
+        {
+          description: t(
+            channel === "email" ? "emailSuccessDescription" : "phoneSuccessDescription",
+          ),
+        },
+      );
+    },
+    onError: (error: ApiError, variables) => {
+      const channel = registeredContactChannel(variables);
+      toast.error(t(channel === "email" ? "emailErrorTitle" : "phoneErrorTitle"), {
+        description: sanitizeSmsErrorMessage(
+          error.message,
+          t("confirmErrorDescription"),
         ),
       });
     },

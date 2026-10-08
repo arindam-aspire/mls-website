@@ -43,6 +43,30 @@ export type ConfirmSignUpResponse = {
 
 export type ResendConfirmationRequest = {
   email: string;
+  /** `email` sends only to the mailbox. `phone` sends only by SMS. */
+  channel?: "email" | "phone";
+};
+
+export type SendPhoneOtpRequest = {
+  phone_number?: string;
+};
+
+export type VerifyPhoneOtpRequest = {
+  phone_number: string;
+  phone_otp: string;
+};
+
+export type PhoneOtpResponseData = {
+  phone_verified?: boolean;
+  verified?: boolean;
+};
+
+export type PhoneOtpResponse = {
+  success: boolean;
+  message: string | null;
+  data: PhoneOtpResponseData | null;
+  error: unknown;
+  meta: Record<string, unknown>;
 };
 
 export type ResendConfirmationResponse = {

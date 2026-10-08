@@ -4,6 +4,7 @@ export * from "./useEditEmailModal";
 export * from "./useEditPhoneModal";
 export * from "./useAgencySettingsScreen";
 export * from "./useProfileScreen";
+export * from "./useVerifyContactModal";
 export * from "./useSelectAgencyModal";
 export * from "./useAgencyLogoUpload";
 export * from "./useAgencySettingsScreen";

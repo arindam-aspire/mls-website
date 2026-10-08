@@ -27,6 +27,8 @@ profile/
 | [components/SelectAgencyModalSkeleton.md](./components/SelectAgencyModalSkeleton.md) | Agency list loading skeleton |
 | [hooks/useSelectAgencyModal.md](./hooks/useSelectAgencyModal.md) | Select agency modal labels and close |
 | [screens/ProfileScreen.md](./screens/ProfileScreen.md) | `ProfileScreen` — toolbar + modals |
+| [screens/VerifyContactModal.md](./screens/VerifyContactModal.md) | OTP modal for the current email or phone |
+| [hooks/useVerifyContactModal.md](./hooks/useVerifyContactModal.md) | Verify-current-contact OTP logic |
 | [screens/AgencySettingsScreen.md](./screens/AgencySettingsScreen.md) | Agency display preferences (currency, measurement) |
 | [screens/NotificationSettingsScreen.md](./screens/NotificationSettingsScreen.md) | Notification settings placeholder |
 | [components/ProfilePageToolbar.md](./components/ProfilePageToolbar.md) | Page title, subtitle, action buttons |

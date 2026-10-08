@@ -14,6 +14,7 @@ Agency account summary card: header row with logo (left, upload/remove) and agen
 - When a document URL exists, show a **Download** `IconButton` that opens `legal_document_s3_link` in a new tab (`downloadLicenseDocument` aria-label).
 - Format address from `address`, `city`, `state`, `zip_code`, `country` (comma-separated; omit empty parts).
 - **Email and phone** rows: verification from `user.is_email_verified` / `user.is_phone_verified`; phone badge omitted when `user.hasPhone` is false; optional edit when parent passes `onEditEmail` / `onEditPhone`.
+- Unverified email or phone also shows **Verify Email** / **Verify Phone** (`onVerifyEmail` / `onVerifyPhone`). `verifyingChannel` disables both buttons while an OTP request is in flight. Verified rows do not show a verify button.
 # Imports
 
 - `lucide-react` icons

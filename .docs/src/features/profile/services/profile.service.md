@@ -35,7 +35,7 @@ Profile and agency HTTP helpers. Super-admin offline agency creation lives here:
 | `acceptAgencyInvitation` | Public `POST /agency/invitations/accept` |
 | `reviewAgency` / `updateAgencyActivation` / `sendAgencyPasswordLink` | Workflow |
 | `setupAgencyPassword` | Public password setup |
-| `updateProfile` / `requestProfileUpdate` / `verifyProfileUpdate*` | Profile |
+| `updateProfile` / `requestProfileUpdate` / `verifyProfileUpdate*` / `refreshAuthenticatedProfile` | Profile contact change and verify-current-contact OTP. Refresh re-reads `GET /auth/me`. |
 | `uploadProfilePicture` / `deleteProfilePicture` | Personal avatar |
 | `uploadAgencyLogo` / `deleteAgencyLogo` | Agency logo |
 | `uploadAgencyLegalDocument` | Existing-agency license (agency-scoped presign) |

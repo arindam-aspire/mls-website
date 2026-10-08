@@ -10,6 +10,7 @@ Presentational UI for the profile feature.
 | [ProfilePageToolbarSkeleton.md](./ProfilePageToolbarSkeleton.md) | Toolbar loading placeholder |
 | [ProfileScreenSkeleton.md](./ProfileScreenSkeleton.md) | Full profile screen loading layout |
 | [MyProfileCard.md](./MyProfileCard.md) | User profile summary card |
+| [ProfileVerificationStatus.md](./ProfileVerificationStatus.md) | Verified / not verified badge and verify button |
 | [AgencyProfileCard.md](./AgencyProfileCard.md) | Agency account summary card |
 | [MyProfileCardSkeleton.md](./MyProfileCardSkeleton.md) | Profile card loading placeholder |
 | [EditEmailForm.md](./EditEmailForm.md) | Email form step (`EditEmailModal`) |

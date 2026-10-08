@@ -2,7 +2,6 @@
 
 import {
   Building2,
-  CheckCircle,
   Download,
   FileText,
   Globe,
@@ -11,7 +10,6 @@ import {
   Pencil,
   Phone,
   User,
-  XCircle,
   type LucideIcon,
 } from "lucide-react";
 import { Button, Card, CardContent } from "@/src/components/ui";
@@ -19,6 +17,7 @@ import { IconButton } from "@/src/components/ui/icon-button";
 import { cn } from "@/src/lib/cn";
 import { bodyTextClasses, headingSectionClasses } from "@/src/lib/typography";
 import type { Agency, AgencyProfileCardProps } from "../types/profile.types";
+import { ProfileVerificationStatus } from "./ProfileVerificationStatus";
 import { toExternalWebsiteHref } from "../utils/agencyForm.utils";
 import { licenseDocumentDisplayName } from "../utils/licenseDocumentDisplay";
 import { ProfileAvatarUpload } from "./ProfileAvatarUpload";
@@ -37,6 +36,11 @@ type AgencyDetailFieldProps = {
   verified?: boolean;
   verifiedLabel?: string;
   notVerifiedLabel?: string;
+  verifyLabel?: string;
+  verifyLoadingLabel?: string;
+  onVerify?: () => void;
+  isVerifying?: boolean;
+  verifyDisabled?: boolean;
   editLabel?: string;
   onEdit?: () => void;
   downloadLabel?: string;
@@ -53,6 +57,11 @@ function AgencyDetailField({
   verified,
   verifiedLabel,
   notVerifiedLabel,
+  verifyLabel,
+  verifyLoadingLabel,
+  onVerify,
+  isVerifying,
+  verifyDisabled,
   editLabel,
   onEdit,
   downloadLabel,
@@ -102,19 +111,16 @@ function AgencyDetailField({
             </dd>
             {showVerification ? (
               <dd className="mt-2">
-                <span
-                  className={cn(
-                    "inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium",
-                    isVerified ? "bg-success/15 text-success" : "bg-danger/10 text-danger",
-                  )}
-                >
-                  {isVerified ? (
-                    <CheckCircle className="size-3.5 shrink-0" aria-hidden />
-                  ) : (
-                    <XCircle className="size-3.5 shrink-0" aria-hidden />
-                  )}
-                  {isVerified ? (verifiedLabel ?? "") : (notVerifiedLabel ?? "")}
-                </span>
+                <ProfileVerificationStatus
+                  isVerified={isVerified}
+                  verifiedLabel={verifiedLabel ?? ""}
+                  notVerifiedLabel={notVerifiedLabel ?? ""}
+                  verifyLabel={verifyLabel}
+                  verifyLoadingLabel={verifyLoadingLabel}
+                  onVerify={onVerify}
+                  isVerifying={isVerifying}
+                  verifyDisabled={verifyDisabled}
+                />
               </dd>
             ) : null}
           </div>
@@ -198,6 +204,12 @@ export function AgencyProfileCard({
   onEditEmail,
   onEditPhone,
   onEditAgency,
+  verifyEmailLabel,
+  verifyPhoneLabel,
+  verifyLoadingLabel,
+  onVerifyEmail,
+  onVerifyPhone,
+  verifyingChannel,
 }: AgencyProfileCardProps) {
   const { notProvided } = labels;
   const website = agency.website?.trim() ?? "";
@@ -307,6 +319,11 @@ export function AgencyProfileCard({
               verified={user.is_email_verified}
               verifiedLabel={verifiedLabel}
               notVerifiedLabel={notVerifiedLabel}
+              verifyLabel={verifyEmailLabel}
+              verifyLoadingLabel={verifyLoadingLabel}
+              onVerify={onVerifyEmail}
+              isVerifying={verifyingChannel === "email"}
+              verifyDisabled={verifyingChannel != null}
               editLabel={editEmailLabel}
               onEdit={onEditEmail}
             />
@@ -317,6 +334,11 @@ export function AgencyProfileCard({
               verified={user.hasPhone ? user.is_phone_verified : undefined}
               verifiedLabel={verifiedLabel}
               notVerifiedLabel={notVerifiedLabel}
+              verifyLabel={verifyPhoneLabel}
+              verifyLoadingLabel={verifyLoadingLabel}
+              onVerify={onVerifyPhone}
+              isVerifying={verifyingChannel === "phone"}
+              verifyDisabled={verifyingChannel != null}
               editLabel={editPhoneLabel}
               onEdit={onEditPhone}
             />

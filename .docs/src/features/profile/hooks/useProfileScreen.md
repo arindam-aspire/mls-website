@@ -12,6 +12,7 @@ Client hook for the profile screen: localized labels, change-password modal stat
 - `useAgencyCurrencyPreference` + `useAgencyMeasurementUnitPreference` + `profile.displayPreferences` → currency (JOD/USD) and measurement (SQFT/SQM) option cards on the agency card.
 - `showAgencyCardSkeleton` while agency query is pending/fetching.
 - Own `isChangePasswordOpen`, `isEditEmailOpen`, `isEditPhoneOpen`.
+- Call `useVerifyContactModal` for verify-current-email and verify-current-phone. Buttons are added only when the matching `GET /auth/me` flag is false. Agency users get those buttons on the agency card; other users get them on the personal card.
 - Expose `isLoading` when `isLoadingUser && !user` for `ProfileScreenSkeleton`.
 
 # Exports
@@ -34,6 +35,8 @@ Client hook for the profile screen: localized labels, change-password modal stat
 | Change password | `openChangePassword()` |
 | Edit email | `openEditEmail()` |
 | Edit phone | `openEditPhone()` |
+| Verify email | `verifyContact.startEmail()` — only when `is_email_verified` is false |
+| Verify phone | `verifyContact.startPhone()` — only when a number exists and `is_phone_verified` is false |
 
 # Dependencies
 
